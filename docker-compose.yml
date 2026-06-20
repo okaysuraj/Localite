@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: localite_postgres
+    environment:
+      POSTGRES_USER: localite_user
+      POSTGRES_PASSWORD: localite_password
+      POSTGRES_DB: localite_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - localite_db_data:/var/lib/postgresql
+
+volumes:
+  localite_db_data:
