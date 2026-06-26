@@ -27,4 +27,4 @@ For deep dives into the technical stack, API contracts, and deployment strategie
 - [Setup & Deployment Guide](./docs/SETUP.md)
 
 ---
-*Built with React, React Native, Spring Boot, and GSAP.*
+*Built with React, React Native, Spring Boot, Neon Cloud PostgreSQL, and GSAP.*

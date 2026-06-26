@@ -9,17 +9,30 @@
 ---
 
 ## 1. Backend Setup (`localite-backend`)
-The backend is a Spring Boot application using an H2 in-memory database by default.
+The backend is a Spring Boot application that connects to Neon Cloud PostgreSQL.
 
 1. Navigate to the backend directory:
    ```bash
    cd localite-backend
    ```
-2. Build the project:
+2. Set your environment variables for Neon Cloud PostgreSQL (refer to `.env.example` for details):
+   - **PowerShell (Windows)**:
+     ```powershell
+     $env:SPRING_DATASOURCE_URL="jdbc:postgresql://<neon-host>/localite_db?sslmode=require"
+     $env:SPRING_DATASOURCE_USERNAME="<neon-username>"
+     $env:SPRING_DATASOURCE_PASSWORD="<neon-password>"
+     ```
+   - **Bash/Zsh (macOS/Linux/Git Bash)**:
+     ```bash
+     export SPRING_DATASOURCE_URL="jdbc:postgresql://<neon-host>/localite_db?sslmode=require"
+     export SPRING_DATASOURCE_USERNAME="<neon-username>"
+     export SPRING_DATASOURCE_PASSWORD="<neon-password>"
+     ```
+3. Build the project:
    ```bash
    mvn clean install
    ```
-3. Run the application:
+4. Run the application:
    ```bash
    mvn spring-boot:run
    ```

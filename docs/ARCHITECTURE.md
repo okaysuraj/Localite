@@ -18,7 +18,7 @@ graph TD
     end
 
     subgraph Data Layer
-        DB[(H2 In-Memory Database)]
+        DB[(Neon Cloud PostgreSQL)]
     end
 
     Web -->|HTTP/REST| API
@@ -34,7 +34,7 @@ graph TD
 - **Language**: Java 17+
 - **Security**: Spring Security with JWT (JSON Web Tokens) for stateless authentication.
 - **Data Access**: Spring Data JPA using Hibernate.
-- **Database**: H2 In-Memory Database (for MVP phase, easily swappable to PostgreSQL/MySQL via `application.properties`).
+- **Database**: Neon Cloud PostgreSQL (Configured via environment variables).
 - **Core Entities**:
   - `User`: Handles authentication, profile data, gamification scores (Trust Score).
   - `Event`: Core entity representing community operations.
