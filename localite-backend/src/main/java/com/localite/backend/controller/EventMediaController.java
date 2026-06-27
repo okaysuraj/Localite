@@ -37,7 +37,7 @@ public class EventMediaController {
     public ResponseEntity<?> uploadMedia(@PathVariable Long eventId, @RequestBody MediaRequest request, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
 
-        Optional<User> uploaderOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> uploaderOpt = userRepository.findByFirebaseUid(principal.getName());
         Optional<Event> eventOpt = eventRepository.findById(eventId);
 
         if (uploaderOpt.isPresent() && eventOpt.isPresent()) {

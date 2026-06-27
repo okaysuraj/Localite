@@ -33,7 +33,7 @@ const ExplorePage = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const res = await fetch('http://localhost:8080/api/users/me', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/users/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -46,7 +46,7 @@ const ExplorePage = () => {
 
   const fetchEvents = useCallback(() => {
     setLoading(true);
-    let url = 'http://localhost:8080/api/events';
+    let url = import.meta.env.VITE_API_URL + '/events';
     const params = new URLSearchParams();
     
     if (selectedCategory !== 'All') {
@@ -79,7 +79,7 @@ const ExplorePage = () => {
       });
 
     // Fetch recommendations
-    fetch('http://localhost:8080/api/events/recommended', {
+    fetch(import.meta.env.VITE_API_URL + '/events/recommended', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -91,7 +91,7 @@ const ExplorePage = () => {
   const fetchFeed = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:8080/api/feed', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/feed', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -152,7 +152,7 @@ const ExplorePage = () => {
   const handleRsvp = async (eventId) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:8080/api/events/${eventId}/rsvp`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${eventId}/rsvp`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });

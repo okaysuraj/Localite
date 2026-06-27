@@ -23,7 +23,7 @@ const ChatPanel = ({ eventId, eventTitle, onClose }) => {
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/events/${eventId}/messages`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${eventId}/messages`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -46,7 +46,7 @@ const ChatPanel = ({ eventId, eventTitle, onClose }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/events/${eventId}/messages`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${eventId}/messages`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,

@@ -21,7 +21,7 @@ const DirectMessagePanel = ({ recipient, onClose }) => {
 
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:8080/api/users/me', {
+    const res = await fetch(import.meta.env.VITE_API_URL + '/users/me', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
@@ -32,7 +32,7 @@ const DirectMessagePanel = ({ recipient, onClose }) => {
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/messages/direct/${recipient.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/messages/direct/${recipient.id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -50,7 +50,7 @@ const DirectMessagePanel = ({ recipient, onClose }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/messages/direct/${recipient.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/messages/direct/${recipient.id}`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,

@@ -35,7 +35,7 @@ public class FeedController {
     public ResponseEntity<List<FeedItem>> getFeed(Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
 
-        Optional<User> currentUserOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
         if (currentUserOpt.isEmpty()) return ResponseEntity.badRequest().build();
 
         User currentUser = currentUserOpt.get();

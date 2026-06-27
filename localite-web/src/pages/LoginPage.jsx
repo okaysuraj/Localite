@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,20 +19,9 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        login(data.token, data.username);
-        navigate('/dashboard');
-      } else {
-        setError('Invalid credentials');
-      }
+      await login(formData.email, formData.password);
     } catch (err) {
-      setError('Something went wrong');
+      setError(err.message || 'Something went wrong');
     }
   };
 
@@ -58,14 +47,14 @@ const LoginPage = () => {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-1">Username</label>
+            <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-1">Email</label>
             <input 
-              type="text" 
+              type="email" 
               required 
-              value={formData.username} 
-              onChange={e => setFormData({...formData, username: e.target.value})}
+              value={formData.email} 
+              onChange={e => setFormData({...formData, email: e.target.value})}
               className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 focus:outline-none focus:border-lime-vibe focus:ring-1 focus:ring-lime-vibe transition-colors"
-              placeholder="e.g. striker99"
+              placeholder="e.g. you@example.com"
             />
           </div>
           <div>

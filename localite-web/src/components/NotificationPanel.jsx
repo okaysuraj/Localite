@@ -13,7 +13,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:8080/api/notifications', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/notifications', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -27,7 +27,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
   const markAsRead = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/notifications/${id}/read`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/notifications/${id}/read`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` }
       });

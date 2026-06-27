@@ -37,7 +37,7 @@ public class ReviewController {
     public ResponseEntity<?> submitReview(@PathVariable Long eventId, @RequestBody ReviewRequest request, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
 
-        Optional<User> reviewerOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> reviewerOpt = userRepository.findByFirebaseUid(principal.getName());
         Optional<Event> eventOpt = eventRepository.findById(eventId);
 
         if (reviewerOpt.isPresent() && eventOpt.isPresent()) {

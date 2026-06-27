@@ -22,7 +22,7 @@ const NetworkPage = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:8080/api/users', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/users', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -39,7 +39,7 @@ const NetworkPage = () => {
   const fetchPendingRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:8080/api/users/connections/pending', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/users/connections/pending', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -54,7 +54,7 @@ const NetworkPage = () => {
   const handleConnect = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/users/${userId}/connect`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}/connect`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -72,7 +72,7 @@ const NetworkPage = () => {
   const handleAccept = async (connectionId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/users/connections/${connectionId}/accept`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/connections/${connectionId}/accept`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` }
       });

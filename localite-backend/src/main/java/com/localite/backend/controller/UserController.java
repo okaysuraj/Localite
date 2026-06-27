@@ -37,10 +37,10 @@ public class UserController {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        // With Firebase, principal.getName() is the firebaseUid
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            user.setPassword(null);
             return ResponseEntity.ok(user);
         }
 
@@ -52,7 +52,6 @@ public class UserController {
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            user.setPassword(null);
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.notFound().build();
@@ -64,14 +63,14 @@ public class UserController {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        // With Firebase, principal.getName() is the firebaseUid
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             if (updatedUser.getBio() != null) user.setBio(updatedUser.getBio());
             if (updatedUser.getNeighborhood() != null) user.setNeighborhood(updatedUser.getNeighborhood());
             if (updatedUser.getSportsInterests() != null) user.setSportsInterests(updatedUser.getSportsInterests());
             userRepository.save(user);
-            user.setPassword(null);
             return ResponseEntity.ok(user);
         }
 
@@ -86,7 +85,7 @@ public class UserController {
         List<User> users = userRepository.findAll();
         // Return stripped down user objects
         List<Map<String, Object>> response = users.stream()
-            .filter(u -> !u.getUsername().equals(principal.getName()))
+            .filter(u -> !principal.getName().equals(u.getFirebaseUid()))
             .map(u -> Map.<String, Object>of(
                 "id", u.getId(),
                 "username", u.getUsername(),
@@ -102,7 +101,7 @@ public class UserController {
     public ResponseEntity<?> sendConnectionRequest(@PathVariable Long id, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
-        Optional<User> requesterOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> requesterOpt = userRepository.findByFirebaseUid(principal.getName());
         Optional<User> receiverOpt = userRepository.findById(id);
         
         if (requesterOpt.isPresent() && receiverOpt.isPresent()) {
@@ -136,7 +135,7 @@ public class UserController {
     public ResponseEntity<?> getPendingRequests(Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             List<Connection> requests = connectionRepository.findByReceiverIdAndStatus(userOpt.get().getId(), ConnectionStatus.PENDING);
             List<Map<String, Object>> response = requests.stream()
@@ -154,7 +153,7 @@ public class UserController {
     public ResponseEntity<?> acceptConnection(@PathVariable Long connectionId, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         Optional<Connection> connOpt = connectionRepository.findById(connectionId);
         
         if (userOpt.isPresent() && connOpt.isPresent()) {

@@ -23,7 +23,7 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const fetchTicket = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/events/${id}/ticket`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/ticket`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -38,7 +38,7 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
     if (!ticketIdInput) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/events/${id}/checkin/${ticketIdInput}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/checkin/${ticketIdInput}`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -58,7 +58,7 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const handleReviewSubmit = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/events/${id}/reviews`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/reviews`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -82,7 +82,7 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const fetchMedia = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/events/${id}/media`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/media`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -97,7 +97,7 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
     if (!newMediaUrl) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/events/${id}/media`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/media`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,

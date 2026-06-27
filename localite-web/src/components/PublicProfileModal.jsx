@@ -17,7 +17,7 @@ const PublicProfileModal = ({ userId, onClose }) => {
       // To fetch a public profile, we need a generic users endpoint or just use the existing one if modified
       // Let's assume we create/have GET /api/users/{id}
       // Wait, there's no GET /api/users/{id} yet. I need to add that in UserController!
-      const res = await fetch(`http://localhost:8080/api/users/${userId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -33,7 +33,7 @@ const PublicProfileModal = ({ userId, onClose }) => {
   const checkFollowing = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8080/api/users/${userId}/is-following`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}/is-following`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -50,7 +50,7 @@ const PublicProfileModal = ({ userId, onClose }) => {
       const method = isFollowing ? 'DELETE' : 'POST';
       const endpoint = isFollowing ? 'unfollow' : 'follow';
       
-      const res = await fetch(`http://localhost:8080/api/users/${userId}/${endpoint}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}/${endpoint}`, {
         method,
         headers: { 'Authorization': `Bearer ${token}` }
       });

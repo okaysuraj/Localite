@@ -57,7 +57,7 @@ public class ChatController {
         }
 
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         String content = payload.get("content");
 
         if (eventOpt.isPresent() && userOpt.isPresent() && content != null && !content.trim().isEmpty()) {

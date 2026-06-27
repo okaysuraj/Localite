@@ -31,7 +31,7 @@ const ProfilePage = () => {
     setLoading(true);
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:8080/api/users/me', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/users/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -50,7 +50,7 @@ const ProfilePage = () => {
           reviewCount: data.reviewCount || 0
         });
 
-        const reviewRes = await fetch(`http://localhost:8080/api/users/${data.id}/reviews`, {
+        const reviewRes = await fetch(`${import.meta.env.VITE_API_URL}/users/${data.id}/reviews`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (reviewRes.ok) {
@@ -72,7 +72,7 @@ const ProfilePage = () => {
   const handleSave = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:8080/api/users/me', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/users/me', {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,

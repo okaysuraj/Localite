@@ -55,9 +55,9 @@ public class EventController {
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody Event event, Principal principal) {
         if (principal != null) {
-            userRepository.findByUsername(principal.getName()).ifPresent(event::setHost);
+            userRepository.findByFirebaseUid(principal.getName()).ifPresent(event::setHost);
         }
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             // Gamification: Award points for hosting
@@ -113,7 +113,7 @@ public class EventController {
     public ResponseEntity<?> getRecommendedEvents(Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (!userOpt.isPresent()) return ResponseEntity.notFound().build();
         
         User user = userOpt.get();
@@ -161,7 +161,7 @@ public class EventController {
         }
 
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
 
         if (eventOpt.isPresent() && userOpt.isPresent()) {
             Event event = eventOpt.get();
@@ -208,7 +208,7 @@ public class EventController {
     public ResponseEntity<?> getTicket(@PathVariable Long eventId, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (!userOpt.isPresent()) return ResponseEntity.notFound().build();
 
         Optional<Rsvp> rsvpOpt = rsvpRepository.findByEventIdAndUserId(eventId, userOpt.get().getId());
@@ -226,7 +226,7 @@ public class EventController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
 
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        Optional<User> hostOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> hostOpt = userRepository.findByFirebaseUid(principal.getName());
 
         if (eventOpt.isPresent() && hostOpt.isPresent()) {
             Event event = eventOpt.get();

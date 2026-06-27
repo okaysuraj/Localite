@@ -29,7 +29,7 @@ public class FollowController {
     public ResponseEntity<?> followUser(@PathVariable Long userId, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
 
-        Optional<User> followerOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> followerOpt = userRepository.findByFirebaseUid(principal.getName());
         Optional<User> followingOpt = userRepository.findById(userId);
 
         if (followerOpt.isPresent() && followingOpt.isPresent()) {
@@ -55,7 +55,7 @@ public class FollowController {
     public ResponseEntity<?> unfollowUser(@PathVariable Long userId, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
 
-        Optional<User> followerOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> followerOpt = userRepository.findByFirebaseUid(principal.getName());
         if (followerOpt.isPresent()) {
             Optional<Follow> followOpt = followRepository.findByFollowerIdAndFollowingId(followerOpt.get().getId(), userId);
             if (followOpt.isPresent()) {
@@ -87,7 +87,7 @@ public class FollowController {
     @GetMapping("/{userId}/is-following")
     public ResponseEntity<Boolean> isFollowing(@PathVariable Long userId, Principal principal) {
         if (principal == null) return ResponseEntity.ok(false);
-        Optional<User> followerOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> followerOpt = userRepository.findByFirebaseUid(principal.getName());
         if (followerOpt.isPresent()) {
             boolean exists = followRepository.existsByFollowerIdAndFollowingId(followerOpt.get().getId(), userId);
             return ResponseEntity.ok(exists);

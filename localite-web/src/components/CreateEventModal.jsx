@@ -29,7 +29,7 @@ const CreateEventModal = ({ onClose, onEventCreated }) => {
       };
 
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:8080/api/events', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/events', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

@@ -2,12 +2,8 @@ package com.localite.backend.controller;
 
 import com.localite.backend.model.User;
 import com.localite.backend.repository.UserRepository;
-import com.localite.backend.security.JwtUtil;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,44 +11,23 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
-        this.authenticationManager = authenticationManager;
+    public AuthController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        if (userRepository.findByUsername(request.username()).isPresent()) {
-            return ResponseEntity.badRequest().body("Username is already taken");
-        }
+    @PostMapping("/sync-user")
+    public ResponseEntity<?> syncUser(@RequestBody SyncUserRequest request) {
+        String firebaseUid = SecurityContextHolder.getContext().getAuthentication().getName();
         
-        User user = new User(request.username(), request.email(), passwordEncoder.encode(request.password()));
-        userRepository.save(user);
+        User user = userRepository.findByFirebaseUid(firebaseUid).orElseGet(() -> {
+            User newUser = new User(request.username(), request.email(), firebaseUid);
+            return userRepository.save(newUser);
+        });
         
-        String token = jwtUtil.generateToken(user.getUsername());
-        return ResponseEntity.ok(new AuthResponse(token, user.getUsername()));
+        return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
-        );
-        
-        User user = userRepository.findByUsername(request.username()).orElseThrow();
-        String token = jwtUtil.generateToken(user.getUsername());
-        return ResponseEntity.ok(new AuthResponse(token, user.getUsername()));
-    }
-
-    public record RegisterRequest(String username, String email, String password) {}
-    public record AuthRequest(String username, String password) {}
-    public record AuthResponse(String token, String username) {}
+    public record SyncUserRequest(String username, String email) {}
 }

@@ -23,7 +23,7 @@ const AnalyticsDashboard = () => {
   const fetchAnalytics = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:8080/api/users/me/analytics', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/users/me/analytics', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {

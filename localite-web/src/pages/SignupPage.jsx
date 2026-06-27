@@ -6,7 +6,7 @@ import gsap from 'gsap';
 const SignupPage = () => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
-  const { login } = useContext(AuthContext);
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,21 +19,9 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:8080/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        login(data.token, data.username);
-        navigate('/dashboard');
-      } else {
-        const msg = await res.text();
-        setError(msg || 'Failed to sign up');
-      }
+      await register(formData.username, formData.email, formData.password);
     } catch (err) {
-      setError('Something went wrong');
+      setError(err.message || 'Something went wrong');
     }
   };
 

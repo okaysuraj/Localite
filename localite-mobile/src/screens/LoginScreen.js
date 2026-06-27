@@ -3,38 +3,30 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, Aler
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 export default function LoginScreen({ navigation }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert('Error', 'Please enter both username and password');
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
       return;
     }
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        await AsyncStorage.setItem('userToken', data.token);
-        await AsyncStorage.setItem('username', data.username);
-        navigation.replace('MainApp');
-      } else {
-        Alert.alert('Error', 'Invalid credentials');
-      }
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      await AsyncStorage.setItem('userToken', token); // Keep for legacy/compatibility
+      // We don't have username from Firebase directly without a backend fetch, 
+      // but we can fetch it if needed or just skip setting it if not strictly required
+      navigation.replace('MainApp');
     } catch (error) {
-      Alert.alert('Error', 'Network error. Could not reach the server.');
+      Alert.alert('Error', error.message || 'Network error. Could not reach the server.');
       console.error(error);
     } finally {
       setLoading(false);
@@ -57,11 +49,12 @@ export default function LoginScreen({ navigation }) {
           <Ionicons name="person-outline" size={20} color="#94a3b8" style={styles.inputIcon} />
           <TextInput 
             style={styles.input}
-            placeholder="Username"
+            placeholder="Email"
             placeholderTextColor="#94a3b8"
-            value={username}
-            onChangeText={setUsername}
+            value={email}
+            onChangeText={setEmail}
             autoCapitalize="none"
+            keyboardType="email-address"
           />
         </View>
 

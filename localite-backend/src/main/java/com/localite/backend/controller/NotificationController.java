@@ -28,7 +28,7 @@ public class NotificationController {
     public ResponseEntity<?> getNotifications(Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
-        Optional<User> userOpt = userRepository.findByUsername(principal.getName());
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             List<Notification> notifications = notificationRepository.findByUserIdOrderByCreatedAtDesc(userOpt.get().getId());
             return ResponseEntity.ok(notifications);
@@ -44,7 +44,7 @@ public class NotificationController {
         if (notifOpt.isPresent()) {
             Notification notification = notifOpt.get();
             // Verify ownership
-            if (notification.getUser().getUsername().equals(principal.getName())) {
+            if (notification.getUser().getFirebaseUid().equals(principal.getName())) {
                 notification.setRead(true);
                 notificationRepository.save(notification);
                 return ResponseEntity.ok("Marked as read");

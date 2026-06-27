@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, Aler
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 export default function SignupScreen({ navigation }) {
   const [username, setUsername] = useState('');
@@ -18,25 +20,28 @@ export default function SignupScreen({ navigation }) {
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      
+      const response = await fetch(`${API_URL}/auth/sync-user`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        await AsyncStorage.setItem('userToken', data.token);
-        await AsyncStorage.setItem('username', data.username);
+        await AsyncStorage.setItem('userToken', token); // Optional: keep for legacy/compatibility
+        await AsyncStorage.setItem('username', username);
         navigation.replace('MainApp');
       } else {
         const msg = await response.text();
         Alert.alert('Error', msg || 'Registration failed');
       }
     } catch (error) {
-      Alert.alert('Error', 'Network error. Could not reach the server.');
+      Alert.alert('Error', error.message || 'Network error. Could not reach the server.');
       console.error(error);
     } finally {
       setLoading(false);

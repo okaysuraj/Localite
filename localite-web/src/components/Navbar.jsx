@@ -21,7 +21,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (user) {
-      fetch('http://localhost:8080/api/notifications', {
+      fetch(import.meta.env.VITE_API_URL + '/notifications', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       })
       .then(res => res.json())

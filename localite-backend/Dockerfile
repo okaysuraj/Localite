@@ -1,0 +1,17 @@
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-17-focal AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Run stage
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+COPY --from=build /app/target/localite-backend-0.0.1-SNAPSHOT.jar app.jar
+
+# Render requires applications to bind to the PORT environment variable
+ENV PORT=8080
+EXPOSE $PORT
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

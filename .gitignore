@@ -61,3 +61,5 @@ Desktop.ini
 .system_generated/
 scratch/
 brain/
+localite-backend/firebase-service-account.json
+localite-web/firebase-service-account.json
