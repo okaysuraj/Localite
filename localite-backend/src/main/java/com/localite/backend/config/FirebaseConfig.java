@@ -51,7 +51,7 @@ public class FirebaseConfig {
                 String cleanPrivateKey = clean(privateKey).replace("\\n", "\n").replace("\n", "\\n");
                 
                 String jsonConfig = String.format(
-                    "{\"type\":\"service_account\",\"project_id\":\"%s\",\"private_key\":\"%s\",\"client_email\":\"%s\"}",
+                    "{\"type\":\"service_account\",\"project_id\":\"%s\",\"private_key_id\":\"dummy_id\",\"private_key\":\"%s\",\"client_email\":\"%s\",\"client_id\":\"dummy_client_id\"}",
                     cleanProjectId, cleanPrivateKey, cleanClientEmail
                 );
                 
