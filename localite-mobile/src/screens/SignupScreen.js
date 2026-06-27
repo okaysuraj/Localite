@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, Aler
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 
 export default function SignupScreen({ navigation }) {
@@ -33,9 +33,16 @@ export default function SignupScreen({ navigation }) {
       });
 
       if (response.ok) {
-        await AsyncStorage.setItem('userToken', token); // Optional: keep for legacy/compatibility
         await AsyncStorage.setItem('username', username);
-        navigation.replace('MainApp');
+        
+        await sendEmailVerification(userCredential.user);
+        await signOut(auth);
+        
+        Alert.alert(
+          'Verification Required',
+          'Please check your email to verify your account before logging in.',
+          [{ text: 'OK', onPress: () => navigation.replace('Login') }]
+        );
       } else {
         const msg = await response.text();
         Alert.alert('Error', msg || 'Registration failed');

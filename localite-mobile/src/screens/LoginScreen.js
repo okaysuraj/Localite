@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, Aler
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 
 export default function LoginScreen({ navigation }) {
@@ -20,6 +20,13 @@ export default function LoginScreen({ navigation }) {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      if (!userCredential.user.emailVerified) {
+        await signOut(auth);
+        Alert.alert('Verification Required', 'Please verify your email before logging in. Check your inbox.');
+        return;
+      }
+
       const token = await userCredential.user.getIdToken();
       await AsyncStorage.setItem('userToken', token); // Keep for legacy/compatibility
       // We don't have username from Firebase directly without a backend fetch, 

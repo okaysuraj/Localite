@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
 
 export const AuthContext = createContext();
@@ -13,12 +13,18 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        const token = await currentUser.getIdToken();
-        setUser({ 
-          uid: currentUser.uid, 
-          email: currentUser.email,
-          token: token 
-        });
+        if (!currentUser.emailVerified) {
+          // If they aren't verified, sign them out silently
+          await signOut(auth);
+          setUser(null);
+        } else {
+          const token = await currentUser.getIdToken();
+          setUser({ 
+            uid: currentUser.uid, 
+            email: currentUser.email,
+            token: token 
+          });
+        }
       } else {
         setUser(null);
       }
@@ -30,7 +36,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (!userCredential.user.emailVerified) {
+        await signOut(auth);
+        throw new Error("Please verify your email before logging in. Check your inbox.");
+      }
       navigate('/dashboard');
     } catch (error) {
       console.error("Login failed:", error);
@@ -58,7 +68,10 @@ export const AuthProvider = ({ children }) => {
         // We could delete the Firebase user here if backend sync fails to keep them consistent
       }
       
-      navigate('/dashboard');
+      await sendEmailVerification(userCredential.user);
+      await signOut(auth);
+      
+      return { success: true, message: "Please check your email to verify your account before logging in." };
     } catch (error) {
       console.error("Registration failed:", error);
       throw error;

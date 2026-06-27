@@ -6,6 +6,7 @@ import gsap from 'gsap';
 const SignupPage = () => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -19,9 +20,14 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(formData.username, formData.email, formData.password);
+      const res = await register(formData.username, formData.email, formData.password);
+      if (res && res.success) {
+        setSuccessMsg(res.message);
+        setError('');
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong');
+      setSuccessMsg('');
     }
   };
 
@@ -44,7 +50,9 @@ const SignupPage = () => {
         <p className="font-body-md text-body-md text-text-muted text-center mb-8">Join the ecosystem. Secure your spot.</p>
 
         {error && <p className="text-red-400 text-center mb-4 font-label-mono text-sm">{error}</p>}
+        {successMsg && <p className="text-lime-vibe text-center mb-4 font-label-mono text-sm bg-lime-vibe/10 p-3 rounded-lg border border-lime-vibe/30">{successMsg}</p>}
         
+        {!successMsg && (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-1">Username</label>
@@ -87,6 +95,7 @@ const SignupPage = () => {
             INITIALIZE
           </button>
         </form>
+        )}
 
         <p className="mt-8 text-center text-text-muted font-body-md text-sm">
           Already verified? <Link to="/login" className="text-lime-vibe hover:underline font-label-mono uppercase tracking-wide ml-1">Login here</Link>
