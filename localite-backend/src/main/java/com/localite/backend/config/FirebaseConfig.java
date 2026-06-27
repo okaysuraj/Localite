@@ -10,9 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class FirebaseConfig {
@@ -43,18 +40,14 @@ public class FirebaseConfig {
             if (projectId != null && !projectId.isEmpty() && clientEmail != null && !clientEmail.isEmpty() && privateKey != null && !privateKey.isEmpty()) {
                 String cleanProjectId = clean(projectId);
                 String cleanClientEmail = clean(clientEmail);
-                String cleanPrivateKey = clean(privateKey).replace("\\n", "\n");
+                String cleanPrivateKey = clean(privateKey).replace("\\n", "\n").replace("\n", "\\n");
                 
-                Map<String, String> jsonMap = new HashMap<>();
-                jsonMap.put("type", "service_account");
-                jsonMap.put("project_id", cleanProjectId);
-                jsonMap.put("private_key", cleanPrivateKey);
-                jsonMap.put("client_email", cleanClientEmail);
+                String jsonConfig = String.format(
+                    "{\"type\":\"service_account\",\"project_id\":\"%s\",\"private_key\":\"%s\",\"client_email\":\"%s\"}",
+                    cleanProjectId, cleanPrivateKey, cleanClientEmail
+                );
                 
-                ObjectMapper mapper = new ObjectMapper();
-                byte[] jsonBytes = mapper.writeValueAsBytes(jsonMap);
-                
-                credentials = GoogleCredentials.fromStream(new java.io.ByteArrayInputStream(jsonBytes));
+                credentials = GoogleCredentials.fromStream(new java.io.ByteArrayInputStream(jsonConfig.getBytes()));
                 System.out.println("Firebase initialized using Environment Variables.");
             } else {
                 // Fallback to local JSON file
