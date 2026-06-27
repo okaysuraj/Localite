@@ -10,9 +10,12 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 public class FirebaseConfig {
+    private static final Logger logger = LoggerFactory.getLogger(FirebaseConfig.class);
 
     @Value("${FIREBASE_PROJECT_ID:}")
     private String projectId;
@@ -35,6 +38,11 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         try {
+            logger.info("Initializing Firebase...");
+            logger.info("projectId length: {}", projectId != null ? projectId.length() : "null");
+            logger.info("clientEmail length: {}", clientEmail != null ? clientEmail.length() : "null");
+            logger.info("privateKey length: {}", privateKey != null ? privateKey.length() : "null");
+
             GoogleCredentials credentials;
             
             if (projectId != null && !projectId.isEmpty() && clientEmail != null && !clientEmail.isEmpty() && privateKey != null && !privateKey.isEmpty()) {
@@ -48,12 +56,13 @@ public class FirebaseConfig {
                 );
                 
                 credentials = GoogleCredentials.fromStream(new java.io.ByteArrayInputStream(jsonConfig.getBytes()));
-                System.out.println("Firebase initialized using Environment Variables.");
+                logger.info("Firebase initialized using Environment Variables.");
             } else {
                 // Fallback to local JSON file
+                logger.warn("Environment variables missing or empty. Falling back to local firebase-service-account.json file...");
                 FileInputStream serviceAccount = new FileInputStream("firebase-service-account.json");
                 credentials = GoogleCredentials.fromStream(serviceAccount);
-                System.out.println("Firebase initialized using local JSON file.");
+                logger.info("Firebase initialized using local JSON file.");
             }
 
             FirebaseOptions options = FirebaseOptions.builder()
@@ -63,8 +72,10 @@ public class FirebaseConfig {
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
             }
-        } catch (IOException e) {
-            System.err.println("Warning: Firebase initialization failed. " + e.getMessage());
+            logger.info("Firebase successfully initialized!");
+        } catch (Exception e) {
+            logger.error("FATAL ERROR: Firebase initialization failed!", e);
+            throw new RuntimeException("Firebase initialization failed! Check Render logs for details.", e);
         }
     }
 }
