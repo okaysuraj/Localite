@@ -39,7 +39,6 @@ public class SecurityConfig {
             }))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/events").permitAll() // Allow viewing events without login
                 .anyRequest().authenticated()
             )

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { onIdTokenChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
 
 export const AuthContext = createContext();
@@ -11,14 +11,16 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
       if (currentUser) {
         if (!currentUser.emailVerified) {
           // If they aren't verified, sign them out silently
           await signOut(auth);
           setUser(null);
+          localStorage.removeItem('token');
         } else {
           const token = await currentUser.getIdToken();
+          localStorage.setItem('token', token);
           setUser({ 
             uid: currentUser.uid, 
             email: currentUser.email,
@@ -27,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         setUser(null);
+        localStorage.removeItem('token');
       }
       setLoading(false);
     });
