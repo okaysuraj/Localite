@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Flat
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
+import 'fast-text-encoding';
+import { Client } from '@stomp/stompjs';
 
 export default function ChatScreen({ route, navigation }) {
   const { eventId, eventTitle } = route.params;
@@ -10,18 +12,50 @@ export default function ChatScreen({ route, navigation }) {
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState('');
   const flatListRef = useRef(null);
+  const stompClientRef = useRef(null);
 
   useEffect(() => {
     loadUserAndMessages();
-    const interval = setInterval(fetchMessages, 5000); // Poll every 5s
-    return () => clearInterval(interval);
-  }, []);
-
   const loadUserAndMessages = async () => {
     const user = await AsyncStorage.getItem('username');
     setCurrentUser(user);
+    
+    // Fetch initial messages
     fetchMessages();
+    
+    // Setup WebSocket
+    const token = await AsyncStorage.getItem('userToken');
+    const wsUrl = API_URL.replace(/^http/, 'ws').replace('/api', '/ws');
+    
+    const client = new Client({
+      brokerURL: wsUrl,
+      connectHeaders: {
+         // Some backends check token in header for STOMP, but here we can just pass it if needed
+      },
+      onConnect: () => {
+        client.subscribe(`/topic/events/${eventId}`, (message) => {
+          if (message.body) {
+            const newMsg = JSON.parse(message.body);
+            setMessages((prev) => {
+               if (prev.find(m => m.id === newMsg.id)) return prev;
+               return [...prev, newMsg];
+            });
+          }
+        });
+      }
+    });
+    
+    client.activate();
+    stompClientRef.current = client;
   };
+  
+  useEffect(() => {
+    return () => {
+      if (stompClientRef.current) {
+        stompClientRef.current.deactivate();
+      }
+    };
+  }, []);
 
   const fetchMessages = async () => {
     try {
@@ -43,18 +77,26 @@ export default function ChatScreen({ route, navigation }) {
     
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const response = await fetch(`${API_URL}/events/${eventId}/messages`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content: newMessage })
-      });
-      
-      if (response.ok) {
-        setNewMessage('');
-        fetchMessages();
+      if (stompClientRef.current && stompClientRef.current.connected) {
+         stompClientRef.current.publish({
+            destination: `/app/events/${eventId}/sendMessage`,
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ content: newMessage })
+         });
+         setNewMessage('');
+      } else {
+        const response = await fetch(`${API_URL}/events/${eventId}/messages`, {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: newMessage })
+        });
+        
+        if (response.ok) {
+          setNewMessage('');
+        }
       }
     } catch (error) {
       console.error(error);

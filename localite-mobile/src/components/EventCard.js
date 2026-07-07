@@ -10,10 +10,15 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
   const [showQr, setShowQr] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [showMemories, setShowMemories] = useState(false);
+  const [showResult, setShowResult] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [media, setMedia] = useState([]);
   const [newMediaUrl, setNewMediaUrl] = useState('');
+  const [winnerId, setWinnerId] = useState('');
+  const [loserId, setLoserId] = useState('');
+  const [matchScore, setMatchScore] = useState('');
+  const [attendeesList, setAttendeesList] = useState([]);
 
   const isPastEvent = item.date ? new Date(item.date) < new Date() : false;
 
@@ -106,6 +111,110 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
     }
   };
 
+  // Fetch attendees for match result submission
+  const fetchAttendeesList = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const res = await fetch(`${API_URL}/events/${item.id}/rsvps`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAttendeesList(data.map(r => r.user));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSubmitResult = async () => {
+    if (!winnerId || !loserId || !matchScore) {
+      Alert.alert("Notice", "Please select winner, loser, and enter score");
+      return;
+    }
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const res = await fetch(`${API_URL}/leaderboard/submit-result`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ eventId: item.id, winnerId, loserId, score: matchScore })
+      });
+      if (res.ok) {
+        Alert.alert("Success", "Match result submitted!");
+        setShowResult(false);
+      } else {
+        const errText = await res.text();
+        Alert.alert("Failed", errText);
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", "Network error.");
+    }
+  };
+
+  const handleReportEvent = async () => {
+    Alert.alert(
+      "Report Event",
+      "Are you sure you want to report this event?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Report", 
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const token = await AsyncStorage.getItem('userToken');
+              const res = await fetch(`${API_URL}/safety/report`, {
+                method: 'POST',
+                headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ targetType: 'EVENT', targetId: item.id, reason: 'Inappropriate event', details: '' })
+              });
+              if (res.ok) {
+                Alert.alert("Report Submitted", "Thank you. Our team will review this event.");
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const handleHighlightEvent = async () => {
+    Alert.alert(
+      "Highlight Event",
+      "Pay $9.99 to highlight this event? (Mock Payment)",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Pay", 
+          onPress: async () => {
+            try {
+              const token = await AsyncStorage.getItem('userToken');
+              const res = await fetch(`${API_URL}/monetization/highlight-event/${item.id}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (res.ok) {
+                Alert.alert("Success", "Event highlighted successfully!");
+                // we would normally refresh the feed here, but the user can pull to refresh
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        }
+      ]
+    );
+  };
+
   useEffect(() => {
     if (showMemories) {
       fetchMedia();
@@ -113,7 +222,7 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
   }, [showMemories]);
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, item.highlighted && { borderColor: '#a855f7', shadowColor: '#a855f7', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.8, shadowRadius: 10 }]}>
       <ImageBackground 
         source={{ uri: item.imageUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000' }} 
         style={styles.cardImage}
@@ -124,6 +233,20 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{item.category}</Text>
             </View>
+            {item.cost > 0 ? (
+              <View style={[styles.badge, { marginLeft: 5, borderColor: '#10b981' }]}>
+                <Text style={[styles.badgeText, { color: '#10b981' }]}>${item.cost}</Text>
+              </View>
+            ) : item.cost === 0 ? (
+              <View style={[styles.badge, { marginLeft: 5, borderColor: '#10b981' }]}>
+                <Text style={[styles.badgeText, { color: '#10b981' }]}>FREE</Text>
+              </View>
+            ) : null}
+            {item.skillLevel && item.skillLevel !== 'All' && (
+              <View style={[styles.badge, { marginLeft: 5 }]}>
+                <Text style={styles.badgeText}>{item.skillLevel}</Text>
+              </View>
+            )}
             <View style={styles.attendeeBadge}>
               <Ionicons name="people" size={14} color="#94a3b8" />
               <Text style={styles.attendeeText}>{item.attendees}/{item.maxAttendees}</Text>
@@ -131,7 +254,10 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
           </View>
           
           <View style={styles.cardContent}>
-            <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {item.highlighted && <Ionicons name="star" size={16} color="#a855f7" style={{marginRight: 5}} />}
+              <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
+            </View>
             {item.host && (
               <Text style={{color: '#94a3b8', fontSize: 10, fontFamily: 'monospace', textTransform: 'uppercase', marginBottom: 5}}>
                 HOSTED BY{' '}
@@ -172,6 +298,15 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
                       <Text style={styles.joinBtnText}>MANAGE</Text>
                     </TouchableOpacity>
                   )}
+                  {isHost && item.category === 'Sports' && (
+                    <TouchableOpacity style={[styles.joinBtn, {flex: 1, backgroundColor: '#ccff00'}]} onPress={() => {
+                      fetchAttendeesList();
+                      setShowResult(true);
+                    }}>
+                      <Ionicons name="trophy" size={16} color="#0f172a" />
+                      <Text style={[styles.joinBtnText, {color: '#0f172a'}]}>RESULT</Text>
+                    </TouchableOpacity>
+                  )}
                 </>
               ) : (
                 <>
@@ -183,12 +318,35 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
                   ) : ticketData ? (
                     <TouchableOpacity style={[styles.joinBtn, {flex: 1, backgroundColor: '#ccff00'}]} onPress={() => setShowQr(true)}>
                       <Ionicons name="ticket" size={16} color="#0f172a" />
-                      <Text style={[styles.joinBtnText, {color: '#0f172a'}]}>{ticketData.status === 'ATTENDED' ? 'ATTENDED' : 'VIEW TICKET'}</Text>
+                      <Text style={[styles.joinBtnText, {color: '#0f172a'}]}>
+                        {ticketData.status === 'ATTENDED' ? 'ATTENDED' : ticketData.status === 'WAITLIST' ? 'ON WAITLIST' : 'VIEW TICKET'}
+                      </Text>
                     </TouchableOpacity>
                   ) : (
-                    <TouchableOpacity style={[styles.joinBtn, {flex: 1}]} onPress={handleJoin}>
-                      <Text style={styles.joinBtnText}>JOIN</Text>
-                      <Ionicons name="arrow-forward" size={16} color="#ccff00" />
+                    <TouchableOpacity style={[styles.joinBtn, {flex: 1, backgroundColor: item.attendees >= item.maxAttendees ? '#f59e0b' : 'transparent', borderColor: item.attendees >= item.maxAttendees ? '#f59e0b' : 'rgba(204,255,0,0.5)'}]} onPress={() => {
+                      if (item.cost > 0) {
+                        Alert.alert(
+                          "Buy Ticket",
+                          `Pay $${item.cost} to buy a ticket? (Mock Payment)`,
+                          [
+                            { text: "Cancel", style: "cancel" },
+                            { text: "Pay", onPress: handleJoin }
+                          ]
+                        );
+                      } else {
+                        handleJoin();
+                      }
+                    }}>
+                      <Text style={[styles.joinBtnText, {color: item.attendees >= item.maxAttendees ? '#0f172a' : 'white'}]}>
+                        {item.attendees >= item.maxAttendees ? 'JOIN WAITLIST' : item.cost > 0 ? 'BUY TICKET' : 'JOIN'}
+                      </Text>
+                      <Ionicons name="arrow-forward" size={16} color={item.attendees >= item.maxAttendees ? '#0f172a' : '#ccff00'} />
+                    </TouchableOpacity>
+                  )}
+                  {isHost && !item.highlighted && !isPastEvent && (
+                    <TouchableOpacity style={[styles.joinBtn, {flex: 1, backgroundColor: 'rgba(168,85,247,0.1)', borderColor: '#a855f7'}]} onPress={handleHighlightEvent}>
+                      <Ionicons name="star" size={16} color="#a855f7" />
+                      <Text style={[styles.joinBtnText, {color: '#a855f7', fontSize: 10}]}>HIGHLIGHT</Text>
                     </TouchableOpacity>
                   )}
                 </>
@@ -198,6 +356,12 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
                 onPress={() => onChat(item.id, item.title)}
               >
                 <Ionicons name="chatbubbles" size={20} color="#ccff00" />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.joinBtn, {backgroundColor: 'rgba(30,41,59,0.8)', borderColor: 'transparent', paddingHorizontal: 15}]} 
+                onPress={handleReportEvent}
+              >
+                <Ionicons name="warning" size={20} color="#ef4444" />
               </TouchableOpacity>
             </View>
           </View>
@@ -318,6 +482,64 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
           </View>
         </View>
       </Modal>
+
+      {/* Match Result Modal */}
+      <Modal visible={showResult} transparent={true} animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, {height: '70%'}]}>
+            <TouchableOpacity style={styles.closeBtn} onPress={() => setShowResult(false)}>
+              <Ionicons name="close" size={24} color="#94a3b8" />
+            </TouchableOpacity>
+            
+            <View style={{flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 10, marginBottom: 5}}>
+              <Ionicons name="trophy" size={24} color="#ccff00" />
+              <Text style={styles.modalTitle}>SUBMIT RESULT</Text>
+            </View>
+            <Text style={[styles.modalStatus, {marginBottom: 15}]}>UPDATE LEADERBOARD</Text>
+            
+            <ScrollView style={{flex: 1, width: '100%'}}>
+              <Text style={styles.sectionTitle}>Winner</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 15}}>
+                {attendeesList.map(u => (
+                  <TouchableOpacity 
+                    key={`win-${u.id}`} 
+                    style={[styles.userChip, winnerId === u.id && styles.userChipActive]}
+                    onPress={() => setWinnerId(u.id)}
+                  >
+                    <Text style={[styles.userChipText, winnerId === u.id && styles.userChipTextActive]}>{u.username}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <Text style={styles.sectionTitle}>Loser</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 15}}>
+                {attendeesList.map(u => (
+                  <TouchableOpacity 
+                    key={`lose-${u.id}`} 
+                    style={[styles.userChip, loserId === u.id && styles.userChipActive]}
+                    onPress={() => setLoserId(u.id)}
+                  >
+                    <Text style={[styles.userChipText, loserId === u.id && styles.userChipTextActive]}>{u.username}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <Text style={styles.sectionTitle}>Score</Text>
+              <TextInput 
+                style={[styles.reviewInput, {minHeight: 50, marginBottom: 20}]}
+                placeholder="e.g. 6-4, 6-2"
+                placeholderTextColor="#94a3b8"
+                value={matchScore}
+                onChangeText={setMatchScore}
+              />
+
+              <TouchableOpacity style={styles.submitBtn} onPress={handleSubmitResult}>
+                <Text style={styles.submitBtnText}>SUBMIT MATCH</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -353,5 +575,10 @@ const styles = StyleSheet.create({
   galleryImageContainer: { width: '48%', aspectRatio: 1, marginBottom: '4%', borderRadius: 10, overflow: 'hidden', backgroundColor: 'rgba(0,0,0,0.5)' },
   galleryImage: { width: '100%', height: '100%' },
   galleryImageOverlay: { position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(0,0,0,0.7)', padding: 5 },
-  galleryImageText: { color: 'white', fontSize: 8, fontFamily: 'monospace' }
+  galleryImageText: { color: 'white', fontSize: 8, fontFamily: 'monospace' },
+  sectionTitle: { color: '#94a3b8', fontSize: 10, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, alignSelf: 'flex-start' },
+  userChip: { paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', marginRight: 10, backgroundColor: 'rgba(255,255,255,0.05)' },
+  userChipActive: { borderColor: '#ccff00', backgroundColor: 'rgba(204,255,0,0.1)' },
+  userChipText: { color: '#94a3b8', fontSize: 12, fontWeight: 'bold' },
+  userChipTextActive: { color: '#ccff00' }
 });

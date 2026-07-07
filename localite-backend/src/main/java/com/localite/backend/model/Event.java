@@ -21,7 +21,12 @@ public class Event {
     @jakarta.persistence.OneToMany(mappedBy = "event", cascade = jakarta.persistence.CascadeType.ALL)
     private java.util.List<Rsvp> rsvps = new java.util.ArrayList<>();
     private String title;
+    private String description;
     private String category;
+    private String skillLevel; // e.g., Beginner, Intermediate, Advanced
+    private Double cost; // 0.0 for free
+    private String rules;
+    private String eventType; // Public, Private
     private LocalDateTime date;
     private String location;
     private int attendees;
@@ -37,6 +42,9 @@ public class Event {
     @Transient
     private LocalDateTime recurrenceEndDate;
 
+    // Phase 5: Monetization
+    private boolean isHighlighted = false;
+
     public Event() {}
 
     public Long getId() { return id; }
@@ -44,9 +52,24 @@ public class Event {
     
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
     
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+
+    public String getSkillLevel() { return skillLevel; }
+    public void setSkillLevel(String skillLevel) { this.skillLevel = skillLevel; }
+
+    public Double getCost() { return cost; }
+    public void setCost(Double cost) { this.cost = cost; }
+
+    public String getRules() { return rules; }
+    public void setRules(String rules) { this.rules = rules; }
+
+    public String getEventType() { return eventType; }
+    public void setEventType(String eventType) { this.eventType = eventType; }
     
     public LocalDateTime getDate() { return date; }
     public void setDate(LocalDateTime date) { this.date = date; }
@@ -83,4 +106,7 @@ public class Event {
 
     public LocalDateTime getRecurrenceEndDate() { return recurrenceEndDate; }
     public void setRecurrenceEndDate(LocalDateTime recurrenceEndDate) { this.recurrenceEndDate = recurrenceEndDate; }
+
+    public boolean isHighlighted() { return isHighlighted; }
+    public void setHighlighted(boolean highlighted) { isHighlighted = highlighted; }
 }

@@ -32,6 +32,8 @@ public class Rsvp {
 
     private String ticketId;
 
+    private boolean isCheckedIn = false;
+
     private LocalDateTime createdAt;
 
     public Rsvp() {
@@ -65,4 +67,7 @@ public class Rsvp {
 
     public String getTicketId() { return ticketId; }
     public void setTicketId(String ticketId) { this.ticketId = ticketId; }
+
+    public boolean isCheckedIn() { return isCheckedIn; }
+    public void setCheckedIn(boolean checkedIn) { isCheckedIn = checkedIn; }
 }

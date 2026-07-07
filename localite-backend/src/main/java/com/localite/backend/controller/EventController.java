@@ -40,16 +40,34 @@ public class EventController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Double lat,
             @RequestParam(required = false) Double lng,
-            @RequestParam(required = false, defaultValue = "10.0") Double radius) {
+            @RequestParam(required = false, defaultValue = "10.0") Double radius,
+            @RequestParam(required = false) String timeFilter,
+            @RequestParam(required = false) String eventType) {
         
+        List<Event> events;
         if (lat != null && lng != null) {
-            return eventRepository.findWithinRadius(lat, lng, radius);
+            events = eventRepository.findWithinRadius(lat, lng, radius);
+        } else {
+            events = eventRepository.findAll();
         }
         
-        if (category != null && !category.isEmpty() && !category.equalsIgnoreCase("All")) {
-            return eventRepository.findByCategory(category);
-        }
-        return eventRepository.findAll();
+        return events.stream()
+            .filter(e -> category == null || category.isEmpty() || category.equalsIgnoreCase("All") || category.equalsIgnoreCase(e.getCategory()))
+            .filter(e -> eventType == null || eventType.isEmpty() || eventType.equalsIgnoreCase(e.getEventType()))
+            .filter(e -> {
+                if (timeFilter == null || timeFilter.isEmpty() || e.getDate() == null) return true;
+                java.time.LocalDate eventDate = e.getDate().toLocalDate();
+                java.time.LocalDate now = java.time.LocalDate.now();
+                if (timeFilter.equalsIgnoreCase("today")) {
+                    return eventDate.equals(now);
+                } else if (timeFilter.equalsIgnoreCase("weekend")) {
+                    java.time.DayOfWeek day = eventDate.getDayOfWeek();
+                    return day == java.time.DayOfWeek.SATURDAY || day == java.time.DayOfWeek.SUNDAY;
+                }
+                return true;
+            })
+            .sorted((e1, e2) -> Boolean.compare(e2.isHighlighted(), e1.isHighlighted())) // Highlighted first
+            .collect(Collectors.toList());
     }
 
     @PostMapping
@@ -143,7 +161,13 @@ public class EventController {
             return map;
         })
         .filter(m -> (Integer)m.get("score") > 0)
-        .sorted((m1, m2) -> Integer.compare((Integer)m2.get("score"), (Integer)m1.get("score")))
+        .sorted((m1, m2) -> {
+            Event e1 = (Event) m1.get("event");
+            Event e2 = (Event) m2.get("event");
+            if (e1.isHighlighted() && !e2.isHighlighted()) return -1;
+            if (!e1.isHighlighted() && e2.isHighlighted()) return 1;
+            return Integer.compare((Integer)m2.get("score"), (Integer)m1.get("score"));
+        })
         .map(m -> m.get("event"))
         .map(e -> {
             // Need to wrap it as Object or return the Event itself
@@ -249,6 +273,7 @@ public class EventController {
 
             // Mark as attended and award points
             rsvp.setStatus(RsvpStatus.ATTENDED);
+            rsvp.setCheckedIn(true);
             rsvpRepository.save(rsvp);
 
             User attendee = rsvp.getUser();

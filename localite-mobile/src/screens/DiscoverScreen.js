@@ -6,12 +6,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
 import { useFocusEffect } from '@react-navigation/native';
 import EventCard from '../components/EventCard';
+import PanicButton from '../components/PanicButton';
 
 export default function DiscoverScreen({ navigation }) {
   const [events, setEvents] = useState([]);
   const [recommendedEvents, setRecommendedEvents] = useState([]);
+  const [suggestedPartners, setSuggestedPartners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState('All');
+  const [timeFilter, setTimeFilter] = useState('Any');
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -22,8 +25,12 @@ export default function DiscoverScreen({ navigation }) {
     try {
       const token = await AsyncStorage.getItem('userToken');
       let url = `${API_URL}/events`;
-      if (category !== 'All') {
-        url += `?category=${category}`;
+      const params = [];
+      if (category !== 'All') params.push(`category=${category}`);
+      if (timeFilter !== 'Any') params.push(`timeFilter=${timeFilter.toLowerCase()}`);
+      
+      if (params.length > 0) {
+        url += `?${params.join('&')}`;
       }
       
       const response = await fetch(url, {
@@ -41,11 +48,19 @@ export default function DiscoverScreen({ navigation }) {
         setCurrentUser(await userResponse.json());
       }
 
-      const recResponse = await fetch(`${API_URL}/events/recommended`, {
+      const recResponse = await fetch(`${API_URL}/matches/events`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (recResponse.ok) {
-        setRecommendedEvents(await recResponse.json());
+        const data = await recResponse.json();
+        setRecommendedEvents(data.slice(0, 5));
+      }
+
+      const partnersResponse = await fetch(`${API_URL}/matches/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (partnersResponse.ok) {
+        setSuggestedPartners(await partnersResponse.json());
       }
     } catch (error) {
       console.error(error);
@@ -57,7 +72,7 @@ export default function DiscoverScreen({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       fetchEvents();
-    }, [category])
+    }, [category, timeFilter])
   );
 
   const handleRsvp = async (eventId) => {
@@ -125,6 +140,9 @@ export default function DiscoverScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={[styles.toggleContainer, { marginLeft: 10 }]}>
+            <TouchableOpacity onPress={() => navigation.navigate('Leaderboard')} style={[styles.toggleBtn, { borderRightWidth: 1, borderRightColor: 'rgba(255,255,255,0.05)' }]}>
+              <Ionicons name="trophy" size={18} color="#facc15" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.toggleBtn}>
               <Ionicons name="notifications" size={18} color="#ccff00" />
             </TouchableOpacity>
@@ -149,6 +167,23 @@ export default function DiscoverScreen({ navigation }) {
         />
       </View>
 
+      <View style={[styles.filterContainer, { marginTop: -5 }]}>
+        <FlatList 
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={['Any', 'Today', 'Weekend']}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              style={[styles.filterBtn, { paddingVertical: 6, paddingHorizontal: 12 }, timeFilter === item && styles.filterBtnActive]}
+              onPress={() => setTimeFilter(item)}
+            >
+              <Text style={[styles.filterText, { fontSize: 10 }, timeFilter === item && styles.filterTextActive]}>{item}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
       {loading ? (
         <View style={styles.centerContent}>
           <ActivityIndicator size="large" color="#ccff00" />
@@ -166,12 +201,39 @@ export default function DiscoverScreen({ navigation }) {
           renderItem={renderEvent}
           contentContainerStyle={styles.listContainer}
           ListHeaderComponent={
-            recommendedEvents.length > 0 ? (
-              <View style={styles.forYouSection}>
-                <View style={styles.forYouHeader}>
-                  <Ionicons name="star" size={16} color="#ccff00" />
-                  <Text style={styles.forYouTitle}>FOR YOU</Text>
+            <>
+              {suggestedPartners.length > 0 && (
+                <View style={[styles.forYouSection, { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.1)', paddingBottom: 15, marginBottom: 15 }]}>
+                  <View style={styles.forYouHeader}>
+                    <Ionicons name="people" size={16} color="#ccff00" />
+                    <Text style={styles.forYouTitle}>SUGGESTED PARTNERS</Text>
+                  </View>
+                  <FlatList
+                    horizontal
+                    data={suggestedPartners}
+                    keyExtractor={(item) => `partner-${item.id}`}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity 
+                        style={styles.partnerCard}
+                        onPress={() => navigation.navigate('PublicProfile', { userId: item.id })}
+                      >
+                        <View style={styles.partnerAvatar}>
+                          <Ionicons name="person" size={24} color="#64748b" />
+                        </View>
+                        <Text style={styles.partnerName} numberOfLines={1}>{item.username}</Text>
+                        <Text style={styles.partnerScore}>Match: {item.matchScore}</Text>
+                      </TouchableOpacity>
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                  />
                 </View>
+              )}
+              {recommendedEvents.length > 0 && (
+                <View style={styles.forYouSection}>
+                  <View style={styles.forYouHeader}>
+                    <Ionicons name="star" size={16} color="#ccff00" />
+                    <Text style={styles.forYouTitle}>SMART FEED</Text>
+                  </View>
                 <FlatList
                   horizontal
                   data={recommendedEvents}
@@ -185,7 +247,8 @@ export default function DiscoverScreen({ navigation }) {
                   contentContainerStyle={{ paddingBottom: 15 }}
                 />
               </View>
-            ) : null
+              )}
+            </>
           }
         />
       ) : (
@@ -217,6 +280,8 @@ export default function DiscoverScreen({ navigation }) {
           </MapView>
         </View>
       )}
+
+      <PanicButton />
     </SafeAreaView>
   );
 }
@@ -242,5 +307,9 @@ const styles = StyleSheet.create({
   map: { width: '100%', height: '100%' },
   forYouSection: { marginBottom: 20 },
   forYouHeader: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 15 },
-  forYouTitle: { fontSize: 14, fontWeight: 'bold', color: '#ccff00', textTransform: 'uppercase', letterSpacing: 1 }
+  forYouTitle: { fontSize: 14, fontWeight: 'bold', color: '#ccff00', textTransform: 'uppercase', letterSpacing: 1 },
+  partnerCard: { width: 120, backgroundColor: '#1e293b', borderRadius: 12, padding: 10, marginRight: 15, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  partnerAvatar: { width: 50, height: 50, borderRadius: 25, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
+  partnerName: { color: 'white', fontSize: 14, fontWeight: 'bold' },
+  partnerScore: { color: '#ccff00', fontSize: 10, textTransform: 'uppercase', marginTop: 4 }
 });

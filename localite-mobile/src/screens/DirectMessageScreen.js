@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Flat
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
+import 'fast-text-encoding';
+import { Client } from '@stomp/stompjs';
 
 export default function DirectMessageScreen({ route, navigation }) {
   const { recipient } = route.params;
@@ -10,12 +12,16 @@ export default function DirectMessageScreen({ route, navigation }) {
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const flatListRef = useRef();
+  const stompClientRef = useRef(null);
 
   useEffect(() => {
     fetchCurrentUser();
-    const interval = setInterval(fetchMessages, 3000);
-    fetchMessages();
-    return () => clearInterval(interval);
+    
+    return () => {
+      if (stompClientRef.current) {
+        stompClientRef.current.deactivate();
+      }
+    };
   }, []);
 
   const fetchCurrentUser = async () => {
@@ -24,7 +30,32 @@ export default function DirectMessageScreen({ route, navigation }) {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
-      setCurrentUser(await res.json());
+      const user = await res.json();
+      setCurrentUser(user);
+      
+      // Initialize chat once we have current user
+      fetchMessages();
+      
+      const wsUrl = API_URL.replace(/^http/, 'ws').replace('/api', '/ws');
+      const client = new Client({
+        brokerURL: wsUrl,
+        onConnect: () => {
+          client.subscribe(`/topic/user/${user.id}/messages`, (message) => {
+            if (message.body) {
+              const newMsg = JSON.parse(message.body);
+              if (newMsg.sender.id === recipient.id || newMsg.receiver.id === recipient.id) {
+                setMessages((prev) => {
+                  if (prev.find(m => m.id === newMsg.id)) return prev;
+                  return [...prev, newMsg];
+                });
+              }
+            }
+          });
+        }
+      });
+      
+      client.activate();
+      stompClientRef.current = client;
     }
   };
 
@@ -47,17 +78,25 @@ export default function DirectMessageScreen({ route, navigation }) {
 
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const res = await fetch(`${API_URL}/messages/direct/${recipient.id}`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content: newMessage })
-      });
-      if (res.ok) {
-        setNewMessage('');
-        fetchMessages();
+      if (stompClientRef.current && stompClientRef.current.connected) {
+         stompClientRef.current.publish({
+            destination: `/app/user/${recipient.id}/sendMessage`,
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ content: newMessage })
+         });
+         setNewMessage('');
+      } else {
+        const res = await fetch(`${API_URL}/messages/direct/${recipient.id}`, {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: newMessage })
+        });
+        if (res.ok) {
+          setNewMessage('');
+        }
       }
     } catch (error) {
       console.error(error);

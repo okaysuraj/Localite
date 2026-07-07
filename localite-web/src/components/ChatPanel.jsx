@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Send } from 'lucide-react';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 import gsap from 'gsap';
 
 const ChatPanel = ({ eventId, eventTitle, onClose }) => {
@@ -7,6 +9,7 @@ const ChatPanel = ({ eventId, eventTitle, onClose }) => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
+  const stompClientRef = useRef(null);
 
   useEffect(() => {
     gsap.fromTo('.chat-panel', 
@@ -15,9 +18,35 @@ const ChatPanel = ({ eventId, eventTitle, onClose }) => {
     );
     fetchMessages();
     
-    // Polling every 5 seconds for MVP
-    const interval = setInterval(fetchMessages, 5000);
-    return () => clearInterval(interval);
+    // Setup WebSocket connection
+    const socketUrl = import.meta.env.VITE_API_URL.replace('/api', '/ws');
+    const client = new Client({
+      webSocketFactory: () => new SockJS(socketUrl),
+      onConnect: () => {
+        console.log('Connected to WebSocket');
+        client.subscribe(`/topic/events/${eventId}`, (message) => {
+          if (message.body) {
+            const newMsg = JSON.parse(message.body);
+            setMessages((prev) => {
+               // avoid duplicates if same id arrives
+               if (prev.find(m => m.id === newMsg.id)) return prev;
+               return [...prev, newMsg];
+            });
+          }
+        });
+      },
+      onStompError: (frame) => {
+        console.error('Broker reported error: ' + frame.headers['message']);
+        console.error('Additional details: ' + frame.body);
+      },
+    });
+
+    client.activate();
+    stompClientRef.current = client;
+
+    return () => {
+      client.deactivate();
+    };
   }, [eventId]);
 
   const fetchMessages = async () => {
@@ -46,17 +75,28 @@ const ChatPanel = ({ eventId, eventTitle, onClose }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${eventId}/messages`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content: newMessage })
-      });
-      if (res.ok) {
-        setNewMessage('');
-        fetchMessages();
+      // If STOMP is connected, use it for faster delivery (optimistic)
+      if (stompClientRef.current && stompClientRef.current.connected) {
+         stompClientRef.current.publish({
+            destination: `/app/events/${eventId}/sendMessage`,
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ content: newMessage })
+         });
+         setNewMessage('');
+      } else {
+        // Fallback to REST
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${eventId}/messages`, {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: newMessage })
+        });
+        if (res.ok) {
+          setNewMessage('');
+          // WebSocket subscription handles updating the list
+        }
       }
     } catch (err) {
       console.error(err);

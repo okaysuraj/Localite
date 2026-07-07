@@ -7,7 +7,12 @@ import { API_URL } from '../config';
 export default function CreateEventScreen({ navigation }) {
   const [formData, setFormData] = useState({
     title: '',
+    description: '',
     category: 'Social',
+    skillLevel: 'All',
+    cost: '0',
+    rules: '',
+    eventType: 'Public',
     date: '',
     location: '',
     maxAttendees: '50',
@@ -28,6 +33,7 @@ export default function CreateEventScreen({ navigation }) {
       const token = await AsyncStorage.getItem('userToken');
       const payload = {
         ...formData,
+        cost: parseFloat(formData.cost) || 0.0,
         maxAttendees: parseInt(formData.maxAttendees) || 50,
         attendees: 0
       };
@@ -79,12 +85,72 @@ export default function CreateEventScreen({ navigation }) {
           </View>
 
           <View style={styles.field}>
-            <Text style={styles.label}>Category</Text>
+            <Text style={styles.label}>Description</Text>
             <TextInput 
-              style={styles.input}
-              value={formData.category}
-              onChangeText={text => setFormData({...formData, category: text})}
-              placeholder="Sports, Social, Fitness..."
+              style={[styles.input, {height: 80}]}
+              multiline
+              value={formData.description}
+              onChangeText={text => setFormData({...formData, description: text})}
+              placeholder="What are we doing?"
+              placeholderTextColor="#64748b"
+            />
+          </View>
+
+          <View style={styles.fieldRow}>
+            <View style={[styles.field, {flex: 1, marginRight: 10}]}>
+              <Text style={styles.label}>Category</Text>
+              <TextInput 
+                style={styles.input}
+                value={formData.category}
+                onChangeText={text => setFormData({...formData, category: text})}
+                placeholder="Sports, Social..."
+                placeholderTextColor="#64748b"
+              />
+            </View>
+            <View style={[styles.field, {flex: 1}]}>
+              <Text style={styles.label}>Event Type</Text>
+              <TextInput 
+                style={styles.input}
+                value={formData.eventType}
+                onChangeText={text => setFormData({...formData, eventType: text})}
+                placeholder="Public, Private"
+                placeholderTextColor="#64748b"
+              />
+            </View>
+          </View>
+
+          <View style={styles.fieldRow}>
+            <View style={[styles.field, {flex: 1, marginRight: 10}]}>
+              <Text style={styles.label}>Skill Level</Text>
+              <TextInput 
+                style={styles.input}
+                value={formData.skillLevel}
+                onChangeText={text => setFormData({...formData, skillLevel: text})}
+                placeholder="All, Beginner..."
+                placeholderTextColor="#64748b"
+              />
+            </View>
+            <View style={[styles.field, {flex: 1}]}>
+              <Text style={styles.label}>Cost</Text>
+              <TextInput 
+                style={styles.input}
+                value={formData.cost}
+                onChangeText={text => setFormData({...formData, cost: text})}
+                keyboardType="numeric"
+                placeholder="0.0"
+                placeholderTextColor="#64748b"
+              />
+            </View>
+          </View>
+
+          <View style={styles.field}>
+            <Text style={styles.label}>Rules</Text>
+            <TextInput 
+              style={[styles.input, {height: 60}]}
+              multiline
+              value={formData.rules}
+              onChangeText={text => setFormData({...formData, rules: text})}
+              placeholder="Any rules?"
               placeholderTextColor="#64748b"
             />
           </View>

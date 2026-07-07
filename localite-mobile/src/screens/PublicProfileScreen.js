@@ -63,6 +63,38 @@ export default function PublicProfileScreen({ route, navigation }) {
     }
   };
 
+  const handleReportUser = async () => {
+    Alert.alert(
+      "Report User",
+      "Are you sure you want to report this user for inappropriate behavior?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Report", 
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const token = await AsyncStorage.getItem('userToken');
+              const res = await fetch(`${API_URL}/safety/report`, {
+                method: 'POST',
+                headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ targetType: 'USER', targetId: profile.id, reason: 'Inappropriate behavior', details: '' })
+              });
+              if (res.ok) {
+                Alert.alert("Report Submitted", "Thank you. Our team will review this user.");
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        }
+      ]
+    );
+  };
+
   if (loading || !profile) {
     return (
       <View style={styles.loadingContainer}>
@@ -102,6 +134,40 @@ export default function PublicProfileScreen({ route, navigation }) {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.detailsContainer}>
+          <Text style={styles.sectionTitle}>Details</Text>
+          {profile.neighborhood ? <Text style={styles.detailText}><Text style={styles.detailLabel}>Neighborhood:</Text> {profile.neighborhood}</Text> : null}
+          {profile.age ? <Text style={styles.detailText}><Text style={styles.detailLabel}>Age:</Text> {profile.age}</Text> : null}
+          {profile.gender ? <Text style={styles.detailText}><Text style={styles.detailLabel}>Gender:</Text> {profile.gender}</Text> : null}
+          {profile.sportsInterests ? <Text style={styles.detailText}><Text style={styles.detailLabel}>Sports:</Text> {profile.sportsInterests}</Text> : null}
+          {profile.interests ? <Text style={styles.detailText}><Text style={styles.detailLabel}>Interests:</Text> {profile.interests}</Text> : null}
+          {profile.lookingFor ? <Text style={styles.detailText}><Text style={styles.detailLabel}>Looking for:</Text> {profile.lookingFor}</Text> : null}
+          {profile.availability ? <Text style={styles.detailText}><Text style={styles.detailLabel}>Availability:</Text> {profile.availability}</Text> : null}
+          
+          {/* XP Bar */}
+          <View style={{width: '100%', marginTop: 20}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
+              <Text style={{color: '#ccff00', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1}}>XP LEVEL</Text>
+              <Text style={{color: '#94a3b8', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1}}>{profile.xp || 0} / 1000</Text>
+            </View>
+            <View style={{width: '100%', height: 8, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 4, overflow: 'hidden'}}>
+              <View style={{width: `${Math.min(100, ((profile.xp || 0) / 1000) * 100)}%`, height: '100%', backgroundColor: '#ccff00'}} />
+            </View>
+          </View>
+
+          {/* Badges */}
+          {profile.badges && profile.badges.length > 0 && (
+            <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginTop: 15}}>
+              {profile.badges.map(badge => (
+                <View key={badge} style={{backgroundColor: 'rgba(204,255,0,0.1)', borderColor: 'rgba(204,255,0,0.3)', borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 5}}>
+                  <Ionicons name="medal" size={14} color="#facc15" />
+                  <Text style={{color: 'white', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1}}>{badge}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+
         <View style={styles.statsGrid}>
           <View style={styles.statBox}>
             <Text style={styles.statValue}>{profile.trustScore}</Text>
@@ -123,6 +189,14 @@ export default function PublicProfileScreen({ route, navigation }) {
             <Text style={styles.statLabel}>ATTENDED</Text>
           </View>
         </View>
+
+        <TouchableOpacity 
+          style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 30, gap: 5}} 
+          onPress={handleReportUser}
+        >
+          <Ionicons name="warning" size={16} color="#ef4444" />
+          <Text style={{color: '#ef4444', fontFamily: 'monospace', textTransform: 'uppercase', fontSize: 12}}>Report User</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -142,6 +216,10 @@ const styles = StyleSheet.create({
   followBtnText: { color: '#0f172a', fontFamily: 'monospace', fontWeight: 'bold' },
   unfollowBtn: { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#ef4444' },
   unfollowBtnText: { color: '#ef4444' },
+  detailsContainer: { backgroundColor: '#1e293b', padding: 20, borderRadius: 10, marginBottom: 20 },
+  sectionTitle: { color: '#ccff00', fontFamily: 'monospace', fontWeight: 'bold', marginBottom: 10, fontSize: 16 },
+  detailText: { color: '#f8fafc', marginBottom: 5, fontSize: 14 },
+  detailLabel: { color: '#94a3b8', fontWeight: 'bold' },
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 10 },
   statBox: { width: '48%', backgroundColor: '#1e293b', padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 10 },
   statValue: { color: '#ccff00', fontSize: 24, fontWeight: 'bold' },

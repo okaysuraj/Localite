@@ -5,6 +5,10 @@ import com.localite.backend.model.User;
 import com.localite.backend.repository.DirectMessageRepository;
 import com.localite.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -18,10 +22,12 @@ public class DirectMessageController {
 
     private final DirectMessageRepository directMessageRepository;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public DirectMessageController(DirectMessageRepository directMessageRepository, UserRepository userRepository) {
+    public DirectMessageController(DirectMessageRepository directMessageRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
         this.directMessageRepository = directMessageRepository;
         this.userRepository = userRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/{otherUserId}")
@@ -45,9 +51,31 @@ public class DirectMessageController {
         if (senderOpt.isPresent() && receiverOpt.isPresent()) {
             DirectMessage dm = new DirectMessage(senderOpt.get(), receiverOpt.get(), messagePayload.getContent());
             directMessageRepository.save(dm);
+            
+            // Broadcast to both users
+            messagingTemplate.convertAndSend("/topic/user/" + otherUserId + "/messages", dm);
+            messagingTemplate.convertAndSend("/topic/user/" + senderOpt.get().getId() + "/messages", dm);
+            
             return ResponseEntity.ok(dm);
         }
         
         return ResponseEntity.badRequest().body("Sender or Receiver not found");
+    }
+
+    // WebSocket Endpoint for Direct Messages
+    @MessageMapping("/user/{otherUserId}/sendMessage")
+    public void handleWebSocketDirectMessage(@DestinationVariable Long otherUserId, @Payload DirectMessage messagePayload, Principal principal) {
+        if (principal == null) return;
+        
+        Optional<User> senderOpt = userRepository.findByFirebaseUid(principal.getName());
+        Optional<User> receiverOpt = userRepository.findById(otherUserId);
+        
+        if (senderOpt.isPresent() && receiverOpt.isPresent()) {
+            DirectMessage dm = new DirectMessage(senderOpt.get(), receiverOpt.get(), messagePayload.getContent());
+            directMessageRepository.save(dm);
+            
+            messagingTemplate.convertAndSend("/topic/user/" + otherUserId + "/messages", dm);
+            messagingTemplate.convertAndSend("/topic/user/" + senderOpt.get().getId() + "/messages", dm);
+        }
     }
 }

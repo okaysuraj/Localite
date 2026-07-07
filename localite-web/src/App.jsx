@@ -8,6 +8,8 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import LandingPage from './pages/LandingPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import LeaderboardPage from './pages/LeaderboardPage';
+import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import './App.css';
 
@@ -47,6 +49,16 @@ const AppContent = () => {
           <Route path="/analytics" element={
             <ProtectedRoute>
               <AnalyticsDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/leaderboard" element={
+            <ProtectedRoute>
+              <LeaderboardPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminDashboard />
             </ProtectedRoute>
           } />
         </Routes>

@@ -26,6 +26,10 @@ public class AuthController {
             return userRepository.save(newUser);
         });
         
+        if (user.isBanned()) {
+            return ResponseEntity.status(403).body("Account is banned");
+        }
+        
         return ResponseEntity.ok(user);
     }
 

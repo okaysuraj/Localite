@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, X, Star, Activity } from 'lucide-react';
+import { User, X, Star, Zap, Award, AlertTriangle } from 'lucide-react';
 
 const PublicProfileModal = ({ userId, onClose }) => {
   const [profile, setProfile] = useState(null);
@@ -62,6 +62,28 @@ const PublicProfileModal = ({ userId, onClose }) => {
     }
   };
 
+  const handleReportUser = async () => {
+    if (window.confirm("Are you sure you want to report this user?")) {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/safety/report`, {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ targetType: 'USER', targetId: profile.id, reason: 'Inappropriate behavior', details: '' })
+        });
+        if (res.ok) {
+          alert("Report submitted successfully.");
+          onClose(); // Auto-close or maybe we don't need to close, just give feedback
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
   if (loading || !profile) {
     return (
       <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
@@ -89,6 +111,46 @@ const PublicProfileModal = ({ userId, onClose }) => {
             {profile.isVerified && <span className="text-lime-vibe text-sm" title="Verified">✓</span>}
           </h2>
           <p className="font-body-sm text-text-muted mt-2 max-w-[80%]">{profile.bio || 'No biography configured.'}</p>
+
+          <div className="flex flex-wrap gap-3 justify-center mt-4 text-xs text-text-muted bg-surface-container px-4 py-2 rounded-lg">
+            {profile.neighborhood && <span><strong className="text-lime-vibe">Loc:</strong> {profile.neighborhood}</span>}
+            {profile.age && <span><strong className="text-lime-vibe">Age:</strong> {profile.age}</span>}
+            {profile.gender && <span><strong className="text-lime-vibe">Gender:</strong> {profile.gender}</span>}
+          </div>
+          {(profile.sportsInterests || profile.interests) && (
+            <div className="flex flex-wrap gap-3 justify-center mt-2 text-xs text-text-muted bg-surface-container px-4 py-2 rounded-lg">
+              {profile.sportsInterests && <span><strong className="text-lime-vibe">Sports:</strong> {profile.sportsInterests}</span>}
+              {profile.interests && <span><strong className="text-lime-vibe">Interests:</strong> {profile.interests}</span>}
+            </div>
+          )}
+          {(profile.lookingFor || profile.availability) && (
+            <div className="flex flex-wrap gap-3 justify-center mt-2 text-xs text-text-muted bg-surface-container px-4 py-2 rounded-lg">
+              {profile.lookingFor && <span><strong className="text-lime-vibe">Looking for:</strong> {profile.lookingFor}</span>}
+              {profile.availability && <span><strong className="text-lime-vibe">Availability:</strong> {profile.availability}</span>}
+            </div>
+          )}
+
+          {/* XP & Badges */}
+          <div className="w-full mt-4 bg-surface-variant/10 rounded-lg p-3 border border-surface-variant/30">
+            <div className="flex justify-between items-center mb-1 px-1">
+              <span className="font-label-mono text-[10px] text-lime-vibe uppercase tracking-widest flex items-center gap-1"><Zap size={10} /> XP LEVEL</span>
+              <span className="font-label-mono text-[10px] text-text-muted uppercase tracking-widest">{profile.xp || 0} / 1000</span>
+            </div>
+            <div className="w-full bg-surface-variant/30 rounded-full h-1.5 overflow-hidden">
+              <div className="bg-lime-vibe h-1.5 rounded-full shadow-[0_0_8px_rgba(204,255,0,0.5)]" style={{ width: `${Math.min(100, ((profile.xp || 0) / 1000) * 100)}%` }}></div>
+            </div>
+            
+            {profile.badges && profile.badges.length > 0 && (
+              <div className="flex gap-2 justify-center mt-3 flex-wrap">
+                {profile.badges.map(badge => (
+                  <div key={badge} className="bg-surface-dark border border-lime-vibe/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <Award size={12} className="text-yellow-400" />
+                    <span className="font-label-mono text-[9px] text-white uppercase tracking-widest">{badge}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <button 
             onClick={handleFollowToggle}
@@ -122,6 +184,13 @@ const PublicProfileModal = ({ userId, onClose }) => {
             <p className="font-label-mono text-[10px] text-text-muted uppercase tracking-widest mt-1">Attended</p>
           </div>
         </div>
+
+        <button 
+          onClick={handleReportUser}
+          className="w-full mt-4 py-2 font-label-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-red-500 flex items-center justify-center gap-1 transition-colors"
+        >
+          <AlertTriangle size={12} /> Report User
+        </button>
       </div>
     </div>
   );

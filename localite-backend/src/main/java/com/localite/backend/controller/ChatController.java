@@ -7,6 +7,10 @@ import com.localite.backend.repository.EventRepository;
 import com.localite.backend.repository.MessageRepository;
 import com.localite.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -23,11 +27,13 @@ public class ChatController {
     private final MessageRepository messageRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public ChatController(MessageRepository messageRepository, EventRepository eventRepository, UserRepository userRepository) {
+    public ChatController(MessageRepository messageRepository, EventRepository eventRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
         this.messageRepository = messageRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/{eventId}/messages")
@@ -70,9 +76,35 @@ public class ChatController {
             responseMap.put("sentAt", message.getSentAt());
             responseMap.put("sender", message.getSender().getUsername());
             
+            // Broadcast over STOMP
+            messagingTemplate.convertAndSend("/topic/events/" + eventId, responseMap);
+            
             return ResponseEntity.ok(responseMap);
         }
 
         return ResponseEntity.badRequest().body("Invalid request");
+    }
+
+    // WebSocket Endpoint for Chat
+    @MessageMapping("/events/{eventId}/sendMessage")
+    public void handleWebSocketMessage(@DestinationVariable Long eventId, @Payload Map<String, String> payload, Principal principal) {
+        if (principal == null) return;
+        
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        String content = payload.get("content");
+        
+        if (eventOpt.isPresent() && userOpt.isPresent() && content != null && !content.trim().isEmpty()) {
+            Message message = new Message(eventOpt.get(), userOpt.get(), content);
+            messageRepository.save(message);
+            
+            Map<String, Object> responseMap = new java.util.HashMap<>();
+            responseMap.put("id", message.getId());
+            responseMap.put("content", message.getContent());
+            responseMap.put("sentAt", message.getSentAt());
+            responseMap.put("sender", message.getSender().getUsername());
+            
+            messagingTemplate.convertAndSend("/topic/events/" + eventId, responseMap);
+        }
     }
 }

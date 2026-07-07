@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { MapPin, Search, User, LogOut, Users, Bell } from 'lucide-react';
+import { MapPin, Search, User, LogOut, Users, Bell, Trophy, Shield } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import NotificationPanel from './NotificationPanel';
@@ -61,6 +61,12 @@ const Navbar = () => {
 
         <Link to="/network" className="p-2 text-text-muted hover:text-lime-vibe transition-colors bg-surface-variant/10 rounded-full">
           <Users size={20} />
+        </Link>
+        <Link to="/admin" className="p-2 text-text-muted hover:text-lime-vibe transition-colors bg-surface-variant/10 rounded-full" title="Admin">
+          <Shield size={20} />
+        </Link>
+        <Link to="/leaderboard" className="p-2 text-text-muted hover:text-lime-vibe transition-colors bg-surface-variant/10 rounded-full">
+          <Trophy size={20} />
         </Link>
         <Link to="/dashboard" className="p-2 text-text-muted hover:text-lime-vibe transition-colors">
           <Search size={20} />

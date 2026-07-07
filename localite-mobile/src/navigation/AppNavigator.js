@@ -18,6 +18,7 @@ import ScannerScreen from '../screens/ScannerScreen';
 import FeedScreen from '../screens/FeedScreen';
 import PublicProfileScreen from '../screens/PublicProfileScreen';
 import AnalyticsScreen from '../screens/AnalyticsScreen';
+import LeaderboardScreen from '../screens/LeaderboardScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -70,6 +71,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Scanner" component={ScannerScreen} />
         <Stack.Screen name="PublicProfile" component={PublicProfileScreen} />
         <Stack.Screen name="Analytics" component={AnalyticsScreen} />
+        <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

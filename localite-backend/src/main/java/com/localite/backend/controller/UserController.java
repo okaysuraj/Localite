@@ -41,6 +41,7 @@ public class UserController {
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+            if (user.isBanned()) return ResponseEntity.status(403).body("Account is banned");
             return ResponseEntity.ok(user);
         }
 
@@ -67,9 +68,16 @@ public class UserController {
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+            if (user.isBanned()) return ResponseEntity.status(403).body("Account is banned");
             if (updatedUser.getBio() != null) user.setBio(updatedUser.getBio());
             if (updatedUser.getNeighborhood() != null) user.setNeighborhood(updatedUser.getNeighborhood());
             if (updatedUser.getSportsInterests() != null) user.setSportsInterests(updatedUser.getSportsInterests());
+            if (updatedUser.getInterests() != null) user.setInterests(updatedUser.getInterests());
+            if (updatedUser.getAge() != null) user.setAge(updatedUser.getAge());
+            if (updatedUser.getGender() != null) user.setGender(updatedUser.getGender());
+            if (updatedUser.getProfilePhotoUrl() != null) user.setProfilePhotoUrl(updatedUser.getProfilePhotoUrl());
+            if (updatedUser.getLookingFor() != null) user.setLookingFor(updatedUser.getLookingFor());
+            if (updatedUser.getAvailability() != null) user.setAvailability(updatedUser.getAvailability());
             userRepository.save(user);
             return ResponseEntity.ok(user);
         }
@@ -91,7 +99,9 @@ public class UserController {
                 "username", u.getUsername(),
                 "bio", u.getBio() != null ? u.getBio() : "",
                 "sportsInterests", u.getSportsInterests() != null ? u.getSportsInterests() : "",
-                "neighborhood", u.getNeighborhood() != null ? u.getNeighborhood() : ""
+                "interests", u.getInterests() != null ? u.getInterests() : "",
+                "neighborhood", u.getNeighborhood() != null ? u.getNeighborhood() : "",
+                "profilePhotoUrl", u.getProfilePhotoUrl() != null ? u.getProfilePhotoUrl() : ""
             )).collect(Collectors.toList());
             
         return ResponseEntity.ok(response);

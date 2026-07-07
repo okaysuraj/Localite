@@ -1,23 +1,51 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, X, User } from 'lucide-react';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 const DirectMessagePanel = ({ recipient, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const messagesEndRef = useRef(null);
+  const stompClientRef = useRef(null);
 
   useEffect(() => {
     fetchCurrentUser();
   }, []);
 
   useEffect(() => {
-    if (recipient) {
+    if (recipient && currentUser) {
       fetchMessages();
-      const interval = setInterval(fetchMessages, 3000); // Poll every 3 seconds
-      return () => clearInterval(interval);
+      
+      const socketUrl = import.meta.env.VITE_API_URL.replace('/api', '/ws');
+      const client = new Client({
+        webSocketFactory: () => new SockJS(socketUrl),
+        onConnect: () => {
+          client.subscribe(`/topic/user/${currentUser.id}/messages`, (message) => {
+            if (message.body) {
+              const newMsg = JSON.parse(message.body);
+              // Only add if it's part of this conversation
+              if (newMsg.sender.id === recipient.id || newMsg.receiver.id === recipient.id) {
+                setMessages((prev) => {
+                  if (prev.find(m => m.id === newMsg.id)) return prev;
+                  return [...prev, newMsg];
+                });
+                scrollToBottom();
+              }
+            }
+          });
+        },
+      });
+
+      client.activate();
+      stompClientRef.current = client;
+
+      return () => {
+        client.deactivate();
+      };
     }
-  }, [recipient]);
+  }, [recipient, currentUser]);
 
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem('token');
@@ -50,17 +78,25 @@ const DirectMessagePanel = ({ recipient, onClose }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/messages/direct/${recipient.id}`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content: newMessage })
-      });
-      if (res.ok) {
-        setNewMessage('');
-        fetchMessages();
+      if (stompClientRef.current && stompClientRef.current.connected) {
+         stompClientRef.current.publish({
+            destination: `/app/user/${recipient.id}/sendMessage`,
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ content: newMessage })
+         });
+         setNewMessage('');
+      } else {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/messages/direct/${recipient.id}`, {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: newMessage })
+        });
+        if (res.ok) {
+          setNewMessage('');
+        }
       }
     } catch (err) {
       console.error(err);

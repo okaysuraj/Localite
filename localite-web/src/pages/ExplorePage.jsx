@@ -19,9 +19,11 @@ L.Icon.Default.mergeOptions({
 const ExplorePage = () => {
   const [events, setEvents] = useState([]);
   const [recommendedEvents, setRecommendedEvents] = useState([]);
+  const [suggestedPartners, setSuggestedPartners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [timeFilter, setTimeFilter] = useState('Any');
   const [location, setLocation] = useState(null);
   const [viewMode, setViewMode] = useState('list'); // 'list', 'map', 'feed'
   const [feedItems, setFeedItems] = useState([]);
@@ -52,6 +54,9 @@ const ExplorePage = () => {
     if (selectedCategory !== 'All') {
       params.append('category', selectedCategory);
     }
+    if (timeFilter !== 'Any') {
+      params.append('timeFilter', timeFilter.toLowerCase());
+    }
     if (location) {
       params.append('lat', location.lat);
       params.append('lng', location.lng);
@@ -78,15 +83,23 @@ const ExplorePage = () => {
         setLoading(false);
       });
 
-    // Fetch recommendations
-    fetch(import.meta.env.VITE_API_URL + '/events/recommended', {
+    // Fetch smart matched events
+    fetch(import.meta.env.VITE_API_URL + '/matches/events', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(data => setRecommendedEvents(data))
+      .then(data => setRecommendedEvents(data.slice(0, 5)))
       .catch(err => console.error(err));
 
-  }, [selectedCategory, location]);
+    // Fetch suggested partners
+    fetch(import.meta.env.VITE_API_URL + '/matches/users', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setSuggestedPartners(data))
+      .catch(err => console.error(err));
+
+  }, [selectedCategory, timeFilter, location]);
 
   const fetchFeed = async () => {
     try {
@@ -221,8 +234,7 @@ const ExplorePage = () => {
         </div>
       </div>
       
-      {/* Filters */}
-      <div className="dashboard-header flex gap-3 overflow-x-auto pb-4 mb-8 scrollbar-hide border-b border-surface-variant/10">
+      <div className="dashboard-header flex gap-3 overflow-x-auto pb-4 mb-2 scrollbar-hide">
         {['All', 'Sports', 'Social', 'Fitness', 'Networking'].map((tag, idx) => (
           <button 
             key={idx} 
@@ -237,12 +249,60 @@ const ExplorePage = () => {
           </button>
         ))}
       </div>
+      <div className="dashboard-header flex gap-3 overflow-x-auto pb-4 mb-8 scrollbar-hide border-b border-surface-variant/10">
+        {['Any', 'Today', 'Weekend'].map((tag, idx) => (
+          <button 
+            key={idx} 
+            onClick={() => setTimeFilter(tag)}
+            className={`px-4 py-1.5 font-label-mono text-[10px] uppercase tracking-widest rounded-full border transition-all whitespace-nowrap ${
+              timeFilter === tag 
+                ? 'bg-surface-variant/30 border-lime-vibe text-lime-vibe' 
+                : 'bg-transparent border-surface-variant/20 text-text-muted hover:border-surface-variant/50 hover:text-on-surface'
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
       
+      {/* Suggested Partners Section */}
+      {suggestedPartners.length > 0 && viewMode === 'list' && (
+        <div className="mb-12 border-b border-surface-variant/20 pb-8">
+          <h3 className="font-headline-sm text-headline-sm text-white uppercase tracking-tight mb-6 flex items-center gap-2">
+            <span className="material-symbols-outlined text-[24px] text-lime-vibe">group_add</span> SUGGESTED PARTNERS
+          </h3>
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+            {suggestedPartners.map(user => (
+              <div 
+                key={`partner-${user.id}`} 
+                className="min-w-[200px] w-[200px] snap-start bg-surface-container-low border border-surface-variant/30 rounded-xl p-4 text-center cursor-pointer hover:border-lime-vibe/50 transition-colors"
+                onClick={() => setSelectedUserId(user.id)}
+              >
+                <div className="w-16 h-16 rounded-full bg-surface-variant/50 mx-auto mb-3 overflow-hidden">
+                  {user.profilePhotoUrl ? (
+                    <img src={user.profilePhotoUrl} alt={user.username} className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={32} className="text-text-muted mt-4 mx-auto" />
+                  )}
+                </div>
+                <h4 className="font-headline-sm text-white">{user.username}</h4>
+                <p className="font-label-mono text-[10px] text-lime-vibe uppercase tracking-widest mt-1">
+                  Match Score: {user.matchScore}
+                </p>
+                <p className="font-body-sm text-text-muted text-xs mt-2 line-clamp-2">
+                  {user.sportsInterests}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* For You Section */}
       {recommendedEvents.length > 0 && viewMode === 'list' && (
         <div className="mb-12">
           <h3 className="font-headline-sm text-headline-sm text-lime-vibe uppercase tracking-tight mb-6 flex items-center gap-2">
-            <span className="material-symbols-outlined text-[24px]">stars</span> FOR YOU
+            <span className="material-symbols-outlined text-[24px]">stars</span> SMART FEED
           </h3>
           <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x">
             {recommendedEvents.map(event => (
@@ -258,6 +318,10 @@ const ExplorePage = () => {
                   maxAttendees={event.maxAttendees}
                   imageUrl={event.imageUrl}
                   host={event.host}
+                  cost={event.cost}
+                  skillLevel={event.skillLevel}
+                  eventType={event.eventType}
+                  isHighlighted={event.highlighted}
                   isHost={currentUser && event.host && currentUser.id === event.host.id}
                   onRsvp={handleRsvp}
                   onChat={(id, title) => setActiveChat({ id, title })}
@@ -294,6 +358,10 @@ const ExplorePage = () => {
                   maxAttendees={event.maxAttendees}
                   imageUrl={event.imageUrl}
                   host={event.host}
+                  cost={event.cost}
+                  skillLevel={event.skillLevel}
+                  eventType={event.eventType}
+                  isHighlighted={event.highlighted}
                   isHost={currentUser && event.host && currentUser.id === event.host.id}
                   onRsvp={handleRsvp}
                   onChat={(id, title) => setActiveChat({ id, title })}
@@ -331,6 +399,10 @@ const ExplorePage = () => {
                   maxAttendees={item.event.maxAttendees}
                   imageUrl={item.event.imageUrl}
                   host={item.event.host}
+                  cost={item.event.cost}
+                  skillLevel={item.event.skillLevel}
+                  eventType={item.event.eventType}
+                  isHighlighted={item.event.highlighted}
                   isHost={currentUser && item.event.host && currentUser.id === item.event.host.id}
                   onRsvp={handleRsvp}
                   onChat={(id, title) => setActiveChat({ id, title })}

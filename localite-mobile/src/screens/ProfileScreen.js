@@ -6,7 +6,7 @@ import { API_URL } from '../config';
 
 export default function ProfileScreen({ navigation }) {
   const [profile, setProfile] = useState({
-    username: '', email: '', bio: '', neighborhood: '', sportsInterests: '', trustScore: 0, eventsHosted: 0, eventsAttended: 0, isVerified: false, averageRating: 0, reviewCount: 0
+    username: '', email: '', bio: '', neighborhood: '', sportsInterests: '', interests: '', age: '', gender: '', lookingFor: '', availability: '', trustScore: 0, eventsHosted: 0, eventsAttended: 0, isVerified: false, averageRating: 0, reviewCount: 0, xp: 0, badges: []
   });
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -32,12 +32,19 @@ export default function ProfileScreen({ navigation }) {
           bio: data.bio || '',
           neighborhood: data.neighborhood || '',
           sportsInterests: data.sportsInterests || '',
+          interests: data.interests || '',
+          age: data.age ? String(data.age) : '',
+          gender: data.gender || '',
+          lookingFor: data.lookingFor || '',
+          availability: data.availability || '',
           trustScore: data.trustScore || 0,
           eventsHosted: data.eventsHosted || 0,
           eventsAttended: data.eventsAttended || 0,
           isVerified: data.isVerified || false,
           averageRating: data.averageRating || 0,
-          reviewCount: data.reviewCount || 0
+          reviewCount: data.reviewCount || 0,
+          xp: data.xp || 0,
+          badges: data.badges || []
         });
 
         const reviewRes = await fetch(`${API_URL}/users/${data.id}/reviews`, {
@@ -66,7 +73,12 @@ export default function ProfileScreen({ navigation }) {
         body: JSON.stringify({
           bio: profile.bio,
           neighborhood: profile.neighborhood,
-          sportsInterests: profile.sportsInterests
+          sportsInterests: profile.sportsInterests,
+          interests: profile.interests,
+          age: profile.age ? parseInt(profile.age, 10) : null,
+          gender: profile.gender,
+          lookingFor: profile.lookingFor,
+          availability: profile.availability
         })
       });
       
@@ -84,6 +96,34 @@ export default function ProfileScreen({ navigation }) {
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('username');
     navigation.replace('Login'); // Navigate back to Auth stack
+  };
+
+  const handleBoostProfile = async () => {
+    Alert.alert(
+      "Boost Profile",
+      "Pay $4.99 to boost your profile for 30 days? (Mock Payment)",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Pay", 
+          onPress: async () => {
+            try {
+              const token = await AsyncStorage.getItem('userToken');
+              const res = await fetch(`${API_URL}/monetization/boost-profile`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+              if (res.ok) {
+                Alert.alert("Success", "Payment Successful! Your profile is now boosted.");
+                fetchProfile();
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        }
+      ]
+    );
   };
 
   if (loading) {
@@ -106,6 +146,29 @@ export default function ProfileScreen({ navigation }) {
             {profile.isVerified && <Ionicons name="checkmark-circle" size={20} color="#ccff00" />}
           </View>
           <Text style={styles.email}>{profile.email}</Text>
+
+          {/* XP Bar */}
+          <View style={{width: '100%', marginTop: 20}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
+              <Text style={{color: '#ccff00', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1}}>XP LEVEL</Text>
+              <Text style={{color: '#94a3b8', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1}}>{profile.xp} / 1000</Text>
+            </View>
+            <View style={{width: '100%', height: 8, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 4, overflow: 'hidden'}}>
+              <View style={{width: `${Math.min(100, (profile.xp / 1000) * 100)}%`, height: '100%', backgroundColor: '#ccff00'}} />
+            </View>
+          </View>
+
+          {/* Badges */}
+          {profile.badges && profile.badges.length > 0 && (
+            <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginTop: 15}}>
+              {profile.badges.map(badge => (
+                <View key={badge} style={{backgroundColor: 'rgba(204,255,0,0.1)', borderColor: 'rgba(204,255,0,0.3)', borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 5}}>
+                  <Ionicons name="medal" size={14} color="#facc15" />
+                  <Text style={{color: 'white', fontSize: 10, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1}}>{badge}</Text>
+                </View>
+              ))}
+            </View>
+          )}
         </View>
         
         <View style={styles.statsContainer}>
@@ -175,6 +238,81 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.value}>{profile.sportsInterests || 'Not configured'}</Text>
             )}
           </View>
+
+          <View style={styles.field}>
+            <Text style={styles.label}>General Interests</Text>
+            {isEditing ? (
+              <TextInput 
+                style={styles.input}
+                value={profile.interests}
+                onChangeText={text => setProfile({...profile, interests: text})}
+                placeholder="e.g. Music, Gaming"
+                placeholderTextColor="#64748b"
+              />
+            ) : (
+              <Text style={styles.value}>{profile.interests || 'Not configured'}</Text>
+            )}
+          </View>
+          
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={[styles.field, {flex: 0.48}]}>
+              <Text style={styles.label}>Age</Text>
+              {isEditing ? (
+                <TextInput 
+                  style={styles.input}
+                  value={profile.age}
+                  onChangeText={text => setProfile({...profile, age: text})}
+                  keyboardType="numeric"
+                  placeholderTextColor="#64748b"
+                />
+              ) : (
+                <Text style={styles.value}>{profile.age || '-'}</Text>
+              )}
+            </View>
+            <View style={[styles.field, {flex: 0.48}]}>
+              <Text style={styles.label}>Gender</Text>
+              {isEditing ? (
+                <TextInput 
+                  style={styles.input}
+                  value={profile.gender}
+                  onChangeText={text => setProfile({...profile, gender: text})}
+                  placeholderTextColor="#64748b"
+                />
+              ) : (
+                <Text style={styles.value}>{profile.gender || '-'}</Text>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.field}>
+            <Text style={styles.label}>Looking For</Text>
+            {isEditing ? (
+              <TextInput 
+                style={styles.input}
+                value={profile.lookingFor}
+                onChangeText={text => setProfile({...profile, lookingFor: text})}
+                placeholder="e.g. friends, sports partners"
+                placeholderTextColor="#64748b"
+              />
+            ) : (
+              <Text style={styles.value}>{profile.lookingFor || 'Not configured'}</Text>
+            )}
+          </View>
+
+          <View style={styles.field}>
+            <Text style={styles.label}>Availability</Text>
+            {isEditing ? (
+              <TextInput 
+                style={styles.input}
+                value={profile.availability}
+                onChangeText={text => setProfile({...profile, availability: text})}
+                placeholder="e.g. Weekends, Evenings"
+                placeholderTextColor="#64748b"
+              />
+            ) : (
+              <Text style={styles.value}>{profile.availability || 'Not configured'}</Text>
+            )}
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -230,6 +368,15 @@ export default function ProfileScreen({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
+          
+          {!isEditing && (
+            <TouchableOpacity 
+              style={[styles.btnSecondary, {marginTop: 15, borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)'}]} 
+              onPress={handleBoostProfile}
+            >
+              <Text style={[styles.btnSecondaryText, {color: '#a855f7'}]}>Boost Profile</Text>
+            </TouchableOpacity>
+          )}
           
           <TouchableOpacity style={[styles.btnSecondary, {marginTop: 15, borderColor: '#ef4444'}]} onPress={handleLogout}>
             <Text style={[styles.btnSecondaryText, {color: '#ef4444'}]}>Sign Out</Text>

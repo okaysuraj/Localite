@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import gsap from 'gsap';
-import { User, MapPin, Activity, Settings, Save, Star, MessageSquare, TrendingUp } from 'lucide-react';
+import { User, MapPin, Activity, Settings, Save, Star, MessageSquare, TrendingUp, Shield, Award, Zap } from 'lucide-react';
 import PublicProfileModal from '../components/PublicProfileModal';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +10,14 @@ const ProfilePage = () => {
     email: '',
     bio: '',
     neighborhood: '',
-    sportsInterests: ''
+    sportsInterests: '',
+    interests: '',
+    age: '',
+    gender: '',
+    lookingFor: '',
+    availability: '',
+    xp: 0,
+    badges: []
   });
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -42,12 +49,19 @@ const ProfilePage = () => {
           bio: data.bio || '',
           neighborhood: data.neighborhood || '',
           sportsInterests: data.sportsInterests || '',
+          interests: data.interests || '',
+          age: data.age || '',
+          gender: data.gender || '',
+          lookingFor: data.lookingFor || '',
+          availability: data.availability || '',
           trustScore: data.trustScore || 0,
           eventsHosted: data.eventsHosted || 0,
           eventsAttended: data.eventsAttended || 0,
           isVerified: data.isVerified || false,
           averageRating: data.averageRating || 0,
-          reviewCount: data.reviewCount || 0
+          reviewCount: data.reviewCount || 0,
+          xp: data.xp || 0,
+          badges: data.badges || []
         });
 
         const reviewRes = await fetch(`${import.meta.env.VITE_API_URL}/users/${data.id}/reviews`, {
@@ -81,7 +95,12 @@ const ProfilePage = () => {
         body: JSON.stringify({
           bio: profile.bio,
           neighborhood: profile.neighborhood,
-          sportsInterests: profile.sportsInterests
+          sportsInterests: profile.sportsInterests,
+          interests: profile.interests,
+          age: profile.age ? parseInt(profile.age, 10) : null,
+          gender: profile.gender,
+          lookingFor: profile.lookingFor,
+          availability: profile.availability
         })
       });
       if (res.ok) {
@@ -90,6 +109,26 @@ const ProfilePage = () => {
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleBoostProfile = async () => {
+    if (window.confirm("Pay $4.99 to boost your profile for 30 days? (Mock Payment)")) {
+      const token = localStorage.getItem('token');
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/monetization/boost-profile`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          alert("Payment Successful! Your profile is now boosted.");
+          fetchProfile();
+        } else {
+          alert("Failed to boost profile.");
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -111,6 +150,14 @@ const ProfilePage = () => {
         </div>
         
         <div className="flex gap-4">
+          <button 
+            onClick={handleBoostProfile}
+            className="flex items-center gap-2 px-6 py-3 font-label-mono text-label-mono uppercase tracking-widest transition-all rounded-DEFAULT bg-surface-dark border border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+            title="Premium Feature"
+          >
+            <Star size={18} /> Boost Profile
+          </button>
+
           <button 
             onClick={() => navigate('/analytics')}
             className="flex items-center gap-2 px-6 py-3 font-label-mono text-label-mono uppercase tracking-widest transition-all rounded-DEFAULT bg-surface-dark border border-lime-vibe/50 text-lime-vibe hover:bg-lime-vibe/10"
@@ -148,6 +195,29 @@ const ProfilePage = () => {
                 </h2>
                 <p className="font-body-md text-text-muted mt-2">{profile.email}</p>
                 
+                {/* XP Bar */}
+                <div className="mt-4">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-label-mono text-[10px] text-lime-vibe uppercase tracking-widest flex items-center gap-1"><Zap size={12} /> XP LEVEL</span>
+                    <span className="font-label-mono text-[10px] text-text-muted uppercase tracking-widest">{profile.xp} / 1000</span>
+                  </div>
+                  <div className="w-full bg-surface-variant/30 rounded-full h-2 overflow-hidden border border-surface-variant/50">
+                    <div className="bg-lime-vibe h-2 rounded-full" style={{ width: `${Math.min(100, (profile.xp / 1000) * 100)}%` }}></div>
+                  </div>
+                </div>
+
+                {/* Badges */}
+                {profile.badges && profile.badges.length > 0 && (
+                  <div className="mt-4 flex gap-2 flex-wrap justify-center md:justify-start">
+                    {profile.badges.map(badge => (
+                      <div key={badge} className="bg-surface-variant/20 border border-lime-vibe/30 px-3 py-1 rounded-full flex items-center gap-2">
+                        <Award size={14} className="text-yellow-400" />
+                        <span className="font-label-mono text-[10px] text-white uppercase tracking-widest">{badge}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
                   <div className="bg-surface-container px-6 py-3 rounded-lg border border-surface-variant/50 text-center">
                     <p className="font-headline-sm text-lime-vibe text-2xl">{profile.trustScore}</p>
@@ -232,6 +302,95 @@ const ProfilePage = () => {
                   ) : (
                     <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
                       {profile.sportsInterests || 'No specializations logged.'}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">General Interests</label>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      name="interests"
+                      value={profile.interests}
+                      onChange={handleChange}
+                      className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                      placeholder="e.g. Music, Gaming"
+                    />
+                  ) : (
+                    <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
+                      {profile.interests || 'Not configured'}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Age</label>
+                    {isEditing ? (
+                      <input 
+                        type="number"
+                        name="age"
+                        value={profile.age}
+                        onChange={handleChange}
+                        className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                      />
+                    ) : (
+                      <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
+                        {profile.age || '-'}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Gender</label>
+                    {isEditing ? (
+                      <input 
+                        type="text"
+                        name="gender"
+                        value={profile.gender}
+                        onChange={handleChange}
+                        className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                      />
+                    ) : (
+                      <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
+                        {profile.gender || '-'}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Looking For</label>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      name="lookingFor"
+                      value={profile.lookingFor}
+                      onChange={handleChange}
+                      className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                      placeholder="e.g. friends, sports partners"
+                    />
+                  ) : (
+                    <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
+                      {profile.lookingFor || 'Not configured'}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Availability</label>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      name="availability"
+                      value={profile.availability}
+                      onChange={handleChange}
+                      className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                      placeholder="e.g. Weekends, Evenings"
+                    />
+                  ) : (
+                    <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
+                      {profile.availability || 'Not configured'}
                     </p>
                   )}
                 </div>
