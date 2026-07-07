@@ -50,6 +50,8 @@ public class DirectMessageController {
         
         if (senderOpt.isPresent() && receiverOpt.isPresent()) {
             DirectMessage dm = new DirectMessage(senderOpt.get(), receiverOpt.get(), messagePayload.getContent());
+            if (messagePayload.getMessageType() != null) dm.setMessageType(messagePayload.getMessageType());
+            if (messagePayload.getMetadata() != null) dm.setMetadata(messagePayload.getMetadata());
             directMessageRepository.save(dm);
             
             // Broadcast to both users
@@ -72,6 +74,8 @@ public class DirectMessageController {
         
         if (senderOpt.isPresent() && receiverOpt.isPresent()) {
             DirectMessage dm = new DirectMessage(senderOpt.get(), receiverOpt.get(), messagePayload.getContent());
+            if (messagePayload.getMessageType() != null) dm.setMessageType(messagePayload.getMessageType());
+            if (messagePayload.getMetadata() != null) dm.setMetadata(messagePayload.getMetadata());
             directMessageRepository.save(dm);
             
             messagingTemplate.convertAndSend("/topic/user/" + otherUserId + "/messages", dm);

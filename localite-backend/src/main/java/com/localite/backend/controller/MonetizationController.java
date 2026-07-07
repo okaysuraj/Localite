@@ -4,6 +4,7 @@ import com.localite.backend.model.Event;
 import com.localite.backend.model.User;
 import com.localite.backend.repository.EventRepository;
 import com.localite.backend.repository.UserRepository;
+import com.localite.backend.service.StripePaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,12 @@ public class MonetizationController {
 
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final StripePaymentService stripePaymentService;
 
-    public MonetizationController(UserRepository userRepository, EventRepository eventRepository) {
+    public MonetizationController(UserRepository userRepository, EventRepository eventRepository, StripePaymentService stripePaymentService) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.stripePaymentService = stripePaymentService;
     }
 
     @PostMapping("/boost-profile")
@@ -61,6 +64,14 @@ public class MonetizationController {
         
         Optional<Event> eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isPresent()) {
+            Event event = eventOpt.get();
+            double amount = event.getCost() != null ? event.getCost() : 0.0;
+            if (amount > 0) {
+                boolean success = stripePaymentService.processPayment(amount, "USD", "tok_visa");
+                if (!success) {
+                    return ResponseEntity.badRequest().body("Payment failed");
+                }
+            }
             // Mock ticket purchase logic. Usually we'd create a ticket record here.
             // But ticket logic is mostly handled in EventController via RSVP. We can just return success.
             return ResponseEntity.ok("Ticket purchased successfully!");

@@ -24,6 +24,7 @@ const ExplorePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [timeFilter, setTimeFilter] = useState('Any');
+  const [priceFilter, setPriceFilter] = useState('Any');
   const [location, setLocation] = useState(null);
   const [viewMode, setViewMode] = useState('list'); // 'list', 'map', 'feed'
   const [feedItems, setFeedItems] = useState([]);
@@ -56,6 +57,9 @@ const ExplorePage = () => {
     }
     if (timeFilter !== 'Any') {
       params.append('timeFilter', timeFilter.toLowerCase());
+    }
+    if (priceFilter !== 'Any') {
+      params.append('priceFilter', priceFilter);
     }
     if (location) {
       params.append('lat', location.lat);
@@ -99,7 +103,7 @@ const ExplorePage = () => {
       .then(data => setSuggestedPartners(data))
       .catch(err => console.error(err));
 
-  }, [selectedCategory, timeFilter, location]);
+  }, [selectedCategory, timeFilter, priceFilter, location]);
 
   const fetchFeed = async () => {
     try {
@@ -261,6 +265,21 @@ const ExplorePage = () => {
             }`}
           >
             {tag}
+          </button>
+        ))}
+      </div>
+      <div className="dashboard-header flex gap-3 overflow-x-auto pb-4 mb-8 scrollbar-hide border-b border-surface-variant/10">
+        {['Any', 'Free', 'Paid'].map((tag, idx) => (
+          <button 
+            key={`price-${idx}`} 
+            onClick={() => setPriceFilter(tag)}
+            className={`px-4 py-1.5 font-label-mono text-[10px] uppercase tracking-widest rounded-full border transition-all whitespace-nowrap ${
+              priceFilter === tag 
+                ? 'bg-surface-variant/30 border-lime-vibe text-lime-vibe' 
+                : 'bg-transparent border-surface-variant/20 text-text-muted hover:border-surface-variant/50 hover:text-on-surface'
+            }`}
+          >
+            {tag === 'Any' ? 'Any Price' : tag}
           </button>
         ))}
       </div>

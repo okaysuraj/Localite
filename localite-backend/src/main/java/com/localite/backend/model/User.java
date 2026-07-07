@@ -41,7 +41,17 @@ public class User {
     private int eventsHosted = 0;
     private int eventsAttended = 0;
     private boolean isVerified = false;
-
+    
+    // Identity & Trust Additions
+    private String phoneNumber;
+    private boolean isPhoneVerified = false;
+    private String instagramHandle;
+    private String twitterHandle;
+    
+    // Streaks
+    private int currentStreak = 0;
+    private int longestStreak = 0;
+    private java.time.LocalDate lastActivityDate;
     // Phase 6: Ratings
     private Double averageRating = 0.0;
     private Integer reviewCount = 0;
@@ -130,4 +140,25 @@ public class User {
 
     public java.time.LocalDateTime getProfileBoostedUntil() { return profileBoostedUntil; }
     public void setProfileBoostedUntil(java.time.LocalDateTime profileBoostedUntil) { this.profileBoostedUntil = profileBoostedUntil; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+    public boolean isPhoneVerified() { return isPhoneVerified; }
+    public void setPhoneVerified(boolean phoneVerified) { isPhoneVerified = phoneVerified; }
+
+    public String getInstagramHandle() { return instagramHandle; }
+    public void setInstagramHandle(String instagramHandle) { this.instagramHandle = instagramHandle; }
+
+    public String getTwitterHandle() { return twitterHandle; }
+    public void setTwitterHandle(String twitterHandle) { this.twitterHandle = twitterHandle; }
+
+    public int getCurrentStreak() { return currentStreak; }
+    public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }
+
+    public int getLongestStreak() { return longestStreak; }
+    public void setLongestStreak(int longestStreak) { this.longestStreak = longestStreak; }
+
+    public java.time.LocalDate getLastActivityDate() { return lastActivityDate; }
+    public void setLastActivityDate(java.time.LocalDate lastActivityDate) { this.lastActivityDate = lastActivityDate; }
 }

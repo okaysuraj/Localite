@@ -18,6 +18,7 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const [loserId, setLoserId] = useState('');
   const [matchScore, setMatchScore] = useState('');
   const [attendeesList, setAttendeesList] = useState([]);
+  const [waitlist, setWaitlist] = useState([]);
   
   const isPastEvent = rawDate ? new Date(rawDate) < new Date() : false;
 
@@ -56,7 +57,57 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
       }
     } catch (err) {
       console.error(err);
+      console.error(err);
       alert("Network error.");
+    }
+  };
+
+  const fetchWaitlist = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/rsvps`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setWaitlist(data.filter(r => r.status === 'WAITLIST'));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleWaitlistAction = async (userId, action) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/rsvp/${userId}/${action}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        alert(`User ${action}ed`);
+        fetchWaitlist();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteEvent = async () => {
+    if(window.confirm("Are you sure you want to delete this event?")) {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          alert("Event deleted");
+          window.location.reload();
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -298,7 +349,10 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
                 )}
                 {isHost && (
                   <button 
-                    onClick={() => setShowManage(true)} 
+                    onClick={() => {
+                      fetchWaitlist();
+                      setShowManage(true);
+                    }} 
                     className="flex-1 px-4 py-3 bg-surface-dark border border-lime-vibe text-lime-vibe font-label-mono text-sm uppercase tracking-widest hover:bg-lime-vibe/10 transition-all rounded-DEFAULT flex items-center justify-center gap-2"
                   >
                     <Settings2 size={16} /> MANAGE
@@ -328,7 +382,10 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
               <>
                 {isHost ? (
                   <button 
-                    onClick={() => setShowManage(true)} 
+                    onClick={() => {
+                      fetchWaitlist();
+                      setShowManage(true);
+                    }} 
                     className="flex-1 px-4 py-3 bg-surface-dark border border-lime-vibe text-lime-vibe font-label-mono text-sm uppercase tracking-widest hover:bg-lime-vibe/10 transition-all rounded-DEFAULT flex items-center justify-center gap-2"
                   >
                     <Settings2 size={16} /> MANAGE
@@ -448,6 +505,34 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
               className="w-full bg-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest p-3 rounded-DEFAULT hover:bg-white transition-all glow-neon"
             >
               Check In Attendee
+            </button>
+          </div>
+
+          <div className="mt-8 border-t border-surface-variant/30 pt-6">
+            <p className="font-label-mono text-lime-vibe text-xs tracking-widest mb-4">WAITLIST MANAGEMENT</p>
+            {waitlist.length === 0 ? (
+              <p className="text-text-muted font-body-sm">No users on waitlist.</p>
+            ) : (
+              <div className="space-y-3 max-h-40 overflow-y-auto custom-scrollbar">
+                {waitlist.map(rsvp => (
+                  <div key={rsvp.id} className="flex justify-between items-center bg-surface-container p-2 rounded border border-surface-variant/50">
+                    <span className="text-white text-sm">{rsvp.user.username}</span>
+                    <div className="flex gap-2">
+                      <button onClick={() => handleWaitlistAction(rsvp.user.id, 'approve')} className="bg-lime-vibe/20 text-lime-vibe px-2 py-1 rounded text-xs uppercase hover:bg-lime-vibe/40">Approve</button>
+                      <button onClick={() => handleWaitlistAction(rsvp.user.id, 'reject')} className="bg-red-500/20 text-red-500 px-2 py-1 rounded text-xs uppercase hover:bg-red-500/40">Reject</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-8 border-t border-red-500/30 pt-6">
+            <button 
+              onClick={handleDeleteEvent}
+              className="w-full bg-red-500/10 border border-red-500/50 text-red-500 font-label-mono text-sm uppercase tracking-widest p-3 rounded-DEFAULT hover:bg-red-500/30 transition-all"
+            >
+              Delete Event
             </button>
           </div>
         </div>

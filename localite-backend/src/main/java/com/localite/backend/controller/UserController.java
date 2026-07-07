@@ -78,10 +78,49 @@ public class UserController {
             if (updatedUser.getProfilePhotoUrl() != null) user.setProfilePhotoUrl(updatedUser.getProfilePhotoUrl());
             if (updatedUser.getLookingFor() != null) user.setLookingFor(updatedUser.getLookingFor());
             if (updatedUser.getAvailability() != null) user.setAvailability(updatedUser.getAvailability());
+            if (updatedUser.getInstagramHandle() != null) user.setInstagramHandle(updatedUser.getInstagramHandle());
+            if (updatedUser.getTwitterHandle() != null) user.setTwitterHandle(updatedUser.getTwitterHandle());
             userRepository.save(user);
             return ResponseEntity.ok(user);
         }
 
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/verify-identity")
+    public ResponseEntity<?> verifyIdentity(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // In a real app, this would call Onfido or Stripe Identity.
+            // For now, we mock the verification success.
+            user.setVerified(true);
+            user.setTrustScore(user.getTrustScore() + 20); // Award trust score for verification
+            userRepository.save(user);
+            return ResponseEntity.ok(Map.of("message", "Identity verified successfully", "isVerified", true));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/verify-phone")
+    public ResponseEntity<?> verifyPhone(@RequestBody Map<String, String> payload, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        String phone = payload.get("phoneNumber");
+        if (phone == null || phone.isEmpty()) return ResponseEntity.badRequest().body("Phone number required");
+
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // In a real app, this would call Twilio or Firebase Phone Auth.
+            user.setPhoneNumber(phone);
+            user.setPhoneVerified(true);
+            user.setTrustScore(user.getTrustScore() + 10);
+            userRepository.save(user);
+            return ResponseEntity.ok(Map.of("message", "Phone verified successfully", "isPhoneVerified", true));
+        }
         return ResponseEntity.notFound().build();
     }
 

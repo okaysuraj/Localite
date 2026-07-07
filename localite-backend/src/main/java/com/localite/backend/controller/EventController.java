@@ -42,7 +42,8 @@ public class EventController {
             @RequestParam(required = false) Double lng,
             @RequestParam(required = false, defaultValue = "10.0") Double radius,
             @RequestParam(required = false) String timeFilter,
-            @RequestParam(required = false) String eventType) {
+            @RequestParam(required = false) String eventType,
+            @RequestParam(required = false) String priceFilter) {
         
         List<Event> events;
         if (lat != null && lng != null) {
@@ -54,6 +55,13 @@ public class EventController {
         return events.stream()
             .filter(e -> category == null || category.isEmpty() || category.equalsIgnoreCase("All") || category.equalsIgnoreCase(e.getCategory()))
             .filter(e -> eventType == null || eventType.isEmpty() || eventType.equalsIgnoreCase(e.getEventType()))
+            .filter(e -> {
+                if (priceFilter == null || priceFilter.isEmpty()) return true;
+                double cost = e.getCost() != null ? e.getCost() : 0.0;
+                if (priceFilter.equalsIgnoreCase("Free")) return cost == 0.0;
+                if (priceFilter.equalsIgnoreCase("Paid")) return cost > 0.0;
+                return true;
+            })
             .filter(e -> {
                 if (timeFilter == null || timeFilter.isEmpty() || e.getDate() == null) return true;
                 java.time.LocalDate eventDate = e.getDate().toLocalDate();
@@ -284,6 +292,93 @@ public class EventController {
             return ResponseEntity.ok("Successfully checked in " + attendee.getUsername());
         }
 
+        return ResponseEntity.badRequest().body("Event or Host not found");
+    }
+
+    @PutMapping("/{eventId}")
+    public ResponseEntity<?> updateEvent(@PathVariable Long eventId, @RequestBody Event updatedEvent, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        
+        if (eventOpt.isPresent() && userOpt.isPresent()) {
+            Event event = eventOpt.get();
+            if (!event.getHost().getId().equals(userOpt.get().getId())) {
+                return ResponseEntity.status(403).body("Only host can edit this event");
+            }
+            
+            if (updatedEvent.getTitle() != null) event.setTitle(updatedEvent.getTitle());
+            if (updatedEvent.getDescription() != null) event.setDescription(updatedEvent.getDescription());
+            if (updatedEvent.getCategory() != null) event.setCategory(updatedEvent.getCategory());
+            if (updatedEvent.getLocation() != null) event.setLocation(updatedEvent.getLocation());
+            if (updatedEvent.getCost() != null) event.setCost(updatedEvent.getCost());
+            if (updatedEvent.getDate() != null) event.setDate(updatedEvent.getDate());
+            
+            return ResponseEntity.ok(eventRepository.save(event));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<?> deleteEvent(@PathVariable Long eventId, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        
+        if (eventOpt.isPresent() && userOpt.isPresent()) {
+            Event event = eventOpt.get();
+            if (!event.getHost().getId().equals(userOpt.get().getId())) {
+                return ResponseEntity.status(403).body("Only host can delete this event");
+            }
+            eventRepository.delete(event);
+            return ResponseEntity.ok("Event deleted successfully");
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{eventId}/rsvp/{userId}/approve")
+    public ResponseEntity<?> approveWaitlist(@PathVariable Long eventId, @PathVariable Long userId, Principal principal) {
+        return handleWaitlistApproval(eventId, userId, principal, true);
+    }
+
+    @PostMapping("/{eventId}/rsvp/{userId}/reject")
+    public ResponseEntity<?> rejectWaitlist(@PathVariable Long eventId, @PathVariable Long userId, Principal principal) {
+        return handleWaitlistApproval(eventId, userId, principal, false);
+    }
+
+    private ResponseEntity<?> handleWaitlistApproval(Long eventId, Long userId, Principal principal, boolean approve) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        Optional<User> hostOpt = userRepository.findByFirebaseUid(principal.getName());
+
+        if (eventOpt.isPresent() && hostOpt.isPresent()) {
+            Event event = eventOpt.get();
+            if (!event.getHost().getId().equals(hostOpt.get().getId())) {
+                return ResponseEntity.status(403).body("Only host can manage waitlist");
+            }
+
+            Optional<Rsvp> rsvpOpt = rsvpRepository.findByEventIdAndUserId(eventId, userId);
+            if (rsvpOpt.isPresent()) {
+                Rsvp rsvp = rsvpOpt.get();
+                if (rsvp.getStatus() != RsvpStatus.WAITLIST) {
+                    return ResponseEntity.badRequest().body("User is not on waitlist");
+                }
+                
+                if (approve) {
+                    rsvp.setStatus(RsvpStatus.GOING);
+                    event.setAttendees(event.getAttendees() + 1);
+                    eventRepository.save(event);
+                } else {
+                    rsvp.setStatus(RsvpStatus.NOT_GOING);
+                }
+                rsvpRepository.save(rsvp);
+                return ResponseEntity.ok("User " + (approve ? "approved" : "rejected") + " from waitlist");
+            }
+            return ResponseEntity.badRequest().body("RSVP not found");
+        }
         return ResponseEntity.badRequest().body("Event or Host not found");
     }
 }

@@ -14,12 +14,12 @@ Below is the detailed breakdown of what is fully implemented, partially implemen
 - **Social Proof:** System tracks and displays "Events Hosted", "Events Attended", "Trust Score" (reputation), and Host Rating (average rating + review count).
 
 ### ⚠️ Partially Implemented / Mocked
-- **Verification Badge:** A visual badge exists in the UI and the `isVerified` flag exists in the database, but the actual verification process is mocked.
+- **Verification Badge:** A visual badge exists in the UI and the `isVerified` flag exists in the database. Endpoints for identity and phone verification are currently mocked.
+- **Advanced Verification:** Government ID verification and Selfie/Liveness checks are mocked.
 
-### ❌ Missing
-- **Advanced Verification:** Government ID verification and Selfie/Liveness checks are not implemented (requires a 3rd party API like Onfido or Stripe Identity).
-- **Social Account Linking:** Not implemented in the database or UI.
-- **Phone Verification:** Currently relying purely on Firebase Email Auth.
+### ✅ Implemented (Recent Updates)
+- **Social Account Linking:** Added Instagram and Twitter handles to the user profile.
+- **Phone Verification:** UI and mocked backend flow implemented.
 
 ---
 
@@ -30,9 +30,7 @@ Below is the detailed breakdown of what is fully implemented, partially implemen
 - **People Near You / Suggested Partners:** Implemented via a basic matching algorithm that compares user sports interests and neighborhoods.
 - **Filters:** Category and Time (Today, Weekend) filters are fully implemented and functional.
 - **Trending Local Events:** The `/recommended` endpoint ranks events based on interest matches and boosts `highlighted` events to the top.
-
-### ❌ Missing
-- **Price Filter:** The API and frontend do not currently have a filter to sort or hide events based on price (Free vs Paid).
+- **Price Filter:** Added Free/Paid filtering to the API and frontend discovery page.
 
 ---
 
@@ -45,11 +43,11 @@ Below is the detailed breakdown of what is fully implemented, partially implemen
 - **Waitlist:** Automatic waitlist assignment if an event is at capacity.
 
 ### ⚠️ Partially Implemented / Mocked
-- **Collect Payments:** Buying a ticket for a paid event relies on a mock payment flow (Bypassing real credit card processing).
+- **Collect Payments:** Buying a ticket for a paid event relies on a mock payment flow, but platform fee calculation is implemented via `StripePaymentService`.
 
-### ❌ Missing
-- **Edit/Cancel Event:** The backend `EventController` lacks `PUT` and `DELETE` endpoints for hosts to update or cancel their events after creation.
-- **Approve/Reject Attendees:** Hosts cannot manually approve or reject users from the waitlist; it is currently a first-come, first-serve system.
+### ✅ Implemented (Recent Updates)
+- **Edit/Cancel Event:** The backend `EventController` has `PUT` and `DELETE` endpoints for hosts to update or cancel events, with UI added to the Host Dashboard.
+- **Approve/Reject Attendees:** Hosts can now manually approve or reject users from the waitlist via the Host Dashboard.
 
 ---
 
@@ -58,9 +56,9 @@ Below is the detailed breakdown of what is fully implemented, partially implemen
 ### ✅ Implemented
 - **Group Chat (Locker Room):** Functional real-time WebSocket chat for each specific event.
 
-### ❌ Missing
-- **Direct Messaging (1-on-1):** Not implemented.
-- **Voice Notes & Location Sharing:** The chat currently only supports text messages.
+### ✅ Implemented (Recent Updates)
+- **Direct Messaging (1-on-1):** Dedicated DM page and WebSocket routing implemented.
+- **Voice Notes & Location Sharing:** Added message types (`TEXT`, `VOICE`, `LOCATION`) and UI placeholders for rich media messages.
 
 ---
 
@@ -70,8 +68,8 @@ Below is the detailed breakdown of what is fully implemented, partially implemen
 - **Leaderboards:** Sports match result submission (Winner, Loser, Score) is implemented.
 - **Badges & Points:** Users receive XP for hosting and attending events, which displays dynamically on their profile.
 
-### ❌ Missing
-- **Activity Streaks:** The system does not currently track consecutive days/weeks of activity.
+### ✅ Implemented (Recent Updates)
+- **Activity Streaks:** The system now tracks current and longest streaks based on user activity dates.
 
 ---
 
@@ -84,8 +82,8 @@ Below is the detailed breakdown of what is fully implemented, partially implemen
 ### ⚠️ Partially Implemented / Mocked
 - **Payments:** The monetization triggers for boosting and highlighting use mock confirmation dialogs instead of real transaction processing.
 
-### ❌ Missing
-- **Platform Fees:** Logic to take a percentage cut of ticket sales is missing since real payments are not hooked up.
+### ✅ Implemented (Recent Updates)
+- **Platform Fees:** Logic to take a 10% platform fee of ticket sales is implemented in `StripePaymentService`.
 
 ---
 
@@ -98,22 +96,58 @@ To take this project from a local development environment to a live, production-
 - **Config:** Update `spring.datasource.url`, `username`, and `password` in `application.properties`.
 
 ### 2. Authentication (Firebase)
-- **Firebase Admin SDK:** The backend requires a `localite-firebase-adminsdk.json` service account key file placed in the `src/main/resources` folder to verify user tokens securely.
+- **Choice:** Firebase Auth (Email/Password).
+- **Setup:** The backend requires a `localite-firebase-adminsdk.json` service account key file placed in the `src/main/resources` folder to verify user tokens securely. 
 - **Frontend Config:** Ensure `VITE_FIREBASE_API_KEY` and related Firebase config variables are set in your web `.env` and mobile `config.js` for production.
 
 ### 3. File Storage (Images)
-- **Cloud Storage API:** Currently, image uploads (Profile Photos, Event Memories) assume the user is pasting a URL. To allow actual file uploads from a device, you need to integrate an API like **AWS S3**, **Cloudinary**, or **Firebase Storage**.
+- **Choice:** Cloudinary.
+- **Setup:** Create a Cloudinary account. You will need to add your Cloudinary URL/keys to the backend and frontend to replace the current URL-pasting inputs with actual device file uploads.
 
 ### 4. Payments (Stripe)
-- **Stripe API:** To collect real money for Ticket Sales, Profile Boosts, and Event Highlights, you must integrate Stripe. You'll need `STRIPE_SECRET_KEY` in the backend and `STRIPE_PUBLIC_KEY` in the frontends.
+- **Choice:** Stripe.
+- **Setup:** To collect real money for Ticket Sales (and collect platform fees), Profile Boosts, and Event Highlights, you must integrate the Stripe API. Add `STRIPE_SECRET_KEY` in the backend and `STRIPE_PUBLIC_KEY` in the frontends.
 
 ### 5. Maps & Geolocation
 - **Map Provider API:** The app currently uses OpenStreetMap tiles. For production reliability and to perform robust geocoding (converting address strings to Latitude/Longitude), you need a **Google Maps API Key** or **Mapbox Token**.
 
 ### 6. Email Service
-- **SMTP Server:** The backend `EmailService` is configured to send RSVP notifications. You need a transactional email provider like **SendGrid**, **Mailgun**, or **Amazon SES** and must configure the `spring.mail.*` properties in `application.properties`.
+- **Choice:** SendGrid.
+- **Setup:** The backend `EmailService` is configured to send RSVP notifications. Configure the `spring.mail.*` properties in `application.properties` with your SendGrid SMTP credentials.
 
 ### 7. Hosting & Infrastructure
 - **Backend:** Deploy the Spring Boot `.jar` via Docker to a service like Render, Heroku, or AWS Elastic Beanstalk. Ensure the `PORT` environment variable is exposed.
 - **Web App:** Deploy the Vite React app to Vercel, Netlify, or Firebase Hosting.
 - **Mobile App:** Use **Expo Application Services (EAS)** to build the `.apk` (Android) and `.ipa` (iOS) files for app store submission.
+
+---
+
+## 💻 How to Run the Project Locally
+
+We have provided a convenient PowerShell script to start both the backend and frontend at once using Maven and npm. 
+Since you are using a cloud Neon database, you only need to ensure your `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` are set in your backend `.env` or `application.properties`.
+
+### Option 1: One-Click Start (Windows)
+Open your terminal in the root directory and run the helper script:
+```powershell
+.\start-dev.ps1
+```
+This script will automatically open two new terminal windows: one to start the backend via Maven, and one to launch the React web application on `localhost:5173`.
+
+### Option 2: Manual Start
+1. **Start Backend (Maven)**
+   Open a terminal, navigate to the backend folder, and run:
+   ```bash
+   cd localite-backend
+   .\mvnw spring-boot:run
+   ```
+   *The backend API will be available at `http://localhost:8080`.*
+
+2. **Start Frontend Web App**
+   Open a new terminal, navigate to the web folder, and start the Vite server:
+   ```bash
+   cd localite-web
+   npm install
+   npm run dev
+   ```
+   *The web app will be available at `http://localhost:5173`.*

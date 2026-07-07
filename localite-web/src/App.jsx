@@ -10,6 +10,7 @@ import LandingPage from './pages/LandingPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminDashboard from './pages/AdminDashboard';
+import MessagesPage from './pages/MessagesPage';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import './App.css';
 
@@ -59,6 +60,11 @@ const AppContent = () => {
           <Route path="/admin" element={
             <ProtectedRoute>
               <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/messages" element={
+            <ProtectedRoute>
+              <MessagesPage />
             </ProtectedRoute>
           } />
         </Routes>

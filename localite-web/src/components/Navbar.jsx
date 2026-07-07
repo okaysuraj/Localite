@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { MapPin, Search, User, LogOut, Users, Bell, Trophy, Shield } from 'lucide-react';
+import { MapPin, Search, User, LogOut, Users, Bell, Trophy, Shield, MessageSquare } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import NotificationPanel from './NotificationPanel';
@@ -59,6 +59,9 @@ const Navbar = () => {
         </button>
         <NotificationPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
 
+        <Link to="/messages" className="p-2 text-text-muted hover:text-lime-vibe transition-colors bg-surface-variant/10 rounded-full" title="Messages">
+          <MessageSquare size={20} />
+        </Link>
         <Link to="/network" className="p-2 text-text-muted hover:text-lime-vibe transition-colors bg-surface-variant/10 rounded-full">
           <Users size={20} />
         </Link>

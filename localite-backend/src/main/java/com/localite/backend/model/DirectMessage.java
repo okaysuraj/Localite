@@ -25,6 +25,9 @@ public class DirectMessage {
     private User receiver;
 
     private String content;
+    
+    private String messageType = "TEXT"; // TEXT, VOICE, LOCATION
+    private String metadata; // URL for audio, or lat,lng for location
 
     private LocalDateTime sentAt;
 
@@ -54,4 +57,10 @@ public class DirectMessage {
 
     public LocalDateTime getSentAt() { return sentAt; }
     public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
+
+    public String getMessageType() { return messageType; }
+    public void setMessageType(String messageType) { this.messageType = messageType; }
+
+    public String getMetadata() { return metadata; }
+    public void setMetadata(String metadata) { this.metadata = metadata; }
 }

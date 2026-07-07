@@ -16,6 +16,12 @@ const ProfilePage = () => {
     gender: '',
     lookingFor: '',
     availability: '',
+    instagramHandle: '',
+    twitterHandle: '',
+    phoneNumber: '',
+    isPhoneVerified: false,
+    currentStreak: 0,
+    longestStreak: 0,
     xp: 0,
     badges: []
   });
@@ -54,6 +60,12 @@ const ProfilePage = () => {
           gender: data.gender || '',
           lookingFor: data.lookingFor || '',
           availability: data.availability || '',
+          instagramHandle: data.instagramHandle || '',
+          twitterHandle: data.twitterHandle || '',
+          phoneNumber: data.phoneNumber || '',
+          isPhoneVerified: data.isPhoneVerified || false,
+          currentStreak: data.currentStreak || 0,
+          longestStreak: data.longestStreak || 0,
           trustScore: data.trustScore || 0,
           eventsHosted: data.eventsHosted || 0,
           eventsAttended: data.eventsAttended || 0,
@@ -100,12 +112,15 @@ const ProfilePage = () => {
           age: profile.age ? parseInt(profile.age, 10) : null,
           gender: profile.gender,
           lookingFor: profile.lookingFor,
-          availability: profile.availability
+          availability: profile.availability,
+          instagramHandle: profile.instagramHandle,
+          twitterHandle: profile.twitterHandle
         })
       });
       if (res.ok) {
         setIsEditing(false);
         alert("Profile updated successfully!");
+        fetchProfile();
       }
     } catch (err) {
       console.error(err);
@@ -129,6 +144,46 @@ const ProfilePage = () => {
       } catch (err) {
         console.error(err);
       }
+    }
+  };
+
+  const handleVerifyIdentity = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/verify-identity`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        alert("Identity Verified successfully! (Mocked)");
+        fetchProfile();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleVerifyPhone = async () => {
+    if (!profile.phoneNumber) {
+      alert("Please enter a phone number first.");
+      return;
+    }
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/verify-phone`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ phoneNumber: profile.phoneNumber })
+      });
+      if (res.ok) {
+        alert("Phone Verified successfully! (Mocked)");
+        fetchProfile();
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -236,6 +291,12 @@ const ProfilePage = () => {
                   <div className="bg-surface-container px-6 py-3 rounded-lg border border-surface-variant/50 text-center">
                     <p className="font-headline-sm text-white text-2xl">{profile.eventsAttended}</p>
                     <p className="font-label-mono text-[10px] text-text-muted uppercase tracking-widest mt-1">Attended</p>
+                  </div>
+                  <div className="bg-surface-container px-6 py-3 rounded-lg border border-surface-variant/50 text-center">
+                    <div className="flex items-center gap-1 font-headline-sm text-orange-400 text-2xl">
+                      {profile.currentStreak} <Activity size={16} className="text-orange-400" />
+                    </div>
+                    <p className="font-label-mono text-[10px] text-text-muted uppercase tracking-widest mt-1">Day Streak</p>
                   </div>
                 </div>
               </div>
@@ -393,6 +454,86 @@ const ProfilePage = () => {
                       {profile.availability || 'Not configured'}
                     </p>
                   )}
+                </div>
+
+                <div className="md:col-span-2 mt-4">
+                  <h4 className="font-label-caps text-label-caps text-lime-vibe uppercase tracking-[0.2em] mb-6 flex items-center gap-2 border-b border-surface-variant/10 pb-4">
+                    <Shield size={16} /> Identity & Verification
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Phone Number</label>
+                      {isEditing ? (
+                        <div className="flex gap-2">
+                          <input 
+                            type="text"
+                            name="phoneNumber"
+                            value={profile.phoneNumber}
+                            onChange={handleChange}
+                            className="flex-1 bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                            placeholder="e.g. +1 555-0199"
+                          />
+                          {!profile.isPhoneVerified && (
+                            <button onClick={handleVerifyPhone} className="bg-lime-vibe/20 text-lime-vibe border border-lime-vibe/50 px-4 rounded-lg font-label-mono text-xs uppercase hover:bg-lime-vibe/30 transition-all">Verify</button>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent flex items-center justify-between">
+                          {profile.phoneNumber || 'Not provided'}
+                          {profile.isPhoneVerified ? <span className="text-lime-vibe text-xs uppercase font-label-mono ml-2 border border-lime-vibe/50 px-2 py-1 rounded">Verified</span> : ''}
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">ID Verification</label>
+                      {profile.isVerified ? (
+                        <p className="font-body-md text-lime-vibe bg-lime-vibe/10 p-4 rounded-lg border border-lime-vibe/30 flex items-center gap-2">
+                          <Shield size={18} /> Government ID Verified
+                        </p>
+                      ) : (
+                        <button onClick={handleVerifyIdentity} className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md hover:border-lime-vibe hover:text-lime-vibe transition-all text-left flex items-center gap-2">
+                          <Shield size={18} /> Click to Verify Identity
+                        </button>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Instagram Handle</label>
+                      {isEditing ? (
+                        <input 
+                          type="text"
+                          name="instagramHandle"
+                          value={profile.instagramHandle}
+                          onChange={handleChange}
+                          className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                          placeholder="e.g. @localite"
+                        />
+                      ) : (
+                        <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
+                          {profile.instagramHandle || 'Not linked'}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Twitter Handle</label>
+                      {isEditing ? (
+                        <input 
+                          type="text"
+                          name="twitterHandle"
+                          value={profile.twitterHandle}
+                          onChange={handleChange}
+                          className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-4 font-body-md focus:outline-none focus:border-lime-vibe transition-colors"
+                          placeholder="e.g. @localite_app"
+                        />
+                      ) : (
+                        <p className="font-body-md text-on-surface bg-surface-dark/50 p-4 rounded-lg border border-transparent">
+                          {profile.twitterHandle || 'Not linked'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
