@@ -31,6 +31,7 @@ public class Event {
     private String location;
     private int attendees;
     private int maxAttendees;
+    @jakarta.persistence.Column(length = 2048)
     private String imageUrl;
     private Double latitude;
     private Double longitude;

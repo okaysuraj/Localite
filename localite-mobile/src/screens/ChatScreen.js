@@ -15,8 +15,7 @@ export default function ChatScreen({ route, navigation }) {
   const stompClientRef = useRef(null);
 
   useEffect(() => {
-    loadUserAndMessages();
-  const loadUserAndMessages = async () => {
+    const loadUserAndMessages = async () => {
     const user = await AsyncStorage.getItem('username');
     setCurrentUser(user);
     
@@ -48,6 +47,9 @@ export default function ChatScreen({ route, navigation }) {
     client.activate();
     stompClientRef.current = client;
   };
+
+    loadUserAndMessages();
+  }, []);
   
   useEffect(() => {
     return () => {

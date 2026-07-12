@@ -7,7 +7,7 @@ yarn-error.log
 
 # Testing
 coverage/
-
+skills/
 # Production
 build/
 dist/

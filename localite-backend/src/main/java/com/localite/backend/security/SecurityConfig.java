@@ -39,9 +39,11 @@ public class SecurityConfig {
             }))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/events").permitAll() // Allow viewing events without login
+                .requestMatchers("/api/events", "/api/users", "/api/categories").permitAll() // Allow viewing events/users/categories without login
+                .requestMatchers("/h2-console/**").permitAll() // Allow H2 console
                 .anyRequest().authenticated()
             )
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())) // Needed for H2 console
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

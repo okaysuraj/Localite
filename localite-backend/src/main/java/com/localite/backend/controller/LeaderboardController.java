@@ -39,17 +39,19 @@ public class LeaderboardController {
         List<SportProfile> profiles = sportProfileRepository.findBySportNameOrderByPointsDesc(sport);
         
         // Map to a cleaner response
-        List<Map<String, Object>> response = profiles.stream().map(p -> Map.of(
-            "id", p.getId(),
-            "userId", p.getUser().getId(),
-            "username", p.getUser().getUsername(),
-            "profilePhotoUrl", p.getUser().getProfilePhotoUrl() != null ? p.getUser().getProfilePhotoUrl() : "",
-            "sportName", p.getSportName(),
-            "skillLevel", p.getSkillLevel() != null ? p.getSkillLevel() : "Unranked",
-            "points", p.getPoints(),
-            "wins", p.getWins(),
-            "losses", p.getLosses()
-        )).collect(Collectors.toList());
+        List<Map<String, Object>> response = profiles.stream().map(p -> {
+            Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", p.getId());
+            map.put("userId", p.getUser().getId());
+            map.put("username", p.getUser().getUsername());
+            map.put("profilePhotoUrl", p.getUser().getProfilePhotoUrl() != null ? p.getUser().getProfilePhotoUrl() : "");
+            map.put("sportName", p.getSportName());
+            map.put("skillLevel", p.getSkillLevel() != null ? p.getSkillLevel() : "Unranked");
+            map.put("points", p.getPoints());
+            map.put("wins", p.getWins());
+            map.put("losses", p.getLosses());
+            return map;
+        }).collect(Collectors.toList());
         
         return ResponseEntity.ok(response);
     }

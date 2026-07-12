@@ -80,6 +80,16 @@ public class UserController {
             if (updatedUser.getAvailability() != null) user.setAvailability(updatedUser.getAvailability());
             if (updatedUser.getInstagramHandle() != null) user.setInstagramHandle(updatedUser.getInstagramHandle());
             if (updatedUser.getTwitterHandle() != null) user.setTwitterHandle(updatedUser.getTwitterHandle());
+            
+            // Settings update
+            user.setPublicProfile(updatedUser.isPublicProfile());
+            user.setLiveActivity(updatedUser.isLiveActivity());
+            user.setPreciseLocation(updatedUser.isPreciseLocation());
+            user.setPushInvitations(updatedUser.isPushInvitations());
+            user.setPushMessages(updatedUser.isPushMessages());
+            user.setPushLocation(updatedUser.isPushLocation());
+            user.setSafetyAlerts(updatedUser.isSafetyAlerts());
+            if (updatedUser.getEmailDigest() != null) user.setEmailDigest(updatedUser.getEmailDigest());
             userRepository.save(user);
             return ResponseEntity.ok(user);
         }

@@ -106,7 +106,12 @@ public class EventController {
                 Event newEvent = new Event();
                 newEvent.setHost(event.getHost());
                 newEvent.setTitle(event.getTitle());
+                newEvent.setDescription(event.getDescription());
                 newEvent.setCategory(event.getCategory());
+                newEvent.setEventType(event.getEventType());
+                newEvent.setCost(event.getCost());
+                newEvent.setRules(event.getRules());
+                newEvent.setSkillLevel(event.getSkillLevel());
                 newEvent.setLocation(event.getLocation());
                 newEvent.setAttendees(0);
                 newEvent.setMaxAttendees(event.getMaxAttendees());
@@ -372,7 +377,7 @@ public class EventController {
                     event.setAttendees(event.getAttendees() + 1);
                     eventRepository.save(event);
                 } else {
-                    rsvp.setStatus(RsvpStatus.NOT_GOING);
+                    rsvp.setStatus(RsvpStatus.DECLINED);
                 }
                 rsvpRepository.save(rsvp);
                 return ResponseEntity.ok("User " + (approve ? "approved" : "rejected") + " from waitlist");

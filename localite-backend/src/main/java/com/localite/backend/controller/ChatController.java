@@ -77,7 +77,7 @@ public class ChatController {
             responseMap.put("sender", message.getSender().getUsername());
             
             // Broadcast over STOMP
-            messagingTemplate.convertAndSend("/topic/events/" + eventId, responseMap);
+            messagingTemplate.convertAndSend("/topic/events/" + eventId, (Object) responseMap);
             
             return ResponseEntity.ok(responseMap);
         }
@@ -104,7 +104,7 @@ public class ChatController {
             responseMap.put("sentAt", message.getSentAt());
             responseMap.put("sender", message.getSender().getUsername());
             
-            messagingTemplate.convertAndSend("/topic/events/" + eventId, responseMap);
+            messagingTemplate.convertAndSend("/topic/events/" + eventId, (Object) responseMap);
         }
     }
 }

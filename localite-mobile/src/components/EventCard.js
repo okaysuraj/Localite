@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import QRCode from 'react-native-qrcode-svg';
 import { API_URL } from '../config';
 
-export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUserClick }) {
+export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUserClick, onDetailPress }) {
   const [ticketData, setTicketData] = useState(null);
   const [showQr, setShowQr] = useState(false);
   const [showReview, setShowReview] = useState(false);
@@ -254,10 +254,10 @@ export default function EventCard({ item, onRsvp, onChat, isHost, onManage, onUs
           </View>
           
           <View style={styles.cardContent}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity onPress={() => onDetailPress && onDetailPress(item.id)} style={{flexDirection: 'row', alignItems: 'center'}}>
               {item.highlighted && <Ionicons name="star" size={16} color="#a855f7" style={{marginRight: 5}} />}
               <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
-            </View>
+            </TouchableOpacity>
             {item.host && (
               <Text style={{color: '#94a3b8', fontSize: 10, fontFamily: 'monospace', textTransform: 'uppercase', marginBottom: 5}}>
                 HOSTED BY{' '}

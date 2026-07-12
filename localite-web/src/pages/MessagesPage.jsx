@@ -1,264 +1,146 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { User, Send, Mic, MapPin, X } from 'lucide-react';
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import NewMessageModal from '../components/NewMessageModal';
+import { auth } from '../firebase';
+import { API_URL } from '../config';
 
-const MessagesPage = () => {
-  const [connections, setConnections] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
-  const stompClient = useRef(null);
-  const messagesEndRef = useRef(null);
+export default function MessagesPage() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('MESSAGES'); // MESSAGES, REQUESTS
+  const [activeConversation, setActiveConversation] = useState(null);
+  const [showNewMessageModal, setShowNewMessageModal] = useState(false);
+  const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCurrentUser().then(user => {
-      if(user) {
-        fetchConnections();
-        connectWebSocket(user.id);
-      }
-    });
-    return () => {
-      if (stompClient.current) {
-        stompClient.current.deactivate();
-      }
-    };
-  }, []);
+    fetchConversations();
+  }, [activeTab]);
 
-  const fetchCurrentUser = async () => {
+  const fetchConversations = async () => {
+    setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(import.meta.env.VITE_API_URL + '/users/me', {
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) return;
+
+      const res = await fetch(`${API_URL}/messages/direct/conversations`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      
       if (res.ok) {
         const data = await res.json();
-        setCurrentUser(data);
-        return data;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    return null;
-  };
-
-  const fetchConnections = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(import.meta.env.VITE_API_URL + '/users', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setConnections(data); // In real app, only fetch connected users, here fetching all for demo
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const connectWebSocket = (userId) => {
-    const token = localStorage.getItem('token');
-    const wsUrl = import.meta.env.VITE_API_URL.replace('/api', '/ws');
-    
-    stompClient.current = new Client({
-      webSocketFactory: () => new SockJS(wsUrl),
-      connectHeaders: { Authorization: `Bearer ${token}` },
-      debug: function (str) {
-        console.log(str);
-      },
-      onConnect: () => {
-        stompClient.current.subscribe(`/topic/user/${userId}/messages`, (msg) => {
-          const newMsg = JSON.parse(msg.body);
-          setMessages(prev => [...prev, newMsg]);
-          scrollToBottom();
+        const formatted = data.map(msg => {
+          const isSender = msg.sender.firebaseUid === auth.currentUser.uid;
+          const otherUser = isSender ? msg.receiver : msg.sender;
+          return {
+            id: otherUser.id,
+            user: {
+              id: otherUser.id,
+              username: otherUser.username,
+              profileImageUrl: otherUser.profilePhotoUrl || 'https://via.placeholder.com/150'
+            },
+            lastMessage: msg.content,
+            timestamp: new Date(msg.sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+            unread: false // Will need unread logic later
+          };
         });
+        setConversations(formatted);
       }
-    });
-    stompClient.current.activate();
-  };
-
-  const selectUser = async (user) => {
-    setSelectedUser(user);
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/messages/direct/${user.id}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        setMessages(await res.json());
-        scrollToBottom();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
-  const sendMessage = async (type = 'TEXT', metadata = null) => {
-    if (!selectedUser) return;
-    if (type === 'TEXT' && !newMessage.trim()) return;
-
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/messages/direct/${selectedUser.id}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          content: type === 'TEXT' ? newMessage : '',
-          messageType: type,
-          metadata: metadata
-        })
-      });
-      if (res.ok) {
-        setNewMessage('');
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleVoiceNote = () => {
-    sendMessage('VOICE', 'https://example.com/mock-audio.mp3');
-  };
-
-  const handleLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          sendMessage('LOCATION', `${position.coords.latitude},${position.coords.longitude}`);
-        },
-        (error) => {
-          alert("Could not get your location.");
-        }
-      );
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-      <div className="flex flex-col md:flex-row h-[70vh] border border-surface-variant/30 rounded-2xl overflow-hidden bg-surface-container-low">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-80px)] bg-background max-w-7xl mx-auto border-x border-surface-variant/30 relative">
+      {showNewMessageModal && (
+        <NewMessageModal onClose={() => setShowNewMessageModal(false)} />
+      )}
+      
+      {/* Left Sidebar: Conversations */}
+      <aside className="w-full md:w-[400px] flex-shrink-0 flex flex-col bg-surface-container-low border-r border-outline-variant/30">
+        <div className="p-6 pb-4">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="font-headline-sm text-headline-sm text-primary">Inbox</h1>
+            <button 
+              onClick={() => setShowNewMessageModal(true)}
+              className="bg-primary text-on-primary px-4 py-2 rounded-xl flex items-center gap-2 font-label-caps text-label-caps hover:bg-primary/90 transition-all active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              New Chat
+            </button>
+          </div>
+          
+          <div className="relative mb-6">
+            <input 
+              className="w-full bg-surface-container-high border-none rounded-xl py-3 pl-12 pr-4 text-body-md placeholder:text-on-surface-variant/50 focus:ring-1 focus:ring-secondary-fixed-dim transition-all outline-none" 
+              placeholder="Search conversations..." 
+              type="text"
+            />
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60">search</span>
+          </div>
+          
+          <div className="flex border-b border-outline-variant/30">
+            <button 
+              onClick={() => setActiveTab('MESSAGES')}
+              className={`flex-1 pb-3 font-label-caps text-label-caps transition-colors ${activeTab === 'MESSAGES' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'}`}
+            >
+              MESSAGES
+            </button>
+            <button 
+              onClick={() => setActiveTab('REQUESTS')}
+              className={`flex-1 pb-3 font-label-caps text-label-caps transition-colors ${activeTab === 'REQUESTS' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'}`}
+            >
+              REQUESTS
+            </button>
+          </div>
+        </div>
         
-        {/* Sidebar */}
-        <div className="w-full md:w-1/3 border-r border-surface-variant/30 bg-surface-dark flex flex-col">
-          <div className="p-6 border-b border-surface-variant/30">
-            <h2 className="font-headline-sm text-white uppercase tracking-tight">Direct Messages</h2>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {connections.map(user => (
-              <div 
-                key={user.id} 
-                onClick={() => selectUser(user)}
-                className={`p-4 border-b border-surface-variant/10 cursor-pointer flex items-center gap-4 hover:bg-surface-variant/20 transition-colors ${selectedUser?.id === user.id ? 'bg-surface-variant/20 border-l-4 border-l-lime-vibe' : ''}`}
-              >
-                <div className="w-12 h-12 rounded-full bg-surface-variant/50 overflow-hidden shrink-0">
-                  {user.profilePhotoUrl ? (
-                    <img src={user.profilePhotoUrl} alt={user.username} className="w-full h-full object-cover" />
-                  ) : (
-                    <User size={24} className="text-text-muted mt-3 mx-auto" />
-                  )}
+        <div className="flex-grow overflow-y-auto px-3 pb-6 custom-scrollbar">
+          {loading ? (
+            <div className="p-4 text-center text-on-surface-variant text-body-md">Loading...</div>
+          ) : conversations.length === 0 ? (
+             <div className="p-4 text-center text-on-surface-variant text-body-md">No conversations yet.</div>
+          ) : conversations.map((conv) => (
+            <div 
+              key={conv.id}
+              onClick={() => navigate(`/messages/${conv.id}`)}
+              className={`p-4 rounded-xl flex gap-4 transition-all cursor-pointer mb-2 hover:bg-white hover:shadow-sm ${activeConversation?.id === conv.id ? 'bg-white shadow-sm border-l-4 border-secondary' : conv.unread ? 'bg-white shadow-sm border-l-4 border-secondary-fixed' : ''}`}
+            >
+              <div className="relative flex-shrink-0">
+                <div className="w-14 h-14 rounded-full overflow-hidden">
+                  <img className="w-full h-full object-cover" src={conv.user.profileImageUrl} alt={conv.user.username} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-body-md text-white font-bold truncate">{user.username}</h4>
+                {/* Simulated Online Status */}
+                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-surface-container-low rounded-full"></div>
+              </div>
+              <div className="flex-grow min-w-0">
+                <div className="flex justify-between items-start mb-1">
+                  <h3 className={`font-label-caps truncate ${activeConversation?.id === conv.id ? 'text-primary' : conv.unread ? 'text-primary font-bold' : 'text-primary'}`}>{conv.user.username}</h3>
+                  <span className={`text-[10px] font-label-caps ${activeConversation?.id === conv.id ? 'text-primary font-bold' : conv.unread ? 'text-primary font-bold' : 'text-on-surface-variant'}`}>{conv.timestamp}</span>
                 </div>
+                <p className={`text-body-md truncate ${activeConversation?.id === conv.id ? 'text-primary font-medium' : conv.unread ? 'text-primary font-medium' : 'text-on-surface-variant'}`}>{conv.lastMessage}</p>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Chat Area */}
-        <div className="w-full md:w-2/3 flex flex-col bg-background/50 relative">
-          {selectedUser ? (
-            <>
-              {/* Chat Header */}
-              <div className="p-4 border-b border-surface-variant/30 bg-surface-dark flex justify-between items-center z-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-surface-variant/50 overflow-hidden">
-                    {selectedUser.profilePhotoUrl ? (
-                      <img src={selectedUser.profilePhotoUrl} alt={selectedUser.username} className="w-full h-full object-cover" />
-                    ) : (
-                      <User size={20} className="text-text-muted mt-2 mx-auto" />
-                    )}
-                  </div>
-                  <h3 className="font-body-lg text-white font-bold">{selectedUser.username}</h3>
-                </div>
-                <button onClick={() => setSelectedUser(null)} className="md:hidden text-text-muted hover:text-white">
-                  <X size={24} />
-                </button>
-              </div>
-
-              {/* Chat Messages */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
-                {messages.map((msg, idx) => {
-                  const isMe = msg.sender.id === currentUser?.id;
-                  return (
-                    <div key={idx} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[80%] rounded-2xl p-4 ${isMe ? 'bg-lime-vibe text-primary-container rounded-tr-none' : 'bg-surface-container text-on-surface border border-surface-variant/50 rounded-tl-none'}`}>
-                        {msg.messageType === 'TEXT' && (
-                          <p className="font-body-md whitespace-pre-wrap">{msg.content}</p>
-                        )}
-                        {msg.messageType === 'VOICE' && (
-                          <div className="flex items-center gap-2">
-                            <Mic size={20} />
-                            <span className="font-label-mono text-xs uppercase tracking-widest">[Voice Note - {msg.metadata}]</span>
-                          </div>
-                        )}
-                        {msg.messageType === 'LOCATION' && (
-                          <div className="flex items-center gap-2">
-                            <MapPin size={20} />
-                            <span className="font-label-mono text-xs uppercase tracking-widest">[Location: {msg.metadata}]</span>
-                          </div>
-                        )}
-                        <p className={`text-[10px] mt-2 font-label-mono tracking-widest ${isMe ? 'text-primary-container/70' : 'text-text-muted'}`}>
-                          {new Date(msg.sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Chat Input */}
-              <div className="p-4 bg-surface-dark border-t border-surface-variant/30 flex items-center gap-2">
-                <input 
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage('TEXT')}
-                  placeholder="Transmit message..."
-                  className="flex-1 bg-surface-container border border-surface-variant/50 text-white rounded-full px-6 py-3 font-body-sm focus:outline-none focus:border-lime-vibe transition-colors"
-                />
-                <button onClick={handleLocation} className="p-3 bg-surface-container border border-surface-variant/50 text-lime-vibe rounded-full hover:bg-surface-variant/50 transition-colors" title="Share Location">
-                  <MapPin size={20} />
-                </button>
-                <button onClick={handleVoiceNote} className="p-3 bg-surface-container border border-surface-variant/50 text-lime-vibe rounded-full hover:bg-surface-variant/50 transition-colors" title="Send Voice Note">
-                  <Mic size={20} />
-                </button>
-                <button onClick={() => sendMessage('TEXT')} className="p-3 bg-lime-vibe text-primary-container rounded-full hover:bg-white transition-colors glow-neon">
-                  <Send size={20} className="ml-1" />
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex items-center justify-center flex-col text-text-muted">
-              <span className="material-symbols-outlined text-[64px] mb-4 opacity-30">chat</span>
-              <p className="font-label-mono uppercase tracking-widest text-sm">Select a user to begin communication.</p>
             </div>
-          )}
+          ))}
         </div>
-      </div>
+      </aside>
+
+      {/* Right Pane - Chat Window (Mock display here, real navigation handles routing typically, but if we keep it inline we render chat here) */}
+      <section className="hidden md:flex flex-grow relative flex-col items-center justify-center bg-background p-12">
+        <div className="relative z-10 text-center max-w-md animate-fade-in">
+          <div className="mb-8 relative inline-block">
+            <div className="w-24 h-24 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto border border-outline-variant/20">
+              <span className="material-symbols-outlined text-[42px] text-secondary">forum</span>
+            </div>
+          </div>
+          <h2 className="font-headline-md text-headline-md text-primary mb-4">Your Private Dialogue</h2>
+          <p className="text-body-lg text-on-surface-variant mb-10 leading-relaxed">
+            Select a member from your inbox to continue a conversation, or start a new connection to expand your local circle.
+          </p>
+        </div>
+      </section>
     </div>
   );
-};
-
-export default MessagesPage;
+}

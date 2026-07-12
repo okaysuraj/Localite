@@ -30,6 +30,32 @@ public class DirectMessageController {
         this.messagingTemplate = messagingTemplate;
     }
 
+    @GetMapping("/conversations")
+    public ResponseEntity<?> getConversations(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        
+        Long currentUserId = currentUserOpt.get().getId();
+        List<DirectMessage> allMessages = directMessageRepository.findBySenderIdOrReceiverIdOrderBySentAtDesc(currentUserId, currentUserId);
+        
+        // Group by the 'other' user ID and keep only the latest message
+        java.util.Map<Long, DirectMessage> latestMessages = new java.util.HashMap<>();
+        for (DirectMessage msg : allMessages) {
+            Long otherUserId = msg.getSender().getId().equals(currentUserId) ? msg.getReceiver().getId() : msg.getSender().getId();
+            if (!latestMessages.containsKey(otherUserId)) {
+                latestMessages.put(otherUserId, msg);
+            }
+        }
+        
+        // Return sorted list
+        List<DirectMessage> conversations = new java.util.ArrayList<>(latestMessages.values());
+        conversations.sort((m1, m2) -> m2.getSentAt().compareTo(m1.getSentAt()));
+        
+        return ResponseEntity.ok(conversations);
+    }
+
     @GetMapping("/{otherUserId}")
     public ResponseEntity<?> getConversation(@PathVariable Long otherUserId, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");

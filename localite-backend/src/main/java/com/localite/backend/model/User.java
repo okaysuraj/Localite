@@ -32,6 +32,7 @@ public class User {
     private String interests; // General interests e.g., "Music, Gaming"
     private Integer age;
     private String gender;
+    @jakarta.persistence.Column(length = 2048)
     private String profilePhotoUrl;
     private String lookingFor; // e.g., "friends, sports partners"
     private String availability; // e.g., "Weekends, Evenings"
@@ -60,6 +61,16 @@ public class User {
     private boolean isBanned = false;
     private boolean isAdmin = false;
     private java.time.LocalDateTime profileBoostedUntil;
+
+    // Settings fields
+    private boolean publicProfile = false;
+    private boolean liveActivity = true;
+    private boolean preciseLocation = false;
+    private boolean pushInvitations = true;
+    private boolean pushMessages = true;
+    private boolean pushLocation = false;
+    private boolean safetyAlerts = true;
+    private String emailDigest = "weekly";
 
     public User() {}
 
@@ -161,4 +172,28 @@ public class User {
 
     public java.time.LocalDate getLastActivityDate() { return lastActivityDate; }
     public void setLastActivityDate(java.time.LocalDate lastActivityDate) { this.lastActivityDate = lastActivityDate; }
+
+    public boolean isPublicProfile() { return publicProfile; }
+    public void setPublicProfile(boolean publicProfile) { this.publicProfile = publicProfile; }
+
+    public boolean isLiveActivity() { return liveActivity; }
+    public void setLiveActivity(boolean liveActivity) { this.liveActivity = liveActivity; }
+
+    public boolean isPreciseLocation() { return preciseLocation; }
+    public void setPreciseLocation(boolean preciseLocation) { this.preciseLocation = preciseLocation; }
+
+    public boolean isPushInvitations() { return pushInvitations; }
+    public void setPushInvitations(boolean pushInvitations) { this.pushInvitations = pushInvitations; }
+
+    public boolean isPushMessages() { return pushMessages; }
+    public void setPushMessages(boolean pushMessages) { this.pushMessages = pushMessages; }
+
+    public boolean isPushLocation() { return pushLocation; }
+    public void setPushLocation(boolean pushLocation) { this.pushLocation = pushLocation; }
+
+    public boolean isSafetyAlerts() { return safetyAlerts; }
+    public void setSafetyAlerts(boolean safetyAlerts) { this.safetyAlerts = safetyAlerts; }
+
+    public String getEmailDigest() { return emailDigest; }
+    public void setEmailDigest(String emailDigest) { this.emailDigest = emailDigest; }
 }

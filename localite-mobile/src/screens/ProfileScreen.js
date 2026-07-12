@@ -137,6 +137,11 @@ export default function ProfileScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: '100%', marginBottom: -20, zIndex: 10}}>
+          <TouchableOpacity onPress={() => navigation.navigate('SettingsHome')} style={{padding: 10}}>
+            <Ionicons name="settings-outline" size={24} color="#f8fafc" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
             <Ionicons name="person" size={60} color="#ccff00" />
