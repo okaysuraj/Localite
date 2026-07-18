@@ -3,8 +3,7 @@ import {
   StyleSheet, Text, View, SafeAreaView, TouchableOpacity, TextInput, Alert, ScrollView, Platform, Dimensions, Image 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '../config';
+import { createEvent } from '../services/api';
 
 const { width } = Dimensions.get('window');
 
@@ -40,7 +39,6 @@ export default function CreateEventScreen({ navigation }) {
 
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem('userToken');
       const payload = {
         ...formData,
         cost: parseFloat(formData.cost) || 0.0,
@@ -48,28 +46,17 @@ export default function CreateEventScreen({ navigation }) {
         attendees: 0
       };
 
-      const response = await fetch(`${API_URL}/events`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+      await createEvent(payload);
       
-      if (response.ok) {
-        Alert.alert('Success', 'Event Published Successfully!');
-        setFormData({
-          title: '', category: 'Epicurean', eventType: 'Public', description: '', date: '', location: '', maxAttendees: '', cost: '', rules: '', imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
-        });
-        setStep(1);
-        navigation.navigate('Discover');
-      } else {
-        Alert.alert('Error', 'Failed to publish event');
-      }
+      Alert.alert('Success', 'Event Published Successfully!');
+      setFormData({
+        title: '', category: 'Epicurean', eventType: 'Public', description: '', date: '', location: '', maxAttendees: '', cost: '', rules: '', imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
+      });
+      setStep(1);
+      navigation.navigate('Discover');
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'Network error');
+      Alert.alert('Error', 'Failed to publish event');
     } finally {
       setLoading(false);
     }

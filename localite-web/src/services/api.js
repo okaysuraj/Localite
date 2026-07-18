@@ -56,6 +56,24 @@ export const createEvent = async (eventData) => {
   }
 };
 
+export const rsvpToEvent = async (eventId) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/events/${eventId}/rsvp`, {
+      method: 'POST',
+      headers,
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to RSVP to event: ${errText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error RSVPing to event:', error);
+    throw error;
+  }
+};
+
 export const getEventRsvps = async (id) => {
   try {
     const headers = await getAuthHeaders();
@@ -65,6 +83,109 @@ export const getEventRsvps = async (id) => {
   } catch (error) {
     console.error('Error fetching event rsvps:', error);
     return [];
+  }
+};
+
+export const getEventMessages = async (eventId) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/events/${eventId}/messages`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch event messages');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching event messages:', error);
+    return [];
+  }
+};
+
+export const sendEventMessage = async (eventId, content) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/events/${eventId}/messages`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ content }),
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to send message: ${errText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error sending event message:', error);
+    throw error;
+  }
+};
+
+// --- Social & Engagement (Phase 6) ---
+
+export const getLeaderboard = async (sport) => {
+  try {
+    const response = await apiClient.get(`/leaderboard/${sport}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching leaderboard for ${sport}:`, error);
+    return [];
+  }
+};
+
+export const awardXp = async (actionStr) => {
+  try {
+    const response = await apiClient.post(`/gamification/award`, { action: actionStr });
+    return response.data;
+  } catch (error) {
+    console.error('Error awarding XP:', error);
+    throw error;
+  }
+};
+
+export const followUser = async (userId) => {
+  try {
+    const response = await apiClient.post(`/users/${userId}/follow`);
+    return response.data;
+  } catch (error) {
+    console.error('Error following user:', error);
+    throw error;
+  }
+};
+
+export const unfollowUser = async (userId) => {
+  try {
+    const response = await apiClient.delete(`/users/${userId}/unfollow`);
+    return response.data;
+  } catch (error) {
+    console.error('Error unfollowing user:', error);
+    throw error;
+  }
+};
+
+export const sendConnectionRequest = async (userId) => {
+  try {
+    const response = await apiClient.post(`/users/${userId}/connect`);
+    return response.data;
+  } catch (error) {
+    console.error('Error sending connection request:', error);
+    throw error;
+  }
+};
+
+export const getPendingConnections = async () => {
+  try {
+    const response = await apiClient.get(`/users/connections/pending`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching pending connections:', error);
+    return [];
+  }
+};
+
+export const acceptConnection = async (connectionId) => {
+  try {
+    const response = await apiClient.put(`/users/connections/${connectionId}/accept`);
+    return response.data;
+  } catch (error) {
+    console.error('Error accepting connection:', error);
+    throw error;
   }
 };
 

@@ -15,6 +15,11 @@ import {
 } from '@expo-google-fonts/plus-jakarta-sans';
 
 import AppNavigator from './src/navigation/AppNavigator';
+import WelcomeCarouselScreen from './src/screens/WelcomeCarouselScreen';
+import SplashScreen from './src/screens/SplashScreen';
+import CreateMatchScreen from './src/screens/CreateMatchScreen';
+import { AuthProvider } from './src/context/AuthContext';
+import { WebSocketProvider } from './src/context/WebSocketContext';
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -44,5 +49,14 @@ export default function App() {
     );
   }
 
-  return <AppNavigator />;
+  return (
+    <SafeAreaProvider>
+      <AuthProvider>
+        <WebSocketProvider>
+          <AppNavigator />
+          <StatusBar style="auto" />
+        </WebSocketProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
+  );
 }

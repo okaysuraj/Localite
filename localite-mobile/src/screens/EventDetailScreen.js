@@ -9,11 +9,12 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Platform,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getEventById } from '../services/api';
+import { getEventById, rsvpToEvent, awardXp } from '../services/api';
 
 const { width } = Dimensions.get('window');
 
@@ -22,24 +23,44 @@ export default function EventDetailScreen({ route, navigation }) {
   const { eventId } = route.params || {};
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [rsvpLoading, setRsvpLoading] = useState(false);
+
+  const fetchEvent = async () => {
+    try {
+      const data = await getEventById(eventId);
+      setEvent(data);
+    } catch (error) {
+      console.error("Failed to fetch event:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const data = await getEventById(eventId);
-        setEvent(data);
-      } catch (error) {
-        console.error("Failed to fetch event:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     if (eventId) {
       fetchEvent();
     } else {
       setLoading(false);
     }
   }, [eventId]);
+
+  const handleRsvp = async () => {
+    setRsvpLoading(true);
+    try {
+      await rsvpToEvent(eventId);
+      try {
+        await awardXp('ATTEND_EVENT');
+      } catch (xpErr) {
+        console.log('Gamification disabled or failed:', xpErr);
+      }
+      Alert.alert('Success', 'Successfully requested invitation! (+50 XP)');
+      await fetchEvent();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to request invitation.');
+    } finally {
+      setRsvpLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -190,10 +211,11 @@ export default function EventDetailScreen({ route, navigation }) {
           <Text style={styles.actionPrice}>{event.cost > 0 ? `$${event.cost}` : 'Free'} <Text style={styles.actionPer}>/ guest</Text></Text>
         </View>
         <TouchableOpacity 
-          style={styles.guestlistBtn}
-          onPress={() => navigation.navigate('EventParticipants', { eventId: event.id, eventTitle: event.title })}
+          style={styles.joinBtn}
+          onPress={handleRsvp}
+          disabled={rsvpLoading}
         >
-          <Text style={styles.guestlistBtnText}>VIEW GUESTLIST</Text>
+          <Text style={styles.joinBtnText}>{rsvpLoading ? 'PROCESSING...' : 'REQUEST INVITATION'}</Text>
         </TouchableOpacity>
       </View>
     </View>

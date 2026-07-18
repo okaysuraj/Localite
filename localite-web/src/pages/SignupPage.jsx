@@ -9,7 +9,7 @@ const SignupPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { signup } = useContext(AuthContext);
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,7 +27,7 @@ const SignupPage = () => {
     setError('');
     
     try {
-      await signup(formData.email, formData.password, formData.username);
+      const result = await register(formData.username, formData.email, formData.password);
       // Depending on auth flow, they might need to verify email or they get logged in directly.
       // Usually after signup they go to a verification page or dashboard.
       // Let's redirect to email verification

@@ -1,12 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getEventById } from '../services/api';
+import { getEventById, rsvpToEvent, awardXp } from '../services/api';
 
 const EventDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [rsvpLoading, setRsvpLoading] = useState(false);
+
+  const handleRsvp = async () => {
+    setRsvpLoading(true);
+    try {
+      await rsvpToEvent(id);
+      try {
+        await awardXp('ATTEND_EVENT');
+      } catch (xpErr) {
+        console.log('Gamification disabled or failed:', xpErr);
+      }
+      alert('Successfully requested invitation! (+50 XP)');
+      // Refresh event details
+      const data = await getEventById(id);
+      setEvent(data);
+    } catch (error) {
+      alert('Failed to request invitation.');
+    } finally {
+      setRsvpLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -174,8 +195,12 @@ const EventDetailPage = () => {
                 </div>
               </div>
               <div className="space-y-gutter mb-stack-md">
-                <button className="w-full py-4 bg-secondary text-white font-label-caps text-label-caps rounded-lg hover:bg-on-secondary-container transition-all active:scale-[0.98] uppercase tracking-widest">
-                  Request Invitation
+                <button 
+                  onClick={handleRsvp}
+                  disabled={rsvpLoading}
+                  className="w-full py-4 bg-secondary text-white font-label-caps text-label-caps rounded-lg hover:bg-on-secondary-container transition-all active:scale-[0.98] uppercase tracking-widest disabled:opacity-50"
+                >
+                  {rsvpLoading ? 'Processing...' : 'Request Invitation'}
                 </button>
                 <button className="w-full py-4 border border-white/20 text-white font-label-caps text-label-caps rounded-lg hover:bg-white/10 transition-all uppercase tracking-widest">
                   Share Event

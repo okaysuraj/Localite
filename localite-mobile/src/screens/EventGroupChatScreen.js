@@ -1,20 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform
+  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform, KeyboardAvoidingView, Keyboard
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getEventMessages, sendEventMessage, getEventById } from '../services/api';
+import { useWebSocket } from '../context/WebSocketContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function EventGroupChatScreen({ route, navigation }) {
   const insets = useSafeAreaInsets();
-  const { event } = route.params || { 
-    event: { 
-      title: 'The Midnight Conservatory Soiree',
-      membersOnline: 24
-    } 
-  };
+  const { eventId } = route.params || {};
 
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [eventData, setEventData] = useState(route.params?.event || { title: 'Loading...', membersOnline: 0 });
+  const { stompClient, isConnected } = useWebSocket();
+  const { currentUser } = useAuth();
+  const scrollViewRef = useRef();
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        if (eventId) {
+          const ev = await getEventById(eventId);
+          setEventData({ title: ev.title, membersOnline: ev.attendees });
+          const msgs = await getEventMessages(eventId);
+          setMessages(msgs);
+        }
+      } catch (err) {
+        console.error('Error fetching chat data:', err);
+      }
+    };
+    fetchInitialData();
+  }, [eventId]);
+
+  useEffect(() => {
+    let subscription = null;
+    if (isConnected && stompClient && eventId) {
+      subscription = stompClient.subscribe(`/topic/events/${eventId}`, (msgFrame) => {
+        const newMsg = JSON.parse(msgFrame.body);
+        setMessages((prev) => {
+          if (prev.find(m => m.id === newMsg.id)) return prev;
+          return [...prev, newMsg];
+        });
+      });
+    }
+    return () => {
+      if (subscription) subscription.unsubscribe();
+    };
+  }, [isConnected, stompClient, eventId]);
+
+  const handleSendMessage = async () => {
+    if (!message.trim() || !eventId) return;
+    const content = message;
+    setMessage('');
+    Keyboard.dismiss();
+    try {
+      const sentMsg = await sendEventMessage(eventId, content);
+      setMessages((prev) => {
+        if (prev.find(m => m.id === sentMsg.id)) return prev;
+        return [...prev, sentMsg];
+      });
+    } catch (error) {
+      console.error('Failed to send message', error);
+    }
+  };
+
+  const formatTime = (isoString) => {
+    if (!isoString) return '';
+    return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <View style={styles.container}>
@@ -34,10 +90,10 @@ export default function EventGroupChatScreen({ route, navigation }) {
             </View>
 
             <View style={styles.titleContainer}>
-              <Text style={styles.titleText} numberOfLines={1}>{event.title}</Text>
+              <Text style={styles.titleText} numberOfLines={1}>{eventData.title}</Text>
               <View style={styles.statusRow}>
-                <View style={styles.statusDot} />
-                <Text style={styles.statusText}>{event.membersOnline} MEMBERS ONLINE</Text>
+                <View style={[styles.statusDot, { backgroundColor: isConnected ? '#22c55e' : '#ef4444' }]} />
+                <Text style={styles.statusText}>{isConnected ? 'LIVE' : 'DISCONNECTED'} • {eventData.membersOnline} MEMBERS</Text>
               </View>
             </View>
           </View>
@@ -53,86 +109,72 @@ export default function EventGroupChatScreen({ route, navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView 
-        style={styles.chatArea}
-        contentContainerStyle={styles.chatContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }} 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={styles.systemBadgeContainer}>
-          <View style={styles.systemBadge}>
-            <Ionicons name="information-circle" size={14} color="#ffffff" />
-            <Text style={styles.systemBadgeText}>EVENT UPDATED: ATTIRE NOW BLACK TIE PREFERRED</Text>
-          </View>
-        </View>
+        <ScrollView 
+          style={styles.chatArea}
+          contentContainerStyle={styles.chatContent}
+          showsVerticalScrollIndicator={false}
+          ref={scrollViewRef}
+          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+        >
+          {messages.map((msg, idx) => {
+            const isMe = msg.sender === currentUser?.username || msg.sender === currentUser?.email;
+            
+            if (isMe) {
+              return (
+                <View key={idx} style={styles.messageRowUser}>
+                  <View style={styles.bubbleContainerUser}>
+                    <Text style={styles.senderNameUser}>YOU • {formatTime(msg.sentAt)}</Text>
+                    <View style={styles.bubbleUser}>
+                      <Text style={styles.messageTextUser}>{msg.content}</Text>
+                    </View>
+                  </View>
+                  <Image source={{ uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4` }} style={styles.messageAvatarRight} />
+                </View>
+              );
+            }
 
-        <View style={styles.messageRowPartner}>
-          <Image source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuADQ9bgKFcfpNyouo5OKpdFlxHwx7fYAVGecFliVWomFBuLEpNTAYDwCG8_76IHwTrXbfMjO9lBbZxsNZn3wSh5gjTpvwSQuo_EuFpFfyygp2MZ8BhY11B3_UdV3N_AFn8uvyTPhjJQtcqRUDFryCzjdQJoVRKk7UHsEC4qF4W9FuMx0KJliLutrpRDKWCp5wcrT8K8vzmXv8JwCVqpa9VGjdyJbAlwSaOeKrtO80CfJJC3acwtzw1KaA' }} style={styles.messageAvatar} />
-          <View style={styles.bubbleContainerPartner}>
-            <Text style={styles.senderName}>ALISTAIR VANCE • 10:24 AM</Text>
-            <View style={styles.bubblePartner}>
-              <Text style={styles.messageTextPartner}>Has everyone received their digital invitations? The QR codes are required for the garden gate entry tonight.</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.messageRowPartner}>
-          <Image source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDGTYV2etOd9L4fEvgXZaJ5PfcciZYXchbk32_602_iayjE_ujQMsRDJVcMruNHGX42bCxIdbtjMJp3cYsaUwCA_zt0M4j4xq06iIGnW_cBeMAQnNsw8Iw3l1wSGyfQnYLp6R5_KML4hRgVzHYuFdIQVpiWSVa6aRy5gRvBja4Gu1E_hxZd9L_McmmK90Tuuak1vQYa-W25CFG_iNKFz8DM9EwlGfkflisvB_8aa_Nxxku6qS2MGIDOpg' }} style={styles.messageAvatar} />
-          <View style={styles.bubbleContainerPartner}>
-            <Text style={styles.senderName}>CLARA VANE • 10:31 AM</Text>
-            <View style={styles.bubblePartnerImage}>
-              <Image source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAtEEr0W_fmj-2X_p3UejsGGgOeS2cG9cImPbyzZAMGlk9vzHYHsShyY326BKdhhdapQ1lA8axbKDU691gsb10E3zqZcCAwXgTeA7aaf2h98n6hWo9gnZBZVAbKQjd-530LWrcbv_vS6ll19zgBZE9BUHy_RjCSUguIlzwsT6Y6k_yuC5sRFBs1vG3XgbHdDnMrWRSS4BiGZoZ4pmtrlWCSMppwVWWCbCCP2Qxomi9Wsav-3wNESbHQ3g' }} style={styles.attachedImage} />
-              <View style={styles.imageCaption}>
-                <Text style={[styles.messageTextPartner, { fontStyle: 'italic' }]}>"The garden looks divine this morning. The lanterns are already being positioned among the willows. Truly a scene from a dream."</Text>
+            return (
+              <View key={idx} style={styles.messageRowPartner}>
+                <Image source={{ uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4` }} style={styles.messageAvatar} />
+                <View style={styles.bubbleContainerPartner}>
+                  <Text style={styles.senderName}>{msg.sender} • {formatTime(msg.sentAt)}</Text>
+                  <View style={styles.bubblePartner}>
+                    <Text style={styles.messageTextPartner}>{msg.content}</Text>
+                  </View>
+                </View>
               </View>
+            );
+          })}
+        </ScrollView>
+
+        <View style={[styles.inputArea, { paddingBottom: Platform.OS === 'ios' ? insets.bottom || 16 : 16 }]}>
+          <View style={styles.inputRow}>
+            <TouchableOpacity style={styles.attachBtnCircle}>
+              <Ionicons name="add" size={24} color="#75777e" />
+            </TouchableOpacity>
+            <View style={styles.inputContainer}>
+              <TextInput 
+                style={styles.textInput}
+                placeholder="Craft a message..."
+                placeholderTextColor="#75777e"
+                value={message}
+                onChangeText={setMessage}
+                multiline
+              />
+              <TouchableOpacity style={styles.emojiBtn}>
+                <Ionicons name="happy-outline" size={24} color="#75777e" />
+              </TouchableOpacity>
             </View>
-          </View>
-        </View>
-
-        <View style={styles.messageRowUser}>
-          <View style={styles.bubbleContainerUser}>
-            <Text style={styles.senderNameUser}>YOU • 10:45 AM</Text>
-            <View style={styles.bubbleUser}>
-              <Text style={styles.messageTextUser}>Exquisite, Clara. I'll be arriving with the floral arrangements by 6 PM. Can't wait to see it in person.</Text>
-            </View>
-          </View>
-          <Image source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuApAQ90Ms3pixqatw9uSQN5CsOI8RhysP54TyA4bgfKllBl0TCMmKYrZrnxZGlkrGiJSmsv9L9B2EElNXx900PzEgQGnBXxnTovIZtq0ZZBs0F04bAYXXhestQ2j2ZN79BXcWiY85qY4zG83ojP9aGHV4N8GMpjiplWkgTDQNu7WeI4GtDCY629hTfB071UDqBSg5AlWS9NiQqb-JBm7u79HmMvDmq4kK6MbEULCMZ8xq49TdjjJJRtrg' }} style={styles.messageAvatarRight} />
-        </View>
-
-        <View style={styles.dateSeparator}>
-          <View style={styles.line} />
-          <Text style={styles.dateSeparatorText}>WEDNESDAY, OCTOBER 12</Text>
-          <View style={styles.line} />
-        </View>
-
-        <View style={styles.systemLogContainer}>
-          <Text style={styles.systemLogText}>JULIAN THORNE ADDED MARCUS AURELIUS TO THE GROUP</Text>
-        </View>
-
-      </ScrollView>
-
-      <View style={[styles.inputArea, { paddingBottom: Platform.OS === 'ios' ? insets.bottom || 16 : 16 }]}>
-        <View style={styles.inputRow}>
-          <TouchableOpacity style={styles.attachBtnCircle}>
-            <Ionicons name="add" size={24} color="#75777e" />
-          </TouchableOpacity>
-          <View style={styles.inputContainer}>
-            <TextInput 
-              style={styles.textInput}
-              placeholder="Craft a message..."
-              placeholderTextColor="#75777e"
-              value={message}
-              onChangeText={setMessage}
-              multiline
-            />
-            <TouchableOpacity style={styles.emojiBtn}>
-              <Ionicons name="happy-outline" size={24} color="#75777e" />
+            <TouchableOpacity style={styles.sendBtn} onPress={handleSendMessage}>
+              <Ionicons name="send" size={16} color="#ffffff" style={{ marginLeft: 2 }} />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.sendBtn}>
-            <Ionicons name="send" size={16} color="#ffffff" style={{ marginLeft: 2 }} />
-          </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }

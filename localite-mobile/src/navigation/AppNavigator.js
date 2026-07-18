@@ -59,6 +59,63 @@ import SafetyCenterScreen from '../screens/SafetyCenterScreen';
 import EmergencySOSScreen from '../screens/EmergencySOSScreen';
 import VerificationCenterScreen from '../screens/VerificationCenterScreen';
 import ReportUserScreen from '../screens/ReportUserScreen';
+import CreateMatchScreen from '../screens/CreateMatchScreen';
+import FindPlayersScreen from '../screens/FindPlayersScreen';
+import JoinMatchScreen from '../screens/JoinMatchScreen';
+import MatchLobbyScreen from '../screens/MatchLobbyScreen';
+import LiveMatchScreen from '../screens/LiveMatchScreen';
+import MatchHistoryScreen from '../screens/MatchHistoryScreen';
+import TeamFormationScreen from '../screens/TeamFormationScreen';
+import CricketDetailScreen from '../screens/CricketDetailScreen';
+import SportsCategoriesScreen from '../screens/SportsCategoriesScreen';
+import AttendanceCheckInScreen from '../screens/AttendanceCheckInScreen';
+import TicketQRCodeScreen from '../screens/TicketQRCodeScreen';
+import AttendeeManagementScreen from '../screens/AttendeeManagementScreen';
+import LiveEventDashboardScreen from '../screens/LiveEventDashboardScreen';
+import LiveEventPollScreen from '../screens/LiveEventPollScreen';
+import LiveMapTrackingScreen from '../screens/LiveMapTrackingScreen';
+import MessageRequestsScreen from '../screens/MessageRequestsScreen';
+import VoiceNotesScreen from '../screens/VoiceNotesScreen';
+import CreateEventBasicInfoScreen from '../screens/CreateEventBasicInfoScreen';
+import CreateEventDateTimeScreen from '../screens/CreateEventDateTimeScreen';
+import CreateEventLocationPickerScreen from '../screens/CreateEventLocationPickerScreen';
+import CreateEventCapacityRulesScreen from '../screens/CreateEventCapacityRulesScreen';
+import CreateEventPaymentSetupScreen from '../screens/CreateEventPaymentSetupScreen';
+import CreateEventReviewPublishScreen from '../screens/CreateEventReviewPublishScreen';
+import CreateEventAnalyticsScreen from '../screens/CreateEventAnalyticsScreen';
+import OrganizerDashboardScreen from '../screens/OrganizerDashboardScreen';
+import RevenueDashboardScreen from '../screens/RevenueDashboardScreen';
+import EventInsightsScreen from '../screens/EventInsightsScreen';
+import EventsListScreen from '../screens/EventsListScreen';
+import MyEventsScreen from '../screens/MyEventsScreen';
+import AvailabilityCalendarScreen from '../screens/AvailabilityCalendarScreen';
+import EventTimelineUpdatesScreen from '../screens/EventTimelineUpdatesScreen';
+import EventReminderDetailScreen from '../screens/EventReminderDetailScreen';
+import NotificationPreferencesScreen from '../screens/NotificationPreferencesScreen';
+import LocationSettingsScreen from '../screens/LocationSettingsScreen';
+import DataStorageSettingsScreen from '../screens/DataStorageSettingsScreen';
+import LogoutDeleteAccountScreen from '../screens/LogoutDeleteAccountScreen';
+import PrestigeProgressDashboardScreen from '../screens/PrestigeProgressDashboardScreen';
+import MomentumOfGraceStreaksScreen from '../screens/MomentumOfGraceStreaksScreen';
+import TheHallOfHonorAchievementsScreen from '../screens/TheHallOfHonorAchievementsScreen';
+import IDVerificationUploadScreen from '../screens/IDVerificationUploadScreen';
+import SelfieVerificationScreen from '../screens/SelfieVerificationScreen';
+import TrustedContactsSetupScreen from '../screens/TrustedContactsSetupScreen';
+import VerifiedBadgeInfoScreen from '../screens/VerifiedBadgeInfoScreen';
+import ReportEventScreen from '../screens/ReportEventScreen';
+import BlockUserScreen from '../screens/BlockUserScreen';
+import SafetyGuidelinesScreen from '../screens/SafetyGuidelinesScreen';
+import ReputationReviewsScreen from '../screens/ReputationReviewsScreen';
+import LocationServicesPromptScreen from '../screens/LocationServicesPromptScreen';
+import PushPermissionSetupScreen from '../screens/PushPermissionSetupScreen';
+import RestrictedAccessScreen from '../screens/RestrictedAccessScreen';
+import OfflineErrorScreen from '../screens/OfflineErrorScreen';
+import EmptyGatheringsScreen from '../screens/EmptyGatheringsScreen';
+import LoadingStateScreen from '../screens/LoadingStateScreen';
+import MediaViewerScreen from '../screens/MediaViewerScreen';
+import SocialLinkingScreen from '../screens/SocialLinkingScreen';
+import ExtendInvitationScreen from '../screens/ExtendInvitationScreen';
+import MyActivityStatsScreen from '../screens/MyActivityStatsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -146,6 +203,63 @@ export default function AppNavigator() {
         <Stack.Screen name="EmergencySOS" component={EmergencySOSScreen} options={{ headerShown: false, presentation: 'fullScreenModal' }} />
         <Stack.Screen name="VerificationCenter" component={VerificationCenterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ReportUser" component={ReportUserScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateMatch" component={CreateMatchScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="FindPlayers" component={FindPlayersScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="JoinMatch" component={JoinMatchScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MatchLobby" component={MatchLobbyScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LiveMatch" component={LiveMatchScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MatchHistory" component={MatchHistoryScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TeamFormation" component={TeamFormationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CricketDetail" component={CricketDetailScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SportsCategories" component={SportsCategoriesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="AttendanceCheckIn" component={AttendanceCheckInScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TicketQRCode" component={TicketQRCodeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="AttendeeManagement" component={AttendeeManagementScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LiveEventDashboard" component={LiveEventDashboardScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LiveEventPoll" component={LiveEventPollScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LiveMapTracking" component={LiveMapTrackingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MessageRequestsScreen" component={MessageRequestsScreen} />
+        <Stack.Screen name="VoiceNotesScreen" component={VoiceNotesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEventBasicInfo" component={CreateEventBasicInfoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEventDateTime" component={CreateEventDateTimeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEventLocationPicker" component={CreateEventLocationPickerScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEventCapacityRules" component={CreateEventCapacityRulesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEventPaymentSetup" component={CreateEventPaymentSetupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEventReviewPublish" component={CreateEventReviewPublishScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateEventAnalytics" component={CreateEventAnalyticsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="OrganizerDashboard" component={OrganizerDashboardScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="RevenueDashboard" component={RevenueDashboardScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EventInsights" component={EventInsightsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EventsList" component={EventsListScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MyEvents" component={MyEventsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="AvailabilityCalendar" component={AvailabilityCalendarScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EventTimelineUpdates" component={EventTimelineUpdatesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EventReminderDetail" component={EventReminderDetailScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="NotificationPreferences" component={NotificationPreferencesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LocationSettings" component={LocationSettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="DataStorageSettings" component={DataStorageSettingsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LogoutDeleteAccount" component={LogoutDeleteAccountScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="PrestigeProgress" component={PrestigeProgressDashboardScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MomentumOfGrace" component={MomentumOfGraceStreaksScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TheHallOfHonor" component={TheHallOfHonorAchievementsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="IDVerificationUpload" component={IDVerificationUploadScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SelfieVerification" component={SelfieVerificationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TrustedContactsSetup" component={TrustedContactsSetupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="VerifiedBadgeInfo" component={VerifiedBadgeInfoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ReportEvent" component={ReportEventScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="BlockUser" component={BlockUserScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SafetyGuidelines" component={SafetyGuidelinesScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ReputationReviews" component={ReputationReviewsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LocationServicesPrompt" component={LocationServicesPromptScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="PushPermissionSetup" component={PushPermissionSetupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="RestrictedAccess" component={RestrictedAccessScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="OfflineError" component={OfflineErrorScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="EmptyGatherings" component={EmptyGatheringsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LoadingState" component={LoadingStateScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MediaViewer" component={MediaViewerScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SocialLinking" component={SocialLinkingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ExtendInvitation" component={ExtendInvitationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MyActivityStats" component={MyActivityStatsScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

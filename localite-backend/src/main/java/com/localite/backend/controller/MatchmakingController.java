@@ -2,8 +2,12 @@ package com.localite.backend.controller;
 
 import com.localite.backend.model.Event;
 import com.localite.backend.model.User;
+import com.localite.backend.model.MatchResult;
+import com.localite.backend.model.Rsvp;
 import com.localite.backend.repository.EventRepository;
 import com.localite.backend.repository.UserRepository;
+import com.localite.backend.repository.RsvpRepository;
+import com.localite.backend.repository.MatchResultRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +22,14 @@ public class MatchmakingController {
 
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final RsvpRepository rsvpRepository;
+    private final MatchResultRepository matchResultRepository;
 
-    public MatchmakingController(UserRepository userRepository, EventRepository eventRepository) {
+    public MatchmakingController(UserRepository userRepository, EventRepository eventRepository, RsvpRepository rsvpRepository, MatchResultRepository matchResultRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.rsvpRepository = rsvpRepository;
+        this.matchResultRepository = matchResultRepository;
     }
 
     @GetMapping("/users")
@@ -153,5 +161,85 @@ public class MatchmakingController {
         }
 
         return score;
+    }
+
+    // Phase 7: Team Assignment
+    @PostMapping("/events/{eventId}/teams")
+    public ResponseEntity<?> assignTeam(Principal principal, @PathVariable Long eventId, @RequestBody Map<String, Object> payload) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        String targetUserIdStr = (String) payload.get("userId");
+        String teamName = (String) payload.get("team");
+        
+        if (targetUserIdStr == null || teamName == null) return ResponseEntity.badRequest().body("Missing userId or team");
+        
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (!eventOpt.isPresent()) return ResponseEntity.notFound().build();
+        
+        // Find RSVP
+        Optional<Rsvp> rsvpOpt = rsvpRepository.findAll().stream()
+            .filter(r -> r.getEvent().getId().equals(eventId) && r.getUser().getId().toString().equals(targetUserIdStr))
+            .findFirst();
+            
+        if (!rsvpOpt.isPresent()) return ResponseEntity.badRequest().body("User has not RSVPed to this event");
+        
+        Rsvp rsvp = rsvpOpt.get();
+        rsvp.setTeam(teamName);
+        rsvpRepository.save(rsvp);
+        
+        return ResponseEntity.ok(Map.of("message", "Team assigned successfully", "team", teamName));
+    }
+
+    // Phase 7: Submit Match Result
+    @PostMapping("/events/{eventId}/result")
+    public ResponseEntity<?> submitMatchResult(Principal principal, @PathVariable Long eventId, @RequestBody Map<String, Object> payload) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (!eventOpt.isPresent()) return ResponseEntity.notFound().build();
+        Event event = eventOpt.get();
+        
+        // Only host can submit results for now
+        if (!event.getHost().getFirebaseUid().equals(principal.getName())) {
+            return ResponseEntity.status(403).body("Only the host can submit match results");
+        }
+        
+        String winnerIdStr = (String) payload.get("winnerId");
+        String loserIdStr = (String) payload.get("loserId");
+        String score = (String) payload.get("score");
+        
+        Optional<User> winner = userRepository.findById(Long.parseLong(winnerIdStr));
+        Optional<User> loser = userRepository.findById(Long.parseLong(loserIdStr));
+        
+        if (!winner.isPresent() || !loser.isPresent()) return ResponseEntity.badRequest().body("Winner or loser not found");
+        
+        MatchResult result = new MatchResult(event, winner.get(), loser.get(), score);
+        matchResultRepository.save(result);
+        
+        return ResponseEntity.ok(result);
+    }
+    
+    // Phase 7: Match History
+    @GetMapping("/history/{userId}")
+    public ResponseEntity<?> getMatchHistory(@PathVariable Long userId) {
+        List<MatchResult> history = matchResultRepository.findByWinnerIdOrLoserId(userId, userId);
+        
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (MatchResult res : history) {
+            response.add(Map.of(
+                "id", res.getId(),
+                "eventTitle", res.getEvent().getTitle(),
+                "category", res.getEvent().getCategory(),
+                "winner", res.getWinner().getUsername(),
+                "loser", res.getLoser().getUsername(),
+                "score", res.getScore(),
+                "date", res.getEvent().getDate().toString()
+            ));
+        }
+        
+        // Sort by date descending
+        response.sort((a, b) -> ((String) b.get("date")).compareTo((String) a.get("date")));
+        
+        return ResponseEntity.ok(response);
     }
 }

@@ -14,9 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '../config';
-import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignupScreen({ navigation }) {
   const [username, setUsername] = useState('');
@@ -25,6 +23,7 @@ export default function SignupScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
 
   const handleSignup = async () => {
     if (!username || !email || !password) {
@@ -38,32 +37,15 @@ export default function SignupScreen({ navigation }) {
     
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
+      const result = await register(username, email, password);
       
-      const response = await fetch(`${API_URL}/auth/sync-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ username, email }),
-      });
-
-      if (response.ok) {
+      if (result.success) {
         await AsyncStorage.setItem('username', username);
-        
-        await sendEmailVerification(userCredential.user);
-        await signOut(auth);
-        
         Alert.alert(
           'Verification Required',
-          'Please check your email to verify your account before logging in.',
+          result.message,
           [{ text: 'OK', onPress: () => navigation.replace('Login') }]
         );
-      } else {
-        const msg = await response.text();
-        Alert.alert('Error', msg || 'Registration failed');
       }
     } catch (error) {
       Alert.alert('Error', error.message || 'Network error. Could not reach the server.');

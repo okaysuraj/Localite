@@ -12,15 +12,14 @@ import {
   ScrollView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -30,16 +29,7 @@ export default function LoginScreen({ navigation }) {
     
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
-      if (!userCredential.user.emailVerified) {
-        await signOut(auth);
-        Alert.alert('Verification Required', 'Please verify your email before logging in. Check your inbox.');
-        return;
-      }
-
-      const token = await userCredential.user.getIdToken();
-      await AsyncStorage.setItem('userToken', token);
+      await login(email, password);
       navigation.replace('MainApp');
     } catch (error) {
       Alert.alert('Error', error.message || 'Network error. Could not reach the server.');

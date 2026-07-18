@@ -34,6 +34,8 @@ public class Rsvp {
 
     private boolean isCheckedIn = false;
 
+    private String team; // e.g. "Team A", "Team B"
+
     private LocalDateTime createdAt;
 
     public Rsvp() {
@@ -70,4 +72,7 @@ public class Rsvp {
 
     public boolean isCheckedIn() { return isCheckedIn; }
     public void setCheckedIn(boolean checkedIn) { isCheckedIn = checkedIn; }
+
+    public String getTeam() { return team; }
+    public void setTeam(String team) { this.team = team; }
 }

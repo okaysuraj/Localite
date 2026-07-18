@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { API_URL } from '../config';
+import { getLeaderboard } from '../services/api';
 
 export default function LeaderboardScreen({ navigation }) {
   const [sport, setSport] = useState('Tennis');
@@ -11,16 +11,14 @@ export default function LeaderboardScreen({ navigation }) {
   const sports = ['Tennis', 'Basketball', 'Soccer', 'Golf', 'Volleyball', 'Pickleball'];
 
   useEffect(() => {
-    fetchLeaderboard();
+    fetchLeaderboardData();
   }, [sport]);
 
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboardData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/leaderboard/${sport}`);
-      if (res.ok) {
-        setLeaderboard(await res.json());
-      }
+      const data = await getLeaderboard(sport);
+      setLeaderboard(data);
     } catch (err) {
       console.error(err);
     }

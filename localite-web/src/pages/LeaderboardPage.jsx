@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, ChevronDown, User } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import gsap from 'gsap';
+import { getLeaderboard } from '../services/api';
 
 const LeaderboardPage = () => {
   const [sport, setSport] = useState('Tennis');
@@ -11,16 +12,14 @@ const LeaderboardPage = () => {
   const sports = ['Tennis', 'Basketball', 'Soccer', 'Golf', 'Volleyball', 'Pickleball'];
 
   useEffect(() => {
-    fetchLeaderboard();
+    fetchLeaderboardData();
   }, [sport]);
 
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboardData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/leaderboard/${sport}`);
-      if (res.ok) {
-        setLeaderboard(await res.json());
-      }
+      const data = await getLeaderboard(sport);
+      setLeaderboard(data);
     } catch (err) {
       console.error(err);
     }
