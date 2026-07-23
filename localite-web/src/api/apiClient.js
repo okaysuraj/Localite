@@ -10,7 +10,7 @@ const apiClient = axios.create({
   },
 });
 
-// Interceptor to attach Firebase JWT token
+// Interceptor to attach Firebase ID token
 apiClient.interceptors.request.use(async (config) => {
   try {
     const auth = getAuth();

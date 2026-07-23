@@ -1,7 +1,5 @@
 import { auth } from '../firebase';
-
-// Use environment variable, or fallback to localhost. Note: For physical devices or Android emulator, localhost might need to be 10.0.2.2 or your machine's IP.
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8080/api';
+import { API_URL as BASE_URL } from '../config';
 
 const getAuthHeaders = async () => {
   const user = auth.currentUser;

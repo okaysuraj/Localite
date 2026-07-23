@@ -5,7 +5,7 @@ The cross-platform native application for the Localite ecosystem, empowering use
 ## Technology Stack
 - **Framework**: React Native + Expo
 - **Navigation**: React Navigation (Bottom Tabs + Native Stack)
-- **State**: AsyncStorage (for JWT persistence)
+- **State**: AsyncStorage (for session persistence)
 - **Hardware Integration**: Expo Camera (for QR Scanning)
 - **Maps**: React Native Maps
 - **Charts**: React Native Chart Kit

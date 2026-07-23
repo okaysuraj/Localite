@@ -15,9 +15,9 @@ import {
 } from '@expo-google-fonts/plus-jakarta-sans';
 
 import AppNavigator from './src/navigation/AppNavigator';
-import WelcomeCarouselScreen from './src/screens/WelcomeCarouselScreen';
-import SplashScreen from './src/screens/SplashScreen';
-import CreateMatchScreen from './src/screens/CreateMatchScreen';
+import WelcomeCarouselScreen from './src/screens/auth/WelcomeCarouselScreen';
+import SplashScreen from './src/screens/auth/SplashScreen';
+import CreateMatchScreen from './src/screens/events/CreateMatchScreen';
 import { AuthProvider } from './src/context/AuthContext';
 import { WebSocketProvider } from './src/context/WebSocketContext';
 

@@ -1,16 +1,15 @@
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
-
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8080/api';
+import { API_URL } from '../config';
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor to attach Firebase JWT token
+// Interceptor to attach Firebase ID token
 apiClient.interceptors.request.use(async (config) => {
   try {
     const auth = getAuth();

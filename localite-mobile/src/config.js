@@ -1,5 +1,10 @@
 import { Platform } from 'react-native';
 
-// Use 10.0.2.2 for Android Emulator, localhost for iOS simulator
-// If testing on a physical device, change this to your computer's local Wi-Fi IP address (e.g. 192.168.1.X)
-export const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
+// Set EXPO_PUBLIC_API_IP in .env to your machine's local Wi-Fi IP (e.g. 192.168.1.5)
+// Android Emulator uses 10.0.2.2 to reach host machine's localhost
+const IP = process.env.EXPO_PUBLIC_API_IP || 'localhost';
+const PORT = process.env.EXPO_PUBLIC_API_PORT || '8080';
+
+const host = Platform.OS === 'android' && IP === 'localhost' ? '10.0.2.2' : IP;
+
+export const API_URL = `http://${host}:${PORT}/api`;
