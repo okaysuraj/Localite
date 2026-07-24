@@ -1,73 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const EmailVerificationPage = () => {
-  const [otp, setOtp] = useState(['', '', '', '']);
-  const [loading, setLoading] = useState(false);
-  const [verified, setVerified] = useState(false);
-  const inputsRef = useRef([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (inputsRef.current[0]) {
-      inputsRef.current[0].focus();
-    }
-  }, []);
-
-  const handleChange = (e, index) => {
-    const value = e.target.value;
-    
-    // Only allow numbers
-    if (value && !/^\d+$/.test(value)) return;
-    
-    const newOtp = [...otp];
-    // Take only the last character if they pasted multiple or typed fast
-    newOtp[index] = value.length > 1 ? value.slice(-1) : value;
-    setOtp(newOtp);
-
-    // Auto focus next
-    if (value !== '' && index < 3) {
-      inputsRef.current[index + 1].focus();
-    }
-  };
-
-  const handleKeyDown = (e, index) => {
-    if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
-      inputsRef.current[index - 1].focus();
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const code = otp.join('');
-    if (code.length < 4) return;
-    
-    setLoading(true);
-    
-    // Simulate verification
-    setTimeout(() => {
-      setLoading(false);
-      setVerified(true);
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1000);
-    }, 1500);
-  };
-
-  const handleResend = (e) => {
-    const btn = e.target;
-    const originalText = btn.innerHTML;
-    btn.innerHTML = 'SENDING...';
-    btn.disabled = true;
-    
-    setTimeout(() => {
-      btn.innerHTML = 'SENT';
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }, 3000);
-    }, 1000);
-  };
 
   return (
     <div className="bg-background text-on-surface min-h-screen flex flex-col font-body-md">
@@ -99,65 +34,27 @@ const EmailVerificationPage = () => {
 
           {/* Content Section */}
           <section className="text-center">
-            <h1 className="font-display-lg-mobile text-display-lg-mobile text-primary mb-2">Verify Your Email</h1>
-            <p className="font-body-md text-on-surface-variant mb-stack-md">We sent a 4-digit code to your inbox.</p>
+            <h1 className="font-display-lg-mobile text-display-lg-mobile text-primary mb-4">Verify Your Email</h1>
+            <p className="font-body-md text-on-surface-variant mb-stack-lg">
+              We've sent a verification email to your inbox. Go to your mail, click on the verification link, and then return to log in.
+            </p>
 
-            {/* OTP Input Grid */}
-            <form onSubmit={handleSubmit} className="space-y-stack-md">
-              <div className="flex justify-center gap-4 mb-stack-md">
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    ref={(el) => (inputsRef.current[index] = el)}
-                    className="w-16 h-20 text-center text-headline-md font-headline-md bg-surface-container-low border-none rounded-lg transition-all duration-200 outline-none focus:ring-1.5 focus:ring-secondary focus:bg-surface-container-lowest"
-                    maxLength={1}
-                    required
-                    type="text"
-                    inputMode="numeric"
-                    value={digit}
-                    onChange={(e) => handleChange(e, index)}
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    style={{
-                      borderWidth: digit ? '1.5px' : '0px',
-                      borderColor: digit ? '#775a19' : 'transparent',
-                      backgroundColor: digit ? '#ffffff' : '#f5f3f3',
-                    }}
-                  />
-                ))}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-4">
-                <button 
-                  type="submit"
-                  disabled={loading || verified}
-                  className={`w-full py-4 font-label-caps text-label-caps tracking-widest rounded-lg shadow-lg active:scale-[0.98] transition-all duration-200 ${
-                    verified ? 'bg-primary text-surface' : 'bg-secondary text-white hover:opacity-90'
-                  }`}
-                >
-                  {loading ? 'VERIFYING...' : verified ? 'VERIFIED' : 'VERIFY'}
-                </button>
-                <div className="pt-4">
-                  <p className="font-body-md text-on-surface-variant">
-                    Didn't receive the code?{' '}
-                    <button 
-                      type="button" 
-                      onClick={handleResend}
-                      className="text-secondary font-bold hover:underline underline-offset-4 transition-all"
-                    >
-                      Resend Code
-                    </button>
-                  </p>
-                </div>
-              </div>
-            </form>
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              <button 
+                onClick={() => navigate('/login')}
+                className="w-full py-4 font-label-caps text-label-caps tracking-widest rounded-lg shadow-lg active:scale-[0.98] transition-all duration-200 bg-secondary text-white hover:opacity-90"
+              >
+                GO TO LOGIN
+              </button>
+            </div>
           </section>
         </div>
       </main>
 
       {/* Footer */}
       <footer className="py-8 text-center px-container-margin opacity-30 mt-auto">
-        <p className="font-label-caps text-[10px] tracking-widest text-on-surface-variant">LOCALITE COLLECTIVE © 2024 • PRIVACY FIRST</p>
+        <p className="font-label-caps text-[10px] tracking-widest text-on-surface-variant">LOCALITE COLLECTIVE © 2026 • PRIVACY FIRST</p>
       </footer>
 
       <style>{`

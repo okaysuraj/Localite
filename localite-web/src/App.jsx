@@ -92,6 +92,10 @@ import MediaViewerPage from './pages/shared/MediaViewerPage';
 import SocialLinkingPage from './pages/profile/SocialLinkingPage';
 import ExtendInvitationPage from './pages/network/ExtendInvitationPage';
 import EngagementStatsPage from './pages/dashboard/EngagementStatsPage';
+import PrivacyPolicyPage from './pages/shared/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/shared/TermsOfServicePage';
+import VenuePartnersPage from './pages/shared/VenuePartnersPage';
+import ContactPage from './pages/shared/ContactPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -103,6 +107,7 @@ const ProtectedRoute = ({ children }) => {
 const AppContent = () => {
   const location = useLocation();
   const isAuthPage = ['/', '/welcome', '/login', '/signup', '/verify-email'].includes(location.pathname);
+  const isNoFooterPage = ['/privacy', '/terms', '/partners', '/contact'].includes(location.pathname);
 
   return (
     <div className="app-container">
@@ -114,6 +119,10 @@ const AppContent = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/verify-email" element={<EmailVerificationPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="/partners" element={<VenuePartnersPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/matches/create" element={<ProtectedRoute><CreateMatchPage /></ProtectedRoute>} />
           <Route path="/matches/find-players" element={<ProtectedRoute><FindPlayersPage /></ProtectedRoute>} />
           <Route path="/matches/join" element={<ProtectedRoute><JoinMatchPage /></ProtectedRoute>} />
@@ -125,8 +134,8 @@ const AppContent = () => {
           <Route path="/messages/requests" element={<ProtectedRoute><MessageRequestsPage /></ProtectedRoute>} />
           <Route path="/messages/:id" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/messages/:id/voice" element={<ProtectedRoute><VoiceNotesPage /></ProtectedRoute>} />
-          <Route path="/sports/cricket" element={<ProtectedRoute><CricketDetailPage /></ProtectedRoute>} />
-          <Route path="/sports" element={<ProtectedRoute><SportsCategoriesPage /></ProtectedRoute>} />
+          <Route path="/sports/cricket" element={<CricketDetailPage />} />
+          <Route path="/sports" element={<SportsCategoriesPage />} />
           <Route path="/events/:eventId/checkin" element={<ProtectedRoute><AttendanceCheckInPage /></ProtectedRoute>} />
           <Route path="/events/:eventId/ticket" element={<ProtectedRoute><TicketQRCodePage /></ProtectedRoute>} />
           <Route path="/events/:eventId/attendees" element={<ProtectedRoute><AttendeeManagementPage /></ProtectedRoute>} />
@@ -143,7 +152,7 @@ const AppContent = () => {
           <Route path="/dashboard/host" element={<ProtectedRoute><HostDashboardPage /></ProtectedRoute>} />
           <Route path="/dashboard/revenue" element={<ProtectedRoute><RevenueDashboardPage /></ProtectedRoute>} />
           <Route path="/dashboard/insights" element={<ProtectedRoute><EventInsightsPage /></ProtectedRoute>} />
-          <Route path="/events" element={<ProtectedRoute><EventsCatalogPage /></ProtectedRoute>} />
+          <Route path="/events" element={<EventsCatalogPage />} />
           <Route path="/my-events" element={<ProtectedRoute><MyEventsPage /></ProtectedRoute>} />
           <Route path="/availability" element={<ProtectedRoute><AvailabilityCalendarPage /></ProtectedRoute>} />
           <Route path="/dashboard/timeline" element={<ProtectedRoute><EventTimelineUpdatesPage /></ProtectedRoute>} />
@@ -173,16 +182,8 @@ const AppContent = () => {
           <Route path="/social-linking" element={<ProtectedRoute><SocialLinkingPage /></ProtectedRoute>} />
           <Route path="/extend-invitation" element={<ProtectedRoute><ExtendInvitationPage /></ProtectedRoute>} />
           <Route path="/engagement-stats" element={<ProtectedRoute><EngagementStatsPage /></ProtectedRoute>} />
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <LiveEventDashboardPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/map" element={
-            <ProtectedRoute>
-              <MapPage />
-            </ProtectedRoute>
-          } />
+          <Route path="/dashboard" element={<LiveEventDashboardPage />} />
+          <Route path="/map" element={<MapPage />} />
           <Route path="/search" element={
             <ProtectedRoute>
               <SearchPage />
@@ -193,11 +194,7 @@ const AppContent = () => {
               <CategoriesPage />
             </ProtectedRoute>
           } />
-          <Route path="/network" element={
-            <ProtectedRoute>
-              <PeopleDiscoveryPage />
-            </ProtectedRoute>
-          } />
+          <Route path="/network" element={<PeopleDiscoveryPage />} />
           <Route path="/empty" element={
             <ProtectedRoute>
               <EmptyStatePage />
@@ -295,7 +292,6 @@ const AppContent = () => {
             </ProtectedRoute>
           } />
         </Routes>
-        {!isAuthPage && <Footer />}
       </main>
     </div>
   );

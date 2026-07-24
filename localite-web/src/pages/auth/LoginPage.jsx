@@ -34,10 +34,10 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Top AppBar */}
-      <header className="w-full top-0 sticky bg-background z-50">
+      <header className="w-full top-0 sticky bg-surface-container-low border-b border-surface-container-high z-50">
         <div className="flex items-center justify-between px-container-margin py-4 w-full max-w-7xl mx-auto">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/welcome')}
             className="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform"
           >
             <span className="material-symbols-outlined">arrow_back</span>
@@ -132,17 +132,7 @@ const LoginPage = () => {
               </button>
             </form>
 
-            {/* Social Divider */}
-            <div className="flex items-center gap-4 py-2">
-              <div className="h-[1px] flex-grow bg-outline-variant"></div>
-              <span className="font-label-caps text-label-caps text-on-surface-variant/50">OR</span>
-              <div className="h-[1px] flex-grow bg-outline-variant"></div>
-            </div>
-
-            {/* Secondary Action */}
-            <button className="w-full border border-secondary text-secondary py-4 rounded-xl font-label-caps text-label-caps tracking-widest hover:bg-secondary/5 active:scale-[0.98] transition-all">
-              CONTINUE WITH APPLE
-            </button>
+           
           </div>
 
           {/* Sign Up Prompt */}
@@ -157,12 +147,7 @@ const LoginPage = () => {
         </div>
       </main>
 
-      {/* Footer Disclaimer */}
-      <footer className="py-stack-md px-container-margin text-center">
-        <p className="font-label-caps text-[10px] text-on-surface-variant/40 uppercase tracking-[0.2em]">
-          © 2024 Localite Community. All Rights Reserved.
-        </p>
-      </footer>
+     
 
       {/* Add some simple styles for animation that would normally be in global css */}
       <style>{`

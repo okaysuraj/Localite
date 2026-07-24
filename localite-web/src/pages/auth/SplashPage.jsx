@@ -52,7 +52,7 @@ const SplashPage = () => {
 
         {/* Tagline */}
         <div className="tagline-fade">
-          <p className="font-label-caps text-secondary tracking-[0.4em] uppercase mb-stack-lg">
+          <p className="font-label-caps text-surface-bright tracking-[0.4em] uppercase mb-stack-lg text-[14px] opacity-90 font-bold">
             Intentional Connection
           </p>
         </div>
@@ -60,26 +60,12 @@ const SplashPage = () => {
         {/* Loading Indicator Section */}
         <div className="flex flex-col items-center space-y-4 pt-4 tagline-fade" style={{ animationDelay: '1.4s' }}>
           <div className="gold-loader"></div>
-          <span className="font-label-caps text-on-primary-container opacity-40 text-[10px] tracking-[0.2em]">
+          <span className="font-label-caps text-surface-bright opacity-90 text-[12px] tracking-[0.2em]">
             CURATING YOUR EXPERIENCE
           </span>
         </div>
 
       </main>
-
-      {/* Bottom Navigation / Brand Identity Element */}
-      <footer className="fixed bottom-12 w-full flex justify-between items-end px-container-margin z-10 opacity-30 tagline-fade" style={{ animationDelay: '1.8s' }}>
-        <div className="hidden md:block">
-          <p className="font-label-caps text-surface-bright text-[10px]">EST. MMXXIV</p>
-        </div>
-        <div className="flex space-x-gutter">
-          <span className="material-symbols-outlined text-surface-bright text-body-md" style={{ fontVariationSettings: "'wght' 200" }}>language</span>
-          <span className="material-symbols-outlined text-surface-bright text-body-md" style={{ fontVariationSettings: "'wght' 200" }}>public</span>
-        </div>
-        <div className="hidden md:block">
-          <p className="font-label-caps text-surface-bright text-[10px]">PARIS — LONDON — NEW YORK</p>
-        </div>
-      </footer>
 
       {/* Styles for animations */}
       <style>{`

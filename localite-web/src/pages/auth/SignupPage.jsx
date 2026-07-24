@@ -42,10 +42,10 @@ const SignupPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* TopAppBar */}
-      <header className="w-full top-0 sticky z-50 bg-background">
+      <header className="w-full top-0 sticky bg-surface-container-low border-b border-surface-container-high z-50">
         <div className="flex items-center justify-between px-container-margin py-4 w-full max-w-7xl mx-auto">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/welcome')}
             className="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform"
           >
             <span className="material-symbols-outlined">arrow_back</span>
@@ -155,25 +155,6 @@ const SignupPage = () => {
               </button>
             </form>
 
-            {/* Alternative Methods */}
-            <div className="mt-8">
-              <div className="relative flex items-center justify-center mb-6">
-                <div className="border-t border-surface-container-high w-full absolute"></div>
-                <span className="bg-surface-container-lowest px-4 font-label-caps text-[10px] text-on-surface-variant relative z-10">
-                  OR SIGN UP WITH
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <button className="flex items-center justify-center space-x-2 py-3 px-4 border border-outline-variant rounded-lg font-label-caps text-[11px] text-primary hover:bg-surface-container-low transition-colors">
-                  <img alt="Google" className="w-4 h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC88LUQftJkoLgw5N899fw5XXxqmL7NbAws7K0i8Hn3KSRh69eDIbo_Udfe0SP_PakYkDvrIwO7PtY4-u0AjdCYHYD_NtqnY9aycmgkEF5ghra-sxpqWfgl1oaosvBWJqkNvnwSoxlslurQEwNcsJXJmw_v8qPJZlB5pexQKExegYPfVIp_yy7MokB5dYWmLd38CGww2-GRQwwCVhDITyh4pDJgIVvgTPhOgpYCUcHKiOz_9cHcIVaeBA"/>
-                  <span>GOOGLE</span>
-                </button>
-                <button className="flex items-center justify-center space-x-2 py-3 px-4 border border-outline-variant rounded-lg font-label-caps text-[11px] text-primary hover:bg-surface-container-low transition-colors">
-                  <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>apps</span>
-                  <span>APPLE</span>
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Login Link */}
@@ -192,16 +173,7 @@ const SignupPage = () => {
         ></div>
       </div>
 
-      <footer className="py-8 px-container-margin border-t border-surface-container-high mt-auto z-10 bg-background/80 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="font-label-caps text-[10px] text-on-surface-variant">© 2024 LOCALITE. ALL RIGHTS RESERVED.</p>
-          <div className="flex space-x-6">
-            <Link to="/privacy" className="font-label-caps text-[10px] text-on-surface-variant hover:text-secondary transition-colors">PRIVACY</Link>
-            <Link to="/legal" className="font-label-caps text-[10px] text-on-surface-variant hover:text-secondary transition-colors">LEGAL</Link>
-            <Link to="/contact" className="font-label-caps text-[10px] text-on-surface-variant hover:text-secondary transition-colors">CONTACT</Link>
-          </div>
-        </div>
-      </footer>
+      
 
       <style>{`
         @keyframes fadeInUp {
