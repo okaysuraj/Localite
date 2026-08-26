@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Users, AlertTriangle, ShieldBan, Trash2 } from 'lucide-react';
+import { auth } from '../../firebase';
+import { getAuthHeaders } from '../../services/api';
 
 export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState({ totalUsers: 0, totalEvents: 0, pendingReports: 0 });
@@ -12,8 +14,7 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = { 'Authorization': `Bearer ${token}` };
+      const headers = await getAuthHeaders();
 
       const [analyticsRes, reportsRes] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/admin/analytics`, { headers }),
@@ -32,10 +33,10 @@ export default function AdminDashboard() {
   const handleBanUser = async (userId) => {
     if (window.confirm("Are you sure you want to ban this user?")) {
       try {
-        const token = localStorage.getItem('token');
+        const headers = await getAuthHeaders();
         const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/users/${userId}/ban`, {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers
         });
         if (res.ok) {
           alert("User banned successfully.");

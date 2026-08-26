@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Activity, Users, Star, Calendar, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import gsap from 'gsap';
+import { getAuthHeaders } from '../../services/api';
 
 const AnalyticsDashboard = () => {
   const [data, setData] = useState(null);
@@ -22,9 +23,9 @@ const AnalyticsDashboard = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const headers = await getAuthHeaders();
       const res = await fetch(import.meta.env.VITE_API_URL + '/users/me/analytics', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers
       });
       if (res.ok) {
         setData(await res.json());

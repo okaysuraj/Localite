@@ -46,7 +46,8 @@ const WelcomeCarouselPage = () => {
         <nav className="flex justify-between items-center h-20 px-container-margin max-w-7xl mx-auto">
           <div className="font-display-lg text-display-lg text-primary tracking-tighter">Localite</div>
           <div className="hidden md:flex items-center gap-8">
-            <Link to="/map" className="text-on-surface-variant pb-1 font-label-caps text-label-caps hover:text-primary transition-colors duration-300">Events</Link>
+            <Link to="/dashboard" className="text-primary border-b border-primary pb-1 font-label-caps text-label-caps transition-colors duration-300">Places</Link>
+            <Link to="/events" className="text-on-surface-variant pb-1 font-label-caps text-label-caps hover:text-primary transition-colors duration-300">Events</Link>
             <Link to="/sports" className="text-on-surface-variant pb-1 font-label-caps text-label-caps hover:text-primary transition-colors duration-300">Sports</Link>
             <Link to="/network" className="text-on-surface-variant pb-1 font-label-caps text-label-caps hover:text-primary transition-colors duration-300">Community</Link>
           </div>
@@ -150,7 +151,7 @@ const WelcomeCarouselPage = () => {
         <div className="flex flex-col md:flex-row justify-between items-center py-stack-lg px-container-margin max-w-7xl mx-auto">
           <div className="mb-8 md:mb-0">
             <div className="font-headline-sm text-headline-sm text-primary mb-2">Localite</div>
-            <p className="font-body-md text-body-md text-on-surface-variant">© 2026 Localite.</p>
+            <p className="font-body-md text-body-md text-on-surface-variant">© 2024 Localite. Modern Nobility in Local Gathering.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <Link to="/privacy" className="text-on-surface-variant font-label-caps text-label-caps hover:text-secondary transition-colors">Privacy Policy</Link>

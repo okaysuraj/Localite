@@ -8,7 +8,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../config';
 
-export default function ReportUserScreen({ navigation }) {
+export default function ReportUserScreen({ route, navigation }) {
+  const { targetId } = route.params || { targetId: 1 };
   const insets = useSafeAreaInsets();
   const [selectedCategory, setSelectedCategory] = useState('inappropriate');
   const [details, setDetails] = useState('');
@@ -25,7 +26,7 @@ export default function ReportUserScreen({ navigation }) {
       const token = await AsyncStorage.getItem('userToken');
       const payload = {
         targetType: 'USER',
-        targetId: 1, // Mocked target ID
+        targetId: targetId,
         reason: selectedCategory,
         details: details.trim()
       };

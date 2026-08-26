@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
 
 export default function ReportMemberPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const targetId = location.state?.targetId || 1;
   const [selectedCategory, setSelectedCategory] = useState('Inappropriate Behavior');
   const [details, setDetails] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,7 +25,7 @@ export default function ReportMemberPage() {
 
       const payload = {
         targetType: 'USER',
-        targetId: 1, // Mocked target ID for this example
+        targetId: targetId,
         reason: selectedCategory,
         details: details
       };

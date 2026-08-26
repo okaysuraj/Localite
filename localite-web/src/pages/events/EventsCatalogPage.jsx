@@ -6,6 +6,7 @@ export default function EventsCatalogPage() {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('ALL EVENTS');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -20,6 +21,15 @@ export default function EventsCatalogPage() {
     };
     fetchEvents();
   }, []);
+
+  const tabs = ['ALL EVENTS', 'CULTURAL', 'SPORTS', 'NETWORKING', 'CULINARY'];
+
+  const filteredEvents = activeTab === 'ALL EVENTS' 
+    ? events 
+    : events.filter(e => {
+        const category = (e.category || e.eventType || '').toUpperCase();
+        return category === activeTab;
+      });
 
   return (
     <div className="bg-[#fbf9f8] text-[#1b1c1c] font-body-md min-h-screen selection:bg-[#fed488] selection:text-[#785a1a]">
@@ -62,33 +72,33 @@ export default function EventsCatalogPage() {
         </section>
 
         {/* Featured Carousel (Simulated Single Large Card) */}
-        {events.length > 0 && (
+        {filteredEvents.length > 0 && (
           <section className="mb-12">
             <div className="relative group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#eae8e7] flex flex-col lg:flex-row h-auto lg:h-[500px]">
               <div className="lg:w-2/3 h-[300px] lg:h-full relative overflow-hidden">
-                <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src={events[0].imageUrl || events[0].image} alt={events[0].title}/>
+                <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src={filteredEvents[0].imageUrl || filteredEvents[0].image} alt={filteredEvents[0].title}/>
                 <div className="absolute top-6 left-6 flex gap-3">
                   <span className="bg-primary text-white px-4 py-1 font-label-caps text-[10px] uppercase font-bold rounded-full">FEATURED</span>
-                  {events[0].isHighlighted && <span className="bg-[#775a19] text-white px-4 py-1 font-label-caps text-[10px] uppercase font-bold rounded-full">MEMBERS ONLY</span>}
+                  {filteredEvents[0].isHighlighted && <span className="bg-[#775a19] text-white px-4 py-1 font-label-caps text-[10px] uppercase font-bold rounded-full">MEMBERS ONLY</span>}
                 </div>
               </div>
               <div className="lg:w-1/3 p-8 flex flex-col justify-between bg-white">
                 <div>
-                  <p className="font-label-caps text-[10px] uppercase font-bold text-[#775a19] mb-2 tracking-widest">{events[0].date}</p>
-                  <h2 className="font-headline-md text-3xl font-bold text-primary mb-4 leading-tight">{events[0].title}</h2>
-                  <p className="text-sm text-[#44474d] mb-6">{events[0].description}</p>
+                  <p className="font-label-caps text-[10px] uppercase font-bold text-[#775a19] mb-2 tracking-widest">{filteredEvents[0].date}</p>
+                  <h2 className="font-headline-md text-3xl font-bold text-primary mb-4 leading-tight">{filteredEvents[0].title}</h2>
+                  <p className="text-sm text-[#44474d] mb-6">{filteredEvents[0].description}</p>
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[#775a19] text-[20px]">location_on</span>
-                      <span className="text-sm">{events[0].location}</span>
+                      <span className="text-sm">{filteredEvents[0].location}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[#775a19] text-[20px]">group</span>
-                      <span className="text-sm">{events[0].attendees || 0} Attending</span>
+                      <span className="text-sm">{filteredEvents[0].attendees || 0} Attending</span>
                     </div>
                   </div>
                 </div>
-                <button className="w-full bg-primary text-white py-4 font-label-caps text-[12px] uppercase font-bold tracking-widest hover:bg-[#775a19] transition-all duration-300 rounded-lg" onClick={() => navigate(`/events/${events[0].id}`)}>REQUEST INVITATION</button>
+                <button className="w-full bg-primary text-white py-4 font-label-caps text-[12px] uppercase font-bold tracking-widest hover:bg-[#775a19] transition-all duration-300 rounded-lg" onClick={() => navigate(`/events/${filteredEvents[0].id}`)}>REQUEST INVITATION</button>
               </div>
             </div>
           </section>
@@ -97,11 +107,15 @@ export default function EventsCatalogPage() {
         {/* Filters & Navigation */}
         <section className="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-[#c5c6cd] pb-4">
           <div className="flex gap-8 overflow-x-auto no-scrollbar">
-            <button className="font-label-caps text-[12px] uppercase font-bold text-primary border-b-2 border-primary pb-2 whitespace-nowrap">ALL EVENTS</button>
-            <button className="font-label-caps text-[12px] uppercase font-bold text-[#44474d] hover:text-primary transition-colors pb-2 whitespace-nowrap">CULTURAL</button>
-            <button className="font-label-caps text-[12px] uppercase font-bold text-[#44474d] hover:text-primary transition-colors pb-2 whitespace-nowrap">SPORTS</button>
-            <button className="font-label-caps text-[12px] uppercase font-bold text-[#44474d] hover:text-primary transition-colors pb-2 whitespace-nowrap">NETWORKING</button>
-            <button className="font-label-caps text-[12px] uppercase font-bold text-[#44474d] hover:text-primary transition-colors pb-2 whitespace-nowrap">CULINARY</button>
+            {tabs.map((tab) => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`font-label-caps text-[12px] uppercase font-bold whitespace-nowrap pb-2 ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-[#44474d] hover:text-primary transition-colors'}`}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
           <div className="flex items-center gap-4">
             <span className="font-label-caps text-[10px] uppercase font-bold text-[#44474d]">SORT BY:</span>
@@ -118,7 +132,7 @@ export default function EventsCatalogPage() {
           {loading ? (
              <div className="col-span-full text-center py-12 text-[#44474d]">Loading events...</div>
           ) : (
-            events.slice(1).map((event) => (
+            filteredEvents.slice(1).map((event) => (
               <div key={event.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2 border border-[#eae8e7] flex flex-col cursor-pointer" onClick={() => navigate(`/events/${event.id}`)}>
                 <div className="h-64 relative">
                   <img className="w-full h-full object-cover" src={event.imageUrl || event.image} alt={event.title} />

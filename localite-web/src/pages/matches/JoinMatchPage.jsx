@@ -18,7 +18,7 @@ export default function JoinMatchPage() {
       const token = await auth.currentUser?.getIdToken();
       if (!token) return;
 
-      const res = await fetch(`${API_URL}/events`, {
+      const res = await fetch(`${API_URL}/matches/events`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {

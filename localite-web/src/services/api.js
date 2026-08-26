@@ -118,32 +118,182 @@ export const sendEventMessage = async (eventId, content) => {
   }
 };
 
-// --- Social & Engagement (Phase 6) ---
-
 export const getLeaderboard = async (sport) => {
   try {
-    const response = await apiClient.get(`/leaderboard/${sport}`);
-    return response.data;
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/leaderboards/${sport || 'all'}`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch leaderboard');
+    return await response.json();
   } catch (error) {
-    console.error(`Error fetching leaderboard for ${sport}:`, error);
+    console.error('Error fetching leaderboard:', error);
     return [];
   }
 };
 
-export const awardXp = async (actionStr) => {
+export const getCurrentUser = async () => {
   try {
-    const response = await apiClient.post(`/gamification/award`, { action: actionStr });
-    return response.data;
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/me`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch user');
+    return await response.json();
   } catch (error) {
-    console.error('Error awarding XP:', error);
+    console.error('Error fetching user:', error);
+    return null;
+  }
+};
+
+export const getNotifications = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/notifications`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch notifications');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    return [];
+  }
+};
+
+export const markNotificationAsRead = async (id) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/notifications/${id}/read`, { method: 'PUT', headers });
+    if (!response.ok) throw new Error('Failed to mark as read');
+    return await response.text();
+  } catch (error) {
+    console.error('Error marking as read:', error);
     throw error;
+  }
+};
+
+export const getConversations = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/messages/direct/conversations`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch conversations');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching conversations:', error);
+    return [];
+  }
+};
+
+export const getConversation = async (userId) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/messages/direct/${userId}`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch conversation');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching conversation:', error);
+    return [];
+  }
+};
+
+export const sendDirectMessage = async (userId, content, messageType = 'TEXT') => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/messages/direct/${userId}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ content, messageType })
+    });
+    if (!response.ok) throw new Error('Failed to send message');
+    return await response.json();
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+export const getPendingRequests = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/connections/pending`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch pending requests');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching pending requests:', error);
+    return [];
+  }
+};
+
+export const acceptRequest = async (connectionId) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/connections/${connectionId}/accept`, {
+      method: 'PUT',
+      headers
+    });
+    if (!response.ok) throw new Error('Failed to accept request');
+    return await response.text();
+  } catch (error) {
+    console.error('Error accepting request:', error);
+    throw error;
+  }
+};
+
+export const declineRequest = async (connectionId) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/connections/${connectionId}/decline`, {
+      method: 'DELETE',
+      headers
+    });
+    if (!response.ok) throw new Error('Failed to decline request');
+    return await response.text();
+  } catch (error) {
+    console.error('Error declining request:', error);
+    throw error;
+  }
+};
+
+export const awardGamificationXp = async (actionStr) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/gamification/award`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ action: actionStr }),
+    });
+    if (!response.ok) throw new Error('Failed to award xp');
+    return await response.json();
+  } catch (error) {
+    console.error('Error awarding xp:', error);
+    return null;
+  }
+};
+
+export const buyTicket = async (eventId) => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/monetization/buy-ticket/${eventId}`, {
+    method: 'POST',
+    headers
+  });
+  if (!response.ok) throw new Error('Failed to purchase ticket');
+  return response.text();
+};
+
+// --- Social & Engagement (Phase 6) ---
+
+export const getFeed = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/feed`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch feed');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching feed:', error);
+    return [];
   }
 };
 
 export const followUser = async (userId) => {
   try {
-    const response = await apiClient.post(`/users/${userId}/follow`);
-    return response.data;
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/${userId}/follow`, { method: 'POST', headers });
+    if (!response.ok) throw new Error('Failed to follow');
+    return await response.json();
   } catch (error) {
     console.error('Error following user:', error);
     throw error;
@@ -152,8 +302,10 @@ export const followUser = async (userId) => {
 
 export const unfollowUser = async (userId) => {
   try {
-    const response = await apiClient.delete(`/users/${userId}/unfollow`);
-    return response.data;
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/${userId}/unfollow`, { method: 'DELETE', headers });
+    if (!response.ok) throw new Error('Failed to unfollow');
+    return await response.json();
   } catch (error) {
     console.error('Error unfollowing user:', error);
     throw error;
@@ -162,8 +314,10 @@ export const unfollowUser = async (userId) => {
 
 export const sendConnectionRequest = async (userId) => {
   try {
-    const response = await apiClient.post(`/users/${userId}/connect`);
-    return response.data;
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/${userId}/connect`, { method: 'POST', headers });
+    if (!response.ok) throw new Error('Failed to connect');
+    return await response.json();
   } catch (error) {
     console.error('Error sending connection request:', error);
     throw error;
@@ -172,8 +326,10 @@ export const sendConnectionRequest = async (userId) => {
 
 export const getPendingConnections = async () => {
   try {
-    const response = await apiClient.get(`/users/connections/pending`);
-    return response.data;
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/connections/pending`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch connections');
+    return await response.json();
   } catch (error) {
     console.error('Error fetching pending connections:', error);
     return [];
@@ -182,8 +338,10 @@ export const getPendingConnections = async () => {
 
 export const acceptConnection = async (connectionId) => {
   try {
-    const response = await apiClient.put(`/users/connections/${connectionId}/accept`);
-    return response.data;
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/connections/${connectionId}/accept`, { method: 'PUT', headers });
+    if (!response.ok) throw new Error('Failed to accept connection');
+    return await response.json();
   } catch (error) {
     console.error('Error accepting connection:', error);
     throw error;
@@ -211,6 +369,30 @@ export const getUserById = async (id) => {
   } catch (error) {
     console.error('Error fetching user by id:', error);
     return null;
+  }
+};
+
+export const getRecommendedEvents = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/matches/events`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch recommended events');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching recommended events:', error);
+    return [];
+  }
+};
+
+export const getSuggestedPartners = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/matches/users`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch suggested partners');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching suggested partners:', error);
+    return [];
   }
 };
 

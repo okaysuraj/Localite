@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ExplorePage from './pages/shared/ExplorePage';
+import FeedPage from './pages/shared/FeedPage';
+import NotificationsPage from './pages/shared/NotificationsPage';
 import MapPage from './pages/shared/MapPage';
 import SearchPage from './pages/shared/SearchPage';
 import CategoriesPage from './pages/shared/CategoriesPage';
@@ -52,12 +54,6 @@ import LiveMapTrackingPage from './pages/matches/LiveMapTrackingPage';
 import ChatPage from './pages/chat/ChatPage';
 import MessageRequestsPage from './pages/chat/MessageRequestsPage';
 import VoiceNotesPage from './pages/chat/VoiceNotesPage';
-import CreateEventBasicInfoPage from './pages/events/CreateEventBasicInfoPage';
-import CreateEventDateTimePage from './pages/events/CreateEventDateTimePage';
-import CreateEventLocationPickerPage from './pages/events/CreateEventLocationPickerPage';
-import CreateEventCapacityRulesPage from './pages/events/CreateEventCapacityRulesPage';
-import CreateEventPaymentSetupPage from './pages/events/CreateEventPaymentSetupPage';
-import CreateEventReviewPublishPage from './pages/events/CreateEventReviewPublishPage';
 import EventPlanningAnalyticsPage from './pages/events/EventPlanningAnalyticsPage';
 import HostDashboardPage from './pages/dashboard/HostDashboardPage';
 import RevenueDashboardPage from './pages/dashboard/RevenueDashboardPage';
@@ -73,7 +69,6 @@ import DataStorageSettingsPage from './pages/settings/DataStorageSettingsPage';
 import PrestigeProgressPage from './pages/network/PrestigeProgressPage';
 import MomentumOfGracePage from './pages/network/MomentumOfGracePage';
 import TheHallOfHonorPage from './pages/network/TheHallOfHonorPage';
-import InnerCircleRankingsPage from './pages/network/InnerCircleRankingsPage';
 import IDVerificationPage from './pages/auth/IDVerificationPage';
 import SelfieVerificationPage from './pages/auth/SelfieVerificationPage';
 import TrustedCirclesSetupPage from './pages/settings/TrustedCirclesSetupPage';
@@ -116,6 +111,10 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<SplashPage />} />
           <Route path="/welcome" element={<WelcomeCarouselPage />} />
+          <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
+          <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+          <Route path="/feed" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/verify-email" element={<EmailVerificationPage />} />
@@ -141,12 +140,7 @@ const AppContent = () => {
           <Route path="/events/:eventId/attendees" element={<ProtectedRoute><AttendeeManagementPage /></ProtectedRoute>} />
           <Route path="/events/:eventId/live/dashboard" element={<ProtectedRoute><LiveEventDashboardPage /></ProtectedRoute>} />
           <Route path="/events/:eventId/live/poll" element={<ProtectedRoute><LiveEventPollPage /></ProtectedRoute>} />
-          <Route path="/events/create" element={<ProtectedRoute><CreateEventBasicInfoPage /></ProtectedRoute>} />
-          <Route path="/events/create/datetime" element={<ProtectedRoute><CreateEventDateTimePage /></ProtectedRoute>} />
-          <Route path="/events/create/location" element={<ProtectedRoute><CreateEventLocationPickerPage /></ProtectedRoute>} />
-          <Route path="/events/create/capacity" element={<ProtectedRoute><CreateEventCapacityRulesPage /></ProtectedRoute>} />
-          <Route path="/events/create/payment" element={<ProtectedRoute><CreateEventPaymentSetupPage /></ProtectedRoute>} />
-          <Route path="/events/create/review" element={<ProtectedRoute><CreateEventReviewPublishPage /></ProtectedRoute>} />
+          <Route path="/events/create" element={<ProtectedRoute><CreateEventWizard /></ProtectedRoute>} />
           <Route path="/events/analytics" element={<ProtectedRoute><EventPlanningAnalyticsPage /></ProtectedRoute>} />
           <Route path="/events/:eventId/map" element={<ProtectedRoute><LiveMapTrackingPage /></ProtectedRoute>} />
           <Route path="/dashboard/host" element={<ProtectedRoute><HostDashboardPage /></ProtectedRoute>} />
@@ -163,7 +157,7 @@ const AppContent = () => {
           <Route path="/prestige" element={<ProtectedRoute><PrestigeProgressPage /></ProtectedRoute>} />
           <Route path="/momentum" element={<ProtectedRoute><MomentumOfGracePage /></ProtectedRoute>} />
           <Route path="/hallofhonor" element={<ProtectedRoute><TheHallOfHonorPage /></ProtectedRoute>} />
-          <Route path="/rankings" element={<ProtectedRoute><InnerCircleRankingsPage /></ProtectedRoute>} />
+          <Route path="/rankings" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
           <Route path="/verification/id" element={<ProtectedRoute><IDVerificationPage /></ProtectedRoute>} />
           <Route path="/selfie-verification" element={<ProtectedRoute><SelfieVerificationPage /></ProtectedRoute>} />
           <Route path="/trusted-contacts" element={<ProtectedRoute><TrustedCirclesSetupPage /></ProtectedRoute>} />
@@ -230,11 +224,7 @@ const AppContent = () => {
               <EventDetailPage />
             </ProtectedRoute>
           } />
-          <Route path="/create-event" element={
-            <ProtectedRoute>
-              <CreateEventWizard />
-            </ProtectedRoute>
-          } />
+
           <Route path="/events/:id/participants" element={
             <ProtectedRoute>
               <EventParticipantsPage />

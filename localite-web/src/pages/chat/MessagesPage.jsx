@@ -14,7 +14,7 @@ export default function MessagesPage() {
 
   useEffect(() => {
     fetchConversations();
-  }, [activeTab]);
+  }, []);
 
   const fetchConversations = async () => {
     setLoading(true);
@@ -84,13 +84,13 @@ export default function MessagesPage() {
           <div className="flex border-b border-outline-variant/30">
             <button 
               onClick={() => setActiveTab('MESSAGES')}
-              className={`flex-1 pb-3 font-label-caps text-label-caps transition-colors ${activeTab === 'MESSAGES' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'}`}
+              className={`flex-1 pb-3 font-label-caps text-label-caps transition-colors text-primary border-b-2 border-primary`}
             >
               MESSAGES
             </button>
             <button 
-              onClick={() => setActiveTab('REQUESTS')}
-              className={`flex-1 pb-3 font-label-caps text-label-caps transition-colors ${activeTab === 'REQUESTS' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'}`}
+              onClick={() => navigate('/messages/requests')}
+              className={`flex-1 pb-3 font-label-caps text-label-caps transition-colors text-on-surface-variant hover:text-primary`}
             >
               REQUESTS
             </button>

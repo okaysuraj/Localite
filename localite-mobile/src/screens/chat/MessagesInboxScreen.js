@@ -10,11 +10,16 @@ export default function MessagesInboxScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('MESSAGES');
   const [searchQuery, setSearchQuery] = useState('');
   const [conversations, setConversations] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchConversations();
-  }, []);
+    if (activeTab === 'MESSAGES') {
+      fetchConversations();
+    } else {
+      fetchRequests();
+    }
+  }, [activeTab]);
 
   const fetchConversations = async () => {
     setLoading(true);
@@ -57,6 +62,61 @@ export default function MessagesInboxScreen({ navigation }) {
     }
   };
 
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await fetch(`${API_URL}/users/connections/pending`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRequests(data.map(req => ({
+          id: req.connectionId.toString(),
+          user: {
+            id: req.requesterId,
+            username: req.requesterName,
+            profileImageUrl: `https://api.dicebear.com/7.x/notionists/svg?seed=${req.requesterName}&backgroundColor=b9c7e4`
+          },
+          lastMessage: 'Sent you a connection request',
+          timestamp: 'Just now',
+          unread: true,
+          online: false
+        })));
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAcceptRequest = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await fetch(`${API_URL}/users/connections/${id}/accept`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setRequests(prev => prev.filter(r => r.id !== id));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeclineRequest = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      await fetch(`${API_URL}/users/connections/${id}/decline`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setRequests(prev => prev.filter(r => r.id !== id));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       style={[styles.conversationCard, item.unread && styles.unreadCard]}
@@ -76,6 +136,30 @@ export default function MessagesInboxScreen({ navigation }) {
         </Text>
       </View>
     </TouchableOpacity>
+  );
+
+  const renderRequestItem = ({ item }) => (
+    <View style={styles.conversationCard}>
+      <View style={styles.avatarContainer}>
+        <Image source={{ uri: item.user.profileImageUrl }} style={styles.avatar} />
+      </View>
+      <View style={styles.cardContent}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.username}>{item.user.username}</Text>
+        </View>
+        <Text style={styles.lastMessage} numberOfLines={1}>
+          {item.lastMessage}
+        </Text>
+        <View style={{flexDirection: 'row', gap: 8, marginTop: 8}}>
+          <TouchableOpacity onPress={() => handleDeclineRequest(item.id)} style={{paddingVertical: 6, paddingHorizontal: 12, borderRadius: 16, backgroundColor: '#eae8e7'}}>
+            <Text style={{fontFamily: 'PlusJakartaSans_700Bold', fontSize: 10}}>Decline</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleAcceptRequest(item.id)} style={{paddingVertical: 6, paddingHorizontal: 12, borderRadius: 16, backgroundColor: '#000000'}}>
+            <Text style={{fontFamily: 'PlusJakartaSans_700Bold', fontSize: 10, color: '#ffffff'}}>Accept</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 
   return (
@@ -116,18 +200,34 @@ export default function MessagesInboxScreen({ navigation }) {
 
       {loading ? (
         <ActivityIndicator size="large" color="#000000" style={{ marginTop: 24 }} />
-      ) : conversations.length === 0 ? (
-        <View style={{ padding: 24, alignItems: 'center' }}>
-          <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', color: '#75777e' }}>No conversations yet.</Text>
-        </View>
+      ) : activeTab === 'MESSAGES' ? (
+        conversations.length === 0 ? (
+          <View style={{ padding: 24, alignItems: 'center' }}>
+            <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', color: '#75777e' }}>No conversations yet.</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={conversations}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+          />
+        )
       ) : (
-        <FlatList
-          data={conversations}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
+        requests.length === 0 ? (
+          <View style={{ padding: 24, alignItems: 'center' }}>
+            <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', color: '#75777e' }}>No pending requests.</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={requests}
+            keyExtractor={(item) => item.id}
+            renderItem={renderRequestItem}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+          />
+        )
       )}
     </SafeAreaView>
   );

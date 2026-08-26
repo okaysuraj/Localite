@@ -16,7 +16,7 @@ export default function JoinMatchScreen({ navigation }) {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('userToken');
-      const response = await fetch(`${API_URL}/events`, {
+      const response = await fetch(`${API_URL}/matches/events`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {

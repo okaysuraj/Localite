@@ -12,29 +12,65 @@ export default function ChatPage() {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // In a real app, fetch messages and partner info
-    const mockMessages = [
-      { id: 1, content: "Good morning! I've finalized the guest list for the equestrian gala at the hub next week. Would you like to review the seating chart?", sender: partner, sentAt: new Date(Date.now() - 3600000).toISOString() },
-      { id: 2, content: "That sounds perfect, Elena. Please send it over. I've also invited the committee members from the local gallery.", sender: { id: 'me' }, sentAt: new Date(Date.now() - 3500000).toISOString() },
-      { id: 3, content: "Excellent addition. The gallery members will bring such a refined energy to the evening. Here is the PDF of the current arrangement.", sender: partner, sentAt: new Date(Date.now() - 3400000).toISOString() }
-    ];
-    setMessages(mockMessages);
+    if (!id) return;
+    fetchMessages();
   }, [id]);
+
+  const fetchMessages = async () => {
+    try {
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) return;
+
+      const res = await fetch(`${API_URL}/messages/direct/${id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(data);
+        
+        // Find partner info from messages if possible
+        if (data.length > 0) {
+          const firstMsg = data[0];
+          const isSender = firstMsg.sender.firebaseUid === auth.currentUser.uid;
+          const otherUser = isSender ? firstMsg.receiver : firstMsg.sender;
+          setPartner({
+            username: otherUser.username,
+            profileImageUrl: otherUser.profilePhotoUrl || 'https://via.placeholder.com/150'
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!messageText.trim()) return;
-    const newMsg = {
-      id: Date.now(),
-      content: messageText,
-      sender: { id: 'me' },
-      sentAt: new Date().toISOString()
-    };
-    setMessages([...messages, newMsg]);
-    setMessageText('');
+    try {
+      const token = await auth.currentUser?.getIdToken();
+      const payload = { content: messageText.trim(), messageType: 'TEXT' };
+      setMessageText('');
+
+      const res = await fetch(`${API_URL}/messages/direct/${id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        const newMsg = await res.json();
+        setMessages(prev => [...prev, newMsg]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -96,7 +132,7 @@ export default function ChatPage() {
           </div>
 
           {messages.map((msg) => {
-            const isMe = msg.sender.id === 'me';
+            const isMe = msg.sender.firebaseUid === auth.currentUser?.uid;
             return (
               <div key={msg.id} className={`flex items-end gap-3 max-w-[85%] md:max-w-[70%] ${isMe ? 'flex-row-reverse ml-auto' : ''}`}>
                 {!isMe && (

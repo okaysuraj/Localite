@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getEventById, rsvpToEvent, awardXp } from '../../services/api';
+import { getEventById, rsvpToEvent, awardXp, getEventRsvps, buyTicket } from '../../services/api';
 
 const EventDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
+  const [rsvps, setRsvps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rsvpLoading, setRsvpLoading] = useState(false);
 
   const handleRsvp = async () => {
     setRsvpLoading(true);
     try {
+      if (event.cost > 0) {
+        // Charge ticket via monetization endpoint
+        await buyTicket(id);
+      }
       await rsvpToEvent(id);
       try {
         await awardXp('ATTEND_EVENT');
@@ -30,17 +35,21 @@ const EventDetailPage = () => {
   };
 
   useEffect(() => {
-    const fetchEvent = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getEventById(id);
-        setEvent(data);
+        const [eventData, rsvpsData] = await Promise.all([
+          getEventById(id),
+          getEventRsvps(id)
+        ]);
+        setEvent(eventData);
+        setRsvps(rsvpsData);
       } catch (error) {
-        console.error("Failed to fetch event", error);
+        console.error("Failed to fetch event data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchEvent();
+    fetchData();
   }, [id]);
 
   if (loading) {
@@ -164,19 +173,21 @@ const EventDetailPage = () => {
                 </div>
               </div>
               <div className="flex flex-wrap gap-stack-md">
-                {/* Mock Guests for now, replace with event.rsvps later */}
-                {['Elena V.', 'Marcus K.', 'Sarah J.', 'David L.'].map((guest, idx) => (
-                  <div key={idx} className="flex flex-col items-center gap-2 group cursor-pointer">
+                {rsvps.slice(0, 4).map((rsvp, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-2 group cursor-pointer" onClick={() => navigate(`/profile/u/${rsvp.user.id}`)}>
                     <div className="w-16 h-16 rounded-full ring-2 ring-transparent ring-offset-2 overflow-hidden transition-transform group-hover:scale-105 group-hover:ring-secondary-container">
-                      <img className="w-full h-full object-cover bg-surface-container" src={`https://api.dicebear.com/7.x/notionists/svg?seed=${guest}&backgroundColor=b9c7e4`} alt={guest} />
+                      <img className="w-full h-full object-cover bg-surface-container" src={rsvp.user.avatarUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${rsvp.user.username}&backgroundColor=b9c7e4`} alt={rsvp.user.username} />
                     </div>
-                    <span className="font-label-caps text-label-caps text-primary">{guest}</span>
+                    <span className="font-label-caps text-label-caps text-primary">{rsvp.user.username}</span>
                   </div>
                 ))}
-                {event.attendees > 4 && (
-                  <div className="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-dashed border-outline-variant cursor-pointer hover:bg-surface-container-highest transition-colors">
-                    <span className="font-label-caps text-label-caps text-on-surface-variant">+{event.attendees - 4}</span>
+                {rsvps.length > 4 && (
+                  <div className="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-dashed border-outline-variant cursor-pointer hover:bg-surface-container-highest transition-colors" onClick={() => navigate(`/events/${id}/participants`)}>
+                    <span className="font-label-caps text-label-caps text-on-surface-variant">+{rsvps.length - 4}</span>
                   </div>
+                )}
+                {rsvps.length === 0 && (
+                  <p className="text-on-surface-variant text-sm italic">Be the first to request an invitation.</p>
                 )}
               </div>
             </div>

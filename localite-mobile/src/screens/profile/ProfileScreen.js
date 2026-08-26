@@ -101,7 +101,7 @@ export default function ProfileScreen({ navigation }) {
   const handleBoostProfile = async () => {
     Alert.alert(
       "Boost Profile",
-      "Pay $4.99 to boost your profile for 30 days? (Mock Payment)",
+      "Pay $4.99 to boost your profile for 30 days?",
       [
         { text: "Cancel", style: "cancel" },
         { 

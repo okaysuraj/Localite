@@ -4,29 +4,42 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Circle } from 'react-native-svg';
 
+import { getCurrentUser } from '../../services/api';
+
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export default function PrestigeProgressDashboardScreen() {
   const navigation = useNavigation();
   const [animatedValue] = useState(new Animated.Value(0));
+  const [xp, setXp] = useState(0);
 
   const radius = 90;
   const strokeWidth = 12;
   const circumference = 2 * Math.PI * radius;
-  const progressPercent = 0.83; // 12450 / 15000 = 83%
+  const maxXp = 15000;
 
   useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: progressPercent * circumference,
-      duration: 1000,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: true,
-    }).start();
+    const fetchGamificationData = async () => {
+      const user = await getCurrentUser();
+      if (user) {
+        setXp(user.xp || 0);
+        const progressPercent = Math.min((user.xp || 0) / maxXp, 1);
+        Animated.timing(animatedValue, {
+          toValue: progressPercent * circumference,
+          duration: 1000,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }).start();
+      }
+    };
+    fetchGamificationData();
   }, [animatedValue, circumference]);
+
+
 
   const strokeDashoffset = animatedValue.interpolate({
     inputRange: [0, circumference],
-    outputRange: [circumference, circumference - (progressPercent * circumference)],
+    outputRange: [circumference, 0], // The Animated Value will be up to progressPercent * circumference
   });
 
   return (
@@ -84,8 +97,8 @@ export default function PrestigeProgressDashboardScreen() {
               <Text style={styles.progressCenterTitle}>CURRENT STATUS</Text>
               <Text style={styles.progressCenterStatus}>Gold Tier</Text>
               <View style={styles.progressCenterXpRow}>
-                <Text style={styles.progressCenterXpValue}>12,450</Text>
-                <Text style={styles.progressCenterXpTotal}>/ 15,000 XP</Text>
+                <Text style={styles.progressCenterXpValue}>{xp.toLocaleString()}</Text>
+                <Text style={styles.progressCenterXpTotal}>/ {maxXp.toLocaleString()} XP</Text>
               </View>
             </View>
           </View>

@@ -78,6 +78,25 @@ public class EventController {
             .collect(Collectors.toList());
     }
 
+    @GetMapping("/{eventId}")
+    public ResponseEntity<?> getEventById(@PathVariable Long eventId) {
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isPresent()) {
+            return ResponseEntity.ok(eventOpt.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{eventId}/rsvps")
+    public ResponseEntity<?> getEventRsvps(@PathVariable Long eventId, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        // Find all RSVPs for this event
+        List<Rsvp> rsvps = rsvpRepository.findByEventId(eventId);
+        return ResponseEntity.ok(rsvps);
+    }
+
+
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody Event event, Principal principal) {
         if (principal != null) {

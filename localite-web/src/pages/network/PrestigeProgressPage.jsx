@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentUser } from '../../services/api';
 
 export default function PrestigeProgressPage() {
   const navigate = useNavigate();
   const [progress, setProgress] = useState(0);
+  const [xp, setXp] = useState(0);
+  const [rank, setRank] = useState(124); // Mock rank
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setProgress(75);
-    }, 300);
-    return () => clearTimeout(timer);
+    const fetchGamificationData = async () => {
+      const user = await getCurrentUser();
+      if (user) {
+        setXp(user.xp || 0);
+        const maxXp = 15000;
+        const currentProgress = Math.min((user.xp / maxXp) * 100, 100);
+        setProgress(Math.round(currentProgress));
+      }
+    };
+    fetchGamificationData();
   }, []);
 
   const circumference = 2 * Math.PI * 45;
@@ -100,19 +109,19 @@ export default function PrestigeProgressPage() {
                 </div>
                 <div className="flex-1">
                   <h1 className="font-headline-md text-4xl font-bold mb-2">Prestige Analytics</h1>
-                  <p className="text-body-md text-[#44474d] max-w-md mb-8">Your ascent to the Platinum Tier is 84% complete. Maintaining your current engagement level will secure your position by next month's gala.</p>
+                  <p className="text-body-md text-[#44474d] max-w-md mb-8">Your ascent to the next tier is progressing. Maintaining your current engagement level will secure your position by next month's gala.</p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                       <p className="text-[10px] font-label-caps uppercase tracking-widest text-[#44474d]">Global Rank</p>
-                      <p className="font-headline-sm text-2xl font-bold mt-1">#124</p>
+                      <p className="font-headline-sm text-2xl font-bold mt-1">#{rank}</p>
                     </div>
                     <div>
                       <p className="text-[10px] font-label-caps uppercase tracking-widest text-[#44474d]">Loyalty Score</p>
-                      <p className="font-headline-sm text-2xl font-bold mt-1">9.8</p>
+                      <p className="font-headline-sm text-2xl font-bold mt-1">{(xp / 1000).toFixed(1)}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-label-caps uppercase tracking-widest text-[#44474d]">Network</p>
-                      <p className="font-headline-sm text-2xl font-bold mt-1">2.4k</p>
+                      <p className="text-[10px] font-label-caps uppercase tracking-widest text-[#44474d]">Total XP</p>
+                      <p className="font-headline-sm text-2xl font-bold mt-1">{xp}</p>
                     </div>
                     <div>
                       <p className="text-[10px] font-label-caps uppercase tracking-widest text-[#44474d]">Impact</p>

@@ -1,31 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const MOCK_REQUESTS = [
-  {
-    id: 1,
-    name: 'Julianna Vane',
-    title: 'Art Enthusiast & Curator',
-    sharedCount: 4,
-    message: '"Hello! I saw your recent journal entry about the Renaissance revival in modern architecture. I\'m hosting a private viewing next Thursday and would love to extend an invitation."',
-    image: 'https://via.placeholder.com/150'
-  },
-  {
-    id: 2,
-    name: 'Marcus Thorne',
-    title: 'Technology Investor',
-    sharedCount: 2,
-    message: '"Reaching out as I noticed we both attended the \'Future of Ethos\' roundtable last month. I\'m looking to connect with community leaders who are exploring the intersection of AI and artisanal craft."',
-    image: 'https://via.placeholder.com/150'
-  }
-];
+import { getPendingRequests, acceptRequest, declineRequest } from '../../services/api';
 
 export default function MessageRequestsPage() {
   const navigate = useNavigate();
-  const [requests, setRequests] = useState(MOCK_REQUESTS);
+  const [requests, setRequests] = useState([]);
 
-  const handleAction = (id, action) => {
-    setRequests(prev => prev.filter(r => r.id !== id));
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const fetchRequests = async () => {
+    try {
+      const data = await getPendingRequests();
+      // Data returns: [{ connectionId, requesterId, requesterName }]
+      const formatted = data.map(req => ({
+        id: req.connectionId,
+        name: req.requesterName,
+        title: 'Connection Request',
+        sharedCount: 0,
+        message: 'I would like to connect with you.',
+        image: `https://api.dicebear.com/7.x/notionists/svg?seed=${req.requesterName}&backgroundColor=b9c7e4`
+      }));
+      setRequests(formatted);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAction = async (id, action) => {
+    try {
+      if (action === 'connect') {
+        await acceptRequest(id);
+      } else if (action === 'decline') {
+        await declineRequest(id);
+      }
+      setRequests(prev => prev.filter(r => r.id !== id));
+    } catch (error) {
+      console.error(`Error performing ${action} on request:`, error);
+    }
   };
 
   return (

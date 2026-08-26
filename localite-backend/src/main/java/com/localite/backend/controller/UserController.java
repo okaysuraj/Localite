@@ -230,4 +230,21 @@ public class UserController {
         }
         return ResponseEntity.badRequest().body("Invalid request");
     }
+
+    @DeleteMapping("/connections/{connectionId}/decline")
+    public ResponseEntity<?> declineConnection(@PathVariable Long connectionId, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        Optional<Connection> connOpt = connectionRepository.findById(connectionId);
+        
+        if (userOpt.isPresent() && connOpt.isPresent()) {
+            Connection connection = connOpt.get();
+            if (connection.getReceiver().getId().equals(userOpt.get().getId())) {
+                connectionRepository.delete(connection);
+                return ResponseEntity.ok("Connection declined");
+            }
+        }
+        return ResponseEntity.badRequest().body("Invalid request");
+    }
 }

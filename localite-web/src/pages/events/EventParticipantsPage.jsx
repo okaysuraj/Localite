@@ -2,30 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getEventById, getEventRsvps } from '../../services/api';
 
-const MOCK_PARTICIPANTS = [
-  {
-    id: 1,
-    user: {
-      username: 'Elena Rossi',
-      profileImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAegcPXQPVVhWgwHUy1ABMbIesRD5A5PSvgCb34E93-uHbe0A8BsBSiFS7Pg61qH-rHjiv1VvgqhUXEZOlzsflQJQ6NTY64R3woFk33RY3OgxTWN7ghuUHlML5lQiXj6wkz8RgbmizDI8sfWRxu_oDnSvy0KdE9oG-Uao4FFHHY78rczAzj_j_iYehacRlYu9NLigD-Rlvx7BmjnDg_x2tqT206N4c00nNwomQzmjNx6WUuN7_tZUML3w',
-      title: 'LUXURY CURATOR',
-      reputation: 82,
-      attendance: 14
-    },
-    status: 'ATTENDING'
-  },
-  {
-    id: 2,
-    user: {
-      username: 'Marcus Chen',
-      profileImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB6rJOveM2_A_sHt4Zmmwxt1d0NG9sV1oRV6iu2mH31bUxbk6-FjX4cHiGLKBbAjAfLxXm3D7d-oyvQcGJ-Ne5J30UcOIZCRYTljNYJ93h28hpT22TBvO9Qf7kJLreYxBise6b7N3vItcFYP0ulpKHt5UvKzzOtLFANCMfSSboPKjjUsahXHb-e3n617BKqH_S0LSCGZUuNuZlpjClvNXf99ZSC144MTJWc-R2SWF5-LXkVlkjWR5AqKQ',
-      title: 'VENTURE ANALYST',
-      reputation: 75,
-      attendance: 8
-    },
-    status: 'WAITLIST'
-  }
-];
+
 
 export default function EventParticipantsPage() {
   const { id } = useParams();
@@ -42,8 +19,7 @@ export default function EventParticipantsPage() {
           getEventRsvps(id)
         ]);
         setEvent(eventData);
-        // Fallback to mock if empty
-        setParticipants(rsvpData.length > 0 ? rsvpData : MOCK_PARTICIPANTS);
+        setParticipants(rsvpData || []);
       } catch (error) {
         console.error('Failed to fetch event participants data', error);
       } finally {

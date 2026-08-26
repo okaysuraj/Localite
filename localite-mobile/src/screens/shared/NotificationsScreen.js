@@ -2,41 +2,40 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { getNotifications, markNotificationAsRead } from '../../services/api';
 
-const NOTIFICATIONS = [
-  {
-    id: 1,
-    type: 'MENTION',
-    time: '2M AGO',
-    user: 'Julian Thorne',
-    message: 'mentioned you in a comment.',
-    quote: '"I think the acoustics at the grand hall would suit your performance perfectly..."',
-    image: 'https://via.placeholder.com/150',
-    icon: 'chat-bubble',
-    isSpecial: false
-  },
-  {
-    id: 2,
-    type: 'NEW EVENT',
-    time: '1H AGO',
-    title: 'The Winter Masquerade',
-    message: "Your presence is requested at the season's most anticipated gathering.",
-    bgImage: 'https://via.placeholder.com/300x150',
-    isEvent: true
-  },
-  {
-    id: 3,
-    type: 'MEMBERSHIP',
-    time: 'YESTERDAY',
-    message: 'Your membership status has been updated to Elite.',
-    desc: 'Unlock exclusive access to private hubs and priority event bookings.',
-    isPremium: true
-  }
-];
+
 
 export default function NotificationsScreen() {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('ACTIVITY');
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const data = await getNotifications();
+      setNotifications(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkAsRead = async (id) => {
+    try {
+      await markNotificationAsRead(id);
+      fetchData(); // Refresh list
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -68,76 +67,62 @@ export default function NotificationsScreen() {
         </View>
 
         <View style={styles.listArea}>
-          {NOTIFICATIONS.map(notif => {
-            if (notif.isEvent) {
+          {loading ? (
+            <ActivityIndicator size="large" color="#775a19" style={{marginTop: 40}} />
+          ) : (
+            notifications.map(notif => {
+              // Map backend notification to UI
+              // Backend notification has: id, type, message, isRead, createdAt, user
+              const timeStr = new Date(notif.createdAt).toLocaleDateString();
+              const isEvent = notif.type === 'EVENT';
+              const isPremium = notif.type === 'PREMIUM' || notif.type === 'MEMBERSHIP';
+
+              if (isEvent) {
+                return (
+                  <TouchableOpacity key={notif.id} style={[styles.eventCard, notif.read ? {opacity: 0.7} : {}]} onPress={() => handleMarkAsRead(notif.id)}>
+                    <Image source={{ uri: 'https://via.placeholder.com/300x150' }} style={styles.eventImg} />
+                    <View style={styles.eventBody}>
+                      <View style={styles.notifTopRow}>
+                        <Text style={styles.notifType}>{notif.type}</Text>
+                        <Text style={styles.notifTime}>{timeStr}</Text>
+                      </View>
+                      <Text style={styles.eventTitle}>New Event</Text>
+                      <Text style={styles.eventMessage}>{notif.message}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }
+
+              if (isPremium) {
+                return (
+                  <TouchableOpacity key={notif.id} style={[styles.premiumCard, notif.read ? {opacity: 0.7} : {}]} onPress={() => handleMarkAsRead(notif.id)}>
+                    <View style={styles.notifTopRow}>
+                      <Text style={styles.premiumType}>{notif.type}</Text>
+                      <Text style={styles.premiumTime}>{timeStr}</Text>
+                    </View>
+                    <Text style={styles.premiumMessage}>{notif.message}</Text>
+                  </TouchableOpacity>
+                );
+              }
+
               return (
-                <View key={notif.id} style={styles.eventCard}>
-                  <Image source={{ uri: notif.bgImage }} style={styles.eventImg} />
-                  <View style={styles.eventBody}>
+                <TouchableOpacity key={notif.id} style={[styles.standardCard, notif.read ? {opacity: 0.7} : {}]} onPress={() => handleMarkAsRead(notif.id)}>
+                  <View style={styles.avatarWrap}>
+                    <Image source={{ uri: notif.user?.profileImageUrl || 'https://via.placeholder.com/150' }} style={styles.avatar} />
+                  </View>
+                  <View style={styles.notifContent}>
                     <View style={styles.notifTopRow}>
                       <Text style={styles.notifType}>{notif.type}</Text>
-                      <Text style={styles.notifTime}>{notif.time}</Text>
+                      <Text style={styles.notifTime}>{timeStr}</Text>
                     </View>
-                    <Text style={styles.eventTitle}>{notif.title}</Text>
-                    <Text style={styles.eventMessage}>{notif.message}</Text>
-                    <View style={styles.eventActionRow}>
-                      <View style={styles.attendeeFaces}>
-                        <Image source={{ uri: 'https://via.placeholder.com/30' }} style={[styles.attendeeImg, { zIndex: 3 }]} />
-                        <Image source={{ uri: 'https://via.placeholder.com/30' }} style={[styles.attendeeImg, { marginLeft: -10, zIndex: 2 }]} />
-                        <View style={[styles.attendeeCountWrap, { marginLeft: -10, zIndex: 1 }]}>
-                          <Text style={styles.attendeeCount}>+12</Text>
-                        </View>
-                      </View>
-                      <TouchableOpacity style={styles.viewInvBtn}>
-                        <Text style={styles.viewInvText}>VIEW INVITATION</Text>
-                      </TouchableOpacity>
-                    </View>
+                    <Text style={styles.messageText}>
+                      <Text style={styles.boldName}>{notif.user?.username}</Text> {notif.message}
+                    </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               );
-            }
-
-            if (notif.isPremium) {
-              return (
-                <View key={notif.id} style={styles.premiumCard}>
-                  <View style={styles.notifTopRow}>
-                    <Text style={styles.premiumType}>{notif.type}</Text>
-                    <Text style={styles.premiumTime}>{notif.time}</Text>
-                  </View>
-                  <Text style={styles.premiumMessage}>{notif.message}</Text>
-                  <Text style={styles.premiumDesc}>{notif.desc}</Text>
-                  <TouchableOpacity style={styles.perksBtn}>
-                    <Text style={styles.perksText}>EXPLORE PERKS</Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            }
-
-            return (
-              <View key={notif.id} style={styles.standardCard}>
-                <View style={styles.avatarWrap}>
-                  <Image source={{ uri: notif.image }} style={styles.avatar} />
-                  <View style={styles.avatarIconBadge}>
-                    <MaterialIcons name={notif.icon} size={10} color="#785a1a" />
-                  </View>
-                </View>
-                <View style={styles.notifContent}>
-                  <View style={styles.notifTopRow}>
-                    <Text style={styles.notifType}>{notif.type}</Text>
-                    <Text style={styles.notifTime}>{notif.time}</Text>
-                  </View>
-                  <Text style={styles.messageText}>
-                    <Text style={styles.boldName}>{notif.user}</Text> {notif.message}
-                  </Text>
-                  {notif.quote && (
-                    <View style={styles.quoteWrap}>
-                      <Text style={styles.quoteText}>{notif.quote}</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-            );
-          })}
+            })
+          )}
 
           <View style={styles.dividerWrap}>
             <View style={styles.dividerLine} />

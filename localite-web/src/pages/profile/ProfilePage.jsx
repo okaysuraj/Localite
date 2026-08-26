@@ -128,7 +128,7 @@ const ProfilePage = () => {
   };
 
   const handleBoostProfile = async () => {
-    if (window.confirm("Pay $4.99 to boost your profile for 30 days? (Mock Payment)")) {
+    if (window.confirm("Pay $4.99 to boost your profile for 30 days?")) {
       const token = localStorage.getItem('token');
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/monetization/boost-profile`, {
@@ -155,7 +155,7 @@ const ProfilePage = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
-        alert("Identity Verified successfully! (Mocked)");
+        alert("Identity Verified successfully!");
         fetchProfile();
       }
     } catch (err) {
@@ -179,7 +179,7 @@ const ProfilePage = () => {
         body: JSON.stringify({ phoneNumber: profile.phoneNumber })
       });
       if (res.ok) {
-        alert("Phone Verified successfully! (Mocked)");
+        alert("Phone Verified successfully!");
         fetchProfile();
       }
     } catch (err) {

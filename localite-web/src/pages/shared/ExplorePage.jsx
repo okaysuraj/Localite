@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getEvents } from '../../services/api';
+import { getEvents, getSuggestedPartners } from '../../services/api';
 
 const ExplorePage = () => {
   const [events, setEvents] = useState([]);
+  const [suggestedPartners, setSuggestedPartners] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const data = await getEvents();
+        const [data, partnersData] = await Promise.all([getEvents(), getSuggestedPartners()]);
         setEvents(data);
+        setSuggestedPartners(partnersData);
       } catch (error) {
         console.error("Failed to fetch events", error);
       } finally {
@@ -229,25 +231,25 @@ const ExplorePage = () => {
             <div className="mt-12 pt-8 border-t border-outline-variant/30">
               <h4 className="font-label-caps text-label-caps text-outline mb-4">MEMBERS YOU MAY KNOW</h4>
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
-                      <img className="w-full h-full object-cover" alt="Clara" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9pc0jAyHrNqYnrVzQ-yrVMpznlautjQtpu82_dc4udrwoi4gAdcTauTwii4LXhZH10WfMix-HixK-YyniSuvCaJSTb2Gma7U7xF4Cb-SGtuPCeZlPbSXdyC0yfnRmle0UPhilKZANxZVtxfWniC1UqvEnSi7PlEQaT-LkJh7dW346jZvHEGWr6iTkhrGUJlP30yyNhdHZOh6ze6s0wgqum6obW_7PQ8tIylEEBZ1_C-NewtlyWT0rpA"/>
+                {suggestedPartners.length === 0 ? (
+                  <p className="text-sm text-on-surface-variant italic">No suggestions at this time.</p>
+                ) : (
+                  suggestedPartners.map(partner => (
+                    <div key={partner.id} className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden flex items-center justify-center">
+                          {partner.profilePhotoUrl ? (
+                            <img className="w-full h-full object-cover" alt={partner.username} src={partner.profilePhotoUrl}/>
+                          ) : (
+                            <span className="material-symbols-outlined text-outline text-sm">person</span>
+                          )}
+                        </div>
+                        <span className="text-sm font-medium">{partner.username}</span>
+                      </div>
+                      <button className="text-secondary text-xs font-bold hover:underline transition-all">FOLLOW</button>
                     </div>
-                    <span className="text-sm font-medium">Clara Oswald</span>
-                  </div>
-                  <button className="text-secondary text-xs font-bold hover:underline transition-all">FOLLOW</button>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
-                      <img className="w-full h-full object-cover" alt="Arthur" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSbv7Dif0NFO4ji8E_FkjPS1fef-jPxxsMN_euUbnkf9DRKYE-3u7vYgG5QRdDKNBSmj5wB__g085b-_DKYgIQ0pGutZSFmdHq7tB4xcU-5NXjCvtmV4ECxP9PuGPdT_7vnXEwUrutvNccRv_OvZpspBhbZYb9IUHmyc3A34pB-Ezh2k2oFAnfKl-X44wm3jdE7Tt9E7IhIM9SEiAyvXGzr5QNwWFN9ADiQBH1Fq0vIoZrGDvyYv690A"/>
-                    </div>
-                    <span className="text-sm font-medium">Arthur Dent</span>
-                  </div>
-                  <button className="text-secondary text-xs font-bold hover:underline transition-all">FOLLOW</button>
-                </div>
+                  ))
+                )}
               </div>
               <button className="w-full mt-6 py-2 bg-surface-container-highest text-primary font-label-caps text-label-caps text-[10px] hover:bg-surface-container transition-colors rounded">
                 SEE MORE CIRCLES

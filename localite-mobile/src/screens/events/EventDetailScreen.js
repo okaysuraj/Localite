@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getEventById, rsvpToEvent, awardXp } from '../../services/api';
+import { getEventById, rsvpToEvent, awardXp, buyTicket } from '../../services/api';
 
 const { width } = Dimensions.get('window');
 
@@ -47,6 +47,9 @@ export default function EventDetailScreen({ route, navigation }) {
   const handleRsvp = async () => {
     setRsvpLoading(true);
     try {
+      if (event.cost > 0) {
+        await buyTicket(eventId);
+      }
       await rsvpToEvent(eventId);
       try {
         await awardXp('ATTEND_EVENT');
