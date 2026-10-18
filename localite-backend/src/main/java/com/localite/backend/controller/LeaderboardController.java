@@ -66,7 +66,7 @@ public class LeaderboardController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
         
         Long eventId = Long.valueOf(payload.get("eventId").toString());
         Long winnerId = Long.valueOf(payload.get("winnerId").toString());
@@ -74,7 +74,7 @@ public class LeaderboardController {
         String score = (String) payload.get("score");
         
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        if (!eventOpt.isPresent()) return ResponseEntity.badRequest().body("Event not found");
+        if (eventOpt.isEmpty()) return ResponseEntity.badRequest().body("Event not found");
         
         Event event = eventOpt.get();
         // Only host can submit results for MVP
@@ -85,7 +85,7 @@ public class LeaderboardController {
         Optional<User> winnerOpt = userRepository.findById(winnerId);
         Optional<User> loserOpt = userRepository.findById(loserId);
         
-        if (!winnerOpt.isPresent() || !loserOpt.isPresent()) {
+        if (winnerOpt.isEmpty() || loserOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Winner or Loser not found");
         }
         

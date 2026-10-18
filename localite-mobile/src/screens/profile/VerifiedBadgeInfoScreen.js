@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Animated, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Animated,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function VerifiedBadgeInfoScreen() {
@@ -19,7 +29,7 @@ export default function VerifiedBadgeInfoScreen() {
           toValue: 1,
           duration: 1000,
           useNativeDriver: true,
-        })
+        }),
       ])
     ).start();
   }, []);
@@ -33,15 +43,16 @@ export default function VerifiedBadgeInfoScreen() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Verified Member</Text>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfmT29yfFr1H3JrLB8nKFa9bjkxLCF3KcdpsLcCVcXzSLdbxGPsNhm_ljsLWKHY_qx_KSnNJ5AmcckqI2l2-4gAnWdTdzQLNyxdkXEhbSQhB9axwsQ35xruJSznjJG8nEuPEgvrepMQGBl08bFciJm37ec-jl3uBe01bMAlPqULMsue44SsQKBPN1eCT_FdjjOVkmGjM9IXvEDxyt1pizv_KNaunwzSrevVaGXR1JO7BM48mh19T0Dsg' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfmT29yfFr1H3JrLB8nKFa9bjkxLCF3KcdpsLcCVcXzSLdbxGPsNhm_ljsLWKHY_qx_KSnNJ5AmcckqI2l2-4gAnWdTdzQLNyxdkXEhbSQhB9axwsQ35xruJSznjJG8nEuPEgvrepMQGBl08bFciJm37ec-jl3uBe01bMAlPqULMsue44SsQKBPN1eCT_FdjjOVkmGjM9IXvEDxyt1pizv_KNaunwzSrevVaGXR1JO7BM48mh19T0Dsg',
+            }}
             style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <View style={styles.badgeWrap}>
@@ -52,7 +63,8 @@ export default function VerifiedBadgeInfoScreen() {
           </View>
           <Text style={styles.heroTitle}>The Mark of Distinction</Text>
           <Text style={styles.heroDesc}>
-            Elevate your presence within the Localite community. Our verification process ensures that every member of our curated circle is authentic and esteemed.
+            Elevate your presence within the Localite community. Our verification process ensures that every
+            member of our curated circle is authentic and esteemed.
           </Text>
         </View>
 
@@ -66,7 +78,8 @@ export default function VerifiedBadgeInfoScreen() {
             </View>
             <Text style={styles.statusTitle}>Authenticity Confirmed</Text>
             <Text style={styles.statusDesc}>
-              The baseline for community trust. Indicates that the individual's identity has been cross-referenced with official documentation.
+              The baseline for community trust. Indicates that the individual's identity has been
+              cross-referenced with official documentation.
             </Text>
             <View style={styles.statusList}>
               <View style={styles.listItem}>
@@ -82,14 +95,20 @@ export default function VerifiedBadgeInfoScreen() {
 
           {/* Elite Status */}
           <View style={[styles.statusCard, styles.eliteCard]}>
-            <MaterialIcons name="workspace-premium" size={120} color="rgba(255,255,255,0.1)" style={styles.eliteBgIcon} />
+            <MaterialIcons
+              name="workspace-premium"
+              size={120}
+              color="rgba(255,255,255,0.1)"
+              style={styles.eliteBgIcon}
+            />
             <View style={styles.statusHeaderRow}>
               <MaterialIcons name="grade" size={16} color="#fed488" />
               <Text style={[styles.statusLabel, { color: '#fed488' }]}>ELITE STATUS</Text>
             </View>
             <Text style={[styles.statusTitle, { color: '#fff' }]}>Pillar of Reputation</Text>
             <Text style={[styles.statusDesc, { color: 'rgba(214, 227, 255, 0.8)' }]}>
-              Reserved for members with high community rapport, verified social standing, and a history of excellence.
+              Reserved for members with high community rapport, verified social standing, and a history of
+              excellence.
             </Text>
             <View style={[styles.statusList, { borderTopColor: 'rgba(255,255,255,0.1)' }]}>
               <View style={styles.listItem}>
@@ -108,7 +127,7 @@ export default function VerifiedBadgeInfoScreen() {
         <View style={styles.protocolSection}>
           <Text style={styles.protocolPre}>THE PROTOCOL</Text>
           <Text style={styles.protocolTitle}>Refining the Circle</Text>
-          
+
           <View style={styles.stepsWrap}>
             {/* Step 1 */}
             <View style={styles.stepItem}>
@@ -117,7 +136,10 @@ export default function VerifiedBadgeInfoScreen() {
               </View>
               <View style={styles.stepContent}>
                 <Text style={styles.stepTitle}>Identity Attestation</Text>
-                <Text style={styles.stepDesc}>A secure, encrypted upload of government-issued identification to confirm your legal name and age.</Text>
+                <Text style={styles.stepDesc}>
+                  A secure, encrypted upload of government-issued identification to confirm your legal name
+                  and age.
+                </Text>
               </View>
             </View>
             {/* Step 2 */}
@@ -127,7 +149,10 @@ export default function VerifiedBadgeInfoScreen() {
               </View>
               <View style={styles.stepContent}>
                 <Text style={styles.stepTitle}>Social Integration</Text>
-                <Text style={styles.stepDesc}>Synchronizing professional or curated social presences to provide a multidimensional view of your community impact.</Text>
+                <Text style={styles.stepDesc}>
+                  Synchronizing professional or curated social presences to provide a multidimensional view of
+                  your community impact.
+                </Text>
               </View>
             </View>
             {/* Step 3 */}
@@ -137,7 +162,10 @@ export default function VerifiedBadgeInfoScreen() {
               </View>
               <View style={styles.stepContent}>
                 <Text style={styles.stepTitle}>Reputation Review</Text>
-                <Text style={styles.stepDesc}>A qualitative assessment of your interactions and feedback from existing verified members within the network.</Text>
+                <Text style={styles.stepDesc}>
+                  A qualitative assessment of your interactions and feedback from existing verified members
+                  within the network.
+                </Text>
               </View>
             </View>
           </View>
@@ -145,20 +173,24 @@ export default function VerifiedBadgeInfoScreen() {
 
         {/* Visual Element */}
         <View style={styles.visualWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBfgP_UFVgHM9UM860ZfPCrHLu1nlwlwpaXIJByHoo9nZdyMQnxFf-XNyHZcX3M9GUuEk9zcFl1SOre6gIGQXZQ70ZnAxMjJRJjGJ2WTaaFz1IrD_1rTAkOB7xijIhf-sfHd6Cqpzv2U_0M9bys9JLANp63gl1m4KWuI3SLM7_GEMcWfyd0IdJOSugXV4XYtWlxMayc1C-8B12kJIyo2vxnDUm_L9alwgH97JTMf9LdMi5kFnFFfugvjQ' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBfgP_UFVgHM9UM860ZfPCrHLu1nlwlwpaXIJByHoo9nZdyMQnxFf-XNyHZcX3M9GUuEk9zcFl1SOre6gIGQXZQ70ZnAxMjJRJjGJ2WTaaFz1IrD_1rTAkOB7xijIhf-sfHd6Cqpzv2U_0M9bys9JLANp63gl1m4KWuI3SLM7_GEMcWfyd0IdJOSugXV4XYtWlxMayc1C-8B12kJIyo2vxnDUm_L9alwgH97JTMf9LdMi5kFnFFfugvjQ',
+            }}
             style={styles.visualImg}
           />
           <View style={styles.visualOverlay}>
             <Text style={styles.visualQuote}>"In a world of noise, we curate the signal."</Text>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Fixed Bottom Action */}
       <View style={styles.bottomActionWrap}>
-        <TouchableOpacity style={styles.actionBtn} onPress={() => navigation.navigate('IDVerificationUpload')}>
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={() => navigation.navigate('IDVerificationUpload')}
+        >
           <Text style={styles.actionBtnText}>INITIATE VERIFICATION</Text>
         </TouchableOpacity>
         <Text style={styles.actionSubText}>APPROXIMATE REVIEW TIME: 48-72 HOURS</Text>
@@ -437,5 +469,5 @@ const styles = StyleSheet.create({
     color: '#75777e',
     textAlign: 'center',
     letterSpacing: 1,
-  }
+  },
 });

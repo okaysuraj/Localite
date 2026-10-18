@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function MyEventsScreen() {
@@ -12,36 +21,43 @@ export default function MyEventsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.openDrawer && navigation.openDrawer()} style={styles.iconBtn}>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer && navigation.openDrawer()}
+            style={styles.iconBtn}
+          >
             <MaterialIcons name="menu" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
-        <TouchableOpacity style={styles.avatarWrap} onPress={() => navigation.navigate('MyProfilePublicView')}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYXIGuAiNSE5qWpsOh2SjoBN2OsP2Q8NvRt3ZJ4zl-AuTLcJncFsqjxL8Ga8iib89M_RfGnytlTOW4yWdCRSdVV8IpRuT4lA6SG2JvS1TUPikuigebxktPVkQaVQhbfejMX9KBpCbeEhekMaIPUxD_gLpRDN3BsTho-CyssYODC5g1OUxoWTjRygzKyUsbKrhEd4pAtGTQkojUYNjNjfWpChBi75AciMo8Ioggqy9OTnDfr-o8yjDzMw' }} 
-            style={styles.avatarImg} 
+        <TouchableOpacity
+          style={styles.avatarWrap}
+          onPress={() => navigation.navigate('MyProfilePublicView')}
+        >
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYXIGuAiNSE5qWpsOh2SjoBN2OsP2Q8NvRt3ZJ4zl-AuTLcJncFsqjxL8Ga8iib89M_RfGnytlTOW4yWdCRSdVV8IpRuT4lA6SG2JvS1TUPikuigebxktPVkQaVQhbfejMX9KBpCbeEhekMaIPUxD_gLpRDN3BsTho-CyssYODC5g1OUxoWTjRygzKyUsbKrhEd4pAtGTQkojUYNjNjfWpChBi75AciMo8Ioggqy9OTnDfr-o8yjDzMw',
+            }}
+            style={styles.avatarImg}
           />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Dashboard Header */}
         <View style={styles.dashboardHeader}>
           <View style={styles.dashboardHeaderTitleContainer}>
             <Text style={styles.sectionPreTitle}>YOUR COLLECTION</Text>
             <Text style={styles.sectionTitle}>My Events</Text>
           </View>
-          
+
           <View style={styles.tabContainer}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.tabBtn, activeTab === 'joined' && styles.tabBtnActive]}
               onPress={() => setActiveTab('joined')}
             >
               <Text style={[styles.tabText, activeTab === 'joined' && styles.tabTextActive]}>Joined</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.tabBtn, activeTab === 'hosted' && styles.tabBtnActive]}
               onPress={() => setActiveTab('hosted')}
             >
@@ -52,11 +68,17 @@ export default function MyEventsScreen() {
 
         <View style={styles.gridContainer}>
           {/* Featured / Upcoming Card */}
-          <TouchableOpacity style={styles.featuredCard} activeOpacity={0.9} onPress={() => navigation.navigate('CricketDetail')}>
+          <TouchableOpacity
+            style={styles.featuredCard}
+            activeOpacity={0.9}
+            onPress={() => navigation.navigate('CricketDetail')}
+          >
             <View style={styles.featuredImgWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCf3_ThJ9ci-nKUDlKF3lbuKWRfcp82ojocO6-Ve_L6B76tHzcwQTBtWR14IXSxy0Xx_UrHrKAV1ZCNN6PUw8Mdl-xRxXQKjMUY4Z8cbLghsJXxqST4nK0-xhdVA_Mee_qxTIr1W2HNSJ-D_kcJHVdAT_QgrDfX5VbKsHrsYKjFZujBlk6QpS8FCE7qS1hUMLeMivz5Dwmyt4wjJk6E_xYz2eTgEdAXxjNV7o3Kx4o3gTGtLurYfjmV4g' }} 
-                style={styles.featuredImg} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCf3_ThJ9ci-nKUDlKF3lbuKWRfcp82ojocO6-Ve_L6B76tHzcwQTBtWR14IXSxy0Xx_UrHrKAV1ZCNN6PUw8Mdl-xRxXQKjMUY4Z8cbLghsJXxqST4nK0-xhdVA_Mee_qxTIr1W2HNSJ-D_kcJHVdAT_QgrDfX5VbKsHrsYKjFZujBlk6QpS8FCE7qS1hUMLeMivz5Dwmyt4wjJk6E_xYz2eTgEdAXxjNV7o3Kx4o3gTGtLurYfjmV4g',
+                }}
+                style={styles.featuredImg}
               />
               <View style={styles.badgeDark}>
                 <Text style={styles.badgeDarkText}>UPCOMING</Text>
@@ -72,7 +94,8 @@ export default function MyEventsScreen() {
               </View>
               <Text style={styles.cardTitle}>The Collector's Soirée</Text>
               <Text style={styles.cardDesc} numberOfLines={3}>
-                An exclusive evening of curated discussions on modern art and heritage architecture at the Grand Pavilion.
+                An exclusive evening of curated discussions on modern art and heritage architecture at the
+                Grand Pavilion.
               </Text>
               <View style={styles.cardDetails}>
                 <View style={styles.detailRow}>
@@ -108,7 +131,9 @@ export default function MyEventsScreen() {
                 <View style={styles.facesWrap}>
                   <View style={[styles.face, { backgroundColor: '#e2e8f0' }]} />
                   <View style={[styles.face, { backgroundColor: '#cbd5e1' }]} />
-                  <View style={styles.faceMore}><Text style={styles.faceMoreText}>+12</Text></View>
+                  <View style={styles.faceMore}>
+                    <Text style={styles.faceMoreText}>+12</Text>
+                  </View>
                 </View>
                 <MaterialIcons name="arrow-forward" size={20} color="#000" />
               </View>
@@ -119,15 +144,19 @@ export default function MyEventsScreen() {
           {activeTab === 'joined' && (
             <TouchableOpacity style={styles.horizontalCard} activeOpacity={0.9}>
               <View style={styles.horizontalImgWrap}>
-                <Image 
-                  source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcbGso_42OgmkRi45TsaFp8k2Ggfx9b7fuU_ZPSJAkF4koRgCgtE2WVVETlGRonsxv8Axo46PSMfO-Z3fR87QIBmxGcF-FsLfS6fztygVF0aUpmqLU-0Uf51GkY-PwDBVTFryArOTKprYz9htn_ZHbUgJ9cgqnieeP3TrgJplvSinkyzjKKUwzz4vFgHgm6hj73AZXAofRFQGnynBFsMV7Fe5xMPhLolHelO84QsxImbddAAe5G0Q1nA' }} 
-                  style={styles.horizontalImg} 
+                <Image
+                  source={{
+                    uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcbGso_42OgmkRi45TsaFp8k2Ggfx9b7fuU_ZPSJAkF4koRgCgtE2WVVETlGRonsxv8Axo46PSMfO-Z3fR87QIBmxGcF-FsLfS6fztygVF0aUpmqLU-0Uf51GkY-PwDBVTFryArOTKprYz9htn_ZHbUgJ9cgqnieeP3TrgJplvSinkyzjKKUwzz4vFgHgm6hj73AZXAofRFQGnynBFsMV7Fe5xMPhLolHelO84QsxImbddAAe5G0Q1nA',
+                  }}
+                  style={styles.horizontalImg}
                 />
               </View>
               <View style={styles.horizontalBody}>
                 <View style={styles.horizontalHeaderRow}>
                   <Text style={styles.dateTextSecondary}>TOMORROW</Text>
-                  <View style={styles.statusPast}><Text style={styles.statusPastText}>PAST</Text></View>
+                  <View style={styles.statusPast}>
+                    <Text style={styles.statusPastText}>PAST</Text>
+                  </View>
                 </View>
                 <Text style={styles.horizontalTitle}>Roastery Tour</Text>
                 <Text style={styles.horizontalStatusText}>Confirmed</Text>
@@ -139,15 +168,19 @@ export default function MyEventsScreen() {
           {activeTab === 'joined' && (
             <TouchableOpacity style={styles.horizontalCard} activeOpacity={0.9}>
               <View style={styles.horizontalImgWrap}>
-                <Image 
-                  source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDDwWYVlWZ7zcPCndtNesqsfvahgqXcQ4tYL_qy2xieXAAgllBo-Afoq7UD_6OVv1SdqR5i2DPcGBiCyxMCg9tUZiC7f7rPNBRQnArV45oJxrsite5LfwxceM0WyKAqfZ-3Qq5dGZnbLXxtv5AXHdvHyMIzQ5f7oIINyRZoCMJXsOwehCdm-qFW-YWUyq5qG2eIl7HAaDfS7QKX7L7u_3qMbfBdzv14bympf4SrwOa70AjBwHnO03kpBA' }} 
-                  style={styles.horizontalImg} 
+                <Image
+                  source={{
+                    uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDDwWYVlWZ7zcPCndtNesqsfvahgqXcQ4tYL_qy2xieXAAgllBo-Afoq7UD_6OVv1SdqR5i2DPcGBiCyxMCg9tUZiC7f7rPNBRQnArV45oJxrsite5LfwxceM0WyKAqfZ-3Qq5dGZnbLXxtv5AXHdvHyMIzQ5f7oIINyRZoCMJXsOwehCdm-qFW-YWUyq5qG2eIl7HAaDfS7QKX7L7u_3qMbfBdzv14bympf4SrwOa70AjBwHnO03kpBA',
+                  }}
+                  style={styles.horizontalImg}
                 />
               </View>
               <View style={styles.horizontalBody}>
                 <View style={styles.horizontalHeaderRow}>
                   <Text style={styles.dateTextSecondary}>JUL 02</Text>
-                  <View style={styles.statusNew}><Text style={styles.statusNewText}>NEW</Text></View>
+                  <View style={styles.statusNew}>
+                    <Text style={styles.statusNewText}>NEW</Text>
+                  </View>
                 </View>
                 <Text style={styles.horizontalTitle}>Tennis Mixer</Text>
                 <Text style={styles.horizontalStatusText}>Confirmed</Text>
@@ -157,7 +190,11 @@ export default function MyEventsScreen() {
 
           {/* Hosted Specific Card */}
           {activeTab === 'hosted' && (
-            <TouchableOpacity style={styles.hostedCard} activeOpacity={0.9} onPress={() => navigation.navigate('EventInsights')}>
+            <TouchableOpacity
+              style={styles.hostedCard}
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('EventInsights')}
+            >
               <View>
                 <View style={styles.cardHeaderRow}>
                   <Text style={[styles.dateTextSecondary, { color: '#ffdea5' }]}>AUG 10</Text>
@@ -173,13 +210,15 @@ export default function MyEventsScreen() {
               </View>
               <View style={styles.hostedFooter}>
                 <Text style={styles.hostedAttendeesText}>24 ATTENDEES</Text>
-                <TouchableOpacity style={styles.manageBtn} onPress={() => navigation.navigate('HostDashboard')}>
+                <TouchableOpacity
+                  style={styles.manageBtn}
+                  onPress={() => navigation.navigate('HostDashboard')}
+                >
                   <Text style={styles.manageBtnText}>MANAGE</Text>
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
           )}
-
         </View>
 
         {/* History Section */}
@@ -215,7 +254,6 @@ export default function MyEventsScreen() {
             </View>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Floating Action Button */}
@@ -755,5 +793,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#775a19',
     marginTop: 4,
-  }
+  },
 });

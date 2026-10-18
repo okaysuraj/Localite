@@ -37,7 +37,7 @@ public class MatchmakingController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
 
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
 
         User current = currentUserOpt.get();
         List<User> allUsers = userRepository.findAll();
@@ -75,7 +75,7 @@ public class MatchmakingController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
 
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
 
         User current = currentUserOpt.get();
         List<Event> allEvents = eventRepository.findAll();
@@ -163,7 +163,6 @@ public class MatchmakingController {
         return score;
     }
 
-    // Phase 7: Team Assignment
     @PostMapping("/events/{eventId}/teams")
     public ResponseEntity<?> assignTeam(Principal principal, @PathVariable Long eventId, @RequestBody Map<String, Object> payload) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
@@ -174,14 +173,14 @@ public class MatchmakingController {
         if (targetUserIdStr == null || teamName == null) return ResponseEntity.badRequest().body("Missing userId or team");
         
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        if (!eventOpt.isPresent()) return ResponseEntity.notFound().build();
+        if (eventOpt.isEmpty()) return ResponseEntity.notFound().build();
         
         // Find RSVP
         Optional<Rsvp> rsvpOpt = rsvpRepository.findAll().stream()
             .filter(r -> r.getEvent().getId().equals(eventId) && r.getUser().getId().toString().equals(targetUserIdStr))
             .findFirst();
             
-        if (!rsvpOpt.isPresent()) return ResponseEntity.badRequest().body("User has not RSVPed to this event");
+        if (rsvpOpt.isEmpty()) return ResponseEntity.badRequest().body("User has not RSVPed to this event");
         
         Rsvp rsvp = rsvpOpt.get();
         rsvp.setTeam(teamName);
@@ -190,13 +189,12 @@ public class MatchmakingController {
         return ResponseEntity.ok(Map.of("message", "Team assigned successfully", "team", teamName));
     }
 
-    // Phase 7: Submit Match Result
     @PostMapping("/events/{eventId}/result")
     public ResponseEntity<?> submitMatchResult(Principal principal, @PathVariable Long eventId, @RequestBody Map<String, Object> payload) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-        if (!eventOpt.isPresent()) return ResponseEntity.notFound().build();
+        if (eventOpt.isEmpty()) return ResponseEntity.notFound().build();
         Event event = eventOpt.get();
         
         // Only host can submit results for now
@@ -211,15 +209,14 @@ public class MatchmakingController {
         Optional<User> winner = userRepository.findById(Long.parseLong(winnerIdStr));
         Optional<User> loser = userRepository.findById(Long.parseLong(loserIdStr));
         
-        if (!winner.isPresent() || !loser.isPresent()) return ResponseEntity.badRequest().body("Winner or loser not found");
+        if (winner.isEmpty() || loser.isEmpty()) return ResponseEntity.badRequest().body("Winner or loser not found");
         
         MatchResult result = new MatchResult(event, winner.get(), loser.get(), score);
         matchResultRepository.save(result);
         
         return ResponseEntity.ok(result);
     }
-    
-    // Phase 7: Match History
+
     @GetMapping("/history/{userId}")
     public ResponseEntity<?> getMatchHistory(@PathVariable Long userId) {
         List<MatchResult> history = matchResultRepository.findByWinnerIdOrLoserId(userId, userId);

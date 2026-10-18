@@ -1,30 +1,31 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, ActivityIndicator } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect, useContext } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
-import { getMyEvents, getUserAnalytics } from '../../services/api';
+import { getMyEvents } from '../../services/api';
 
 export default function OrganizerDashboardScreen() {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
-  const [analytics, setAnalytics] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [myEvents, stats] = await Promise.all([
-          getMyEvents().catch(() => []),
-          getUserAnalytics().catch(() => null)
-        ]);
+        const myEvents = await getMyEvents();
         setEvents(Array.isArray(myEvents) ? myEvents : []);
-        setAnalytics(stats);
       } catch (err) {
         console.error('Failed to load organizer dashboard data:', err);
-      } finally {
-        setLoading(false);
       }
     }
     loadData();
@@ -32,21 +33,28 @@ export default function OrganizerDashboardScreen() {
 
   const activeEventsCount = events.length;
   const totalAttendees = events.reduce((acc, ev) => acc + (ev.attendeeCount || 0), 0);
-  const totalRevenue = events.reduce((acc, ev) => acc + ((ev.price || 0) * (ev.attendeeCount || 0)), 0);
+  const totalRevenue = events.reduce((acc, ev) => acc + (ev.price || 0) * (ev.attendeeCount || 0), 0);
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.openDrawer && navigation.openDrawer()} style={styles.iconBtn}>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer && navigation.openDrawer()}
+            style={styles.iconBtn}
+          >
             <MaterialIcons name="menu" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('EditProfile')} style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: user?.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }}
+          <Image
+            source={{
+              uri:
+                user?.profilePhotoUrl ||
+                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+            }}
             style={styles.avatarImg}
           />
         </TouchableOpacity>
@@ -146,7 +154,6 @@ export default function OrganizerDashboardScreen() {
         <View style={styles.activityCard}>
           <Text style={styles.sectionTitle}>Recent Activity</Text>
           <View style={styles.activityList}>
-            
             <View style={styles.activityRow}>
               <View style={[styles.activityDot, { backgroundColor: '#775a19' }]} />
               <View style={styles.activityBody}>
@@ -164,7 +171,6 @@ export default function OrganizerDashboardScreen() {
                 <Text style={styles.activityTime}>45 MINS AGO</Text>
               </View>
             </View>
-
           </View>
           <TouchableOpacity style={styles.reportBtn}>
             <Text style={styles.reportBtnText}>DOWNLOAD REVENUE REPORT</Text>
@@ -176,13 +182,14 @@ export default function OrganizerDashboardScreen() {
           <View style={styles.featuredOverlay}>
             <Text style={styles.featuredPre}>NETWORK INSIGHTS</Text>
             <Text style={styles.featuredTitle}>Elevate your next gathering.</Text>
-            <Text style={styles.featuredDesc}>Use our new AI-driven seat mapping tool to optimize guest interactions.</Text>
+            <Text style={styles.featuredDesc}>
+              Use our new AI-driven seat mapping tool to optimize guest interactions.
+            </Text>
             <TouchableOpacity style={styles.featuredBtn}>
               <Text style={styles.featuredBtnText}>EXPLORE TOOL</Text>
             </TouchableOpacity>
           </View>
         </View>
-
       </ScrollView>
 
       {/* FAB */}
@@ -580,5 +587,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#775a19',
     marginTop: 4,
-  }
+  },
 });

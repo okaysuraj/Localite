@@ -7,6 +7,5 @@ const PORT = process.env.EXPO_PUBLIC_API_PORT || '8080';
 
 const host = Platform.OS === 'android' && IP === 'localhost' ? '10.0.2.2' : IP;
 
-export const API_URL = `http://${host}:${PORT}/api`;
-export const WS_URL = `http://${host}:${PORT}/ws`;
-export const BASE_URL = API_URL;
+export const API_URL = (process.env.EXPO_PUBLIC_API_URL || `http://${host}:${PORT}/api`).replace(/\/$/, '');
+export const WS_URL = API_URL.replace(/\/api$/, '') + '/ws';

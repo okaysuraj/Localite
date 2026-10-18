@@ -1,6 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function CreateEventBasicInfoScreen() {
@@ -13,7 +24,6 @@ export default function CreateEventBasicInfoScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-        
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
@@ -41,7 +51,8 @@ export default function CreateEventBasicInfoScreen() {
           <View style={styles.formHeader}>
             <Text style={styles.formTitle}>The Foundation</Text>
             <Text style={styles.formDesc}>
-              Define the core identity of your event. Choose a name that resonates and a narrative that captivates your local community.
+              Define the core identity of your event. Choose a name that resonates and a narrative that
+              captivates your local community.
             </Text>
           </View>
 
@@ -49,8 +60,8 @@ export default function CreateEventBasicInfoScreen() {
           <View style={styles.form}>
             <View style={styles.inputGroup}>
               <Text style={styles.label}>EVENT NAME</Text>
-              <TextInput 
-                style={styles.input} 
+              <TextInput
+                style={styles.input}
                 placeholder="e.g., Midnight Jazz at The Foundry"
                 placeholderTextColor="#c5c6cd"
                 value={eventName}
@@ -61,8 +72,8 @@ export default function CreateEventBasicInfoScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>CATEGORY</Text>
               <View style={styles.selectWrapper}>
-                <TextInput 
-                  style={styles.input} 
+                <TextInput
+                  style={styles.input}
                   placeholder="Select a category"
                   placeholderTextColor="#c5c6cd"
                   value={category}
@@ -75,8 +86,8 @@ export default function CreateEventBasicInfoScreen() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>AUDIENCE</Text>
               <View style={styles.selectWrapper}>
-                <TextInput 
-                  style={styles.input} 
+                <TextInput
+                  style={styles.input}
                   placeholder="Public Gathering"
                   placeholderTextColor="#c5c6cd"
                   value={audience}
@@ -88,8 +99,8 @@ export default function CreateEventBasicInfoScreen() {
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>EVENT NARRATIVE</Text>
-              <TextInput 
-                style={[styles.input, styles.textArea]} 
+              <TextInput
+                style={[styles.input, styles.textArea]}
                 placeholder="Describe the atmosphere, the people, and the purpose..."
                 placeholderTextColor="#c5c6cd"
                 value={narrative}
@@ -108,7 +119,10 @@ export default function CreateEventBasicInfoScreen() {
           <TouchableOpacity style={styles.saveBtn}>
             <Text style={styles.saveText}>SAVE DRAFT</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.continueBtn} onPress={() => navigation.navigate('CreateEventDateTime')}>
+          <TouchableOpacity
+            style={styles.continueBtn}
+            onPress={() => navigation.navigate('CreateEventDateTime')}
+          >
             <Text style={styles.continueText}>CONTINUE</Text>
             <MaterialIcons name="arrow-forward" size={18} color="#fff" />
           </TouchableOpacity>
@@ -278,5 +292,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 12,
     color: '#fff',
-  }
+  },
 });

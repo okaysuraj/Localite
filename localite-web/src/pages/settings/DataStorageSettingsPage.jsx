@@ -1,15 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
-import { 
-  Database, 
-  DownloadSimple, 
-  Trash, 
-  HardDrives, 
-  Image, 
-  ChatCircle, 
-  ClockClockwise,
-  CheckCircle
-} from '@phosphor-icons/react';
+import { DownloadSimple, Trash, HardDrives, ClockClockwise, CheckCircle } from '@phosphor-icons/react';
 
 export default function DataStorageSettingsPage() {
   const [clearing, setClearing] = useState(false);
@@ -25,7 +16,9 @@ export default function DataStorageSettingsPage() {
   };
 
   const handleExportData = () => {
-    alert("Preparing complete archive of your profile, registrations, and messages. A download link will be dispatched shortly.");
+    alert(
+      'Preparing complete archive of your profile, registrations, and messages. A download link will be dispatched shortly.'
+    );
   };
 
   return (
@@ -45,7 +38,7 @@ export default function DataStorageSettingsPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={handleExportData}
               className="px-4 py-2.5 border border-[var(--border)] text-[var(--fg)] text-xs font-semibold uppercase tracking-wider rounded-card hover:bg-[var(--bg-subtle)] transition-colors flex items-center gap-2"
             >
@@ -57,13 +50,14 @@ export default function DataStorageSettingsPage() {
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
           {/* Main Storage Consumption Bar */}
           <div className="col-span-1 lg:col-span-8 bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)] space-y-6">
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-base font-semibold text-[var(--fg)]">Storage Utilization</h3>
-                <p className="text-xs text-[var(--fg-muted)]">Local device storage utilized by Localite web assets.</p>
+                <p className="text-xs text-[var(--fg-muted)]">
+                  Local device storage utilized by Localite web assets.
+                </p>
               </div>
               <div className="text-right">
                 <span className="text-lg font-semibold text-[var(--fg)]">142.4 MB</span>
@@ -129,7 +123,8 @@ export default function DataStorageSettingsPage() {
                 <h3 className="text-base font-semibold text-[var(--fg)]">Maintenance</h3>
               </div>
               <p className="text-xs text-[var(--fg-muted)] mb-6 leading-relaxed">
-                Clearing temporary offline cache re-syncs fresh assets from the cloud without removing your saved conversations or profile status.
+                Clearing temporary offline cache re-syncs fresh assets from the cloud without removing your
+                saved conversations or profile status.
               </p>
             </div>
 
@@ -139,7 +134,7 @@ export default function DataStorageSettingsPage() {
                   <CheckCircle size={16} weight="fill" /> Local cache flushed successfully
                 </div>
               )}
-              <button 
+              <button
                 onClick={handleClearCache}
                 disabled={clearing}
                 className="w-full py-3 px-4 border border-[var(--border)] hover:bg-[var(--bg-subtle)] text-[var(--fg)] rounded-card text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 active:scale-95"
@@ -155,17 +150,18 @@ export default function DataStorageSettingsPage() {
             <div>
               <h4 className="text-sm font-semibold text-[var(--fg)] mb-1">Right to Erasure & Portability</h4>
               <p className="text-xs text-[var(--fg-muted)] max-w-2xl leading-relaxed">
-                Under our digital privacy charter, you maintain absolute ownership of your event history, messages, and uploaded photos. Requesting an erasure initiates an unrecoverable purge across all edge nodes.
+                Under our digital privacy charter, you maintain absolute ownership of your event history,
+                messages, and uploaded photos. Requesting an erasure initiates an unrecoverable purge across
+                all edge nodes.
               </p>
             </div>
-            <button 
-              onClick={() => alert("Erasure request submitted to safety dispatch.")}
+            <button
+              onClick={() => alert('Erasure request submitted to safety dispatch.')}
               className="px-4 py-2 text-rose-600 border border-rose-200 hover:bg-rose-50 text-xs font-semibold uppercase tracking-wider rounded-card transition-colors shrink-0"
             >
               Request Account Purge
             </button>
           </div>
-
         </div>
       </div>
     </SettingsLayout>

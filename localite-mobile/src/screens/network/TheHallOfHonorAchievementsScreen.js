@@ -1,6 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function TheHallOfHonorAchievementsScreen() {
@@ -15,9 +23,11 @@ export default function TheHallOfHonorAchievementsScreen() {
             <MaterialIcons name="menu" size={24} color="#000" />
           </TouchableOpacity>
           <View style={styles.avatarWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDxjBpf-o7Kn4chTVefFEV1C1UsZOGNSqYMGIQUj4AnS-5nr2zI3gz1raDzCevqW--p798V9VMj8NXVL-iHqmXt7HSFUyJ2kD8tucM3g9yMvk0YUNiZxki-GrouVaPL4q9zH7JsjHLBUujuJ06bUYQOprd3xuziVMjeWKELWYPQmrfcJAM0eL8qufDgdCcxQ3axhlpzZC6g_bO68OM0s-i49o0QXn6GsWEGd6Y5ZfAmdq920B7Vrf1Jxg' }} 
-              style={styles.avatarImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDxjBpf-o7Kn4chTVefFEV1C1UsZOGNSqYMGIQUj4AnS-5nr2zI3gz1raDzCevqW--p798V9VMj8NXVL-iHqmXt7HSFUyJ2kD8tucM3g9yMvk0YUNiZxki-GrouVaPL4q9zH7JsjHLBUujuJ06bUYQOprd3xuziVMjeWKELWYPQmrfcJAM0eL8qufDgdCcxQ3axhlpzZC6g_bO68OM0s-i49o0QXn6GsWEGd6Y5ZfAmdq920B7Vrf1Jxg',
+              }}
+              style={styles.avatarImg}
             />
           </View>
           <Text style={styles.headerTitle}>Localite</Text>
@@ -28,7 +38,6 @@ export default function TheHallOfHonorAchievementsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Page Header */}
         <View style={styles.pageHeader}>
           <Text style={styles.pagePreTitle}>ACHIEVEMENTS</Text>
@@ -41,9 +50,11 @@ export default function TheHallOfHonorAchievementsScreen() {
         {/* Featured Milestone Card */}
         <View style={styles.featuredCard}>
           <View style={styles.featuredImageWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCRQSkqyP6cYiMA3GMdF2j4VxB3OLtVQqWpx07YZCUIik_O_VDLsSsj4iQCD-lYOvWFImDn4nMAuRP9UZfhA8tFczou5af8GGuiJLJ_dlSezngo1iIVK_0qSHXN8k7Rw3F9EAcEmqy0dKykyskQer-T7M9AVGW8rKa5tYla386kofqotB79hePNa7-IoeYw4mW_kIwptjcgdphjDvp-NVEVVABJROhKoZIV52vPbp4RhKdcSXBvN9mpOg' }} 
-              style={styles.featuredImage} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCRQSkqyP6cYiMA3GMdF2j4VxB3OLtVQqWpx07YZCUIik_O_VDLsSsj4iQCD-lYOvWFImDn4nMAuRP9UZfhA8tFczou5af8GGuiJLJ_dlSezngo1iIVK_0qSHXN8k7Rw3F9EAcEmqy0dKykyskQer-T7M9AVGW8rKa5tYla386kofqotB79hePNa7-IoeYw4mW_kIwptjcgdphjDvp-NVEVVABJROhKoZIV52vPbp4RhKdcSXBvN9mpOg',
+              }}
+              style={styles.featuredImage}
             />
           </View>
           <View style={styles.featuredInfo}>
@@ -51,8 +62,10 @@ export default function TheHallOfHonorAchievementsScreen() {
               <Text style={styles.featuredTagText}>NEXT MILESTONE</Text>
             </View>
             <Text style={styles.featuredTitle}>Grand Slam Curator</Text>
-            <Text style={styles.featuredDesc}>Organize 2 more high-tier tennis events to earn this mark.</Text>
-            
+            <Text style={styles.featuredDesc}>
+              Organize 2 more high-tier tennis events to earn this mark.
+            </Text>
+
             <View style={styles.progressWrap}>
               <View style={styles.progressBarBg}>
                 <View style={[styles.progressBarFill, { width: '80%' }]} />
@@ -75,13 +88,14 @@ export default function TheHallOfHonorAchievementsScreen() {
 
         {/* Achievements Grid */}
         <View style={styles.gridContainer}>
-          
           {/* Unlocked 1 */}
           <View style={styles.gridItem}>
             <View style={styles.medalWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBb578-grgUZxGsSZAXYO8fsiG3wQeWj-XZdyKXTOf8LtoeDHyyfedype7cjxSMSGfFLlasjC25qca-y-a5StltqNagJHrEs3TBrxBy_izt1E5kCgbGNmVi_dRTVLuZ1_6sEJ94FxAUmhRoYhCTvZvgknqnXv-Ys23EdM0tluPfpiuP0m23xAgtUSWASeTHVuFl6ZMfOhMfHwEnz43iZhSb_7UbWmBZtEhpP2jPxVJUh3AWz5XU8ePrUQ' }} 
-                style={styles.medalImg} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBb578-grgUZxGsSZAXYO8fsiG3wQeWj-XZdyKXTOf8LtoeDHyyfedype7cjxSMSGfFLlasjC25qca-y-a5StltqNagJHrEs3TBrxBy_izt1E5kCgbGNmVi_dRTVLuZ1_6sEJ94FxAUmhRoYhCTvZvgknqnXv-Ys23EdM0tluPfpiuP0m23xAgtUSWASeTHVuFl6ZMfOhMfHwEnz43iZhSb_7UbWmBZtEhpP2jPxVJUh3AWz5XU8ePrUQ',
+                }}
+                style={styles.medalImg}
               />
             </View>
             <Text style={styles.medalTitle}>Master of the Court</Text>
@@ -92,9 +106,11 @@ export default function TheHallOfHonorAchievementsScreen() {
           {/* Unlocked 2 */}
           <View style={styles.gridItem}>
             <View style={styles.medalWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDLsb-Q4IEVWHjH7LUGpToCb0dwuvX1PunM2VgT6tzepCluvsdHmKojblHAJA6NNSzxXnkkx1wBWB3I2flqqZAFAK408DYYWREP-PbfPd7AwTVQBjce9LNi2f8KNkr8K02fb-YONwS3a48tMwuTuT3YXc_y3M2WQdjDwoTIV2VguxLDbdux-aX32CBb3ujmYF-81p7i4P79r4E54lfY_ayzG48l5r3HuDCigwkDkOaoGFYHRFFXV7KX_g' }} 
-                style={styles.medalImg} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDLsb-Q4IEVWHjH7LUGpToCb0dwuvX1PunM2VgT6tzepCluvsdHmKojblHAJA6NNSzxXnkkx1wBWB3I2flqqZAFAK408DYYWREP-PbfPd7AwTVQBjce9LNi2f8KNkr8K02fb-YONwS3a48tMwuTuT3YXc_y3M2WQdjDwoTIV2VguxLDbdux-aX32CBb3ujmYF-81p7i4P79r4E54lfY_ayzG48l5r3HuDCigwkDkOaoGFYHRFFXV7KX_g',
+                }}
+                style={styles.medalImg}
               />
             </View>
             <Text style={styles.medalTitle}>Elite Host</Text>
@@ -105,9 +121,11 @@ export default function TheHallOfHonorAchievementsScreen() {
           {/* Unlocked 3 */}
           <View style={styles.gridItem}>
             <View style={styles.medalWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZi9PIJ3K__5Lb_TOYsocutsVVcXmAHo26m6KhVnqs-XxQ5b8Io7yIGEa4g71R-z8EBLW6s3jqxzM7H3CyPbeRgnzzyeIYNfJg-YWKp0d5b5fC8TypaTBwt8DFcwzJKmeyZyeZoxPIFlqjR8pRdkCTuKlCufxYebGDRmp7loxGnI3tsz5jbfgxM45-Kwwq3cVUB6xLLGmEhNXnd4mgEmq_bI8awCL2lM-JqKZao4z8JCHPyF5yklRhvg' }} 
-                style={styles.medalImg} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZi9PIJ3K__5Lb_TOYsocutsVVcXmAHo26m6KhVnqs-XxQ5b8Io7yIGEa4g71R-z8EBLW6s3jqxzM7H3CyPbeRgnzzyeIYNfJg-YWKp0d5b5fC8TypaTBwt8DFcwzJKmeyZyeZoxPIFlqjR8pRdkCTuKlCufxYebGDRmp7loxGnI3tsz5jbfgxM45-Kwwq3cVUB6xLLGmEhNXnd4mgEmq_bI8awCL2lM-JqKZao4z8JCHPyF5yklRhvg',
+                }}
+                style={styles.medalImg}
               />
             </View>
             <Text style={styles.medalTitle}>Constant Companion</Text>
@@ -124,7 +142,6 @@ export default function TheHallOfHonorAchievementsScreen() {
             <Text style={styles.medalRankLocked}>LOCKED</Text>
             <Text style={styles.medalDateLocked}>INITIATE 5 GROUP TALKS</Text>
           </View>
-
         </View>
 
         {/* Stats */}
@@ -142,7 +159,6 @@ export default function TheHallOfHonorAchievementsScreen() {
             <Text style={styles.statValue}>4,850</Text>
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -484,5 +500,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlayfairDisplay-Bold',
     fontSize: 32,
     color: '#775a19',
-  }
+  },
 });

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CalendarBlank,
   Users,
-  CurrencyDollar,
   Plus,
   UserPlus,
-  CreditCard,
   EnvelopeSimple,
   CheckCircle,
   Clock,
@@ -31,7 +29,7 @@ export default function HostDashboardPage() {
       try {
         const [stats, myEvents] = await Promise.all([
           getUserAnalytics().catch(() => null),
-          getMyEvents().catch(() => [])
+          getMyEvents().catch(() => []),
         ]);
         setAnalytics(stats);
         setEvents(Array.isArray(myEvents) ? myEvents : []);
@@ -45,9 +43,7 @@ export default function HostDashboardPage() {
   }, []);
 
   const toggleTask = (id) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
-    );
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
   };
 
   const activeEventsCount = events.length;
@@ -60,9 +56,7 @@ export default function HostDashboardPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-border">
           <div>
-            <h1 className="text-3xl font-display font-semibold text-fg tracking-tight">
-              Host Dashboard
-            </h1>
+            <h1 className="text-3xl font-display font-semibold text-fg tracking-tight">Host Dashboard</h1>
             <p className="text-sm text-fg-muted mt-1">
               Overview of your hosted gatherings, attendee metrics, and community engagement.
             </p>
@@ -93,9 +87,7 @@ export default function HostDashboardPage() {
               <CalendarBlank size={16} className="text-accent" />
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-3xl font-display font-semibold text-fg">
-                {activeEventsCount}
-              </span>
+              <span className="text-3xl font-display font-semibold text-fg">{activeEventsCount}</span>
               <span className="text-[11px] font-mono text-accent bg-accent-subtle px-2 py-0.5 rounded-full">
                 Live on platform
               </span>
@@ -108,9 +100,7 @@ export default function HostDashboardPage() {
               <Users size={16} className="text-accent" />
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-3xl font-display font-semibold text-fg">
-                {totalAttendees}
-              </span>
+              <span className="text-3xl font-display font-semibold text-fg">{totalAttendees}</span>
               <span className="text-[11px] font-mono text-accent bg-accent-subtle px-2 py-0.5 rounded-full">
                 Confirmed RSVPs
               </span>
@@ -123,12 +113,8 @@ export default function HostDashboardPage() {
               <CheckCircle size={16} className="text-accent" />
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-3xl font-display font-semibold text-fg">
-                {eventsHosted}
-              </span>
-              <span className="text-[11px] font-mono text-fg-muted">
-                100% attendance rate
-              </span>
+              <span className="text-3xl font-display font-semibold text-fg">{eventsHosted}</span>
+              <span className="text-[11px] font-mono text-fg-muted">100% attendance rate</span>
             </div>
           </div>
         </div>
@@ -156,7 +142,9 @@ export default function HostDashboardPage() {
             ) : events.length === 0 ? (
               <div className="bg-white border border-border rounded-card p-8 text-center space-y-3">
                 <p className="text-sm font-medium text-fg">No gatherings created yet</p>
-                <p className="text-xs text-fg-muted">Host your first gathering to activate attendance tracking and check-ins.</p>
+                <p className="text-xs text-fg-muted">
+                  Host your first gathering to activate attendance tracking and check-ins.
+                </p>
                 <button
                   onClick={() => navigate('/events/create')}
                   className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 text-xs font-mono bg-accent text-white rounded-btn hover:opacity-90"
@@ -175,7 +163,10 @@ export default function HostDashboardPage() {
                     <div className="h-40 relative bg-bg-subtle">
                       <img
                         className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
-                        src={ev.imageUrl || "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=600"}
+                        src={
+                          ev.imageUrl ||
+                          'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=600'
+                        }
                         alt={ev.title}
                       />
                       <span className="absolute top-3 left-3 bg-accent text-white px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider">
@@ -187,7 +178,9 @@ export default function HostDashboardPage() {
                         {ev.title}
                       </h3>
                       <div className="flex justify-between items-center text-xs font-mono text-fg-muted pt-2 border-t border-border">
-                        <span>{ev.attendeeCount || 0} / {ev.maxAttendees || 'Open'} Registered</span>
+                        <span>
+                          {ev.attendeeCount || 0} / {ev.maxAttendees || 'Open'} Registered
+                        </span>
                         <span className="text-accent font-medium">{ev.location || 'Local Venue'}</span>
                       </div>
                     </div>
@@ -199,11 +192,10 @@ export default function HostDashboardPage() {
             {/* Host tips banner */}
             <div className="bg-bg-subtle border border-border rounded-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-1 max-w-lg">
-                <h3 className="font-display font-semibold text-sm text-fg">
-                  Host Tip: Send Reminders Early
-                </h3>
+                <h3 className="font-display font-semibold text-sm text-fg">Host Tip: Send Reminders Early</h3>
                 <p className="text-xs text-fg-muted leading-relaxed">
-                  Events with reminders posted 24 hours prior to start time average an 89% attendee turn-out rate across the Localite network.
+                  Events with reminders posted 24 hours prior to start time average an 89% attendee turn-out
+                  rate across the Localite network.
                 </p>
               </div>
               <button
@@ -220,9 +212,7 @@ export default function HostDashboardPage() {
             {/* Action Checklist */}
             <div className="bg-white border border-border rounded-card p-5 space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="font-display font-semibold text-sm text-fg tracking-tight">
-                  Host Checklist
-                </h3>
+                <h3 className="font-display font-semibold text-sm text-fg tracking-tight">Host Checklist</h3>
                 <span className="text-[11px] font-mono text-fg-muted">
                   {tasks.filter((t) => !t.done).length} pending
                 </span>
@@ -260,9 +250,7 @@ export default function HostDashboardPage() {
 
             {/* Recent Activity */}
             <div className="bg-white border border-border rounded-card p-5 space-y-4">
-              <h3 className="font-display font-semibold text-sm text-fg tracking-tight">
-                Recent Activity
-              </h3>
+              <h3 className="font-display font-semibold text-sm text-fg tracking-tight">Recent Activity</h3>
 
               <div className="space-y-3.5 divide-y divide-border/60">
                 <div className="pt-2 first:pt-0 flex gap-3 items-start">

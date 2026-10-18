@@ -1,6 +1,5 @@
-import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EmptyGatheringsScreen() {
@@ -18,9 +17,11 @@ export default function EmptyGatheringsScreen() {
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.profileBtn}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWswPK1gHD0FrxVCku0jfQRavuwz2-bCQHo66ICvoDA3sF9L-oP_LpMo4DEquCYkMfRrRsmJDpY3LxP2ql7ZnvjpoeUJ809jSYosVqS85xH9WpIJKTFjU8Rwnj4xdTT70DeHr2auKJkHFCVntOWBaiBi-3oX-VvhuvnYR31mDdI8Uun1dCzXS7fI--JoMKRWaeFCQlcF43Thp9VW6US-acIGmsk0jfpP3puU73vpG4COx2xCycvuCfww' }} 
-              style={styles.profileImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWswPK1gHD0FrxVCku0jfQRavuwz2-bCQHo66ICvoDA3sF9L-oP_LpMo4DEquCYkMfRrRsmJDpY3LxP2ql7ZnvjpoeUJ809jSYosVqS85xH9WpIJKTFjU8Rwnj4xdTT70DeHr2auKJkHFCVntOWBaiBi-3oX-VvhuvnYR31mDdI8Uun1dCzXS7fI--JoMKRWaeFCQlcF43Thp9VW6US-acIGmsk0jfpP3puU73vpG4COx2xCycvuCfww',
+              }}
+              style={styles.profileImg}
             />
           </TouchableOpacity>
         </View>
@@ -28,15 +29,16 @@ export default function EmptyGatheringsScreen() {
 
       {/* Main Content */}
       <View style={styles.content}>
-        
         {/* Illustration Area */}
         <View style={styles.illustrationWrap}>
           {/* Decorative Gold Accent */}
           <View style={styles.goldAccent} />
-          
+
           <View style={styles.imageContainer}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAJ1xv4OYTFfEyy_OmHz_qsJgj5Uuzqg8ITfIqYuXWVX4g4L-Ab0JeZhFjSHGnf9Eu1PR2tHFyIT_V1vxBUtAL2aEzRc0ZL-ODplyYBgY_BD4tOVt9jx7_xgPO53OlHa1JkS4h7J1wL4d-7JLDARrzfVoU9UUVKTHxE8OfzW3J6l_L7LYTFu43fyw3wCP5250aJqZVgKH0U8Z5kY3NiRT33kN7SfqecCL07whMfo3tPMCx2JfgnFaM-tQ' }}
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAJ1xv4OYTFfEyy_OmHz_qsJgj5Uuzqg8ITfIqYuXWVX4g4L-Ab0JeZhFjSHGnf9Eu1PR2tHFyIT_V1vxBUtAL2aEzRc0ZL-ODplyYBgY_BD4tOVt9jx7_xgPO53OlHa1JkS4h7J1wL4d-7JLDARrzfVoU9UUVKTHxE8OfzW3J6l_L7LYTFu43fyw3wCP5250aJqZVgKH0U8Z5kY3NiRT33kN7SfqecCL07whMfo3tPMCx2JfgnFaM-tQ',
+              }}
               style={styles.illustrationImg}
               resizeMode="contain"
             />
@@ -47,7 +49,8 @@ export default function EmptyGatheringsScreen() {
         <View style={styles.textSection}>
           <Text style={styles.title}>The Calendar is Currently Unveiled</Text>
           <Text style={styles.desc}>
-            A moment of quiet before the next grand affair. Be the architect of connection in your community or explore our curated hubs of influence.
+            A moment of quiet before the next grand affair. Be the architect of connection in your community
+            or explore our curated hubs of influence.
           </Text>
         </View>
 
@@ -56,7 +59,7 @@ export default function EmptyGatheringsScreen() {
           <TouchableOpacity style={styles.primaryBtn}>
             <Text style={styles.primaryBtnText}>ORGANIZE A GATHERING</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.secondaryBtn}>
             <Text style={styles.secondaryBtnText}>EXPLORE HUBS</Text>
           </TouchableOpacity>
@@ -67,7 +70,6 @@ export default function EmptyGatheringsScreen() {
           <MaterialIcons name="auto-awesome" size={16} color="#75777e" />
           <Text style={styles.promptText}>CURATED EXCELLENCE ALWAYS FOLLOWS</Text>
         </View>
-
       </View>
 
       {/* Bottom Navigation */}
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
   },
   illustrationWrap: {
     width: '100%',
-    aspectRatio: 4/3,
+    aspectRatio: 4 / 3,
     maxWidth: 320,
     alignItems: 'center',
     justifyContent: 'center',
@@ -293,5 +295,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 10,
     color: '#775a19',
-  }
+  },
 });

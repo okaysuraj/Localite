@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Platform, Image } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  Image,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LiveEventPollScreen() {
@@ -10,7 +19,7 @@ export default function LiveEventPollScreen() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(prev => (prev > 0 ? prev - 1 : 0));
+      setTime((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -41,15 +50,17 @@ export default function LiveEventPollScreen() {
         <View style={styles.heroSection}>
           <Text style={styles.heroLabel}>ACTIVE ASSEMBLY POLL</Text>
           <Text style={styles.heroTitle}>What should we do next?</Text>
-          <Text style={styles.heroSubtitle}>Your preference shapes the evening's final chapter. Choose with intention.</Text>
+          <Text style={styles.heroSubtitle}>
+            Your preference shapes the evening's final chapter. Choose with intention.
+          </Text>
         </View>
 
         <View style={styles.optionsContainer}>
           {options.map((opt) => {
             const isActive = selectedOption === opt.id;
             return (
-              <TouchableOpacity 
-                key={opt.id} 
+              <TouchableOpacity
+                key={opt.id}
                 style={[styles.optionCard, isActive && styles.optionCardActive]}
                 onPress={() => setSelectedOption(opt.id)}
                 activeOpacity={0.8}
@@ -59,7 +70,12 @@ export default function LiveEventPollScreen() {
                   <Text style={styles.optionPercent}>{opt.percent}%</Text>
                 </View>
                 <View style={styles.progressBarBg}>
-                  <View style={[styles.progressBarFill, { width: `${opt.percent}%`, backgroundColor: isActive ? '#775a19' : '#fed488' }]} />
+                  <View
+                    style={[
+                      styles.progressBarFill,
+                      { width: `${opt.percent}%`, backgroundColor: isActive ? '#775a19' : '#fed488' },
+                    ]}
+                  />
                 </View>
                 {isActive && (
                   <View style={styles.activeIcon}>

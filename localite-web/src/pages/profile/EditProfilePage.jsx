@@ -1,16 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingsLayout from '../../components/SettingsLayout';
 import { AuthContext } from '../../context/AuthContext';
 import { getCurrentUser, updateProfile } from '../../services/api';
-import {
-  ArrowLeft,
-  Camera,
-  ShieldCheck,
-  MapPin,
-  X,
-  Plus,
-} from '@phosphor-icons/react';
+import { ArrowLeft, Camera, ShieldCheck, MapPin, X, Plus } from '@phosphor-icons/react';
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
@@ -35,7 +28,10 @@ export default function EditProfilePage() {
           if (data.interests) {
             const list = Array.isArray(data.interests)
               ? data.interests
-              : data.interests.split(',').map((s) => s.trim()).filter(Boolean);
+              : data.interests
+                  .split(',')
+                  .map((s) => s.trim())
+                  .filter(Boolean);
             setInterests(list);
           }
         }
@@ -92,9 +88,7 @@ export default function EditProfilePage() {
         {/* Form Container */}
         <div className="bg-white border border-border rounded-card p-6 sm:p-8 space-y-6 shadow-xs">
           <div>
-            <h1 className="text-2xl font-display font-semibold text-fg tracking-tight">
-              Edit Profile
-            </h1>
+            <h1 className="text-2xl font-display font-semibold text-fg tracking-tight">Edit Profile</h1>
             <p className="text-xs text-fg-muted mt-1">
               Update your public display name, location, and community attributes.
             </p>
@@ -106,10 +100,7 @@ export default function EditProfilePage() {
               <div className="w-20 h-20 rounded-full overflow-hidden border border-border bg-bg-subtle">
                 <img
                   className="w-full h-full object-cover"
-                  src={
-                    user?.profileImageUrl ||
-                    `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`
-                  }
+                  src={user?.profileImageUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`}
                   alt="Avatar"
                 />
               </div>
@@ -125,9 +116,7 @@ export default function EditProfilePage() {
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-accent-subtle text-accent border border-accent/20">
                 <ShieldCheck size={11} /> Verified Member
               </span>
-              <p className="text-[11px] font-mono text-fg-muted">
-                JPG or PNG under 5MB
-              </p>
+              <p className="text-[11px] font-mono text-fg-muted">JPG or PNG under 5MB</p>
             </div>
           </div>
 
@@ -135,9 +124,7 @@ export default function EditProfilePage() {
           <form onSubmit={handleSave} className="space-y-4 text-xs font-mono">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
-                  Display Name
-                </label>
+                <label className="block uppercase tracking-wider text-fg-muted mb-1.5">Display Name</label>
                 <input
                   type="text"
                   required
@@ -174,9 +161,7 @@ export default function EditProfilePage() {
             </div>
 
             <div>
-              <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
-                Biography
-              </label>
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5">Biography</label>
               <textarea
                 rows="3"
                 value={bio}
@@ -184,16 +169,12 @@ export default function EditProfilePage() {
                 maxLength={300}
                 className="w-full bg-bg-subtle border border-border rounded-btn p-2.5 text-xs text-fg font-sans focus:outline-none focus:border-accent transition-colors resize-none"
               />
-              <span className="block text-[10px] text-right text-fg-muted mt-1">
-                {bio.length} / 300
-              </span>
+              <span className="block text-[10px] text-right text-fg-muted mt-1">{bio.length} / 300</span>
             </div>
 
             {/* Interest Tags */}
             <div className="space-y-2 pt-2">
-              <label className="block uppercase tracking-wider text-fg-muted">
-                Activities & Interests
-              </label>
+              <label className="block uppercase tracking-wider text-fg-muted">Activities & Interests</label>
               <div className="flex flex-wrap gap-1.5 items-center">
                 {interests.map((tag) => (
                   <span

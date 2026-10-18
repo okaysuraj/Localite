@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
-import { 
-  Bell, 
-  Envelope, 
-  CalendarCheck, 
-  Clock, 
-  MapPin, 
-  CheckCircle,
-  FloppyDisk
-} from '@phosphor-icons/react';
+import { Bell, Envelope, CalendarCheck, Clock, MapPin, CheckCircle, FloppyDisk } from '@phosphor-icons/react';
 
 export default function NotificationPreferencesPage() {
   const [hubPush, setHubPush] = useState(true);
@@ -46,7 +38,7 @@ export default function NotificationPreferencesPage() {
                 <CheckCircle size={16} weight="fill" /> Saved
               </span>
             )}
-            <button 
+            <button
               onClick={handleSave}
               className="px-5 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white text-xs font-semibold uppercase tracking-wider rounded-card shadow-sm active:scale-95 transition-all flex items-center gap-2"
             >
@@ -58,7 +50,6 @@ export default function NotificationPreferencesPage() {
 
         {/* Categories Stack */}
         <div className="space-y-6">
-          
           {/* Hub & Club Invites */}
           <section className="bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)]">
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--border)]">
@@ -77,12 +68,14 @@ export default function NotificationPreferencesPage() {
                   <h4 className="text-sm font-semibold text-[var(--fg)]">Push Dispatch</h4>
                   <p className="text-xs text-[var(--fg-muted)]">Immediate banner alert upon host invite.</p>
                 </div>
-                <button 
+                <button
                   className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${hubPush ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setHubPush(!hubPush)}
                   aria-label="Toggle hub push"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${hubPush ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                  <div
+                    className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${hubPush ? 'translate-x-5' : 'translate-x-0'}`}
+                  ></div>
                 </button>
               </div>
 
@@ -91,12 +84,14 @@ export default function NotificationPreferencesPage() {
                   <h4 className="text-sm font-semibold text-[var(--fg)]">Email Notification</h4>
                   <p className="text-xs text-[var(--fg-muted)]">Send formal RSVP card to registered email.</p>
                 </div>
-                <button 
+                <button
                   className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${hubEmail ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setHubEmail(!hubEmail)}
                   aria-label="Toggle hub email"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${hubEmail ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                  <div
+                    className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${hubEmail ? 'translate-x-5' : 'translate-x-0'}`}
+                  ></div>
                 </button>
               </div>
             </div>
@@ -110,7 +105,9 @@ export default function NotificationPreferencesPage() {
               </span>
               <div>
                 <h3 className="text-base font-semibold text-[var(--fg)]">Attendance Reminders</h3>
-                <p className="text-xs text-[var(--fg-muted)]">Automated alerts before confirmed sessions begin.</p>
+                <p className="text-xs text-[var(--fg-muted)]">
+                  Automated alerts before confirmed sessions begin.
+                </p>
               </div>
             </div>
 
@@ -120,15 +117,19 @@ export default function NotificationPreferencesPage() {
                   <Clock size={18} className="text-[var(--fg-muted)]" />
                   <div>
                     <h4 className="text-sm font-semibold text-[var(--fg)]">24 Hours Prior</h4>
-                    <p className="text-xs text-[var(--fg-muted)]">Day-before briefing with dress code and attendee preview.</p>
+                    <p className="text-xs text-[var(--fg-muted)]">
+                      Day-before briefing with dress code and attendee preview.
+                    </p>
                   </div>
                 </div>
-                <button 
+                <button
                   className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${remind24h ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setRemind24h(!remind24h)}
                   aria-label="Toggle 24h reminder"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${remind24h ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                  <div
+                    className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${remind24h ? 'translate-x-5' : 'translate-x-0'}`}
+                  ></div>
                 </button>
               </div>
 
@@ -137,15 +138,19 @@ export default function NotificationPreferencesPage() {
                   <Clock size={18} className="text-[var(--fg-muted)]" />
                   <div>
                     <h4 className="text-sm font-semibold text-[var(--fg)]">1 Hour Prior</h4>
-                    <p className="text-xs text-[var(--fg-muted)]">Navigation alert with entry QR code access.</p>
+                    <p className="text-xs text-[var(--fg-muted)]">
+                      Navigation alert with entry QR code access.
+                    </p>
                   </div>
                 </div>
-                <button 
+                <button
                   className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${remind1h ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setRemind1h(!remind1h)}
                   aria-label="Toggle 1h reminder"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${remind1h ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                  <div
+                    className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${remind1h ? 'translate-x-5' : 'translate-x-0'}`}
+                  ></div>
                 </button>
               </div>
             </div>
@@ -167,14 +172,18 @@ export default function NotificationPreferencesPage() {
               <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
                 <div>
                   <h4 className="text-sm font-semibold text-[var(--fg)]">Host Broadcasts & Timeline</h4>
-                  <p className="text-xs text-[var(--fg-muted)]">Live schedule shifts, room adjustments, and announcements.</p>
+                  <p className="text-xs text-[var(--fg-muted)]">
+                    Live schedule shifts, room adjustments, and announcements.
+                  </p>
                 </div>
-                <button 
+                <button
                   className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${eventActivity ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setEventActivity(!eventActivity)}
                   aria-label="Toggle host announcements"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${eventActivity ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                  <div
+                    className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${eventActivity ? 'translate-x-5' : 'translate-x-0'}`}
+                  ></div>
                 </button>
               </div>
 
@@ -183,20 +192,23 @@ export default function NotificationPreferencesPage() {
                   <MapPin size={18} className="text-[var(--fg-muted)]" />
                   <div>
                     <h4 className="text-sm font-semibold text-[var(--fg)]">Venue Arrival Triggers</h4>
-                    <p className="text-xs text-[var(--fg-muted)]">Auto-open entry badge when walking into venue geofence.</p>
+                    <p className="text-xs text-[var(--fg-muted)]">
+                      Auto-open entry badge when walking into venue geofence.
+                    </p>
                   </div>
                 </div>
-                <button 
+                <button
                   className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${eventLocation ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setEventLocation(!eventLocation)}
                   aria-label="Toggle venue arrival triggers"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${eventLocation ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                  <div
+                    className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${eventLocation ? 'translate-x-5' : 'translate-x-0'}`}
+                  ></div>
                 </button>
               </div>
             </div>
           </section>
-
         </div>
       </div>
     </SettingsLayout>

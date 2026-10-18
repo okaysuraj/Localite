@@ -1,23 +1,35 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
-import { 
-  Users, 
-  UserPlus, 
-  ShieldCheck, 
-  Trash, 
-  CheckCircle, 
-  MapPin, 
-  BellRinging,
-  FloppyDisk
-} from '@phosphor-icons/react';
+import { UserPlus, Trash, CheckCircle, BellRinging, FloppyDisk } from '@phosphor-icons/react';
 
 export default function TrustedCirclesSetupPage() {
   const [toggle1, setToggle1] = useState(true);
   const [toggle2, setToggle2] = useState(true);
   const [contacts, setContacts] = useState([
-    { id: 1, name: 'Aarav Mehta', phone: '+91 98201 44521', role: 'Primary Tether', initials: 'AM', verified: true },
-    { id: 2, name: 'Jessica Lin', phone: '+91 97110 32890', role: 'Inner Circle', initials: 'JL', verified: true },
-    { id: 3, name: 'Rohan Kapoor', phone: '+91 98192 11094', role: 'Emergency Dispatch', initials: 'RK', verified: true },
+    {
+      id: 1,
+      name: 'Aarav Mehta',
+      phone: '+91 98201 44521',
+      role: 'Primary Tether',
+      initials: 'AM',
+      verified: true,
+    },
+    {
+      id: 2,
+      name: 'Jessica Lin',
+      phone: '+91 97110 32890',
+      role: 'Inner Circle',
+      initials: 'JL',
+      verified: true,
+    },
+    {
+      id: 3,
+      name: 'Rohan Kapoor',
+      phone: '+91 98192 11094',
+      role: 'Emergency Dispatch',
+      initials: 'RK',
+      verified: true,
+    },
   ]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newName, setNewName] = useState('');
@@ -32,8 +44,13 @@ export default function TrustedCirclesSetupPage() {
       name: newName,
       phone: newPhone || '+91 98000 00000',
       role: 'Inner Circle',
-      initials: newName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
-      verified: true
+      initials: newName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase(),
+      verified: true,
     };
     setContacts([...contacts, newContact]);
     setNewName('');
@@ -42,7 +59,7 @@ export default function TrustedCirclesSetupPage() {
   };
 
   const handleRemoveContact = (id) => {
-    setContacts(contacts.filter(c => c.id !== id));
+    setContacts(contacts.filter((c) => c.id !== id));
   };
 
   const handleSave = () => {
@@ -72,7 +89,7 @@ export default function TrustedCirclesSetupPage() {
                 <CheckCircle size={16} weight="fill" /> Saved
               </span>
             )}
-            <button 
+            <button
               onClick={() => setShowAddModal(true)}
               className="px-4 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white text-xs font-semibold uppercase tracking-wider rounded-card shadow-sm active:scale-95 transition-all flex items-center gap-2"
             >
@@ -84,19 +101,22 @@ export default function TrustedCirclesSetupPage() {
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
           {/* Active Contacts List */}
           <section className="col-span-1 lg:col-span-8 bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)]">
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--border)]">
               <div>
-                <h3 className="text-base font-semibold text-[var(--fg)]">Designated Contacts ({contacts.length})</h3>
-                <p className="text-xs text-[var(--fg-muted)]">These individuals receive automated notifications if SOS is triggered.</p>
+                <h3 className="text-base font-semibold text-[var(--fg)]">
+                  Designated Contacts ({contacts.length})
+                </h3>
+                <p className="text-xs text-[var(--fg-muted)]">
+                  These individuals receive automated notifications if SOS is triggered.
+                </p>
               </div>
             </div>
 
             <div className="space-y-3">
-              {contacts.map(contact => (
-                <div 
+              {contacts.map((contact) => (
+                <div
                   key={contact.id}
                   className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] hover:border-[var(--fg-muted)] transition-all"
                 >
@@ -108,13 +128,21 @@ export default function TrustedCirclesSetupPage() {
                       <div className="flex items-center gap-2">
                         <h4 className="text-sm font-semibold text-[var(--fg)]">{contact.name}</h4>
                         {contact.verified && (
-                          <CheckCircle size={14} weight="fill" className="text-emerald-600" title="Phone verified" />
+                          <CheckCircle
+                            size={14}
+                            weight="fill"
+                            className="text-emerald-600"
+                            title="Phone verified"
+                          />
                         )}
                       </div>
-                      <p className="text-xs text-[var(--fg-muted)]">{contact.phone} • <span className="text-[var(--accent)] font-medium">{contact.role}</span></p>
+                      <p className="text-xs text-[var(--fg-muted)]">
+                        {contact.phone} •{' '}
+                        <span className="text-[var(--accent)] font-medium">{contact.role}</span>
+                      </p>
                     </div>
                   </div>
-                  <button 
+                  <button
                     onClick={() => handleRemoveContact(contact.id)}
                     className="p-2 text-[var(--fg-muted)] hover:text-rose-600 transition-colors"
                     title="Remove contact"
@@ -139,38 +167,46 @@ export default function TrustedCirclesSetupPage() {
               <div className="space-y-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--fg)] mb-0.5">Late Night Transit Tether</h4>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--fg)] mb-0.5">
+                      Late Night Transit Tether
+                    </h4>
                     <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
                       Send an automated ping to your Inner Circle when you depart a gathering after 11:00 PM.
                     </p>
                   </div>
-                  <button 
+                  <button
                     className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${toggle1 ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                     onClick={() => setToggle1(!toggle1)}
                   >
-                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${toggle1 ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                    <div
+                      className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${toggle1 ? 'translate-x-5' : 'translate-x-0'}`}
+                    ></div>
                   </button>
                 </div>
 
                 <div className="flex items-start justify-between gap-3 pt-4 border-t border-[var(--border)]">
                   <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--fg)] mb-0.5">Venue Arrival Verification</h4>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--fg)] mb-0.5">
+                      Venue Arrival Verification
+                    </h4>
                     <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
                       Confirm safe arrival at confirmed private sports or salon venues.
                     </p>
                   </div>
-                  <button 
+                  <button
                     className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${toggle2 ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                     onClick={() => setToggle2(!toggle2)}
                   >
-                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${toggle2 ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                    <div
+                      className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${toggle2 ? 'translate-x-5' : 'translate-x-0'}`}
+                    ></div>
                   </button>
                 </div>
               </div>
             </div>
 
             <div className="pt-6">
-              <button 
+              <button
                 onClick={handleSave}
                 className="w-full py-2.5 border border-[var(--border)] hover:bg-[var(--bg-subtle)] text-[var(--fg)] text-xs font-semibold uppercase tracking-wider rounded-card transition-colors flex items-center justify-center gap-2"
               >
@@ -179,7 +215,6 @@ export default function TrustedCirclesSetupPage() {
               </button>
             </div>
           </section>
-
         </div>
       </div>
 
@@ -197,8 +232,8 @@ export default function TrustedCirclesSetupPage() {
                 <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)] block mb-1.5">
                   Full Name
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
                   placeholder="e.g. Priya Sharma"
                   value={newName}
@@ -211,8 +246,8 @@ export default function TrustedCirclesSetupPage() {
                 <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)] block mb-1.5">
                   Mobile Number
                 </label>
-                <input 
-                  type="tel" 
+                <input
+                  type="tel"
                   required
                   placeholder="+91 98000 00000"
                   value={newPhone}
@@ -222,14 +257,14 @@ export default function TrustedCirclesSetupPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 pt-2">
-                <button 
+                <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
                   className="py-2.5 border border-[var(--border)] text-xs font-semibold text-[var(--fg)] rounded-card hover:bg-[var(--bg-subtle)] transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   type="submit"
                   className="py-2.5 bg-[var(--accent)] text-white text-xs font-semibold uppercase tracking-wider rounded-card shadow-sm hover:bg-[var(--accent)]/90 transition-colors"
                 >

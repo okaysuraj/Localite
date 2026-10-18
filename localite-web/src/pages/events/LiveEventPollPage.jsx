@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { 
-  ChartBar, 
-  Clock, 
-  ArrowLeft, 
-  Users, 
-  CheckCircle, 
-  Megaphone,
-  Sparkle,
-  Archive
-} from '@phosphor-icons/react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Archive } from '@phosphor-icons/react';
 
 export default function LiveEventPollPage() {
   const navigate = useNavigate();
-  const { eventId } = useParams();
+
   const [selectedOption, setSelectedOption] = useState('a');
   const [time, setTime] = useState(252); // 4:12
 
@@ -40,8 +31,8 @@ export default function LiveEventPollPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-1"
             >
@@ -73,9 +64,12 @@ export default function LiveEventPollPage() {
           {/* Poll Card */}
           <div className="lg:col-span-8 bg-white rounded-card border border-[var(--border)] p-6 sm:p-8 space-y-6">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block mb-1">Interactive Topic</span>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block mb-1">
+                Interactive Topic
+              </span>
               <h2 className="text-xl sm:text-2xl font-serif text-[var(--fg)] leading-snug">
-                Which architectural pavilion design best reflects our community vision for the 2027 Summer Gathering?
+                Which architectural pavilion design best reflects our community vision for the 2027 Summer
+                Gathering?
               </h2>
             </div>
 
@@ -88,19 +82,25 @@ export default function LiveEventPollPage() {
                     key={opt.id}
                     onClick={() => setSelectedOption(opt.id)}
                     className={`p-4 rounded-card border transition-all cursor-pointer space-y-2 ${
-                      isSelected 
-                        ? 'border-[var(--accent)] bg-[var(--accent)]/[0.03]' 
+                      isSelected
+                        ? 'border-[var(--accent)] bg-[var(--accent)]/[0.03]'
                         : 'border-[var(--border)] hover:border-[var(--fg-muted)] bg-white'
                     }`}
                   >
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          isSelected ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
-                        }`}>
+                        <div
+                          className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                            isSelected
+                              ? 'border-[var(--accent)] bg-[var(--accent)]'
+                              : 'border-[var(--border)]'
+                          }`}
+                        >
                           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
-                        <span className={`font-medium ${isSelected ? 'text-[var(--fg)]' : 'text-[var(--fg-muted)]'}`}>
+                        <span
+                          className={`font-medium ${isSelected ? 'text-[var(--fg)]' : 'text-[var(--fg-muted)]'}`}
+                        >
                           {opt.title}
                         </span>
                       </div>
@@ -109,7 +109,7 @@ export default function LiveEventPollPage() {
 
                     {/* Progress Bar */}
                     <div className="h-2 w-full bg-[var(--bg-subtle)] rounded-full overflow-hidden border border-[var(--border)]/50">
-                      <div 
+                      <div
                         className={`h-full rounded-full transition-all duration-700 ${isSelected ? 'bg-[var(--accent)]' : 'bg-stone-400'}`}
                         style={{ width: `${opt.pct}%` }}
                       />
@@ -129,19 +129,23 @@ export default function LiveEventPollPage() {
           {/* Sidebar Admin Controls */}
           <aside className="lg:col-span-4 space-y-4">
             <div className="bg-white rounded-card border border-[var(--border)] p-6 space-y-4">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Host Admin Controls</h3>
-              <p className="text-xs text-[var(--fg-muted)]">Manage poll duration or publish results directly to the stage screen.</p>
-              
+              <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Host Admin Controls
+              </h3>
+              <p className="text-xs text-[var(--fg-muted)]">
+                Manage poll duration or publish results directly to the stage screen.
+              </p>
+
               <div className="space-y-2 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => alert('Results pushed to attendee screens!')}
                   className="w-full py-2.5 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"
                 >
                   Push Results to Feed
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => alert('Poll concluded.')}
                   className="w-full py-2.5 rounded-card border border-[var(--border)] text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
                 >
@@ -158,7 +162,9 @@ export default function LiveEventPollPage() {
               </div>
               <div className="text-xs space-y-1">
                 <p className="font-medium text-[var(--fg)]">Preferred Acoustic Venue</p>
-                <p className="text-[11px] text-[var(--fg-muted)]">Selected: Chelsea Conservatory (78% consensus)</p>
+                <p className="text-[11px] text-[var(--fg-muted)]">
+                  Selected: Chelsea Conservatory (78% consensus)
+                </p>
               </div>
             </div>
           </aside>

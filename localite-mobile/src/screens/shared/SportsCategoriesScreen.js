@@ -1,6 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ImageBackground, TextInput, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  TextInput,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function SportsCategoriesScreen({ navigation }) {
   return (
@@ -19,19 +28,22 @@ export default function SportsCategoriesScreen({ navigation }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} bounces={false}>
-        
         {/* Search & Filter */}
         <View style={styles.searchSection}>
           <View style={styles.searchBar}>
             <MaterialIcons name="search" size={20} color="#75777e" style={styles.searchIcon} />
-            <TextInput 
-              placeholder="Search disciplines..." 
+            <TextInput
+              placeholder="Search disciplines..."
               placeholderTextColor="#75777e"
               style={styles.searchInput}
             />
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterList}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterList}
+          >
             <TouchableOpacity style={[styles.filterChip, styles.filterChipActive]}>
               <Text style={[styles.filterText, styles.filterTextActive]}>ALL ACCESS</Text>
             </TouchableOpacity>
@@ -51,19 +63,18 @@ export default function SportsCategoriesScreen({ navigation }) {
         <View style={styles.heroSection}>
           <Text style={styles.heroSubtitle}>CURATED SELECTIONS</Text>
           <Text style={styles.heroTitle}>Refined Athletic Pursuits</Text>
-          <Text style={styles.heroDesc}>Discover a world where sporting excellence meets aesthetic grace. Our curated categories offer more than competition; they offer a lifestyle.</Text>
+          <Text style={styles.heroDesc}>
+            Discover a world where sporting excellence meets aesthetic grace. Our curated categories offer
+            more than competition; they offer a lifestyle.
+          </Text>
         </View>
 
         {/* Categories Grid */}
         <View style={styles.categoriesSection}>
-          
           {/* Tennis */}
-          <TouchableOpacity 
-            style={styles.largeCard}
-            onPress={() => {}}
-          >
-            <ImageBackground 
-              source={{ uri: 'https://via.placeholder.com/600x800' }} 
+          <TouchableOpacity style={styles.largeCard} onPress={() => {}}>
+            <ImageBackground
+              source={{ uri: 'https://via.placeholder.com/600x800' }}
               style={styles.cardBg}
               imageStyle={{ borderRadius: 12 }}
             >
@@ -82,8 +93,8 @@ export default function SportsCategoriesScreen({ navigation }) {
           <View style={styles.gridRow}>
             {/* Polo */}
             <TouchableOpacity style={styles.smallCard}>
-              <ImageBackground 
-                source={{ uri: 'https://via.placeholder.com/400x400' }} 
+              <ImageBackground
+                source={{ uri: 'https://via.placeholder.com/400x400' }}
                 style={styles.cardBg}
                 imageStyle={{ borderRadius: 12 }}
               >
@@ -96,8 +107,8 @@ export default function SportsCategoriesScreen({ navigation }) {
 
             {/* Golf */}
             <TouchableOpacity style={styles.smallCard}>
-              <ImageBackground 
-                source={{ uri: 'https://via.placeholder.com/400x400' }} 
+              <ImageBackground
+                source={{ uri: 'https://via.placeholder.com/400x400' }}
                 style={styles.cardBg}
                 imageStyle={{ borderRadius: 12 }}
               >
@@ -110,12 +121,9 @@ export default function SportsCategoriesScreen({ navigation }) {
           </View>
 
           {/* Cricket */}
-          <TouchableOpacity 
-            style={styles.mediumCard}
-            onPress={() => navigation.navigate('CricketDetail')}
-          >
-            <ImageBackground 
-              source={{ uri: 'https://via.placeholder.com/600x400' }} 
+          <TouchableOpacity style={styles.mediumCard} onPress={() => navigation.navigate('CricketDetail')}>
+            <ImageBackground
+              source={{ uri: 'https://via.placeholder.com/600x400' }}
               style={styles.cardBg}
               imageStyle={{ borderRadius: 12 }}
             >
@@ -125,16 +133,16 @@ export default function SportsCategoriesScreen({ navigation }) {
               </View>
             </ImageBackground>
           </TouchableOpacity>
-
         </View>
 
         {/* Quote Section */}
         <View style={styles.quoteSection}>
-          <MaterialIcons name="format-quote" size={48} color="#1A6B4A" style={{marginBottom: 16}} />
-          <Text style={styles.quoteText}>"Sport is the poetry of the body, a refined conversation between discipline and grace."</Text>
+          <MaterialIcons name="format-quote" size={48} color="#1A6B4A" style={{ marginBottom: 16 }} />
+          <Text style={styles.quoteText}>
+            "Sport is the poetry of the body, a refined conversation between discipline and grace."
+          </Text>
           <Text style={styles.quoteAuthor}>— LOCALITE SPORTS</Text>
         </View>
-
       </ScrollView>
 
       {/* Bottom Nav Simulation */}
@@ -145,7 +153,7 @@ export default function SportsCategoriesScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
           <MaterialIcons name="explore" size={24} color="#775a19" />
-          <Text style={[styles.navText, {color: '#775a19'}]}>DISCOVER</Text>
+          <Text style={[styles.navText, { color: '#775a19' }]}>DISCOVER</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
           <MaterialIcons name="leaderboard" size={24} color="#75777e" />

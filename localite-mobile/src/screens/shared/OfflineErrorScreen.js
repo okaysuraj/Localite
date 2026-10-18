@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Platform, Animated } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function OfflineErrorScreen() {
@@ -11,7 +11,7 @@ export default function OfflineErrorScreen() {
   const handleReconnect = () => {
     setIsReconnecting(true);
     setStatus('Attempting secure handshake...');
-    
+
     setTimeout(() => {
       setStatus('Connection failed. Retrying in 30s.');
       setIsReconnecting(false);
@@ -20,18 +20,18 @@ export default function OfflineErrorScreen() {
 
   return (
     <View style={styles.container}>
-      
       {/* Background Image Container */}
       <View style={StyleSheet.absoluteFill}>
-        <Image 
-          source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCxhTYPAoIzZKtPmCqLOYMMacZxuRetdQFEOhlRcsvmhQEWXlFobYMLY2B6Qn0eY8Jl00U6-rf9Gi_w_zwUKnRo_B59ne4DPxT_lFGmIoUwugNmR1E7lnNyEv0i6hex9uKPcCu5Z0Htqy2aa_XqDCAkZ3fqKHQiB6Qxs4USwFpLYqRGALbcnWUKSmPYWCLx2wE1YGAnDknmYxmKAe-z_bXsknO6nCipdzIHaOwQjwoSz49JHycp4NZEJQ' }}
+        <Image
+          source={{
+            uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCxhTYPAoIzZKtPmCqLOYMMacZxuRetdQFEOhlRcsvmhQEWXlFobYMLY2B6Qn0eY8Jl00U6-rf9Gi_w_zwUKnRo_B59ne4DPxT_lFGmIoUwugNmR1E7lnNyEv0i6hex9uKPcCu5Z0Htqy2aa_XqDCAkZ3fqKHQiB6Qxs4USwFpLYqRGALbcnWUKSmPYWCLx2wE1YGAnDknmYxmKAe-z_bXsknO6nCipdzIHaOwQjwoSz49JHycp4NZEJQ',
+          }}
           style={styles.bgImage}
         />
         <View style={styles.fogOverlay} />
       </View>
 
       <SafeAreaView style={styles.safeArea}>
-        
         <View style={styles.content}>
           {/* Branding Anchor */}
           <View style={styles.brandContainer}>
@@ -42,22 +42,21 @@ export default function OfflineErrorScreen() {
           <View style={styles.headerContainer}>
             <Text style={styles.title}>A Moment of Silence</Text>
             <Text style={styles.desc}>
-              Our digital concierge is momentarily indisposed. We are working to restore the connection to your circle.
+              Our digital concierge is momentarily indisposed. We are working to restore the connection to
+              your circle.
             </Text>
           </View>
 
           {/* Action Cluster */}
           <View style={styles.actionContainer}>
-            <TouchableOpacity 
-              style={[styles.primaryBtn, isReconnecting && styles.primaryBtnDisabled]} 
+            <TouchableOpacity
+              style={[styles.primaryBtn, isReconnecting && styles.primaryBtnDisabled]}
               onPress={handleReconnect}
               disabled={isReconnecting}
             >
-              <Text style={styles.primaryBtnText}>
-                {isReconnecting ? 'RECONNECTING...' : 'RECONNECT'}
-              </Text>
+              <Text style={styles.primaryBtnText}>{isReconnecting ? 'RECONNECTING...' : 'RECONNECT'}</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.secondaryBtn} onPress={() => navigation.goBack()}>
               <MaterialIcons name="offline-pin" size={18} color="#775a19" />
               <Text style={styles.secondaryBtnText}>VIEW SAVED PASSES</Text>
@@ -72,18 +71,20 @@ export default function OfflineErrorScreen() {
               <Text style={styles.statusText}>{status}</Text>
             </View>
           </View>
-
         </View>
 
         {/* Contextual Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerLabel}>MEMBERSHIP ID: LV-992-04</Text>
           <View style={styles.footerLinks}>
-            <TouchableOpacity><Text style={styles.footerLinkText}>Privacy Concierge</Text></TouchableOpacity>
-            <TouchableOpacity><Text style={styles.footerLinkText}>Support Lounge</Text></TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.footerLinkText}>Privacy Concierge</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.footerLinkText}>Support Lounge</Text>
+            </TouchableOpacity>
           </View>
         </View>
-
       </SafeAreaView>
     </View>
   );
@@ -101,8 +102,8 @@ const styles = StyleSheet.create({
   },
   fogOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(251, 249, 248, 0.7)', 
-    // In a real app this would be a linear gradient 
+    backgroundColor: 'rgba(251, 249, 248, 0.7)',
+    // In a real app this would be a linear gradient
   },
   safeArea: {
     flex: 1,
@@ -234,5 +235,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#44474d',
     letterSpacing: 1,
-  }
+  },
 });

@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   User,
   MapPin,
   Fire,
-  GearSix,
   Check,
   Star,
-  ChatCircle,
   TrendUp,
   ShieldCheck,
   Trophy,
   Lightning,
   PencilSimple,
   Sparkle,
-  Phone,
   ArrowRight,
 } from '@phosphor-icons/react';
 import PublicProfileModal from '../../components/PublicProfileModal';
-import { API_BASE_URL } from '../../services/api';
+import { API_URL as API_BASE_URL } from '../../config';
+import { request } from '../../api/apiClient';
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({
@@ -47,19 +45,9 @@ const ProfilePage = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
-    setLoading(true);
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(API_BASE_URL + '/users/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
+  const fetchProfile = () =>
+    request('/users/me', { fallback: null }).then(async (data) => {
+      if (data) {
         setProfile({
           username: data.username || '',
           email: data.email || '',
@@ -86,23 +74,14 @@ const ProfilePage = () => {
           xp: data.xp || 0,
           badges: data.badges || [],
         });
-
-        const reviewRes = await fetch(
-          `${API_BASE_URL}/users/${data.id}/reviews`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        if (reviewRes.ok) {
-          setReviews(await reviewRes.json());
-        }
+        setReviews(await request(`/users/${data.id}/reviews`, { fallback: [] }));
       }
-    } catch (err) {
-      console.error(err);
-    } finally {
       setLoading(false);
-    }
-  };
+    });
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -145,13 +124,10 @@ const ProfilePage = () => {
     if (window.confirm('Boost your profile for 30 days to increase discovery?')) {
       const token = localStorage.getItem('token');
       try {
-        const res = await fetch(
-          `${API_BASE_URL}/monetization/boost-profile`,
-          {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await fetch(`${API_BASE_URL}/monetization/boost-profile`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (res.ok) {
           alert('Success! Your profile is now boosted.');
           fetchProfile();
@@ -167,13 +143,10 @@ const ProfilePage = () => {
   const handleVerifyIdentity = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/users/verify-identity`,
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/users/verify-identity`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (res.ok) {
         alert('Identity verified successfully.');
         fetchProfile();
@@ -190,17 +163,14 @@ const ProfilePage = () => {
     }
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/users/verify-phone`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ phoneNumber: profile.phoneNumber }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/users/verify-phone`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phoneNumber: profile.phoneNumber }),
+      });
       if (res.ok) {
         alert('Phone verified successfully.');
         fetchProfile();
@@ -215,9 +185,7 @@ const ProfilePage = () => {
       <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-mono uppercase tracking-wider text-fg-muted">
-            Loading profile...
-          </span>
+          <span className="text-xs font-mono uppercase tracking-wider text-fg-muted">Loading profile...</span>
         </div>
       </div>
     );
@@ -257,9 +225,7 @@ const ProfilePage = () => {
             <button
               onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-btn text-xs font-mono tracking-wide transition-colors ${
-                isEditing
-                  ? 'bg-accent text-white hover:opacity-90'
-                  : 'bg-fg text-white hover:bg-fg/90'
+                isEditing ? 'bg-accent text-white hover:opacity-90' : 'bg-fg text-white hover:bg-fg/90'
               }`}
             >
               {isEditing ? (
@@ -333,9 +299,7 @@ const ProfilePage = () => {
           {/* Stats Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-6 mt-6 border-t border-border">
             <div className="bg-bg-subtle border border-border/60 rounded-card p-3.5 text-center">
-              <span className="text-xl font-display font-semibold text-fg">
-                {profile.trustScore}
-              </span>
+              <span className="text-xl font-display font-semibold text-fg">{profile.trustScore}</span>
               <p className="text-[11px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">
                 Trust Score
               </p>
@@ -350,20 +314,12 @@ const ProfilePage = () => {
               </p>
             </div>
             <div className="bg-bg-subtle border border-border/60 rounded-card p-3.5 text-center">
-              <span className="text-xl font-display font-semibold text-fg">
-                {profile.eventsHosted}
-              </span>
-              <p className="text-[11px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">
-                Hosted
-              </p>
+              <span className="text-xl font-display font-semibold text-fg">{profile.eventsHosted}</span>
+              <p className="text-[11px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">Hosted</p>
             </div>
             <div className="bg-bg-subtle border border-border/60 rounded-card p-3.5 text-center">
-              <span className="text-xl font-display font-semibold text-fg">
-                {profile.eventsAttended}
-              </span>
-              <p className="text-[11px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">
-                Attended
-              </p>
+              <span className="text-xl font-display font-semibold text-fg">{profile.eventsAttended}</span>
+              <p className="text-[11px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">Attended</p>
             </div>
             <div className="bg-bg-subtle border border-border/60 rounded-card p-3.5 text-center col-span-2 sm:col-span-1">
               <div className="flex items-center justify-center gap-1 text-xl font-display font-semibold text-accent">
@@ -382,9 +338,7 @@ const ProfilePage = () => {
           {/* Bio and Interests - Left 2 Columns */}
           <div className="md:col-span-2 space-y-6">
             <div className="bg-white border border-border rounded-card p-6 md:p-8 space-y-6">
-              <h3 className="text-lg font-display font-semibold text-fg tracking-tight">
-                About & Interests
-              </h3>
+              <h3 className="text-lg font-display font-semibold text-fg tracking-tight">About & Interests</h3>
 
               {/* Bio */}
               <div>
@@ -557,9 +511,7 @@ const ProfilePage = () => {
                 <h3 className="text-lg font-display font-semibold text-fg tracking-tight">
                   Host & Peer Reviews
                 </h3>
-                <span className="text-xs font-mono text-fg-muted">
-                  {reviews.length} total
-                </span>
+                <span className="text-xs font-mono text-fg-muted">{reviews.length} total</span>
               </div>
 
               {reviews.length === 0 ? (
@@ -570,9 +522,7 @@ const ProfilePage = () => {
                     <div key={review.id} className="py-3.5 first:pt-0 last:pb-0 space-y-1.5">
                       <div className="flex justify-between items-center">
                         <button
-                          onClick={() =>
-                            review.reviewer && setSelectedUserId(review.reviewer.id)
-                          }
+                          onClick={() => review.reviewer && setSelectedUserId(review.reviewer.id)}
                           className="text-xs font-mono font-medium text-fg hover:text-accent transition-colors"
                         >
                           @{review.reviewer?.username || 'anonymous'}
@@ -583,9 +533,7 @@ const ProfilePage = () => {
                               key={i}
                               size={12}
                               className={
-                                i < review.rating
-                                  ? 'text-accent fill-accent'
-                                  : 'text-border fill-border'
+                                i < review.rating ? 'text-accent fill-accent' : 'text-border fill-border'
                               }
                             />
                           ))}
@@ -602,9 +550,7 @@ const ProfilePage = () => {
           {/* Verification & Accounts - Right Column */}
           <div className="space-y-6">
             <div className="bg-white border border-border rounded-card p-6 space-y-5">
-              <h3 className="text-lg font-display font-semibold text-fg tracking-tight">
-                Verification
-              </h3>
+              <h3 className="text-lg font-display font-semibold text-fg tracking-tight">Verification</h3>
 
               {/* Phone verification */}
               <div className="space-y-2">
@@ -632,17 +578,13 @@ const ProfilePage = () => {
                   </div>
                 ) : (
                   <div className="flex items-center justify-between p-3 rounded-card bg-bg-subtle border border-border/60">
-                    <span className="text-xs font-mono text-fg">
-                      {profile.phoneNumber || 'Not provided'}
-                    </span>
+                    <span className="text-xs font-mono text-fg">{profile.phoneNumber || 'Not provided'}</span>
                     {profile.isPhoneVerified ? (
                       <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent-subtle text-accent border border-accent/20">
                         Verified
                       </span>
                     ) : (
-                      <span className="text-[10px] font-mono text-fg-faint">
-                        Unverified
-                      </span>
+                      <span className="text-[10px] font-mono text-fg-faint">Unverified</span>
                     )}
                   </div>
                 )}
@@ -675,9 +617,7 @@ const ProfilePage = () => {
 
             {/* Social Links */}
             <div className="bg-white border border-border rounded-card p-6 space-y-4">
-              <h3 className="text-lg font-display font-semibold text-fg tracking-tight">
-                Social Accounts
-              </h3>
+              <h3 className="text-lg font-display font-semibold text-fg tracking-tight">Social Accounts</h3>
 
               <div>
                 <label className="block text-xs font-mono uppercase tracking-wider text-fg-muted mb-1.5">
@@ -694,7 +634,9 @@ const ProfilePage = () => {
                   />
                 ) : (
                   <div className="p-2.5 rounded-card bg-bg-subtle border border-border/60 text-xs font-mono text-fg">
-                    {profile.instagramHandle ? `@${profile.instagramHandle.replace('@', '')}` : 'Not connected'}
+                    {profile.instagramHandle
+                      ? `@${profile.instagramHandle.replace('@', '')}`
+                      : 'Not connected'}
                   </div>
                 )}
               </div>
@@ -724,10 +666,7 @@ const ProfilePage = () => {
       </div>
 
       {selectedUserId && (
-        <PublicProfileModal
-          userId={selectedUserId}
-          onClose={() => setSelectedUserId(null)}
-        />
+        <PublicProfileModal userId={selectedUserId} onClose={() => setSelectedUserId(null)} />
       )}
     </div>
   );

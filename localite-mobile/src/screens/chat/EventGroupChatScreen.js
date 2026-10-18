@@ -1,8 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform, KeyboardAvoidingView, Keyboard
+import { useState, useEffect, useRef } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEventMessages, sendEventMessage, getEventById } from '../../services/api';
 import { useWebSocket } from '../../context/WebSocketContext';
@@ -14,7 +24,9 @@ export default function EventGroupChatScreen({ route, navigation }) {
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [eventData, setEventData] = useState(route.params?.event || { title: 'Loading...', membersOnline: 0 });
+  const [eventData, setEventData] = useState(
+    route.params?.event || { title: 'Loading...', membersOnline: 0 }
+  );
   const { stompClient, isConnected } = useWebSocket();
   const { currentUser } = useAuth();
   const scrollViewRef = useRef();
@@ -41,7 +53,7 @@ export default function EventGroupChatScreen({ route, navigation }) {
       subscription = stompClient.subscribe(`/topic/events/${eventId}`, (msgFrame) => {
         const newMsg = JSON.parse(msgFrame.body);
         setMessages((prev) => {
-          if (prev.find(m => m.id === newMsg.id)) return prev;
+          if (prev.find((m) => m.id === newMsg.id)) return prev;
           return [...prev, newMsg];
         });
       });
@@ -59,7 +71,7 @@ export default function EventGroupChatScreen({ route, navigation }) {
     try {
       const sentMsg = await sendEventMessage(eventId, content);
       setMessages((prev) => {
-        if (prev.find(m => m.id === sentMsg.id)) return prev;
+        if (prev.find((m) => m.id === sentMsg.id)) return prev;
         return [...prev, sentMsg];
       });
     } catch (error) {
@@ -80,24 +92,38 @@ export default function EventGroupChatScreen({ route, navigation }) {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
               <Ionicons name="arrow-back" size={24} color="#000000" />
             </TouchableOpacity>
-            
+
             <View style={styles.avatarGroup}>
-              <Image source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD6YM4gYgEQOeArG7LRZUu9H8YqE8q6AHLTvek7WwHUySITQ7buzF6qOUizIB_QDiJW77F_RA6hLHA-vF1YvMWCbOm-wq3zJKdLzzrYJiH_L7BvkVWE2iAPhdXTaJtEtL8lwRouWeFIEVSyvX9S-9AR5X9IhRAhybqFA_uNfenUqghwkrpexnMbAX1PtZpjTQoSkkZtw3TVjrZHJ862L4aaz_EPOXuEHLykwkIK7BCNDkT9OZft0Spovw' }} style={[styles.groupAvatar, { zIndex: 3 }]} />
-              <Image source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-wUWWPiUJFbdWTbfAKzwJsZJeo0ZfNIgSV6cKtLweWcEFqegsmE6B4Gubqho_xAPSc-CBYnGgYYMbt3Jnumg5Gwz47XxMXn53WyOvrrWoPCjU6y5jlahMm7YsxQffdl6JW8U2PSfc1GZ_V4yWriZzjj2yUPctpLZyt7rNM7U-S8ME3yMo1C84mEeqgvkTAY1ovKsQ92xuConSR4153ng5e5ZfyjJV2Vq6jEu1oU0PyNGUDqlqau0hNQ' }} style={[styles.groupAvatar, { zIndex: 2, marginLeft: -12 }]} />
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD6YM4gYgEQOeArG7LRZUu9H8YqE8q6AHLTvek7WwHUySITQ7buzF6qOUizIB_QDiJW77F_RA6hLHA-vF1YvMWCbOm-wq3zJKdLzzrYJiH_L7BvkVWE2iAPhdXTaJtEtL8lwRouWeFIEVSyvX9S-9AR5X9IhRAhybqFA_uNfenUqghwkrpexnMbAX1PtZpjTQoSkkZtw3TVjrZHJ862L4aaz_EPOXuEHLykwkIK7BCNDkT9OZft0Spovw',
+                }}
+                style={[styles.groupAvatar, { zIndex: 3 }]}
+              />
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-wUWWPiUJFbdWTbfAKzwJsZJeo0ZfNIgSV6cKtLweWcEFqegsmE6B4Gubqho_xAPSc-CBYnGgYYMbt3Jnumg5Gwz47XxMXn53WyOvrrWoPCjU6y5jlahMm7YsxQffdl6JW8U2PSfc1GZ_V4yWriZzjj2yUPctpLZyt7rNM7U-S8ME3yMo1C84mEeqgvkTAY1ovKsQ92xuConSR4153ng5e5ZfyjJV2Vq6jEu1oU0PyNGUDqlqau0hNQ',
+                }}
+                style={[styles.groupAvatar, { zIndex: 2, marginLeft: -12 }]}
+              />
               <View style={[styles.groupAvatarMore, { zIndex: 1, marginLeft: -12 }]}>
                 <Text style={styles.groupAvatarMoreText}>+22</Text>
               </View>
             </View>
 
             <View style={styles.titleContainer}>
-              <Text style={styles.titleText} numberOfLines={1}>{eventData.title}</Text>
+              <Text style={styles.titleText} numberOfLines={1}>
+                {eventData.title}
+              </Text>
               <View style={styles.statusRow}>
                 <View style={[styles.statusDot, { backgroundColor: isConnected ? '#22c55e' : '#ef4444' }]} />
-                <Text style={styles.statusText}>{isConnected ? 'LIVE' : 'DISCONNECTED'} • {eventData.membersOnline} MEMBERS</Text>
+                <Text style={styles.statusText}>
+                  {isConnected ? 'LIVE' : 'DISCONNECTED'} • {eventData.membersOnline} MEMBERS
+                </Text>
               </View>
             </View>
           </View>
-          
+
           <View style={styles.appBarRight}>
             <TouchableOpacity style={styles.iconBtn}>
               <Ionicons name="search" size={24} color="#75777e" />
@@ -109,11 +135,8 @@ export default function EventGroupChatScreen({ route, navigation }) {
         </View>
       </SafeAreaView>
 
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView 
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView
           style={styles.chatArea}
           contentContainerStyle={styles.chatContent}
           showsVerticalScrollIndicator={false}
@@ -122,7 +145,7 @@ export default function EventGroupChatScreen({ route, navigation }) {
         >
           {messages.map((msg, idx) => {
             const isMe = msg.sender === currentUser?.username || msg.sender === currentUser?.email;
-            
+
             if (isMe) {
               return (
                 <View key={idx} style={styles.messageRowUser}>
@@ -132,16 +155,28 @@ export default function EventGroupChatScreen({ route, navigation }) {
                       <Text style={styles.messageTextUser}>{msg.content}</Text>
                     </View>
                   </View>
-                  <Image source={{ uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4` }} style={styles.messageAvatarRight} />
+                  <Image
+                    source={{
+                      uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4`,
+                    }}
+                    style={styles.messageAvatarRight}
+                  />
                 </View>
               );
             }
 
             return (
               <View key={idx} style={styles.messageRowPartner}>
-                <Image source={{ uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4` }} style={styles.messageAvatar} />
+                <Image
+                  source={{
+                    uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4`,
+                  }}
+                  style={styles.messageAvatar}
+                />
                 <View style={styles.bubbleContainerPartner}>
-                  <Text style={styles.senderName}>{msg.sender} • {formatTime(msg.sentAt)}</Text>
+                  <Text style={styles.senderName}>
+                    {msg.sender} • {formatTime(msg.sentAt)}
+                  </Text>
                   <View style={styles.bubblePartner}>
                     <Text style={styles.messageTextPartner}>{msg.content}</Text>
                   </View>
@@ -157,7 +192,7 @@ export default function EventGroupChatScreen({ route, navigation }) {
               <Ionicons name="add" size={24} color="#75777e" />
             </TouchableOpacity>
             <View style={styles.inputContainer}>
-              <TextInput 
+              <TextInput
                 style={styles.textInput}
                 placeholder="Craft a message..."
                 placeholderTextColor="#75777e"
@@ -384,7 +419,7 @@ const styles = StyleSheet.create({
   },
   attachedImage: {
     width: '100%',
-    aspectRatio: 16/9,
+    aspectRatio: 16 / 9,
     borderRadius: 12,
   },
   imageCaption: {
@@ -501,5 +536,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-  }
+  },
 });

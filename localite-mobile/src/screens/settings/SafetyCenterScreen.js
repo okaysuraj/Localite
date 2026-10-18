@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Modal, Alert 
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  Alert,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function SafetyCenterScreen({ navigation }) {
@@ -11,7 +19,7 @@ export default function SafetyCenterScreen({ navigation }) {
 
   const handleSosConfirm = () => {
     setSosModalVisible(false);
-    Alert.alert("SOS Triggered", "Emergency contacts and local authorities have been notified.");
+    Alert.alert('SOS Triggered', 'Emergency contacts and local authorities have been notified.');
   };
 
   return (
@@ -26,20 +34,24 @@ export default function SafetyCenterScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-        
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Hero Section / SOS Action */}
         <View style={styles.heroCard}>
           <View style={styles.heroTextContainer}>
             <Text style={styles.heroSubtitle}>PROTECTION PROTOCOL</Text>
             <Text style={styles.heroTitle}>Safety Center</Text>
             <Text style={styles.heroDesc}>
-              Your security is our highest priority. Access immediate assistance and manage your circle of protection.
+              Your security is our highest priority. Access immediate assistance and manage your circle of
+              protection.
             </Text>
           </View>
           <View style={styles.sosButtonContainer}>
-            <TouchableOpacity 
-              style={styles.sosButton} 
+            <TouchableOpacity
+              style={styles.sosButton}
               onPress={() => setSosModalVisible(true)}
               activeOpacity={0.8}
             >
@@ -83,7 +95,8 @@ export default function SafetyCenterScreen({ navigation }) {
           <View style={styles.infoBanner}>
             <MaterialIcons name="info" size={20} color="#775a19" />
             <Text style={styles.infoBannerText}>
-              Your circle will be automatically notified if you trigger an SOS alert or miss a scheduled check-in.
+              Your circle will be automatically notified if you trigger an SOS alert or miss a scheduled
+              check-in.
             </Text>
           </View>
         </View>
@@ -119,13 +132,12 @@ export default function SafetyCenterScreen({ navigation }) {
         </View>
 
         {/* Report an Issue (Button to navigate) */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.reportBtn}
           onPress={() => navigation.navigate('ReportUser')} // Navigate to report screen
         >
           <Text style={styles.reportBtnText}>REPORT AN ISSUE / MEMBER</Text>
         </TouchableOpacity>
-
       </ScrollView>
 
       {/* SOS Modal */}
@@ -142,7 +154,8 @@ export default function SafetyCenterScreen({ navigation }) {
             </View>
             <Text style={styles.modalTitle}>Initiate SOS?</Text>
             <Text style={styles.modalDesc}>
-              This will immediately notify your safety circle and dispatch our 24/7 security concierge to your current GPS location.
+              This will immediately notify your safety circle and dispatch our 24/7 security concierge to your
+              current GPS location.
             </Text>
             <TouchableOpacity style={styles.confirmSosBtn} onPress={handleSosConfirm}>
               <Text style={styles.confirmSosBtnText}>CONFIRM EMERGENCY</Text>
@@ -153,7 +166,6 @@ export default function SafetyCenterScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-
     </View>
   );
 }
@@ -473,5 +485,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#75777e',
     letterSpacing: 1,
-  }
+  },
 });

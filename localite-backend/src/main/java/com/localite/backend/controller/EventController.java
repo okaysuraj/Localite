@@ -7,7 +7,8 @@ import com.localite.backend.model.User;
 import com.localite.backend.repository.EventRepository;
 import com.localite.backend.repository.RsvpRepository;
 import com.localite.backend.repository.UserRepository;
-import com.localite.backend.service.EmailService;
+import com.localite.backend.service.EventDiscoveryService;
+import com.localite.backend.service.EventScheduleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/events")
@@ -26,13 +26,16 @@ public class EventController {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final RsvpRepository rsvpRepository;
-    private final EmailService emailService;
+    private final EventDiscoveryService eventDiscoveryService;
+    private final EventScheduleService eventScheduleService;
 
-    public EventController(EventRepository eventRepository, UserRepository userRepository, RsvpRepository rsvpRepository, EmailService emailService) {
+    public EventController(EventRepository eventRepository, UserRepository userRepository, RsvpRepository rsvpRepository,
+                           EventDiscoveryService eventDiscoveryService, EventScheduleService eventScheduleService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.rsvpRepository = rsvpRepository;
-        this.emailService = emailService;
+        this.eventDiscoveryService = eventDiscoveryService;
+        this.eventScheduleService = eventScheduleService;
     }
 
     @GetMapping
@@ -45,37 +48,7 @@ public class EventController {
             @RequestParam(required = false) String eventType,
             @RequestParam(required = false) String priceFilter) {
         
-        List<Event> events;
-        if (lat != null && lng != null) {
-            events = eventRepository.findWithinRadius(lat, lng, radius);
-        } else {
-            events = eventRepository.findAll();
-        }
-        
-        return events.stream()
-            .filter(e -> category == null || category.isEmpty() || category.equalsIgnoreCase("All") || category.equalsIgnoreCase(e.getCategory()))
-            .filter(e -> eventType == null || eventType.isEmpty() || eventType.equalsIgnoreCase(e.getEventType()))
-            .filter(e -> {
-                if (priceFilter == null || priceFilter.isEmpty()) return true;
-                double cost = e.getCost() != null ? e.getCost() : 0.0;
-                if (priceFilter.equalsIgnoreCase("Free")) return cost == 0.0;
-                if (priceFilter.equalsIgnoreCase("Paid")) return cost > 0.0;
-                return true;
-            })
-            .filter(e -> {
-                if (timeFilter == null || timeFilter.isEmpty() || e.getDate() == null) return true;
-                java.time.LocalDate eventDate = e.getDate().toLocalDate();
-                java.time.LocalDate now = java.time.LocalDate.now();
-                if (timeFilter.equalsIgnoreCase("today")) {
-                    return eventDate.equals(now);
-                } else if (timeFilter.equalsIgnoreCase("weekend")) {
-                    java.time.DayOfWeek day = eventDate.getDayOfWeek();
-                    return day == java.time.DayOfWeek.SATURDAY || day == java.time.DayOfWeek.SUNDAY;
-                }
-                return true;
-            })
-            .sorted((e1, e2) -> Boolean.compare(e2.isHighlighted(), e1.isHighlighted())) // Highlighted first
-            .collect(Collectors.toList());
+        return eventDiscoveryService.findEvents(category, lat, lng, radius, timeFilter, eventType, priceFilter);
     }
 
     @GetMapping("/{eventId}")
@@ -110,9 +83,8 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody Event event, Principal principal) {
-        if (principal != null) {
-            userRepository.findByFirebaseUid(principal.getName()).ifPresent(event::setHost);
-        }
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        userRepository.findByFirebaseUid(principal.getName()).ifPresent(event::setHost);
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
@@ -122,52 +94,7 @@ public class EventController {
             userRepository.save(user);
         }
         
-        if (event.getRecurrence() != null && !event.getRecurrence().equals("NONE") && event.getRecurrenceEndDate() != null) {
-            String seriesId = java.util.UUID.randomUUID().toString();
-            event.setSeriesId(seriesId);
-            
-            java.time.LocalDateTime currentDate = event.getDate();
-            java.time.LocalDateTime endDate = event.getRecurrenceEndDate();
-            
-            int maxOccurrences = 24; // Limit to 24 instances
-            int count = 0;
-            
-            while (!currentDate.isAfter(endDate) && count < maxOccurrences) {
-                Event newEvent = new Event();
-                newEvent.setHost(event.getHost());
-                newEvent.setTitle(event.getTitle());
-                newEvent.setDescription(event.getDescription());
-                newEvent.setCategory(event.getCategory());
-                newEvent.setEventType(event.getEventType());
-                newEvent.setCost(event.getCost());
-                newEvent.setRules(event.getRules());
-                newEvent.setSkillLevel(event.getSkillLevel());
-                newEvent.setLocation(event.getLocation());
-                newEvent.setAttendees(0);
-                newEvent.setMaxAttendees(event.getMaxAttendees());
-                newEvent.setImageUrl(event.getImageUrl());
-                newEvent.setLatitude(event.getLatitude());
-                newEvent.setLongitude(event.getLongitude());
-                newEvent.setSeriesId(seriesId);
-                newEvent.setDate(currentDate);
-                
-                eventRepository.save(newEvent);
-                
-                if (event.getRecurrence().equals("DAILY")) {
-                    currentDate = currentDate.plusDays(1);
-                } else if (event.getRecurrence().equals("WEEKLY")) {
-                    currentDate = currentDate.plusWeeks(1);
-                } else if (event.getRecurrence().equals("MONTHLY")) {
-                    currentDate = currentDate.plusMonths(1);
-                } else {
-                    break;
-                }
-                count++;
-            }
-            return ResponseEntity.ok(event); // Return the template or original event
-        } else {
-            return ResponseEntity.ok(eventRepository.save(event));
-        }
+        return ResponseEntity.ok(eventScheduleService.saveEvent(event));
     }
 
     @GetMapping("/recommended")
@@ -175,50 +102,9 @@ public class EventController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!userOpt.isPresent()) return ResponseEntity.notFound().build();
+        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();
         
-        User user = userOpt.get();
-        List<Event> allEvents = eventRepository.findAll();
-        
-        // Simple Scoring Algorithm:
-        // +3 points if category matches sportsInterests (string contains)
-        // +2 points if location matches neighborhood
-        // Sort descending by score
-        
-        List<Event> recommended = allEvents.stream().map(event -> {
-            int score = 0;
-            if (user.getSportsInterests() != null && event.getCategory() != null) {
-                if (user.getSportsInterests().toLowerCase().contains(event.getCategory().toLowerCase())) {
-                    score += 3;
-                }
-            }
-            if (user.getNeighborhood() != null && event.getLocation() != null) {
-                if (event.getLocation().toLowerCase().contains(user.getNeighborhood().toLowerCase())) {
-                    score += 2;
-                }
-            }
-            
-            Map<String, Object> map = new HashMap<>();
-            map.put("event", event);
-            map.put("score", score);
-            return map;
-        })
-        .filter(m -> (Integer)m.get("score") > 0)
-        .sorted((m1, m2) -> {
-            Event e1 = (Event) m1.get("event");
-            Event e2 = (Event) m2.get("event");
-            if (e1.isHighlighted() && !e2.isHighlighted()) return -1;
-            if (!e1.isHighlighted() && e2.isHighlighted()) return 1;
-            return Integer.compare((Integer)m2.get("score"), (Integer)m1.get("score"));
-        })
-        .map(m -> m.get("event"))
-        .map(e -> {
-            // Need to wrap it as Object or return the Event itself
-            return (Event) e;
-        })
-        .collect(Collectors.toList());
-
-        return ResponseEntity.ok(recommended);
+        return ResponseEntity.ok(eventDiscoveryService.recommendEvents(userOpt.get()));
     }
 
     @PostMapping("/{eventId}/rsvp")
@@ -256,15 +142,6 @@ public class EventController {
             // Save RSVP
             rsvpRepository.save(rsvp);
             
-            // Trigger email notification to host here
-            if (event.getHost() != null) {
-                emailService.sendRsvpNotification(
-                    event.getHost().getEmail(),
-                    event.getTitle(),
-                    user.getUsername() + " (Status: " + rsvp.getStatus() + ")"
-                );
-            }
-            
             return ResponseEntity.ok("Successfully RSVP'd with status: " + rsvp.getStatus());
         }
         
@@ -276,7 +153,7 @@ public class EventController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!userOpt.isPresent()) return ResponseEntity.notFound().build();
+        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();
 
         Optional<Rsvp> rsvpOpt = rsvpRepository.findByEventIdAndUserId(eventId, userOpt.get().getId());
         if (rsvpOpt.isPresent()) {
@@ -302,7 +179,7 @@ public class EventController {
             }
 
             Optional<Rsvp> rsvpOpt = rsvpRepository.findByTicketId(ticketId);
-            if (!rsvpOpt.isPresent() || !rsvpOpt.get().getEvent().getId().equals(eventId)) {
+            if (rsvpOpt.isEmpty() || !rsvpOpt.get().getEvent().getId().equals(eventId)) {
                 return ResponseEntity.badRequest().body("Invalid ticket for this event");
             }
 

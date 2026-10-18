@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { triggerPanic } from '../../services/api';
-import { 
-  X, 
-  MapPin, 
-  Warning, 
-  PhoneCall, 
-  ChatTeardropText, 
-  FirstAid, 
-  ShieldCheck, 
+import {
+  X,
+  MapPin,
+  Warning,
+  PhoneCall,
+  ChatTeardropText,
+  FirstAid,
+  ShieldCheck,
   BatteryHigh,
-  Info
+  Info,
 } from '@phosphor-icons/react';
 
 export default function EmergencySOSPage() {
@@ -85,9 +85,11 @@ export default function EmergencySOSPage() {
         <div className="flex items-center gap-3">
           <span className="text-lg font-semibold tracking-tight text-white">Localite</span>
           <span className="text-white/30">/</span>
-          <span className="text-xs font-semibold uppercase tracking-widest text-rose-400">Emergency Portal</span>
+          <span className="text-xs font-semibold uppercase tracking-widest text-rose-400">
+            Emergency Portal
+          </span>
         </div>
-        <button 
+        <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 px-4 py-2 rounded-card border border-white/15 hover:bg-white/5 transition-all text-xs font-medium text-white/80"
         >
@@ -98,7 +100,6 @@ export default function EmergencySOSPage() {
 
       {/* Main Grid Canvas */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10">
-        
         {/* Left Column: Precise Location & Details */}
         <div className="hidden lg:flex flex-col lg:col-span-4 gap-6">
           <div className="bg-[#181A1D] border border-white/10 p-6 rounded-card shadow-sm">
@@ -106,7 +107,7 @@ export default function EmergencySOSPage() {
               <MapPin size={16} weight="fill" />
               <span>Current GPS Location</span>
             </div>
-            
+
             <div className="relative w-full h-44 rounded-card overflow-hidden mb-5 border border-white/10 bg-[#22262B] flex items-center justify-center">
               <div className="absolute inset-0 opacity-25 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
               <div className="relative z-10 w-10 h-10 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg animate-pulse">
@@ -117,19 +118,25 @@ export default function EmergencySOSPage() {
                 Live Triangulated
               </div>
             </div>
-            
+
             <div className="space-y-3 text-xs">
               <div>
-                <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">Approximate Street</p>
+                <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">
+                  Approximate Street
+                </p>
                 <p className="text-sm font-medium text-white">Connaught Place, Inner Circle</p>
               </div>
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5">
                 <div>
-                  <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">Latitude</p>
+                  <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">
+                    Latitude
+                  </p>
                   <p className="font-mono text-white/80 text-xs">28.6315° N</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">Longitude</p>
+                  <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">
+                    Longitude
+                  </p>
                   <p className="font-mono text-white/80 text-xs">77.2167° E</p>
                 </div>
               </div>
@@ -137,16 +144,22 @@ export default function EmergencySOSPage() {
           </div>
 
           <div className="bg-[#181A1D] border border-white/10 p-5 rounded-card border-l-2 border-l-rose-500">
-            <p className="text-[11px] font-semibold text-white uppercase tracking-wider mb-3">Tethered Contacts Notified</p>
+            <p className="text-[11px] font-semibold text-white uppercase tracking-wider mb-3">
+              Tethered Contacts Notified
+            </p>
             <div className="flex -space-x-2 mb-3">
               {['JT', 'EV', 'AK', '+2'].map((init, i) => (
-                <div key={i} className="w-8 h-8 rounded-full border border-[#181A1D] bg-[#2B3037] text-white flex items-center justify-center text-[10px] font-bold">
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full border border-[#181A1D] bg-[#2B3037] text-white flex items-center justify-center text-[10px] font-bold"
+                >
                   {init}
                 </div>
               ))}
             </div>
             <p className="text-[11px] text-white/60 leading-relaxed">
-              Contacts will instantly receive your coordinates and high-frequency live tracking link once triggered.
+              Contacts will instantly receive your coordinates and high-frequency live tracking link once
+              triggered.
             </p>
           </div>
         </div>
@@ -156,12 +169,13 @@ export default function EmergencySOSPage() {
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-semibold text-white mb-2">Emergency SOS</h1>
             <p className="text-xs md:text-sm text-white/70 max-w-xs mx-auto leading-relaxed">
-              Press and hold the button for 3 seconds to broadcast an urgent alert and summon on-site response.
+              Press and hold the button for 3 seconds to broadcast an urgent alert and summon on-site
+              response.
             </p>
           </div>
 
           {/* The Hold-to-SOS Button */}
-          <div 
+          <div
             className="relative cursor-pointer select-none group touch-none"
             onMouseDown={startHold}
             onMouseUp={cancelHold}
@@ -170,22 +184,42 @@ export default function EmergencySOSPage() {
             onTouchEnd={cancelHold}
           >
             {/* Pulsing ring */}
-            <div className={`absolute inset-0 rounded-full bg-rose-600/20 transition-all ${isHolding ? 'scale-125 animate-ping' : ''}`}></div>
-            
+            <div
+              className={`absolute inset-0 rounded-full bg-rose-600/20 transition-all ${isHolding ? 'scale-125 animate-ping' : ''}`}
+            ></div>
+
             {/* Main Button */}
-            <div className={`relative w-56 h-56 rounded-full bg-rose-600 shadow-[0_0_50px_rgba(225,29,72,0.35)] flex flex-col items-center justify-center transition-all duration-300 ${isHolding ? 'scale-95 shadow-[0_0_80px_rgba(225,29,72,0.6)]' : 'hover:scale-105'}`}>
+            <div
+              className={`relative w-56 h-56 rounded-full bg-rose-600 shadow-[0_0_50px_rgba(225,29,72,0.35)] flex flex-col items-center justify-center transition-all duration-300 ${isHolding ? 'scale-95 shadow-[0_0_80px_rgba(225,29,72,0.6)]' : 'hover:scale-105'}`}
+            >
               <svg className="absolute inset-0 w-full h-full -rotate-90">
-                <circle cx="112" cy="112" fill="none" r="102" stroke="rgba(255,255,255,0.2)" strokeWidth="6"></circle>
-                <circle 
-                  cx="112" cy="112" fill="none" r="102" stroke="white" strokeWidth="6"
-                  strokeDasharray="640" 
+                <circle
+                  cx="112"
+                  cy="112"
+                  fill="none"
+                  r="102"
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="6"
+                ></circle>
+                <circle
+                  cx="112"
+                  cy="112"
+                  fill="none"
+                  r="102"
+                  stroke="white"
+                  strokeWidth="6"
+                  strokeDasharray="640"
                   strokeDashoffset={isHolding ? 0 : 640}
-                  style={{transition: isHolding ? 'stroke-dashoffset 3s linear' : 'stroke-dashoffset 0.3s ease-out'}}
+                  style={{
+                    transition: isHolding ? 'stroke-dashoffset 3s linear' : 'stroke-dashoffset 0.3s ease-out',
+                  }}
                 ></circle>
               </svg>
               <Warning size={48} weight="fill" className="text-white mb-1" />
               <span className="text-sm font-semibold tracking-widest text-white uppercase">Hold to SOS</span>
-              <span className={`absolute bottom-10 text-[11px] font-mono tracking-wider text-white transition-opacity duration-200 ${isHolding ? 'opacity-100' : 'opacity-0'}`}>
+              <span
+                className={`absolute bottom-10 text-[11px] font-mono tracking-wider text-white transition-opacity duration-200 ${isHolding ? 'opacity-100' : 'opacity-0'}`}
+              >
                 Triggering in {timeLeft}s
               </span>
             </div>
@@ -193,14 +227,14 @@ export default function EmergencySOSPage() {
 
           {/* Quick Action Secondary Buttons */}
           <div className="mt-10 flex gap-3 w-full max-w-xs justify-center">
-            <button 
+            <button
               onClick={() => window.open('tel:112')}
               className="flex-1 py-3 px-4 bg-white text-[#111315] rounded-card text-xs font-semibold uppercase tracking-wider flex justify-center items-center gap-2 hover:bg-white/90 transition-all active:scale-95"
             >
               <PhoneCall size={16} weight="bold" />
               Call 112
             </button>
-            <button 
+            <button
               onClick={() => navigate('/chat')}
               className="flex-1 py-3 px-4 border border-white/20 text-white rounded-card text-xs font-semibold uppercase tracking-wider flex justify-center items-center gap-2 hover:bg-white/5 transition-all active:scale-95"
             >
@@ -237,15 +271,17 @@ export default function EmergencySOSPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-6 pt-5 border-t border-white/10">
               <div className="flex items-start gap-2.5 text-[11px] text-white/70 leading-relaxed">
                 <Info size={16} className="text-white/40 shrink-0 mt-0.5" />
-                <span>Microphone and location telemetry are queued for automated upload when SOS is confirmed.</span>
+                <span>
+                  Microphone and location telemetry are queued for automated upload when SOS is confirmed.
+                </span>
               </div>
             </div>
           </div>
-          
+
           <div className="bg-[#181A1D] border border-white/10 p-4 rounded-card flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <BatteryHigh size={18} className="text-emerald-400" />
@@ -264,7 +300,8 @@ export default function EmergencySOSPage() {
           </div>
           <h2 className="text-2xl md:text-3xl font-semibold text-white mb-2">SOS Broadcast Triggered</h2>
           <p className="text-xs md:text-sm text-white/70 max-w-sm mb-8 leading-relaxed">
-            Emergency dispatch and your trusted contacts have received your live location coordinates. Keep your device active.
+            Emergency dispatch and your trusted contacts have received your live location coordinates. Keep
+            your device active.
           </p>
           <div className="flex flex-col items-center gap-3">
             <div className="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
@@ -272,8 +309,11 @@ export default function EmergencySOSPage() {
             </div>
             <span className="text-xs font-medium text-white/50">Establishing live audio tether...</span>
           </div>
-          <button 
-            onClick={() => { setIsTriggered(false); setTimeLeft(3); }} 
+          <button
+            onClick={() => {
+              setIsTriggered(false);
+              setTimeLeft(3);
+            }}
             className="mt-8 px-6 py-2.5 border border-white/20 text-white/70 rounded-card text-xs font-semibold hover:bg-white/10 transition-colors"
           >
             Dismiss Alert (Simulation)

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from '@phosphor-icons/react';
 
@@ -51,7 +51,7 @@ const EmailVerificationPage = () => {
   return (
     <div className="bg-surface font-body-md text-on-surface min-h-screen flex flex-col relative overflow-x-hidden">
       {/* Texture Overlay for editorial feel */}
-      <div 
+      <div
         className="fixed inset-0 z-0 pointer-events-none opacity-40"
         style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/natural-paper.png')" }}
       ></div>
@@ -62,13 +62,18 @@ const EmailVerificationPage = () => {
           {/* Editorial Image Section */}
           <div className="hidden md:block relative h-full min-h-[600px]">
             <div className="absolute inset-0 bg-primary opacity-10 z-10"></div>
-            <div 
+            <div
               className="absolute inset-0 z-0 bg-cover bg-center"
-              style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEJnQz17PXtKFOS0crUTkolKJ_8DwrlPxgE4GggKhb4umbq0DrBdUvZecq1Kn8AjIJ-TrmOD-xMAfx4rACTLDzPPjWrBmse1gNGhJb4QrMVvD7-OlItlsYHJj6BWAr3rXGbCx3YpGzTmp015PuY6EnH9-T7pyMQ3y5mLssRjDrIE2lvlE95k0mU2ijBn1oHT2c30uVkECvpMEEdHFgJRtBTjgnwRkQj666TL8dB0JUTzp3HVYl92Rq6A')" }}
+              style={{
+                backgroundImage:
+                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEJnQz17PXtKFOS0crUTkolKJ_8DwrlPxgE4GggKhb4umbq0DrBdUvZecq1Kn8AjIJ-TrmOD-xMAfx4rACTLDzPPjWrBmse1gNGhJb4QrMVvD7-OlItlsYHJj6BWAr3rXGbCx3YpGzTmp015PuY6EnH9-T7pyMQ3y5mLssRjDrIE2lvlE95k0mU2ijBn1oHT2c30uVkECvpMEEdHFgJRtBTjgnwRkQj666TL8dB0JUTzp3HVYl92Rq6A')",
+              }}
             ></div>
             <div className="absolute bottom-12 left-12 right-12 z-20">
               <p className="font-label-caps text-label-caps text-white/70 mb-2">SECURED ENTRY</p>
-              <h2 className="font-headline-md text-headline-md text-white">Your privacy is our highest priority.</h2>
+              <h2 className="font-headline-md text-headline-md text-white">
+                Your privacy is our highest priority.
+              </h2>
             </div>
           </div>
 
@@ -82,7 +87,8 @@ const EmailVerificationPage = () => {
             <div className="max-w-xs w-full">
               <h2 className="font-headline-md text-headline-md text-on-surface mb-2">Verify Your Email</h2>
               <p className="font-body-md text-body-md text-on-surface-variant mb-stack-md">
-                A unique 4-digit verification code has been sent to your inbox. Please enter it below to proceed.
+                A unique 4-digit verification code has been sent to your inbox. Please enter it below to
+                proceed.
               </p>
 
               {/* OTP Input Group */}
@@ -91,7 +97,7 @@ const EmailVerificationPage = () => {
                   {code.map((digit, index) => (
                     <input
                       key={index}
-                      ref={el => inputRefs.current[index] = el}
+                      ref={(el) => (inputRefs.current[index] = el)}
                       className="otp-input w-16 h-20 text-center font-headline-md text-headline-md bg-surface-container-low border-none rounded-xl transition-all duration-300 outline-none"
                       maxLength="1"
                       type="text"
@@ -104,7 +110,7 @@ const EmailVerificationPage = () => {
                 </div>
 
                 {/* Primary Action */}
-                <button 
+                <button
                   type="submit"
                   disabled={loading}
                   className="w-full py-4 bg-primary text-white font-label-caps text-label-caps rounded-xl hover:bg-on-primary-container transition-all duration-300 shadow-[0_8px_16px_-4px_rgba(10,25,47,0.2)]"
@@ -117,11 +123,17 @@ const EmailVerificationPage = () => {
               <div className="mt-stack-md space-y-4">
                 <p className="font-body-md text-body-md text-on-surface-variant">
                   Didn't receive the code?{' '}
-                  <button onClick={handleResend} className="text-secondary font-bold hover:underline transition-all">
+                  <button
+                    onClick={handleResend}
+                    className="text-secondary font-bold hover:underline transition-all"
+                  >
                     {resent ? 'Sent!' : 'Resend Code'}
                   </button>
                 </p>
-                <Link to="/login" className="inline-flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors"
+                >
                   <ArrowLeft size={16} weight="bold" />
                   BACK TO SIGN IN
                 </Link>

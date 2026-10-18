@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, Image, Alert
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  Image,
+  Alert,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,10 +28,10 @@ export default function ReportUserScreen({ route, navigation }) {
 
   const handleSubmit = async () => {
     if (!details.trim()) {
-      Alert.alert("Missing Details", "Please provide details about the incident.");
+      Alert.alert('Missing Details', 'Please provide details about the incident.');
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
       const token = await AsyncStorage.getItem('userToken');
@@ -28,26 +39,28 @@ export default function ReportUserScreen({ route, navigation }) {
         targetType: 'USER',
         targetId: targetId,
         reason: selectedCategory,
-        details: details.trim()
+        details: details.trim(),
       };
 
       const res = await fetch(`${API_URL}/reports`, {
         method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
-      
+
       if (res.ok) {
-        Alert.alert("Report Submitted", "Thank you for your report. The administrative team has been notified.", [
-          { text: "OK", onPress: () => navigation.goBack() }
-        ]);
+        Alert.alert(
+          'Report Submitted',
+          'Thank you for your report. The administrative team has been notified.',
+          [{ text: 'OK', onPress: () => navigation.goBack() }]
+        );
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Failed to submit report. Please try again.");
+      Alert.alert('Error', 'Failed to submit report. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -65,25 +78,31 @@ export default function ReportUserScreen({ route, navigation }) {
         </View>
       </SafeAreaView>
 
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
       >
-        <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-          
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.headerSection}>
             <Text style={styles.headerTitle}>Maintain the Standard</Text>
             <Text style={styles.headerDesc}>
-              The Localite community thrives on mutual respect. Please provide objective details regarding the incident to help us preserve our community integrity.
+              The Localite community thrives on mutual respect. Please provide objective details regarding the
+              incident to help us preserve our community integrity.
             </Text>
           </View>
 
           {/* User Profile Snippet */}
           <View style={styles.userSnippet}>
             <View style={styles.userAvatarWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAE9mX9u5u1JWV1-_YpKrXBRWWHfsKbLUx5SVFfWZwQWkXK5orB27miXK-2BsrM1De0t0kcjVphxB6MuffQ5cyzYPHB5GIbetzIXGWKrNh4Dpd0WtOdwoXzoPMQPFuPmO0mGyncJssUmFOP-pmepdsQfEQIR2B1gqb_mgUsPos2CeufZ0p4fCf8uXMI99VNjnBc7ZhsPOrNtfOpYS4oBgepmTOAt3epSDsBj9n8T5wYnGvz59uRy0v3yg' }}
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAE9mX9u5u1JWV1-_YpKrXBRWWHfsKbLUx5SVFfWZwQWkXK5orB27miXK-2BsrM1De0t0kcjVphxB6MuffQ5cyzYPHB5GIbetzIXGWKrNh4Dpd0WtOdwoXzoPMQPFuPmO0mGyncJssUmFOP-pmepdsQfEQIR2B1gqb_mgUsPos2CeufZ0p4fCf8uXMI99VNjnBc7ZhsPOrNtfOpYS4oBgepmTOAt3epSDsBj9n8T5wYnGvz59uRy0v3yg',
+                }}
                 style={styles.userAvatar}
               />
             </View>
@@ -97,29 +116,46 @@ export default function ReportUserScreen({ route, navigation }) {
           {/* Category Selection */}
           <Text style={styles.sectionLabel}>SELECT CATEGORY</Text>
           <View style={styles.categoryGrid}>
-            <TouchableOpacity 
-              style={[styles.categoryOption, selectedCategory === 'harassment' && styles.categoryOptionActive]}
+            <TouchableOpacity
+              style={[
+                styles.categoryOption,
+                selectedCategory === 'harassment' && styles.categoryOptionActive,
+              ]}
               onPress={() => setSelectedCategory('harassment')}
             >
               <View style={styles.categoryOptionLeft}>
                 <MaterialIcons name="gavel" size={24} color="#775a19" />
                 <Text style={styles.categoryOptionText}>Harassment</Text>
               </View>
-              {selectedCategory === 'harassment' && <MaterialIcons name="check-circle" size={20} color="#775a19" />}
+              {selectedCategory === 'harassment' && (
+                <MaterialIcons name="check-circle" size={20} color="#775a19" />
+              )}
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.categoryOption, selectedCategory === 'inappropriate' && styles.categoryOptionActive]}
+            <TouchableOpacity
+              style={[
+                styles.categoryOption,
+                selectedCategory === 'inappropriate' && styles.categoryOptionActive,
+              ]}
               onPress={() => setSelectedCategory('inappropriate')}
             >
               <View style={styles.categoryOptionLeft}>
                 <MaterialIcons name="error-outline" size={24} color="#775a19" />
-                <Text style={[styles.categoryOptionText, selectedCategory === 'inappropriate' && styles.categoryOptionTextActive]}>Inappropriate Behavior</Text>
+                <Text
+                  style={[
+                    styles.categoryOptionText,
+                    selectedCategory === 'inappropriate' && styles.categoryOptionTextActive,
+                  ]}
+                >
+                  Inappropriate Behavior
+                </Text>
               </View>
-              {selectedCategory === 'inappropriate' && <MaterialIcons name="check-circle" size={20} color="#775a19" />}
+              {selectedCategory === 'inappropriate' && (
+                <MaterialIcons name="check-circle" size={20} color="#775a19" />
+              )}
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.categoryOption, selectedCategory === 'spam' && styles.categoryOptionActive]}
               onPress={() => setSelectedCategory('spam')}
             >
@@ -130,7 +166,7 @@ export default function ReportUserScreen({ route, navigation }) {
               {selectedCategory === 'spam' && <MaterialIcons name="check-circle" size={20} color="#775a19" />}
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.categoryOption, selectedCategory === 'other' && styles.categoryOptionActive]}
               onPress={() => setSelectedCategory('other')}
             >
@@ -138,7 +174,9 @@ export default function ReportUserScreen({ route, navigation }) {
                 <MaterialIcons name="more-horiz" size={24} color="#775a19" />
                 <Text style={styles.categoryOptionText}>Other Concerns</Text>
               </View>
-              {selectedCategory === 'other' && <MaterialIcons name="check-circle" size={20} color="#775a19" />}
+              {selectedCategory === 'other' && (
+                <MaterialIcons name="check-circle" size={20} color="#775a19" />
+              )}
             </TouchableOpacity>
           </View>
 
@@ -166,7 +204,9 @@ export default function ReportUserScreen({ route, navigation }) {
           {/* Action Buttons */}
           <View style={styles.actionButtons}>
             <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} disabled={isSubmitting}>
-              <Text style={styles.submitBtnText}>{isSubmitting ? 'SUBMITTING...' : 'Submit Formal Report'}</Text>
+              <Text style={styles.submitBtnText}>
+                {isSubmitting ? 'SUBMITTING...' : 'Submit Formal Report'}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.cancelBtn} onPress={() => navigation.goBack()}>
               <Text style={styles.cancelBtnText}>Cancel and Return</Text>
@@ -179,11 +219,11 @@ export default function ReportUserScreen({ route, navigation }) {
             <View style={styles.infoFooterTextWrap}>
               <Text style={styles.infoFooterTitle}>Our Confidentiality Commitment</Text>
               <Text style={styles.infoFooterDesc}>
-                Your report will be reviewed by the Protocol Committee within 24 hours. The identity of the reporter remains strictly anonymous unless legal action requires disclosure.
+                Your report will be reviewed by the Protocol Committee within 24 hours. The identity of the
+                reporter remains strictly anonymous unless legal action requires disclosure.
               </Text>
             </View>
           </View>
-
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
@@ -416,5 +456,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#785a1a',
     lineHeight: 18,
-  }
+  },
 });

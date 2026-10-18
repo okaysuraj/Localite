@@ -1,15 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  ShieldCheck, 
-  Handshake, 
-  Heart, 
-  LockKey, 
-  ArrowLeft,
-  Compass,
-  CheckCircle,
-  Users
-} from '@phosphor-icons/react';
+import { ShieldCheck, Handshake, Heart, ArrowLeft } from '@phosphor-icons/react';
 
 export default function SafetyEtiquetteGuidelinesPage() {
   const navigate = useNavigate();
@@ -19,7 +9,7 @@ export default function SafetyEtiquetteGuidelinesPage() {
       {/* Sub-header Navigation */}
       <div className="border-b border-[var(--border)] bg-[var(--bg-subtle)] px-6 py-4 sticky top-16 z-30">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <button 
+          <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
           >
@@ -45,7 +35,9 @@ export default function SafetyEtiquetteGuidelinesPage() {
             The Gathering Protocol: A Standard of Mutual Respect
           </h1>
           <p className="text-base text-[var(--fg-muted)] max-w-2xl leading-relaxed">
-            Genuine connection thrives when expectations are transparent and personal boundaries are inviolable. This protocol defines the conduct expected across every Localite gathering and sports fixture.
+            Genuine connection thrives when expectations are transparent and personal boundaries are
+            inviolable. This protocol defines the conduct expected across every Localite gathering and sports
+            fixture.
           </p>
         </header>
 
@@ -57,7 +49,8 @@ export default function SafetyEtiquetteGuidelinesPage() {
             </div>
             <h3 className="text-base font-semibold text-[var(--fg)]">Verified Identity</h3>
             <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
-              Every member is verified prior to booking private events, ensuring trust without public vulnerability.
+              Every member is verified prior to booking private events, ensuring trust without public
+              vulnerability.
             </p>
           </div>
 
@@ -67,7 +60,8 @@ export default function SafetyEtiquetteGuidelinesPage() {
             </div>
             <h3 className="text-base font-semibold text-white">Etiquette of Presence</h3>
             <p className="text-xs text-white/75 leading-relaxed">
-              Attendance requires commitment. Be punctual, engage with intentionality, and respect host parameters.
+              Attendance requires commitment. Be punctual, engage with intentionality, and respect host
+              parameters.
             </p>
           </div>
 
@@ -77,7 +71,8 @@ export default function SafetyEtiquetteGuidelinesPage() {
             </div>
             <h3 className="text-base font-semibold text-[var(--fg)]">Silent Guardianry</h3>
             <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
-              Our safety concierge and host review system immediately steps in if inappropriate conduct occurs.
+              Our safety concierge and host review system immediately steps in if inappropriate conduct
+              occurs.
             </p>
           </div>
         </section>
@@ -90,7 +85,10 @@ export default function SafetyEtiquetteGuidelinesPage() {
               1. Punctuality & Reservation Commitment
             </h2>
             <p className="text-sm text-[var(--fg-muted)] leading-relaxed">
-              Localite gatherings operate with strict capacity limits to maintain high-quality experiences. When an RSVP is confirmed, a host reserves physical space and provisions on your behalf. Repeated late cancellations without notice degrade your community prestige standing and may restrict reservations for curated gatherings.
+              Localite gatherings operate with strict capacity limits to maintain high-quality experiences.
+              When an RSVP is confirmed, a host reserves physical space and provisions on your behalf.
+              Repeated late cancellations without notice degrade your community prestige standing and may
+              restrict reservations for curated gatherings.
             </p>
           </section>
 
@@ -100,7 +98,9 @@ export default function SafetyEtiquetteGuidelinesPage() {
               2. Personal Boundaries & Discretion
             </h2>
             <p className="text-sm text-[var(--fg-muted)] leading-relaxed">
-              Discretion is the bedrock of our community. Attendees must never capture photographs or videos of fellow participants without express verbal consent. Business solicitation and aggressive networking during social salons or leisure sporting fixtures are strictly discouraged.
+              Discretion is the bedrock of our community. Attendees must never capture photographs or videos
+              of fellow participants without express verbal consent. Business solicitation and aggressive
+              networking during social salons or leisure sporting fixtures are strictly discouraged.
             </p>
           </section>
 
@@ -110,7 +110,9 @@ export default function SafetyEtiquetteGuidelinesPage() {
               3. The Anchor System for Safe Departure
             </h2>
             <p className="text-sm text-[var(--fg-muted)] leading-relaxed">
-              We recommend utilizing our integrated 'Anchor System' when attending evening gatherings in unfamiliar districts. Before departing, activate your Guardian presence or verify that a fellow attendee or host has confirmed your safe transit to rideshare or private transit.
+              We recommend utilizing our integrated 'Anchor System' when attending evening gatherings in
+              unfamiliar districts. Before departing, activate your Guardian presence or verify that a fellow
+              attendee or host has confirmed your safe transit to rideshare or private transit.
             </p>
           </section>
 
@@ -120,7 +122,10 @@ export default function SafetyEtiquetteGuidelinesPage() {
               4. Immediate Reporting & Zero-Tolerance Policy
             </h2>
             <p className="text-sm text-[var(--fg-muted)] leading-relaxed">
-              Harassment, unwanted physical advances, discrimination, or abusive conduct result in immediate, permanent revocation of platform access. If you experience or witness inappropriate behavior at any Localite event, reach out immediately to your on-site host or use the Safety Center to flag the account for review.
+              Harassment, unwanted physical advances, discrimination, or abusive conduct result in immediate,
+              permanent revocation of platform access. If you experience or witness inappropriate behavior at
+              any Localite event, reach out immediately to your on-site host or use the Safety Center to flag
+              the account for review.
             </p>
           </section>
         </article>
@@ -128,10 +133,14 @@ export default function SafetyEtiquetteGuidelinesPage() {
         {/* Closing Contact Card */}
         <div className="bg-[var(--bg-subtle)] p-8 rounded-card border border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-base font-semibold text-[var(--fg)] mb-1">Have an etiquette or safety inquiry?</h3>
-            <p className="text-xs text-[var(--fg-muted)]">Our concierge safety board reviews incident reports 24/7.</p>
+            <h3 className="text-base font-semibold text-[var(--fg)] mb-1">
+              Have an etiquette or safety inquiry?
+            </h3>
+            <p className="text-xs text-[var(--fg-muted)]">
+              Our concierge safety board reviews incident reports 24/7.
+            </p>
           </div>
-          <button 
+          <button
             onClick={() => navigate('/contact')}
             className="px-5 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white text-xs font-semibold uppercase tracking-wider rounded-card shadow-sm transition-all shrink-0"
           >

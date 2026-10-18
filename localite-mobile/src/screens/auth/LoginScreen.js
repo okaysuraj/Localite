@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TextInput, 
-  TouchableOpacity, 
-  SafeAreaView, 
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
+  ScrollView,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginScreen({ navigation }) {
@@ -26,7 +26,7 @@ export default function LoginScreen({ navigation }) {
       Alert.alert('Error', 'Please enter both email and password');
       return;
     }
-    
+
     setLoading(true);
     try {
       await login(email, password);
@@ -41,14 +41,14 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {/* App Bar */}
         <View style={styles.appBar}>
           {/* Typically login might not need a back button if it's the root, but keeping it for flow if needed */}
-          <TouchableOpacity onPress={() => navigation.canGoBack() ? navigation.goBack() : null} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={() => (navigation.canGoBack() ? navigation.goBack() : null)}
+            style={styles.backButton}
+          >
             <Ionicons name="arrow-back" size={24} color="#1b1c1c" />
           </TouchableOpacity>
           <Text style={styles.appBarTitle}>LOCALITE</Text>
@@ -56,7 +56,6 @@ export default function LoginScreen({ navigation }) {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-          
           <View style={styles.headerSection}>
             <Text style={styles.title}>Welcome Back</Text>
             <Text style={styles.subtitle}>Enter your details to rejoin your local circle.</Text>
@@ -67,7 +66,7 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>EMAIL ADDRESS</Text>
               <View style={styles.inputContainer}>
-                <TextInput 
+                <TextInput
                   style={styles.input}
                   placeholder="name@domain.com"
                   placeholderTextColor="rgba(68, 71, 77, 0.4)"
@@ -88,7 +87,7 @@ export default function LoginScreen({ navigation }) {
                 </TouchableOpacity>
               </View>
               <View style={styles.inputContainer}>
-                <TextInput 
+                <TextInput
                   style={[styles.input, { paddingRight: 40 }]}
                   placeholder="••••••••"
                   placeholderTextColor="rgba(68, 71, 77, 0.4)"
@@ -96,21 +95,18 @@ export default function LoginScreen({ navigation }) {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                 />
-                <TouchableOpacity 
-                  style={styles.eyeIcon} 
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="rgba(68, 71, 77, 0.6)" />
+                <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
+                  <Ionicons
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color="rgba(68, 71, 77, 0.6)"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Login Button */}
-            <TouchableOpacity 
-              style={styles.loginBtn} 
-              onPress={handleLogin}
-              disabled={loading}
-            >
+            <TouchableOpacity style={styles.loginBtn} onPress={handleLogin} disabled={loading}>
               <Text style={styles.loginBtnText}>{loading ? 'LOGGING IN...' : 'LOGIN'}</Text>
             </TouchableOpacity>
 
@@ -129,21 +125,17 @@ export default function LoginScreen({ navigation }) {
 
           {/* Sign Up Link */}
           <View style={styles.signupPrompt}>
-            <Text style={styles.signupText}>
-              New to the circle?{' '}
-            </Text>
+            <Text style={styles.signupText}>New to the circle? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
               <Text style={styles.signupLink}>Create an account</Text>
             </TouchableOpacity>
           </View>
-
         </ScrollView>
-        
+
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>© 2024 LOCALITE COMMUNITY. ALL RIGHTS RESERVED.</Text>
         </View>
-
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

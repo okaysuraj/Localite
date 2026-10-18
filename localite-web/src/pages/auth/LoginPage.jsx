@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeSlash } from '@phosphor-icons/react';
@@ -37,32 +37,22 @@ const LoginPage = () => {
       <div className="w-full max-w-[400px] animate-fade-in-up">
         {/* Header */}
         <div className="mb-10">
-          <Link
-            to="/"
-            className="text-xl font-semibold text-fg tracking-tight inline-block mb-8"
-          >
+          <Link to="/" className="text-xl font-semibold text-fg tracking-tight inline-block mb-8">
             localite
           </Link>
           <h1 className="text-title text-fg mb-2">Welcome back</h1>
-          <p className="text-body-sm text-fg-muted">
-            Sign in to your account to continue.
-          </p>
+          <p className="text-body-sm text-fg-muted">Sign in to your account to continue.</p>
         </div>
 
         {/* Error */}
         {error && (
-          <div className="bg-error-subtle text-error text-body-sm px-4 py-3 rounded-sm mb-6">
-            {error}
-          </div>
+          <div className="bg-error-subtle text-error text-body-sm px-4 py-3 rounded-sm mb-6">{error}</div>
         )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-body-sm font-medium text-fg mb-2"
-            >
+            <label htmlFor="email" className="block text-body-sm font-medium text-fg mb-2">
               Email
             </label>
             <input
@@ -71,16 +61,13 @@ const LoginPage = () => {
               placeholder="you@example.com"
               type="email"
               value={formData.email}
-              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label
-                htmlFor="password"
-                className="text-body-sm font-medium text-fg"
-              >
+              <label htmlFor="password" className="text-body-sm font-medium text-fg">
                 Password
               </label>
               <Link
@@ -97,29 +84,19 @@ const LoginPage = () => {
                 placeholder="Enter your password"
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
-                onChange={e =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-faint hover:text-fg-muted transition-colors"
               >
-                {showPassword ? (
-                  <EyeSlash size={18} weight="bold" />
-                ) : (
-                  <Eye size={18} weight="bold" />
-                )}
+                {showPassword ? <EyeSlash size={18} weight="bold" /> : <Eye size={18} weight="bold" />}
               </button>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full py-3"
-          >
+          <button type="submit" disabled={loading} className="btn-primary w-full py-3">
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
@@ -127,10 +104,7 @@ const LoginPage = () => {
         {/* Sign up link */}
         <p className="text-body-sm text-fg-muted text-center mt-8">
           New here?{' '}
-          <Link
-            to="/signup"
-            className="text-accent font-medium hover:underline"
-          >
+          <Link to="/signup" className="text-accent font-medium hover:underline">
             Create an account
           </Link>
         </p>

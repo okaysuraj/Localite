@@ -1,6 +1,15 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useContext } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -21,9 +30,13 @@ export default function MomentumOfGraceStreaksScreen() {
             <MaterialIcons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
           <View style={styles.avatarWrap}>
-            <Image 
-              source={{ uri: user?.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }} 
-              style={styles.avatarImg} 
+            <Image
+              source={{
+                uri:
+                  user?.profilePhotoUrl ||
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+              }}
+              style={styles.avatarImg}
             />
           </View>
           <Text style={styles.headerTitle}>Localite</Text>
@@ -34,7 +47,6 @@ export default function MomentumOfGraceStreaksScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <Text style={styles.heroTitle}>Momentum of Grace</Text>
@@ -51,7 +63,11 @@ export default function MomentumOfGraceStreaksScreen() {
             <Text style={styles.streakNumber}>{streak}</Text>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.calendarScroll}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.calendarScroll}
+          >
             {/* Past */}
             <View style={[styles.dayCard, { opacity: 0.6 }]}>
               <Text style={styles.dayName}>MON</Text>
@@ -61,7 +77,7 @@ export default function MomentumOfGraceStreaksScreen() {
               <Text style={styles.dayName}>TUE</Text>
               <Text style={styles.dayNumber}>02</Text>
             </View>
-            
+
             {/* Active */}
             <View style={[styles.dayCardActive, styles.dayCardTransform]}>
               <View style={styles.activeStarWrap}>
@@ -97,7 +113,9 @@ export default function MomentumOfGraceStreaksScreen() {
             <Text style={styles.benefitTag}>PRESTIGE BOOST</Text>
           </View>
           <Text style={styles.benefitTitle}>2x Prestige Multiplier</Text>
-          <Text style={styles.benefitDesc}>Your contribution to local hubs earns double reputation points during your active streak.</Text>
+          <Text style={styles.benefitDesc}>
+            Your contribution to local hubs earns double reputation points during your active streak.
+          </Text>
         </View>
 
         {/* Benefit 2 */}
@@ -107,7 +125,9 @@ export default function MomentumOfGraceStreaksScreen() {
             <Text style={[styles.benefitTag, { color: '#e9c176' }]}>EXCLUSIVE ACCESS</Text>
           </View>
           <Text style={[styles.benefitTitle, { color: '#fff' }]}>The Gilded Lounge</Text>
-          <Text style={[styles.benefitDesc, { color: '#b9c7e4' }]}>Access unlocked. You are now invited to the Tier 1 private community hubs for 7 days.</Text>
+          <Text style={[styles.benefitDesc, { color: '#b9c7e4' }]}>
+            Access unlocked. You are now invited to the Tier 1 private community hubs for 7 days.
+          </Text>
         </View>
 
         {/* Benefit 3 */}
@@ -124,18 +144,24 @@ export default function MomentumOfGraceStreaksScreen() {
               <Text style={styles.activeTagText}>ACTIVE</Text>
             </View>
           </View>
-          <Text style={styles.benefitDesc}>A 10-day streak grants one 'Absence of Grace'. Miss a day without losing your momentum.</Text>
+          <Text style={styles.benefitDesc}>
+            A 10-day streak grants one 'Absence of Grace'. Miss a day without losing your momentum.
+          </Text>
         </View>
 
         {/* Quote Section */}
         <View style={styles.quoteSection}>
-          <MaterialIcons name="format-quote" size={32} color="#775a19" style={{ opacity: 0.5, marginBottom: 12 }} />
+          <MaterialIcons
+            name="format-quote"
+            size={32}
+            color="#775a19"
+            style={{ opacity: 0.5, marginBottom: 12 }}
+          />
           <Text style={styles.quoteText}>
             "Consistency is not a chain of burdens, but a tapestry of character woven one day at a time."
           </Text>
           <Text style={styles.quoteAuthor}>— THE PROTOCOL, SECTION IV</Text>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -433,5 +459,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#75777e',
     letterSpacing: 2,
-  }
+  },
 });

@@ -1,18 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Clock,
-  Users,
-  Sun,
-  ChatCircle,
-  PaperPlaneRight,
-  Check,
-  MapPin,
-} from '@phosphor-icons/react';
+import { useState, useEffect } from 'react';
+
+import { ChatCircle, PaperPlaneRight, Check, MapPin } from '@phosphor-icons/react';
 
 export default function MatchLobbyPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({ minutes: 14, seconds: 59 });
   const [chatMessage, setChatMessage] = useState('');
   const [chatList, setChatList] = useState([
@@ -93,8 +83,7 @@ export default function MatchLobbyPage() {
                 Match Starts In
               </span>
               <div className="text-2xl font-display font-semibold text-fg mt-0.5 font-mono">
-                {String(timeLeft.minutes).padStart(2, '0')}:
-                {String(timeLeft.seconds).padStart(2, '0')}
+                {String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
               </div>
             </div>
           </div>
@@ -107,9 +96,7 @@ export default function MatchLobbyPage() {
             <div className="flex justify-between items-center pb-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-accent" />
-                <h3 className="font-display font-semibold text-base text-fg">
-                  Team Alpha
-                </h3>
+                <h3 className="font-display font-semibold text-base text-fg">Team Alpha</h3>
               </div>
               <span className="text-[11px] font-mono text-accent bg-accent-subtle px-2 py-0.5 rounded-full">
                 2/2 Checked In
@@ -123,12 +110,8 @@ export default function MatchLobbyPage() {
                     MC
                   </div>
                   <div>
-                    <p className="text-xs font-display font-medium text-fg">
-                      Marcus Chen
-                    </p>
-                    <p className="text-[10px] font-mono text-fg-muted">
-                      Rating 1,420
-                    </p>
+                    <p className="text-xs font-display font-medium text-fg">Marcus Chen</p>
+                    <p className="text-[10px] font-mono text-fg-muted">Rating 1,420</p>
                   </div>
                 </div>
                 <span className="inline-flex items-center gap-1 text-[10px] font-mono text-accent">
@@ -142,12 +125,8 @@ export default function MatchLobbyPage() {
                     ER
                   </div>
                   <div>
-                    <p className="text-xs font-display font-medium text-fg">
-                      Elena Rao
-                    </p>
-                    <p className="text-[10px] font-mono text-fg-muted">
-                      Rating 1,390
-                    </p>
+                    <p className="text-xs font-display font-medium text-fg">Elena Rao</p>
+                    <p className="text-[10px] font-mono text-fg-muted">Rating 1,390</p>
                   </div>
                 </div>
                 <span className="inline-flex items-center gap-1 text-[10px] font-mono text-accent">
@@ -162,9 +141,7 @@ export default function MatchLobbyPage() {
             <div className="flex justify-between items-center pb-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-fg-muted" />
-                <h3 className="font-display font-semibold text-base text-fg">
-                  Team Bravo
-                </h3>
+                <h3 className="font-display font-semibold text-base text-fg">Team Bravo</h3>
               </div>
               <span className="text-[11px] font-mono text-fg-muted bg-bg-subtle px-2 py-0.5 rounded-full">
                 1/2 Checked In
@@ -178,12 +155,8 @@ export default function MatchLobbyPage() {
                     SK
                   </div>
                   <div>
-                    <p className="text-xs font-display font-medium text-fg">
-                      Sasha Kumar
-                    </p>
-                    <p className="text-[10px] font-mono text-fg-muted">
-                      Rating 1,410
-                    </p>
+                    <p className="text-xs font-display font-medium text-fg">Sasha Kumar</p>
+                    <p className="text-[10px] font-mono text-fg-muted">Rating 1,410</p>
                   </div>
                 </div>
                 <span className="inline-flex items-center gap-1 text-[10px] font-mono text-accent">
@@ -197,17 +170,11 @@ export default function MatchLobbyPage() {
                     LO
                   </div>
                   <div>
-                    <p className="text-xs font-display font-medium text-fg">
-                      Liam O'Neill
-                    </p>
-                    <p className="text-[10px] font-mono text-fg-muted">
-                      Rating 1,385
-                    </p>
+                    <p className="text-xs font-display font-medium text-fg">Liam O'Neill</p>
+                    <p className="text-[10px] font-mono text-fg-muted">Rating 1,385</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono text-fg-muted">
-                  In Transit
-                </span>
+                <span className="text-[10px] font-mono text-fg-muted">In Transit</span>
               </div>
             </div>
           </div>
@@ -215,9 +182,7 @@ export default function MatchLobbyPage() {
 
         {/* Match Intel Card */}
         <div className="bg-white border border-border rounded-card p-6 space-y-3">
-          <h4 className="font-mono text-xs text-fg-muted uppercase tracking-wider">
-            Match Conditions
-          </h4>
+          <h4 className="font-mono text-xs text-fg-muted uppercase tracking-wider">Match Conditions</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs font-mono">
             <div className="p-3 bg-bg-subtle rounded-card border border-border/60">
               <span className="text-[10px] text-fg-muted block uppercase">Indoor</span>
@@ -244,9 +209,7 @@ export default function MatchLobbyPage() {
         <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white">
           <div className="flex items-center gap-2">
             <ChatCircle size={16} className="text-accent" />
-            <h3 className="font-display font-semibold text-sm text-fg">
-              Lobby Discussion
-            </h3>
+            <h3 className="font-display font-semibold text-sm text-fg">Lobby Discussion</h3>
           </div>
           <span className="text-[10px] font-mono text-accent bg-accent-subtle px-2 py-0.5 rounded-full">
             Live
@@ -255,18 +218,13 @@ export default function MatchLobbyPage() {
 
         <div className="flex-1 p-5 overflow-y-auto space-y-3 bg-bg max-h-[380px] lg:max-h-none">
           {chatList.map((chat) => (
-            <div
-              key={chat.id}
-              className={`flex flex-col ${chat.isMe ? 'items-end' : 'items-start'}`}
-            >
+            <div key={chat.id} className={`flex flex-col ${chat.isMe ? 'items-end' : 'items-start'}`}>
               <span className="text-[10px] font-mono text-fg-muted mb-1 px-1">
                 {chat.sender} • {chat.time}
               </span>
               <div
                 className={`p-3 rounded-card text-xs max-w-[85%] leading-relaxed ${
-                  chat.isMe
-                    ? 'bg-accent text-white'
-                    : 'bg-white text-fg border border-border'
+                  chat.isMe ? 'bg-accent text-white' : 'bg-white text-fg border border-border'
                 }`}
               >
                 {chat.text}

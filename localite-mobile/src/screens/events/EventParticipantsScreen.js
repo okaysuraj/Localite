@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Image, ActivityIndicator 
+import { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../config';
 
@@ -11,24 +18,26 @@ const MOCK_PARTICIPANTS = [
     id: 1,
     user: {
       username: 'Elena Rossi',
-      profileImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAegcPXQPVVhWgwHUy1ABMbIesRD5A5PSvgCb34E93-uHbe0A8BsBSiFS7Pg61qH-rHjiv1VvgqhUXEZOlzsflQJQ6NTY64R3woFk33RY3OgxTWN7ghuUHlML5lQiXj6wkz8RgbmizDI8sfWRxu_oDnSvy0KdE9oG-Uao4FFHHY78rczAzj_j_iYehacRlYu9NLigD-Rlvx7BmjnDg_x2tqT206N4c00nNwomQzmjNx6WUuN7_tZUML3w',
+      profileImageUrl:
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuAegcPXQPVVhWgwHUy1ABMbIesRD5A5PSvgCb34E93-uHbe0A8BsBSiFS7Pg61qH-rHjiv1VvgqhUXEZOlzsflQJQ6NTY64R3woFk33RY3OgxTWN7ghuUHlML5lQiXj6wkz8RgbmizDI8sfWRxu_oDnSvy0KdE9oG-Uao4FFHHY78rczAzj_j_iYehacRlYu9NLigD-Rlvx7BmjnDg_x2tqT206N4c00nNwomQzmjNx6WUuN7_tZUML3w',
       title: 'LUXURY CURATOR',
       reputation: 82,
-      attendance: 14
+      attendance: 14,
     },
-    status: 'ATTENDING'
+    status: 'ATTENDING',
   },
   {
     id: 2,
     user: {
       username: 'Marcus Chen',
-      profileImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB6rJOveM2_A_sHt4Zmmwxt1d0NG9sV1oRV6iu2mH31bUxbk6-FjX4cHiGLKBbAjAfLxXm3D7d-oyvQcGJ-Ne5J30UcOIZCRYTljNYJ93h28hpT22TBvO9Qf7kJLreYxBise6b7N3vItcFYP0ulpKHt5UvKzzOtLFANCMfSSboPKjjUsahXHb-e3n617BKqH_S0LSCGZUuNuZlpjClvNXf99ZSC144MTJWc-R2SWF5-LXkVlkjWR5AqKQ',
+      profileImageUrl:
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuB6rJOveM2_A_sHt4Zmmwxt1d0NG9sV1oRV6iu2mH31bUxbk6-FjX4cHiGLKBbAjAfLxXm3D7d-oyvQcGJ-Ne5J30UcOIZCRYTljNYJ93h28hpT22TBvO9Qf7kJLreYxBise6b7N3vItcFYP0ulpKHt5UvKzzOtLFANCMfSSboPKjjUsahXHb-e3n617BKqH_S0LSCGZUuNuZlpjClvNXf99ZSC144MTJWc-R2SWF5-LXkVlkjWR5AqKQ',
       title: 'VENTURE ANALYST',
       reputation: 75,
-      attendance: 8
+      attendance: 8,
     },
-    status: 'WAITLIST'
-  }
+    status: 'WAITLIST',
+  },
 ];
 
 export default function EventParticipantsScreen({ route, navigation }) {
@@ -44,7 +53,7 @@ export default function EventParticipantsScreen({ route, navigation }) {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await fetch(`${API_URL}/events/${eventId}/rsvps`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
@@ -64,9 +73,13 @@ export default function EventParticipantsScreen({ route, navigation }) {
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={styles.userInfo}>
-          <Image 
-            source={{ uri: item.user.profileImageUrl || `https://api.dicebear.com/7.x/notionists/png?seed=${item.user.username}&backgroundColor=b9c7e4` }} 
-            style={styles.avatar} 
+          <Image
+            source={{
+              uri:
+                item.user.profileImageUrl ||
+                `https://api.dicebear.com/7.x/notionists/png?seed=${item.user.username}&backgroundColor=b9c7e4`,
+            }}
+            style={styles.avatar}
           />
           <View>
             <Text style={styles.username}>{item.user.username}</Text>
@@ -77,13 +90,13 @@ export default function EventParticipantsScreen({ route, navigation }) {
           <Text style={styles.statusText}>{item.status}</Text>
         </View>
       </View>
-      
+
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>REPUTATION</Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={styles.statValue}>{item.user.reputation || 50}</Text>
-            <Ionicons name="star" size={12} color="#775a19" style={{marginLeft: 2}} />
+            <Ionicons name="star" size={12} color="#775a19" style={{ marginLeft: 2 }} />
           </View>
         </View>
         <View style={styles.statBox}>
@@ -91,10 +104,15 @@ export default function EventParticipantsScreen({ route, navigation }) {
           <Text style={styles.statValue}>{item.user.attendance || 0} Events</Text>
         </View>
       </View>
-      
+
       <View style={styles.cardFooter}>
         <View style={styles.statusIndicator}>
-          <View style={[styles.statusDot, { backgroundColor: item.status === 'ATTENDING' ? '#22c55e' : '#f59e0b' }]} />
+          <View
+            style={[
+              styles.statusDot,
+              { backgroundColor: item.status === 'ATTENDING' ? '#22c55e' : '#f59e0b' },
+            ]}
+          />
           <Text style={styles.statusLabel}>{item.status === 'ATTENDING' ? 'Attending' : 'Pending'}</Text>
         </View>
         <TouchableOpacity>
@@ -113,7 +131,9 @@ export default function EventParticipantsScreen({ route, navigation }) {
         </TouchableOpacity>
         <View style={styles.headerTitles}>
           <Text style={styles.headerSub}>GUESTLIST</Text>
-          <Text style={styles.headerTitle} numberOfLines={1}>{eventTitle || 'Event'}</Text>
+          <Text style={styles.headerTitle} numberOfLines={1}>
+            {eventTitle || 'Event'}
+          </Text>
         </View>
         <TouchableOpacity style={styles.actionBtn}>
           <Ionicons name="search" size={24} color="#000000" />
@@ -326,5 +346,5 @@ const styles = StyleSheet.create({
     color: '#775a19',
     letterSpacing: 1,
     textDecorationLine: 'underline',
-  }
+  },
 });

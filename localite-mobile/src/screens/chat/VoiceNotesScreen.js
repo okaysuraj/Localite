@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, withSequence } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  withSequence,
+} from 'react-native-reanimated';
 
 export default function VoiceNotesScreen() {
   const navigation = useNavigation();
@@ -13,10 +19,7 @@ export default function VoiceNotesScreen() {
   const pulseAnim = useSharedValue(1);
   useEffect(() => {
     pulseAnim.value = withRepeat(
-      withSequence(
-        withTiming(1.2, { duration: 1000 }),
-        withTiming(1, { duration: 1000 })
-      ),
+      withSequence(withTiming(1.2, { duration: 1000 }), withTiming(1, { duration: 1000 })),
       -1,
       true
     );
@@ -24,13 +27,13 @@ export default function VoiceNotesScreen() {
 
   const animatedPulse = useAnimatedStyle(() => ({
     transform: [{ scale: pulseAnim.value }],
-    opacity: 1.5 - pulseAnim.value
+    opacity: 1.5 - pulseAnim.value,
   }));
 
   useEffect(() => {
     let interval;
     if (isRecording) {
-      interval = setInterval(() => setSeconds(s => s + 1), 1000);
+      interval = setInterval(() => setSeconds((s) => s + 1), 1000);
     }
     return () => clearInterval(interval);
   }, [isRecording]);
@@ -75,7 +78,9 @@ export default function VoiceNotesScreen() {
         {/* Chat Preview */}
         <View style={styles.chatWrap}>
           <View style={styles.bubbleLeft}>
-            <Text style={styles.bubbleText}>The gallery opens at 7:00 PM tonight. Will you be bringing the invitation?</Text>
+            <Text style={styles.bubbleText}>
+              The gallery opens at 7:00 PM tonight. Will you be bringing the invitation?
+            </Text>
           </View>
 
           <View style={styles.bubbleRight}>
@@ -106,10 +111,7 @@ export default function VoiceNotesScreen() {
 
           <View style={styles.micSection}>
             <Animated.View style={[styles.pulseCircle, animatedPulse]} />
-            <TouchableOpacity 
-              style={styles.micBtn} 
-              onPress={() => setIsRecording(!isRecording)}
-            >
+            <TouchableOpacity style={styles.micBtn} onPress={() => setIsRecording(!isRecording)}>
               <MaterialIcons name="mic" size={40} color="#fff" />
             </TouchableOpacity>
           </View>
@@ -121,7 +123,7 @@ export default function VoiceNotesScreen() {
               </View>
               <Text style={styles.actionText}>CANCEL</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.actionBtn}>
               <View style={[styles.actionIconWrap, styles.sendIconWrap]}>
                 <MaterialIcons name="send" size={20} color="#775a19" />
@@ -381,5 +383,5 @@ const styles = StyleSheet.create({
   },
   sendText: {
     color: '#775a19',
-  }
+  },
 });

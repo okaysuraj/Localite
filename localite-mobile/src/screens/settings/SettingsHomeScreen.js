@@ -1,8 +1,16 @@
-import React, { useContext } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, ScrollView, Platform 
+import { useContext } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Platform,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -27,21 +35,29 @@ export default function SettingsHomeScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Profile Overview Card */}
         <View style={styles.profileCard}>
           <View style={styles.tierBadge}>
             <Text style={styles.tierText}>Local Tastemaker</Text>
           </View>
           <View style={styles.avatarContainer}>
-            <Image 
-              source={{ uri: user?.profileImageUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDW1qiDqa912VQ4ahLu3m6E4_qX8AcQSjYpyVOZNhftrwaPiXL3n11Utone_nzzHBn-TLwImCo9qe0Alsu04BLr1PY7M-6Z8lnrhiccG_l04S7ghg2q71pOlsuR5eADbqYNrWiDszNTxssqSceGJgQ-zFxtwZw7QdK6J-z2ZgM9mK0BHRmd6hm126e1z1kXtJ9_o9YjxV5iQ_3iiDC6gywzFaEfKxUnlgMIYTepsSBzwzetH5fb-wfhOw' }} 
-              style={styles.avatar} 
+            <Image
+              source={{
+                uri:
+                  user?.profileImageUrl ||
+                  'https://lh3.googleusercontent.com/aida-public/AB6AXuDW1qiDqa912VQ4ahLu3m6E4_qX8AcQSjYpyVOZNhftrwaPiXL3n11Utone_nzzHBn-TLwImCo9qe0Alsu04BLr1PY7M-6Z8lnrhiccG_l04S7ghg2q71pOlsuR5eADbqYNrWiDszNTxssqSceGJgQ-zFxtwZw7QdK6J-z2ZgM9mK0BHRmd6hm126e1z1kXtJ9_o9YjxV5iQ_3iiDC6gywzFaEfKxUnlgMIYTepsSBzwzetH5fb-wfhOw',
+              }}
+              style={styles.avatar}
             />
           </View>
           <Text style={styles.name}>{user?.username || 'Julian Sterling'}</Text>
           <Text style={styles.email}>{user?.email || 'julian.sterling@localite.com'}</Text>
-          
+
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={styles.statLabel}>Member Since</Text>
@@ -53,11 +69,8 @@ export default function SettingsHomeScreen({ navigation }) {
               <Text style={styles.statValue}>98/100</Text>
             </View>
           </View>
-          
-          <TouchableOpacity 
-            style={styles.editProfileBtn}
-            onPress={() => navigation.navigate('EditProfile')}
-          >
+
+          <TouchableOpacity style={styles.editProfileBtn} onPress={() => navigation.navigate('EditProfile')}>
             <Text style={styles.editProfileText}>EDIT PROFILE</Text>
           </TouchableOpacity>
         </View>
@@ -75,7 +88,10 @@ export default function SettingsHomeScreen({ navigation }) {
             <MaterialIcons name="chevron-right" size={24} color="#75777e" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('NotificationSettings')}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('NotificationSettings')}
+          >
             <View style={styles.menuIconContainer}>
               <MaterialIcons name="notifications-active" size={24} color="#000000" />
             </View>
@@ -112,7 +128,7 @@ export default function SettingsHomeScreen({ navigation }) {
         <TouchableOpacity style={styles.supportBtn}>
           <Text style={styles.supportBtnText}>CONNECT WITH CONCIERGE</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
           <Text style={styles.logoutBtnText}>LOG OUT</Text>
         </TouchableOpacity>
@@ -320,5 +336,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ba1a1a',
     letterSpacing: 1,
-  }
+  },
 });

@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Modal, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Modal,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LogoutDeleteAccountScreen() {
@@ -19,16 +29,17 @@ export default function LogoutDeleteAccountScreen() {
         </View>
         <View style={styles.headerRight}>
           <View style={styles.avatarWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCXTMRG35lIXo6nrTCOc5ELJR2LYb_EpEWSUIHpTA5HvavIzXjOlVw6yM8yZWef0ak-4QZsw6IoQf711PuuH-V8wldBX_asOiq_6CkxwB2gYFaQYAK1PCu5L25LOiq9u16RaXN0as3J80IoeRDq3hJbu1f2myLxdYQvETk7KzBjut60S5OSXHWu499uyVyi7kG1xDwFzwP5BjuENlj0exMEYGf868HdYl7h3h0dJPvEYtJJ9_4iw8I1tw' }} 
-              style={styles.avatarImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCXTMRG35lIXo6nrTCOc5ELJR2LYb_EpEWSUIHpTA5HvavIzXjOlVw6yM8yZWef0ak-4QZsw6IoQf711PuuH-V8wldBX_asOiq_6CkxwB2gYFaQYAK1PCu5L25LOiq9u16RaXN0as3J80IoeRDq3hJbu1f2myLxdYQvETk7KzBjut60S5OSXHWu499uyVyi7kG1xDwFzwP5BjuENlj0exMEYGf868HdYl7h3h0dJPvEYtJJ9_4iw8I1tw',
+              }}
+              style={styles.avatarImg}
             />
           </View>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Page Header */}
         <View style={styles.pageHeader}>
           <Text style={styles.pageTitle}>Account Sanctuary</Text>
@@ -74,13 +85,14 @@ export default function LogoutDeleteAccountScreen() {
 
         {/* Decorative Asset */}
         <View style={styles.decorativeImageWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCCfdmNCerd9J4-Aa0I17n4Z_1tSKCv4E28kjBDVU0qXYU1C_YApjggJ89IzMpSET0Vvft7dmXLpSVFNAAj_4xb1oQg6wQo7LHJjCfiaEccQyhFZBrAm3FEbYU3Z3xNFx7jM0ckSdyms4RYSUQrsglBy_fewRyLQ-7x-cT7uqDvFbumFc1GhcwxRR6Z5XOR7Ta6EzdbYQ7iJu0e9Tbwv2HNd66bmlbe_ENprGEoE89WltvM1bIj2WlQ2A' }} 
-            style={styles.decorativeImage} 
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCCfdmNCerd9J4-Aa0I17n4Z_1tSKCv4E28kjBDVU0qXYU1C_YApjggJ89IzMpSET0Vvft7dmXLpSVFNAAj_4xb1oQg6wQo7LHJjCfiaEccQyhFZBrAm3FEbYU3Z3xNFx7jM0ckSdyms4RYSUQrsglBy_fewRyLQ-7x-cT7uqDvFbumFc1GhcwxRR6Z5XOR7Ta6EzdbYQ7iJu0e9Tbwv2HNd66bmlbe_ENprGEoE89WltvM1bIj2WlQ2A',
+            }}
+            style={styles.decorativeImage}
           />
           <View style={styles.decorativeOverlay} />
         </View>
-
       </ScrollView>
 
       {/* Confirmation Modal */}
@@ -90,26 +102,39 @@ export default function LogoutDeleteAccountScreen() {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}
+        >
           <TouchableOpacity style={styles.modalContent} activeOpacity={1} onPress={() => {}}>
             <View style={styles.modalIconWrap}>
               <MaterialIcons name="priority-high" size={32} color="#ba1a1a" />
             </View>
             <Text style={styles.modalTitle}>Farewell, Peer?</Text>
             <Text style={styles.modalDesc}>Termination is absolute. By proceeding, you will forfeit:</Text>
-            
+
             <View style={styles.consequencesBox}>
               <View style={styles.consequenceRow}>
                 <MaterialIcons name="stars" size={16} color="#775a19" style={styles.consequenceIcon} />
-                <Text style={styles.consequenceText}><Text style={styles.bold}>Prestigious Status:</Text> All earned credentials and community standing will be dissolved.</Text>
+                <Text style={styles.consequenceText}>
+                  <Text style={styles.bold}>Prestigious Status:</Text> All earned credentials and community
+                  standing will be dissolved.
+                </Text>
               </View>
               <View style={styles.consequenceRow}>
                 <MaterialIcons name="hub" size={16} color="#775a19" style={styles.consequenceIcon} />
-                <Text style={styles.consequenceText}><Text style={styles.bold}>Inner Circles:</Text> Your connections within local hubs will be permanently severed.</Text>
+                <Text style={styles.consequenceText}>
+                  <Text style={styles.bold}>Inner Circles:</Text> Your connections within local hubs will be
+                  permanently severed.
+                </Text>
               </View>
               <View style={styles.consequenceRow}>
                 <MaterialIcons name="history" size={16} color="#775a19" style={styles.consequenceIcon} />
-                <Text style={styles.consequenceText}><Text style={styles.bold}>Legacy:</Text> Your curated event history and personal contributions will be erased.</Text>
+                <Text style={styles.consequenceText}>
+                  <Text style={styles.bold}>Legacy:</Text> Your curated event history and personal
+                  contributions will be erased.
+                </Text>
               </View>
             </View>
 
@@ -125,7 +150,6 @@ export default function LogoutDeleteAccountScreen() {
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
-
     </SafeAreaView>
   );
 }
@@ -417,5 +441,5 @@ const styles = StyleSheet.create({
     color: '#75777e',
     letterSpacing: 2,
     marginTop: 16,
-  }
+  },
 });

@@ -17,9 +17,9 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 let authInstance;
 try {
   authInstance = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage)
+    persistence: getReactNativePersistence(AsyncStorage),
   });
-} catch (e) {
+} catch {
   authInstance = getAuth(app);
 }
 

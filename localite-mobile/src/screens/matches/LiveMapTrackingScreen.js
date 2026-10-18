@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Platform, Image, Animated } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  Image,
+  Animated,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 import { colors } from '../../theme';
@@ -33,9 +43,9 @@ export default function LiveMapTrackingScreen() {
       destination: 'Heritage Sports Complex, Court 4',
       eta: '4 MINS AWAY',
       status: 'In Transit',
-      lat: 51.5050,
-      lng: -0.1320,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
+      lat: 51.505,
+      lng: -0.132,
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120',
     },
     {
       id: 2,
@@ -46,8 +56,8 @@ export default function LiveMapTrackingScreen() {
       status: 'On Site',
       lat: 51.5074,
       lng: -0.1278,
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120'
-    }
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120',
+    },
   ];
 
   return (
@@ -107,7 +117,7 @@ export default function LiveMapTrackingScreen() {
           <TouchableOpacity style={styles.sheetHandleArea} onPress={toggleSheet}>
             <View style={styles.sheetHandle} />
           </TouchableOpacity>
-          
+
           <View style={styles.sheetContent}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>Members in Transit</Text>
@@ -119,13 +129,32 @@ export default function LiveMapTrackingScreen() {
                 <View key={m.id} style={styles.transitCard}>
                   <View style={styles.transitAvatarWrap}>
                     <Image source={{ uri: m.avatar }} style={styles.transitAvatar} />
-                    <View style={[styles.statusDot, m.status === 'On Site' ? { backgroundColor: colors.accent } : { backgroundColor: '#E67E22' }]} />
+                    <View
+                      style={[
+                        styles.statusDot,
+                        m.status === 'On Site'
+                          ? { backgroundColor: colors.accent }
+                          : { backgroundColor: '#E67E22' },
+                      ]}
+                    />
                   </View>
                   <View style={styles.transitInfo}>
                     <View style={styles.transitRow}>
                       <Text style={styles.transitName}>{m.name}</Text>
-                      <View style={[styles.etaChip, m.status === 'On Site' ? { backgroundColor: '#EDF5F0' } : { backgroundColor: '#FEF3C7' }]}>
-                        <Text style={[styles.etaChipText, m.status === 'On Site' ? { color: colors.accent } : { color: '#B45309' }]}>
+                      <View
+                        style={[
+                          styles.etaChip,
+                          m.status === 'On Site'
+                            ? { backgroundColor: '#EDF5F0' }
+                            : { backgroundColor: '#FEF3C7' },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.etaChipText,
+                            m.status === 'On Site' ? { color: colors.accent } : { color: '#B45309' },
+                          ]}
+                        >
                           {m.eta}
                         </Text>
                       </View>

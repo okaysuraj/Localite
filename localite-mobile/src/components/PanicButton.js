@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
 
@@ -18,19 +18,19 @@ export default function PanicButton() {
   const handlePanicPress = () => {
     setShowModal(true);
     setCountdown(3);
-    
+
     // Start countdown
     let count = 3;
     const interval = setInterval(() => {
       count -= 1;
       setCountdown(count);
-      
+
       if (count <= 0) {
         clearInterval(interval);
         triggerPanic();
       }
     }, 1000);
-    
+
     setTimer(interval);
   };
 
@@ -41,35 +41,34 @@ export default function PanicButton() {
 
   const triggerPanic = async () => {
     setShowModal(false);
-    
+
     try {
       const token = await AsyncStorage.getItem('userToken');
       // For a real app, we would also grab geolocation here
       const res = await fetch(`${API_URL}/safety/panic`, {
         method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ lat: 40.7128, lng: -74.0060 })
+        body: JSON.stringify({ lat: 40.7128, lng: -74.006 }),
       });
-      
+
       if (res.ok) {
-        Alert.alert("Emergency Alert Sent", "Your emergency contacts and local authorities have been notified.");
+        Alert.alert(
+          'Emergency Alert Sent',
+          'Your emergency contacts and local authorities have been notified.'
+        );
       }
     } catch (err) {
       console.error(err);
-      Alert.alert("Error", "Network failed, but trying alternative methods...");
+      Alert.alert('Error', 'Network failed, but trying alternative methods...');
     }
   };
 
   return (
     <>
-      <TouchableOpacity 
-        style={styles.fab} 
-        onPress={handlePanicPress}
-        activeOpacity={0.8}
-      >
+      <TouchableOpacity style={styles.fab} onPress={handlePanicPress} activeOpacity={0.8}>
         <Ionicons name="warning" size={24} color="white" />
       </TouchableOpacity>
 
@@ -79,17 +78,23 @@ export default function PanicButton() {
             <View style={styles.warningIconContainer}>
               <Ionicons name="warning" size={48} color="#ef4444" />
             </View>
-            
+
             <Text style={styles.title}>EMERGENCY ALERT</Text>
             <Text style={styles.subtitle}>Alerting contacts in...</Text>
-            
+
             <Text style={styles.countdown}>{countdown}</Text>
-            
+
             <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel}>
               <Text style={styles.cancelBtnText}>CANCEL</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.triggerBtn} onPress={() => { if(timer) clearInterval(timer); triggerPanic(); }}>
+
+            <TouchableOpacity
+              style={styles.triggerBtn}
+              onPress={() => {
+                if (timer) clearInterval(timer);
+                triggerPanic();
+              }}
+            >
               <Text style={styles.triggerBtnText}>TRIGGER NOW</Text>
             </TouchableOpacity>
           </View>
@@ -117,14 +122,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.2)',
-    zIndex: 999
+    zIndex: 999,
   },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(15,23,42,0.95)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
+    padding: 20,
   },
   modalContent: {
     width: '100%',
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
     padding: 30,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#ef4444'
+    borderColor: '#ef4444',
   },
   warningIconContainer: {
     width: 80,
@@ -145,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'rgba(239,68,68,0.3)'
+    borderColor: 'rgba(239,68,68,0.3)',
   },
   title: {
     fontSize: 24,
@@ -154,14 +159,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 2,
     marginBottom: 5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   subtitle: {
     color: '#94a3b8',
     fontSize: 12,
     textTransform: 'uppercase',
     letterSpacing: 1,
-    marginBottom: 20
+    marginBottom: 20,
   },
   countdown: {
     fontSize: 72,
@@ -170,7 +175,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textShadowColor: 'rgba(239,68,68,0.5)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 20
+    textShadowRadius: 20,
   },
   cancelBtn: {
     backgroundColor: 'rgba(255,255,255,0.1)',
@@ -178,23 +183,23 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
   },
   cancelBtnText: {
     color: 'white',
     fontWeight: 'bold',
-    letterSpacing: 1
+    letterSpacing: 1,
   },
   triggerBtn: {
     backgroundColor: '#ef4444',
     paddingVertical: 15,
     width: '100%',
     borderRadius: 10,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   triggerBtnText: {
     color: 'white',
     fontWeight: 'bold',
-    letterSpacing: 1
-  }
+    letterSpacing: 1,
+  },
 });

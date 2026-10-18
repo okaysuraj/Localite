@@ -1,112 +1,95 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onIdTokenChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import {
+  onIdTokenChanged,
+  signOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
 import { auth } from '../firebase';
-import { API_BASE_URL } from '../services/api';
+import { request } from '../api/apiClient';
+
+const LOGIN_ERRORS = {
+  'auth/user-not-found': "Invalid email or password. If you don't have an account, please sign up.",
+  'auth/invalid-credential': "Invalid email or password. If you don't have an account, please sign up.",
+  'auth/wrong-password': 'Incorrect password. Please try again.',
+  'auth/invalid-email': 'Please enter a valid email address.',
+  'auth/too-many-requests': 'Too many failed login attempts. Please try again later.',
+};
 
 export const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }) => {
+// Firebase owns the session; local storage supplies the token to older page requests.
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
+    let active = true;
     const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        if (!currentUser.emailVerified) {
-          // If they aren't verified, sign them out silently
-          await signOut(auth);
-          setUser(null);
+      try {
+        // Registration needs its unverified Firebase session until the email is sent.
+        if (!currentUser?.emailVerified) {
           localStorage.removeItem('token');
-        } else {
-          const token = await currentUser.getIdToken();
-          localStorage.setItem('token', token);
-          setUser({ 
-            uid: currentUser.uid, 
-            email: currentUser.email,
-            token: token 
-          });
+          if (active) setUser(null);
+          return;
         }
-      } else {
-        setUser(null);
+        const token = await currentUser.getIdToken();
+        if (!active || auth.currentUser?.uid !== currentUser.uid) return;
+        localStorage.setItem('token', token);
+        setUser({ uid: currentUser.uid, email: currentUser.email, token });
+      } catch {
         localStorage.removeItem('token');
+        if (active) setUser(null);
+      } finally {
+        if (active) setLoading(false);
       }
-      setLoading(false);
     });
-
-    return () => unsubscribe();
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, []);
 
-  const login = async (email, password) => {
+  async function login(email, password) {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      if (!userCredential.user.emailVerified) {
+      const { user: firebaseUser } = await signInWithEmailAndPassword(auth, email, password);
+      if (!firebaseUser.emailVerified) {
         await signOut(auth);
-        throw new Error("Please verify your email before logging in. Check your inbox.");
+        throw new Error('Please verify your email before logging in. Check your inbox.');
       }
       navigate('/dashboard');
     } catch (error) {
-      console.error("Login failed:", error);
-      let errorMessage = "An error occurred during login. Please try again.";
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        errorMessage = "Invalid email or password. If you don't have an account, please sign up.";
-      } else if (error.code === 'auth/wrong-password') {
-        errorMessage = "Incorrect password. Please try again.";
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = "Please enter a valid email address.";
-      } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = "Too many failed login attempts. Please try again later.";
-      }
-      throw new Error(errorMessage);
+      throw new Error(LOGIN_ERRORS[error.code] || error.message, { cause: error });
     }
-  };
+  }
 
-  const register = async (username, email, password) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
-      
-      // Sync user with backend
-      const res = await fetch(`${API_BASE_URL}/auth/sync-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ username, email })
-      });
-      
-      if (!res.ok) {
-        console.error("Backend sync failed");
-        // We could delete the Firebase user here if backend sync fails to keep them consistent
-      }
-      
-      await sendEmailVerification(userCredential.user);
-      await signOut(auth);
-      
-      return { success: true, message: "Please check your email to verify your account before logging in." };
-    } catch (error) {
-      console.error("Registration failed:", error);
-      throw error;
-    }
-  };
+  async function register(username, email, password) {
+    const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password);
+    const token = await firebaseUser.getIdToken();
+    // Preserve verification when the backend is temporarily unavailable.
+    await request('/auth/sync-user', {
+      method: 'POST',
+      data: { username, email },
+      headers: { Authorization: `Bearer ${token}` },
+      fallback: null,
+    });
+    await sendEmailVerification(firebaseUser);
+    await signOut(auth);
+    return { success: true, message: 'Please check your email to verify your account before logging in.' };
+  }
 
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      navigate('/');
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+  async function logout() {
+    await signOut(auth);
+    navigate('/');
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => useContext(AuthContext);
-
+}

@@ -1,6 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Platform, ScrollView } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function SocialLinkingScreen() {
@@ -17,9 +25,11 @@ export default function SocialLinkingScreen() {
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
         <View style={styles.profileBtn}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXpbOf3odtKfFSLt2116-Gv9BQvBFhjhzdV6LNWbQDrG2qBhR2Lu3ycnaQsSRAdYGHnkupoDszWRVWxzkmW66lThyRNJanmXSGI5r8hMivd7XgFuGi5VPtDdz3Fmfew1x1dPSYpu1k8Hn4fHmldr3johk_VjQYHh2qj4hcErzn4OqV2z5tRgUImVthWznN_4FJRRa-IPD09IJ1OP3iEypvQbNU3JyvI_xDYVk16EiJOoHLJOvQgb4CmQ' }} 
-            style={styles.profileImg} 
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXpbOf3odtKfFSLt2116-Gv9BQvBFhjhzdV6LNWbQDrG2qBhR2Lu3ycnaQsSRAdYGHnkupoDszWRVWxzkmW66lThyRNJanmXSGI5r8hMivd7XgFuGi5VPtDdz3Fmfew1x1dPSYpu1k8Hn4fHmldr3johk_VjQYHh2qj4hcErzn4OqV2z5tRgUImVthWznN_4FJRRa-IPD09IJ1OP3iEypvQbNU3JyvI_xDYVk16EiJOoHLJOvQgb4CmQ',
+            }}
+            style={styles.profileImg}
           />
         </View>
       </View>
@@ -30,7 +40,8 @@ export default function SocialLinkingScreen() {
           <Text style={styles.heroLabel}>VERIFICATION</Text>
           <Text style={styles.heroTitle}>Elevate Your Status</Text>
           <Text style={styles.heroDesc}>
-            Join our circle of trust. Linking your professional and social profiles helps us maintain the integrity of our exclusive community.
+            Join our circle of trust. Linking your professional and social profiles helps us maintain the
+            integrity of our exclusive community.
           </Text>
         </View>
 
@@ -67,7 +78,12 @@ export default function SocialLinkingScreen() {
           {/* X (Twitter) */}
           <TouchableOpacity style={styles.connectionCard}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconWrap, { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#000' }]}>
+              <View
+                style={[
+                  styles.iconWrap,
+                  { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#000' },
+                ]}
+              >
                 <MaterialIcons name="alternate-email" size={24} color="#000" />
               </View>
               <View style={styles.cardTextWrap}>
@@ -86,13 +102,16 @@ export default function SocialLinkingScreen() {
             <MaterialIcons name="verified-user" size={36} color="#775a19" style={styles.privacyIcon} />
             <Text style={styles.privacyTitle}>Your Privacy is Paramount</Text>
             <Text style={styles.privacyDesc}>
-              We use these connections solely to verify your identity and professional background. This ensures every member of Localite is exactly who they say they are.
+              We use these connections solely to verify your identity and professional background. This
+              ensures every member of Localite is exactly who they say they are.
             </Text>
-            
+
             <View style={styles.privacyDisclaimer}>
               <MaterialIcons name="check-circle" size={16} color="#775a19" style={{ marginTop: 2 }} />
               <Text style={styles.disclaimerText}>
-                Localite will <Text style={{ color: '#000', fontWeight: 'bold' }}>never</Text> post to your accounts, message your contacts, or share your private social data with third parties without your explicit, one-time permission.
+                Localite will <Text style={{ color: '#000', fontWeight: 'bold' }}>never</Text> post to your
+                accounts, message your contacts, or share your private social data with third parties without
+                your explicit, one-time permission.
               </Text>
             </View>
           </View>
@@ -310,5 +329,5 @@ const styles = StyleSheet.create({
     color: '#75777e',
     letterSpacing: 2,
     marginTop: 16,
-  }
+  },
 });

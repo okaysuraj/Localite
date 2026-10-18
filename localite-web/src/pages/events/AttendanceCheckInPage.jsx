@@ -1,18 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { checkInAttendee } from '../../services/api';
-import { 
-  QrCode, 
-  CheckCircle, 
-  Printer, 
-  ArrowLeft, 
-  Clock, 
-  Users, 
-  ShieldCheck, 
-  ForkKnife, 
-  Wine, 
-  Sparkle 
-} from '@phosphor-icons/react';
+import { QrCode, CheckCircle, ArrowLeft, ShieldCheck, ForkKnife, Wine, Sparkle } from '@phosphor-icons/react';
 
 export default function AttendanceCheckInPage() {
   const navigate = useNavigate();
@@ -53,8 +42,8 @@ export default function AttendanceCheckInPage() {
       <main className="max-w-4xl mx-auto space-y-6">
         {/* Navigation & Title */}
         <div className="flex items-center justify-between">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
           >
@@ -68,15 +57,19 @@ export default function AttendanceCheckInPage() {
 
         <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-serif text-[var(--fg)]">Guest Arrival & Check-In</h1>
-          <p className="text-xs sm:text-sm text-[var(--fg-muted)]">Validate attendee tickets directly against the live event roster.</p>
+          <p className="text-xs sm:text-sm text-[var(--fg-muted)]">
+            Validate attendee tickets directly against the live event roster.
+          </p>
         </div>
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           {/* Ticket Input Card */}
           <div className="md:col-span-7 bg-white rounded-card border border-[var(--border)] p-8 flex flex-col items-center justify-center text-center space-y-6">
-            <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Ticket Verification</span>
-            
+            <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+              Ticket Verification
+            </span>
+
             <div className="p-6 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card relative">
               <QrCode size={120} className="text-[var(--fg)]" />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2 rounded-full bg-white border border-[var(--border)] text-[var(--accent)]">
@@ -85,7 +78,7 @@ export default function AttendanceCheckInPage() {
             </div>
 
             <form onSubmit={handleValidate} className="w-full space-y-3">
-              <input 
+              <input
                 type="text"
                 value={ticketId}
                 onChange={(e) => setTicketId(e.target.value)}
@@ -94,7 +87,9 @@ export default function AttendanceCheckInPage() {
               />
 
               {statusMessage && (
-                <div className={`p-3 rounded-btn text-xs font-mono ${isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'}`}>
+                <div
+                  className={`p-3 rounded-btn text-xs font-mono ${isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'}`}
+                >
                   {statusMessage}
                 </div>
               )}
@@ -114,21 +109,33 @@ export default function AttendanceCheckInPage() {
           {/* Details & Protocols */}
           <div className="md:col-span-5 space-y-4">
             <div className="bg-white rounded-card border border-[var(--border)] p-5 space-y-3">
-              <h4 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Arrival Details</h4>
+              <h4 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Arrival Details
+              </h4>
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="p-3 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
-                  <span className="text-[var(--fg-muted)] block text-[11px] font-mono uppercase">Check-in Time</span>
-                  <span className="font-mono text-sm text-[var(--fg)] font-medium mt-0.5 block">20:14 PM</span>
+                  <span className="text-[var(--fg-muted)] block text-[11px] font-mono uppercase">
+                    Check-in Time
+                  </span>
+                  <span className="font-mono text-sm text-[var(--fg)] font-medium mt-0.5 block">
+                    20:14 PM
+                  </span>
                 </div>
                 <div className="p-3 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
-                  <span className="text-[var(--fg-muted)] block text-[11px] font-mono uppercase">Party Size</span>
-                  <span className="font-mono text-sm text-[var(--fg)] font-medium mt-0.5 block">2 Guests</span>
+                  <span className="text-[var(--fg-muted)] block text-[11px] font-mono uppercase">
+                    Party Size
+                  </span>
+                  <span className="font-mono text-sm text-[var(--fg)] font-medium mt-0.5 block">
+                    2 Guests
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="bg-white rounded-card border border-[var(--border)] p-5 space-y-3">
-              <h4 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Attendee Requirements</h4>
+              <h4 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Attendee Requirements
+              </h4>
               <ul className="space-y-2.5 text-xs text-[var(--fg-muted)]">
                 <li className="flex items-start gap-2.5">
                   <CheckCircle size={16} className="text-[var(--accent)] shrink-0 mt-0.5" weight="fill" />

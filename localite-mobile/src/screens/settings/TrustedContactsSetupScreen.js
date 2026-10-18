@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Switch, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Switch,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function TrustedContactsSetupScreen() {
@@ -17,26 +27,34 @@ export default function TrustedContactsSetupScreen() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Trusted Circles</Text>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCFpdz0_5ObiTCv-HJ1nuC25PUy9jZKwSyEcSTx4UIwPqlyC7-o_amhjJIECWIhUCP7Mxn-sLJaoQSnnWBu6_nPyug75YoQB-V2fzermkdTG2GzNKS_4hOnZUoCAEAYCOlBwnUdAzRBroffOuK90kh66o9Hv0ZbTLLyfoVpBynZNuLeKbF_QEY6jmFVzvdd9k46YP9tBY1e_fPZtofs1pzv2Wwh4zbB7dxL9xkESvhbDfCndQEK_6UnyQ' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCFpdz0_5ObiTCv-HJ1nuC25PUy9jZKwSyEcSTx4UIwPqlyC7-o_amhjJIECWIhUCP7Mxn-sLJaoQSnnWBu6_nPyug75YoQB-V2fzermkdTG2GzNKS_4hOnZUoCAEAYCOlBwnUdAzRBroffOuK90kh66o9Hv0ZbTLLyfoVpBynZNuLeKbF_QEY6jmFVzvdd9k46YP9tBY1e_fPZtofs1pzv2Wwh4zbB7dxL9xkESvhbDfCndQEK_6UnyQ',
+            }}
             style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        
         {/* Explainer Section */}
         <View style={styles.explainerSection}>
           <Text style={styles.preTitle}>SAFETY & SECURITY</Text>
           <Text style={styles.title}>Trusted Circles</Text>
-          
+
           <View style={styles.explainerCard}>
             <View style={styles.bgIconWrap}>
-              <MaterialIcons name="verified-user" size={120} color="rgba(0,0,0,0.03)" style={{ position: 'absolute', right: -20, top: -20 }} />
+              <MaterialIcons
+                name="verified-user"
+                size={120}
+                color="rgba(0,0,0,0.03)"
+                style={{ position: 'absolute', right: -20, top: -20 }}
+              />
             </View>
             <Text style={styles.explainerText}>
-              Localite ensures your peace of mind by maintaining a discrete tether to those who matter most. When active, your live status and precise location are shared exclusively with your chosen inner circle during emergencies or late-night gatherings.
+              Localite ensures your peace of mind by maintaining a discrete tether to those who matter most.
+              When active, your live status and precise location are shared exclusively with your chosen inner
+              circle during emergencies or late-night gatherings.
             </Text>
             <View style={styles.encryptionRow}>
               <MaterialIcons name="lock" size={16} color="#775a19" />
@@ -66,7 +84,7 @@ export default function TrustedContactsSetupScreen() {
               </View>
               <View style={styles.contactControls}>
                 <Text style={styles.toggleLabel}>Notify all events</Text>
-                <Switch 
+                <Switch
                   value={toggle1}
                   onValueChange={setToggle1}
                   trackColor={{ false: '#e4e2e2', true: '#775a19' }}
@@ -89,7 +107,7 @@ export default function TrustedContactsSetupScreen() {
               </View>
               <View style={styles.contactControls}>
                 <Text style={styles.toggleLabel}>Notify all events</Text>
-                <Switch 
+                <Switch
                   value={toggle2}
                   onValueChange={setToggle2}
                   trackColor={{ false: '#e4e2e2', true: '#775a19' }}
@@ -111,7 +129,8 @@ export default function TrustedContactsSetupScreen() {
         <View style={styles.footerInfo}>
           <MaterialIcons name="info" size={20} color="#775a19" />
           <Text style={styles.footerInfoText}>
-            Contacts will receive a formal invitation via SMS to join your Trusted Circle. They must accept before their status sharing becomes active.
+            Contacts will receive a formal invitation via SMS to join your Trusted Circle. They must accept
+            before their status sharing becomes active.
           </Text>
         </View>
       </ScrollView>
@@ -370,5 +389,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#44474d',
     letterSpacing: 1,
-  }
+  },
 });

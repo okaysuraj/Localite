@@ -1,15 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  CalendarBlank, 
-  MapPin, 
-  Plus, 
-  ArrowRight, 
-  Clock, 
-  Users, 
-  Sparkle,
-  BookmarkSimple
-} from '@phosphor-icons/react';
+import { CalendarBlank, MapPin, Plus, Clock, Users } from '@phosphor-icons/react';
 
 export default function MyEventsPage() {
   const navigate = useNavigate();
@@ -25,7 +16,7 @@ export default function MyEventsPage() {
       location: 'Vanguard Atelier, SoHo',
       role: 'Confirmed Guest',
       host: 'Arthur P.',
-      image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800'
+      image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800',
     },
     {
       id: '2',
@@ -36,8 +27,8 @@ export default function MyEventsPage() {
       location: 'The Timber Pavilion, DUMBO',
       role: 'Waitlist #2',
       host: 'Soren K.',
-      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800'
-    }
+      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800',
+    },
   ];
 
   const hostedEvents = [
@@ -50,8 +41,8 @@ export default function MyEventsPage() {
       location: 'The Glass Conservatory, Chelsea',
       role: 'Host',
       attendees: '48 / 80 Confirmed',
-      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800'
-    }
+      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800',
+    },
   ];
 
   const currentList = activeTab === 'joined' ? joinedEvents : hostedEvents;
@@ -78,8 +69,8 @@ export default function MyEventsPage() {
                 type="button"
                 onClick={() => setActiveTab('joined')}
                 className={`px-4 py-1.5 rounded-card uppercase tracking-wider transition-colors ${
-                  activeTab === 'joined' 
-                    ? 'bg-[var(--fg)] text-white font-medium' 
+                  activeTab === 'joined'
+                    ? 'bg-[var(--fg)] text-white font-medium'
                     : 'text-[var(--fg-muted)] hover:text-[var(--fg)]'
                 }`}
               >
@@ -89,8 +80,8 @@ export default function MyEventsPage() {
                 type="button"
                 onClick={() => setActiveTab('hosted')}
                 className={`px-4 py-1.5 rounded-card uppercase tracking-wider transition-colors ${
-                  activeTab === 'hosted' 
-                    ? 'bg-[var(--fg)] text-white font-medium' 
+                  activeTab === 'hosted'
+                    ? 'bg-[var(--fg)] text-white font-medium'
                     : 'text-[var(--fg-muted)] hover:text-[var(--fg)]'
                 }`}
               >
@@ -128,16 +119,16 @@ export default function MyEventsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentList.map((ev) => (
-              <div 
+              <div
                 key={ev.id}
                 onClick={() => navigate(`/events/${ev.id}`)}
                 className="bg-white rounded-card border border-[var(--border)] overflow-hidden hover:border-[var(--fg-muted)] transition-all cursor-pointer group flex flex-col"
               >
                 <div className="h-48 w-full relative bg-[var(--bg-subtle)] overflow-hidden">
-                  <img 
-                    src={ev.image} 
-                    alt={ev.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  <img
+                    src={ev.image}
+                    alt={ev.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-card text-center border border-[var(--border)]">
                     <span className="block text-[10px] font-mono text-[var(--fg-muted)] uppercase">Date</span>

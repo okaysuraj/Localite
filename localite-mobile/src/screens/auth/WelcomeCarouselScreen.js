@@ -1,15 +1,14 @@
-import React, { useRef, useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  ScrollView, 
-  Dimensions, 
-  TouchableOpacity, 
+import { useRef, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
   SafeAreaView,
-  Image
+  Image,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
@@ -19,22 +18,25 @@ const SLIDES = [
     category: 'INTRODUCTION',
     title: 'Find Your Third Place',
     description: 'Beyond home and work, discover the curated spaces where your soul feels at rest.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYZrpzrBc9hN9QnwfMXgb9e_Qjgj9GgX2jjwUpu1sASEddgIchVjRHkMFycGHJxb23Kbj05sYgyzqEeELAk253p6_VLAckmA7EjVpF9ClwtINuNEbOS-Qb7xOx66u-a4Gg7s-92o0CIalXZG3DRcG2F8JzkYA1gnIcpb4sr4sZEvFX9bGVREaoZ460dLVpBSAq1vDWoISQewIfDZIynaf4cCYqYUlh4h7mIvqupMsKGl37BC0f3TE_tQ'
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCYZrpzrBc9hN9QnwfMXgb9e_Qjgj9GgX2jjwUpu1sASEddgIchVjRHkMFycGHJxb23Kbj05sYgyzqEeELAk253p6_VLAckmA7EjVpF9ClwtINuNEbOS-Qb7xOx66u-a4Gg7s-92o0CIalXZG3DRcG2F8JzkYA1gnIcpb4sr4sZEvFX9bGVREaoZ460dLVpBSAq1vDWoISQewIfDZIynaf4cCYqYUlh4h7mIvqupMsKGl37BC0f3TE_tQ',
   },
   {
     id: '2',
     category: 'COMMUNITY',
     title: 'Join Meaningful Gatherings',
     description: 'Quality interactions in aesthetic surroundings, designed for those who value depth.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDbFbhFvGY4V_AzbgtdlapW09fdGZuHOhe-oTTwZ39m_l3mfQi6GpeLmGtGUvNFTmkHA6b3EYa66BmbMzavwzGscgW-JkfXR5hoBrqdtTxkBnODRfX2EMNXM8eSCwOgXLCdlxHzyEELfXv5W_ICxwn2Iv3CQyg43rTgY4ZqH2nUdiVleI2gxijst1Gs8CvJCsnjWCNkuNMCW_EuROxvmCJWPLgrK1Kd2g5-R06_BgJAmBICtWZEzXZgjg'
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDbFbhFvGY4V_AzbgtdlapW09fdGZuHOhe-oTTwZ39m_l3mfQi6GpeLmGtGUvNFTmkHA6b3EYa66BmbMzavwzGscgW-JkfXR5hoBrqdtTxkBnODRfX2EMNXM8eSCwOgXLCdlxHzyEELfXv5W_ICxwn2Iv3CQyg43rTgY4ZqH2nUdiVleI2gxijst1Gs8CvJCsnjWCNkuNMCW_EuROxvmCJWPLgrK1Kd2g5-R06_BgJAmBICtWZEzXZgjg',
   },
   {
     id: '3',
     category: 'IDENTITY',
     title: 'Meet Local Souls',
     description: 'Connect with discerning neighbors who share your vision for a refined local life.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDcKgr0j5iXu0gowj4eJliBQX1qMjQyIKkw-Sbe1NmnbXNfegWw3AnSGYoWpqyzLh6gzP7KQp95k5zNc1vUNhWdoR-xfVcx065haVjQE9m30ghsBEZA2YN_Weo_SaGGB5M0U8KzeMdFMAoYD06OLLArGsCzNunRa9zT-dyI1hDtaTVdiM4w75ZXNPNlNIGZe5T5JYkm3ufq4BTGqCtPRfodGpBG2VTXPEGDUb7e3ZO6iABfyrvHvCJIIg'
-  }
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDcKgr0j5iXu0gowj4eJliBQX1qMjQyIKkw-Sbe1NmnbXNfegWw3AnSGYoWpqyzLh6gzP7KQp95k5zNc1vUNhWdoR-xfVcx065haVjQE9m30ghsBEZA2YN_Weo_SaGGB5M0U8KzeMdFMAoYD06OLLArGsCzNunRa9zT-dyI1hDtaTVdiM4w75ZXNPNlNIGZe5T5JYkm3ufq4BTGqCtPRfodGpBG2VTXPEGDUb7e3ZO6iABfyrvHvCJIIg',
+  },
 ];
 
 export default function WelcomeCarouselScreen({ navigation }) {
@@ -85,12 +87,12 @@ export default function WelcomeCarouselScreen({ navigation }) {
               <Image source={{ uri: slide.image }} style={styles.image} />
               <View style={styles.imageOverlay} />
             </View>
-            
+
             <View style={styles.textContainer}>
               <Text style={styles.category}>{slide.category}</Text>
               <Text style={styles.title}>{slide.title}</Text>
               <Text style={styles.description}>{slide.description}</Text>
-              
+
               {index === SLIDES.length - 1 && (
                 <TouchableOpacity style={styles.getStartedBtn} onPress={startJourney}>
                   <Text style={styles.getStartedBtnText}>GET STARTED</Text>
@@ -105,13 +107,7 @@ export default function WelcomeCarouselScreen({ navigation }) {
       <View style={styles.footer}>
         <View style={styles.pagination}>
           {SLIDES.map((_, i) => (
-            <View 
-              key={i} 
-              style={[
-                styles.dot, 
-                currentIndex === i ? styles.activeDot : styles.inactiveDot
-              ]} 
-            />
+            <View key={i} style={[styles.dot, currentIndex === i ? styles.activeDot : styles.inactiveDot]} />
           ))}
         </View>
 
@@ -156,7 +152,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    aspectRatio: 4/5,
+    aspectRatio: 4 / 5,
     maxWidth: 400,
     borderRadius: 16,
     overflow: 'hidden',
@@ -255,5 +251,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#775a19',
     letterSpacing: 2,
-  }
+  },
 });

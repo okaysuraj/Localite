@@ -137,7 +137,6 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // Phase 2: Social Graph Endpoints
     @GetMapping
     public ResponseEntity<?> getAllUsers(Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");

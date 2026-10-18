@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, ActivityIndicator } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { getEvents } from '../../services/api';
 
@@ -26,35 +36,48 @@ export default function EventsListScreen() {
     fetchEvents();
   }, []);
 
-  const filteredEvents = activeTab === 'All Events' 
-    ? events 
-    : events.filter(e => e.category === activeTab || e.eventType === activeTab);
+  const filteredEvents =
+    activeTab === 'All Events'
+      ? events
+      : events.filter((e) => e.category === activeTab || e.eventType === activeTab);
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.openDrawer && navigation.openDrawer()} style={styles.iconBtn}>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer && navigation.openDrawer()}
+            style={styles.iconBtn}
+          >
             <MaterialIcons name="menu" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
-        <TouchableOpacity style={styles.avatarWrap} onPress={() => navigation.navigate('MyProfilePublicView')}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB1Y-n2YcRrNy4qsaTAJFjQ499HF8WvakmbvkpiPKCTe1QpTCsJ8SaYV0rHDbOZDSYV0PHS6UoTvr0KlXVIFkCbHyJshsKkkqBYtpZ8sQApvTjXfvf9UiIGvhgUYdEI751BrXKNRhifju26Gy1A2_12zHjJTtM-hHfVAxg39KUJRgTN6xnw2UzcMK3S-PSpOzikXqP3-ptt6B3kjHAuCBpZLsHaBu794oSGQAb1amLMz3NdzLcsH5oGOw' }} 
-            style={styles.avatarImg} 
+        <TouchableOpacity
+          style={styles.avatarWrap}
+          onPress={() => navigation.navigate('MyProfilePublicView')}
+        >
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB1Y-n2YcRrNy4qsaTAJFjQ499HF8WvakmbvkpiPKCTe1QpTCsJ8SaYV0rHDbOZDSYV0PHS6UoTvr0KlXVIFkCbHyJshsKkkqBYtpZ8sQApvTjXfvf9UiIGvhgUYdEI751BrXKNRhifju26Gy1A2_12zHjJTtM-hHfVAxg39KUJRgTN6xnw2UzcMK3S-PSpOzikXqP3-ptt6B3kjHAuCBpZLsHaBu794oSGQAb1amLMz3NdzLcsH5oGOw',
+            }}
+            style={styles.avatarImg}
           />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Category Selector */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsScroll} contentContainerStyle={styles.tabsScrollContent}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabsScroll}
+          contentContainerStyle={styles.tabsScrollContent}
+        >
           {tabs.map((tab) => (
-            <TouchableOpacity 
-              key={tab} 
+            <TouchableOpacity
+              key={tab}
               style={[styles.tabBtn, activeTab === tab ? styles.tabBtnActive : null]}
               onPress={() => setActiveTab(tab)}
             >
@@ -81,15 +104,23 @@ export default function EventsListScreen() {
         ) : (
           <View style={styles.cardsGrid}>
             {filteredEvents.map((item, index) => (
-              <TouchableOpacity key={item.id} style={styles.card} activeOpacity={0.9} onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}>
+              <TouchableOpacity
+                key={item.id}
+                style={styles.card}
+                activeOpacity={0.9}
+                onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
+              >
                 <View style={index === 0 ? styles.cardImgWrapLarge : styles.cardImgWrap}>
-                  <Image 
-                    source={{ uri: item.imageUrl || item.image }} 
-                    style={styles.cardImg} 
-                  />
+                  <Image source={{ uri: item.imageUrl || item.image }} style={styles.cardImg} />
                   <View style={styles.badgesWrap}>
-                    {item.isHighlighted && <View style={styles.badgeGold}><Text style={styles.badgeGoldText}>ELITE</Text></View>}
-                    <View style={styles.badgeDark}><Text style={styles.badgeDarkText}>{item.category || item.eventType || 'EVENT'}</Text></View>
+                    {item.isHighlighted && (
+                      <View style={styles.badgeGold}>
+                        <Text style={styles.badgeGoldText}>ELITE</Text>
+                      </View>
+                    )}
+                    <View style={styles.badgeDark}>
+                      <Text style={styles.badgeDarkText}>{item.category || item.eventType || 'EVENT'}</Text>
+                    </View>
                   </View>
                 </View>
                 <View style={styles.cardBody}>
@@ -98,13 +129,13 @@ export default function EventsListScreen() {
                     <Text style={index === 0 ? styles.cardTitleLarge : styles.cardTitle}>{item.title}</Text>
                     <MaterialIcons name="bookmark-border" size={20} color="#75777e" />
                   </View>
-                  
+
                   {index === 0 && (
                     <Text style={styles.cardDesc} numberOfLines={3}>
                       {item.description}
                     </Text>
                   )}
-                  
+
                   <View style={index === 0 ? styles.cardDetailsLarge : styles.cardDetails}>
                     <View style={styles.detailRow}>
                       <MaterialIcons name="calendar-today" size={16} color="#44474d" />
@@ -115,7 +146,7 @@ export default function EventsListScreen() {
                       <Text style={styles.detailTextLoc}>{item.location}</Text>
                     </View>
                   </View>
-                  
+
                   {index === 0 ? (
                     <TouchableOpacity style={styles.requestBtn}>
                       <Text style={styles.requestBtnText}>REQUEST INVITATION</Text>
@@ -125,7 +156,9 @@ export default function EventsListScreen() {
                       <View style={styles.facesWrap}>
                         <View style={[styles.face, { backgroundColor: '#e2e8f0' }]} />
                         <View style={[styles.face, { backgroundColor: '#cbd5e1' }]} />
-                        <View style={styles.faceMore}><Text style={styles.faceMoreText}>+{item.attendees || 0}</Text></View>
+                        <View style={styles.faceMore}>
+                          <Text style={styles.faceMoreText}>+{item.attendees || 0}</Text>
+                        </View>
                       </View>
                       <Text style={styles.priceText}>{item.cost > 0 ? `$${item.cost} / seat` : 'Free'}</Text>
                     </View>
@@ -494,5 +527,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#775a19',
     marginTop: 4,
-  }
+  },
 });

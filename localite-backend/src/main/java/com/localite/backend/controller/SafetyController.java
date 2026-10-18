@@ -8,10 +8,11 @@ import com.localite.backend.repository.ReportRepository;
 import com.localite.backend.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 @RequestMapping("/api/safety")
 @CrossOrigin(origins = "*")
 public class SafetyController {
+    private static final Logger logger = LoggerFactory.getLogger(SafetyController.class);
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
@@ -40,7 +42,7 @@ public class SafetyController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
         
         User reporter = currentUserOpt.get();
         String targetType = (String) payload.get("targetType");
@@ -59,7 +61,7 @@ public class SafetyController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
         
         Double lat = payload.containsKey("lat") && payload.get("lat") != null ? Double.valueOf(payload.get("lat").toString()) : null;
         Double lng = payload.containsKey("lng") && payload.get("lng") != null ? Double.valueOf(payload.get("lng").toString()) : null;
@@ -68,7 +70,6 @@ public class SafetyController {
         EmergencyAlert alert = new EmergencyAlert(user, lat, lng);
         emergencyAlertRepository.save(alert);
         
-        System.out.println("🚨 PANIC BUTTON TRIGGERED BY USER: " + user.getUsername() + " AT LOCATION: " + lat + ", " + lng);
         
         // Broadcast in real-time to safety and emergency listeners
         try {
@@ -81,7 +82,7 @@ public class SafetyController {
             );
             messagingTemplate.convertAndSend("/topic/safety/alerts", (Object) alertPayload);
         } catch (Exception e) {
-            System.err.println("Failed to broadcast safety alert: " + e.getMessage());
+            logger.error("Failed to broadcast safety alert {}", alert.getId(), e);
         }
         
         return ResponseEntity.ok(Map.of(

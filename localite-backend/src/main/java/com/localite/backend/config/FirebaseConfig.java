@@ -1,22 +1,20 @@
 package com.localite.backend.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
+/** Loads server credentials from environment variables or a local service-account file. */
 @Configuration
 public class FirebaseConfig {
-    private static final Logger logger = LoggerFactory.getLogger(FirebaseConfig.class);
-
     @Value("${FIREBASE_PROJECT_ID:}")
     private String projectId;
 
@@ -26,56 +24,38 @@ public class FirebaseConfig {
     @Value("${FIREBASE_PRIVATE_KEY:}")
     private String privateKey;
 
-    private String clean(String value) {
-        if (value != null && value.length() >= 2) {
-            if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") && value.endsWith("'"))) {
-                return value.substring(1, value.length() - 1);
-            }
-        }
-        return value;
-    }
-
     @PostConstruct
     public void init() {
+        if (!FirebaseApp.getApps().isEmpty()) return;
         try {
-            logger.info("Initializing Firebase...");
-            logger.info("projectId length: {}", projectId != null ? projectId.length() : "null");
-            logger.info("clientEmail length: {}", clientEmail != null ? clientEmail.length() : "null");
-            logger.info("privateKey length: {}", privateKey != null ? privateKey.length() : "null");
-
-            GoogleCredentials credentials;
-            
-            if (projectId != null && !projectId.isEmpty() && clientEmail != null && !clientEmail.isEmpty() && privateKey != null && !privateKey.isEmpty()) {
-                String cleanProjectId = clean(projectId);
-                String cleanClientEmail = clean(clientEmail);
-                String cleanPrivateKey = clean(privateKey).replace("\\n", "\n").replace("\n", "\\n");
-                
-                String jsonConfig = String.format(
-                    "{\"type\":\"service_account\",\"project_id\":\"%s\",\"private_key_id\":\"dummy_id\",\"private_key\":\"%s\",\"client_email\":\"%s\",\"client_id\":\"dummy_client_id\"}",
-                    cleanProjectId, cleanPrivateKey, cleanClientEmail
-                );
-                
-                credentials = GoogleCredentials.fromStream(new java.io.ByteArrayInputStream(jsonConfig.getBytes()));
-                logger.info("Firebase initialized using Environment Variables.");
-            } else {
-                // Fallback to local JSON file
-                logger.warn("Environment variables missing or empty. Falling back to local firebase-service-account.json file...");
-                FileInputStream serviceAccount = new FileInputStream("firebase-service-account.json");
-                credentials = GoogleCredentials.fromStream(serviceAccount);
-                logger.info("Firebase initialized using local JSON file.");
-            }
-
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(credentials)
+                    .setCredentials(loadCredentials())
                     .build();
-
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-            }
-            logger.info("Firebase successfully initialized!");
-        } catch (Exception e) {
-            logger.error("FATAL ERROR: Firebase initialization failed!", e);
-            throw new RuntimeException("Firebase initialization failed! Check Render logs for details.", e);
+            FirebaseApp.initializeApp(options);
+        } catch (IOException error) {
+            throw new IllegalStateException("Cannot load Firebase credentials. Check the environment or service-account file.", error);
         }
+    }
+
+    private GoogleCredentials loadCredentials() throws IOException {
+        String project = unquote(projectId);
+        String email = unquote(clientEmail);
+        String key = unquote(privateKey).replace("\\n", "\n");
+        if (!project.isEmpty() && !email.isEmpty() && !key.isEmpty()) {
+            return ServiceAccountCredentials.fromPkcs8(null, email, key, null, List.of())
+                    .toBuilder().setProjectId(project).build();
+        }
+        try (FileInputStream credentials = new FileInputStream("firebase-service-account.json")) {
+            return GoogleCredentials.fromStream(credentials);
+        }
+    }
+
+    private String unquote(String value) {
+        String text = value == null ? "" : value.trim();
+        if (text.length() >= 2 && ((text.startsWith("\"") && text.endsWith("\""))
+                || (text.startsWith("'") && text.endsWith("'")))) {
+            return text.substring(1, text.length() - 1);
+        }
+        return text;
     }
 }

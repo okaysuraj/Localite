@@ -37,7 +37,6 @@ public class User {
     private String lookingFor; // e.g., "friends, sports partners"
     private String availability; // e.g., "Weekends, Evenings"
 
-    // Phase 3: Gamification & Reputation
     private int trustScore = 0;
     private int eventsHosted = 0;
     private int eventsAttended = 0;
@@ -54,11 +53,10 @@ public class User {
     private int currentStreak = 0;
     private int longestStreak = 0;
     private java.time.LocalDate lastActivityDate;
-    // Phase 6: Ratings
+
     private Double averageRating = 0.0;
     private Integer reviewCount = 0;
-    
-    // Phase 5: Monetization & Admin Growth
+
     private boolean isBanned = false;
     private boolean isAdmin = false;
     private java.time.LocalDateTime profileBoostedUntil;

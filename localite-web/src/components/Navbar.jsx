@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import NotificationPanel from './NotificationPanel';
@@ -19,26 +19,23 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [mobileMenuPath, setMobileMenuPath] = useState(null);
+  const showMobileMenu = mobileMenuPath === location.pathname;
+  const setShowMobileMenu = (open) => setMobileMenuPath(open ? location.pathname : null);
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (user) {
       getNotifications()
-        .then(data => {
+        .then((data) => {
           if (Array.isArray(data)) {
-            const unread = data.filter(n => !n.read).length;
+            const unread = data.filter((n) => !n.read).length;
             setUnreadCount(unread);
           }
         })
         .catch(console.error);
     }
   }, [user, showNotifications]);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setShowMobileMenu(false);
-  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -60,10 +57,7 @@ const Navbar = () => {
         <nav className="flex justify-between items-center px-6 max-w-content mx-auto w-full h-full">
           {/* Left: Logo */}
           <div className="flex items-center gap-8">
-            <Link
-              to="/welcome"
-              className="text-xl font-semibold text-fg tracking-tight select-none"
-            >
+            <Link to="/welcome" className="text-xl font-semibold text-fg tracking-tight select-none">
               localite
             </Link>
 
@@ -75,9 +69,7 @@ const Navbar = () => {
                     <Link
                       to={link.path}
                       className={`text-body-sm font-medium transition-colors duration-200 ${
-                        isActive(link.path)
-                          ? 'text-accent'
-                          : 'text-fg-muted hover:text-fg'
+                        isActive(link.path) ? 'text-accent' : 'text-fg-muted hover:text-fg'
                       }`}
                     >
                       {link.label}
@@ -112,10 +104,7 @@ const Navbar = () => {
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full" />
                   )}
                 </button>
-                <NotificationPanel
-                  isOpen={showNotifications}
-                  onClose={() => setShowNotifications(false)}
-                />
+                <NotificationPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
 
                 {/* Messages */}
                 <Link
@@ -127,10 +116,7 @@ const Navbar = () => {
                 </Link>
 
                 {/* Create Event CTA */}
-                <Link
-                  to="/events/create"
-                  className="hidden lg:flex btn-primary text-sm py-2 px-4"
-                >
+                <Link to="/events/create" className="hidden lg:flex btn-primary text-sm py-2 px-4">
                   <Plus size={16} weight="bold" />
                   Create event
                 </Link>
@@ -143,7 +129,10 @@ const Navbar = () => {
                   <img
                     className="w-full h-full object-cover"
                     alt="Profile"
-                    src={user?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuA8a7eqv5aRNydd_QlnHZIy6CHVEdi9gc7ZAPy7Sd3kOrJoSNdnojfMPd5tfJIHgtuX5K10sm7QmCkxjNHB5vW_2_fp9oxjhSgW3WOk1IflvudsWKhX91GGj_KWZG6-Xpo6iy3x0XyPQY7ekGiI74V9YBJmY7rBtfRKtEjAsfwOL4a0HxKie7YGQaAST0t8AZfnUddKkjhRutWFhpH6JDVyD5B9OWsvGTRgHIonjMPJ5usRfn46SBNjwg"}
+                    src={
+                      user?.avatar ||
+                      'https://lh3.googleusercontent.com/aida-public/AB6AXuA8a7eqv5aRNydd_QlnHZIy6CHVEdi9gc7ZAPy7Sd3kOrJoSNdnojfMPd5tfJIHgtuX5K10sm7QmCkxjNHB5vW_2_fp9oxjhSgW3WOk1IflvudsWKhX91GGj_KWZG6-Xpo6iy3x0XyPQY7ekGiI74V9YBJmY7rBtfRKtEjAsfwOL4a0HxKie7YGQaAST0t8AZfnUddKkjhRutWFhpH6JDVyD5B9OWsvGTRgHIonjMPJ5usRfn46SBNjwg'
+                    }
                   />
                 </Link>
 
@@ -161,11 +150,7 @@ const Navbar = () => {
                   onClick={() => setShowMobileMenu(!showMobileMenu)}
                   className="md:hidden flex items-center justify-center w-9 h-9 rounded-sm text-fg-muted hover:text-fg transition-colors duration-200"
                 >
-                  {showMobileMenu ? (
-                    <X size={22} weight="bold" />
-                  ) : (
-                    <List size={22} weight="bold" />
-                  )}
+                  {showMobileMenu ? <X size={22} weight="bold" /> : <List size={22} weight="bold" />}
                 </button>
               </>
             ) : (
@@ -229,9 +214,7 @@ const Navbar = () => {
             >
               <Bell size={20} weight="bold" />
               Notifications
-              {unreadCount > 0 && (
-                <span className="tag text-micro">{unreadCount}</span>
-              )}
+              {unreadCount > 0 && <span className="tag text-micro">{unreadCount}</span>}
             </Link>
 
             <Link

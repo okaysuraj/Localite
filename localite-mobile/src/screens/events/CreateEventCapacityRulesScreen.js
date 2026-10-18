@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TextInput, Platform, Switch } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  Platform,
+  Switch,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function CreateEventCapacityRulesScreen() {
   const navigation = useNavigation();
   const [waitlist, setWaitlist] = useState(false);
-  
+
   const [rules, setRules] = useState([
     { id: 1, text: 'DRESS CODE REQUIRED', active: false },
     { id: 2, text: '21+ ONLY', active: false },
     { id: 3, text: 'NO PHOTOGRAPHY', active: false },
     { id: 4, text: 'GUEST-LIST ONLY', active: false },
-    { id: 5, text: 'MEMBERS ONLY', active: false }
+    { id: 5, text: 'MEMBERS ONLY', active: false },
   ]);
 
-  const [activeRules, setActiveRules] = useState([
-    'Elegant Evening Attire',
-    'Invitations non-transferable'
-  ]);
+  const [activeRules, setActiveRules] = useState(['Elegant Evening Attire', 'Invitations non-transferable']);
 
   const toggleRule = (id) => {
-    setRules(rules.map(r => r.id === id ? { ...r, active: !r.active } : r));
+    setRules(rules.map((r) => (r.id === id ? { ...r, active: !r.active } : r)));
   };
 
   const removeActiveRule = (index) => {
@@ -38,9 +45,7 @@ export default function CreateEventCapacityRulesScreen() {
           <MaterialIcons name="close" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Localite</Text>
-        <View style={styles.avatarWrap}>
-          {/* Avatar placeholder */}
-        </View>
+        <View style={styles.avatarWrap}>{/* Avatar placeholder */}</View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -61,14 +66,23 @@ export default function CreateEventCapacityRulesScreen() {
         {/* Capacity Section */}
         <View style={styles.card}>
           <Text style={styles.cardHeaderTitle}>EVENT LOGISTICS</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>MAXIMUM GUESTS</Text>
             <View style={styles.numberInputWrap}>
-              <TextInput style={styles.numberInput} placeholder="50" placeholderTextColor="#75777e" keyboardType="numeric" />
+              <TextInput
+                style={styles.numberInput}
+                placeholder="50"
+                placeholderTextColor="#75777e"
+                keyboardType="numeric"
+              />
               <View style={styles.stepperWrap}>
-                <TouchableOpacity><MaterialIcons name="expand-less" size={20} color="#775a19" /></TouchableOpacity>
-                <TouchableOpacity><MaterialIcons name="expand-more" size={20} color="#775a19" /></TouchableOpacity>
+                <TouchableOpacity>
+                  <MaterialIcons name="expand-less" size={20} color="#775a19" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <MaterialIcons name="expand-more" size={20} color="#775a19" />
+                </TouchableOpacity>
               </View>
             </View>
             <Text style={styles.inputHelper}>Define the intimate or grand scale of your gathering.</Text>
@@ -78,7 +92,7 @@ export default function CreateEventCapacityRulesScreen() {
             <Text style={styles.inputLabel}>WAITLIST</Text>
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>Enable Waitlist</Text>
-              <Switch 
+              <Switch
                 value={waitlist}
                 onValueChange={setWaitlist}
                 trackColor={{ false: '#eae8e7', true: '#fed488' }}
@@ -95,11 +109,11 @@ export default function CreateEventCapacityRulesScreen() {
             <Text style={styles.cardHeaderTitle}>HOUSE RULES</Text>
             <MaterialIcons name="gavel" size={20} color="#775a19" />
           </View>
-          
+
           <View style={styles.tagWrap}>
-            {rules.map(r => (
-              <TouchableOpacity 
-                key={r.id} 
+            {rules.map((r) => (
+              <TouchableOpacity
+                key={r.id}
                 style={[styles.tag, r.active && styles.tagActive]}
                 onPress={() => toggleRule(r.id)}
               >
@@ -110,9 +124,9 @@ export default function CreateEventCapacityRulesScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>CUSTOM REQUIREMENTS</Text>
-            <TextInput 
-              style={styles.textArea} 
-              multiline 
+            <TextInput
+              style={styles.textArea}
+              multiline
               numberOfLines={4}
               placeholder="Detail any specific expectations for your guests..."
               placeholderTextColor="#75777e"
@@ -146,7 +160,6 @@ export default function CreateEventCapacityRulesScreen() {
             <Text style={styles.optionText}>Require social media verification</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
 
       {/* Footer Actions */}
@@ -154,7 +167,10 @@ export default function CreateEventCapacityRulesScreen() {
         <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
           <Text style={styles.backText}>BACK</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.continueBtn} onPress={() => navigation.navigate('CreateEventPaymentSetup')}>
+        <TouchableOpacity
+          style={styles.continueBtn}
+          onPress={() => navigation.navigate('CreateEventPaymentSetup')}
+        >
           <Text style={styles.continueText}>CONTINUE</Text>
         </TouchableOpacity>
       </View>
@@ -424,5 +440,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 12,
     color: '#fff',
-  }
+  },
 });

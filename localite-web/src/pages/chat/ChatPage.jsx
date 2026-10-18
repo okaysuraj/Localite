@@ -1,10 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  ArrowLeft,
-  PaperPlaneRight,
-  DotsThreeVertical,
-} from '@phosphor-icons/react';
+import { ArrowLeft, PaperPlaneRight, DotsThreeVertical } from '@phosphor-icons/react';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
 
@@ -20,38 +16,38 @@ export default function ChatPage() {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const token = await auth.currentUser?.getIdToken();
+        if (!token) return;
+
+        const res = await fetch(`${API_URL}/messages/direct/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setMessages(data);
+
+          if (data.length > 0) {
+            const firstMsg = data[0];
+            const isSender = firstMsg.sender.firebaseUid === auth.currentUser?.uid;
+            const otherUser = isSender ? firstMsg.receiver : firstMsg.sender;
+            setPartner({
+              username: otherUser.username,
+              profileImageUrl:
+                otherUser.profilePhotoUrl ||
+                `https://api.dicebear.com/7.x/initials/svg?seed=${otherUser.username}`,
+            });
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     if (!id) return;
     fetchMessages();
   }, [id]);
-
-  const fetchMessages = async () => {
-    try {
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) return;
-
-      const res = await fetch(`${API_URL}/messages/direct/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setMessages(data);
-
-        if (data.length > 0) {
-          const firstMsg = data[0];
-          const isSender = firstMsg.sender.firebaseUid === auth.currentUser?.uid;
-          const otherUser = isSender ? firstMsg.receiver : firstMsg.sender;
-          setPartner({
-            username: otherUser.username,
-            profileImageUrl:
-              otherUser.profilePhotoUrl ||
-              `https://api.dicebear.com/7.x/initials/svg?seed=${otherUser.username}`,
-          });
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -106,12 +102,8 @@ export default function ChatPage() {
               <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-accent border-2 border-white rounded-full" />
             </div>
             <div>
-              <h2 className="text-sm font-display font-semibold text-fg">
-                {partner.username}
-              </h2>
-              <span className="text-[10px] font-mono text-accent uppercase tracking-wider">
-                Active
-              </span>
+              <h2 className="text-sm font-display font-semibold text-fg">{partner.username}</h2>
+              <span className="text-[10px] font-mono text-accent uppercase tracking-wider">Active</span>
             </div>
           </div>
 
@@ -139,18 +131,12 @@ export default function ChatPage() {
               >
                 {!isMe && (
                   <div className="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-border hidden sm:block">
-                    <img
-                      src={partner.profileImageUrl}
-                      className="w-full h-full object-cover"
-                      alt="Avatar"
-                    />
+                    <img src={partner.profileImageUrl} className="w-full h-full object-cover" alt="Avatar" />
                   </div>
                 )}
                 <div
                   className={`px-4 py-2.5 rounded-card space-y-1 text-sm ${
-                    isMe
-                      ? 'bg-accent text-white'
-                      : 'bg-white text-fg border border-border'
+                    isMe ? 'bg-accent text-white' : 'bg-white text-fg border border-border'
                   }`}
                 >
                   <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>

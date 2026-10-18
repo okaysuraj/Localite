@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,9 +9,9 @@ import {
   ImageBackground,
   Platform,
   ActivityIndicator,
-  Alert
+  Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getUsers, sendConnectionRequest } from '../../services/api';
 
@@ -30,7 +30,7 @@ export default function PeopleDiscoveryScreen({ navigation }) {
         const data = await getUsers();
         setUsers(data || []);
       } catch (error) {
-        console.error("Failed to fetch users", error);
+        console.error('Failed to fetch users', error);
       } finally {
         setLoading(false);
       }
@@ -41,10 +41,10 @@ export default function PeopleDiscoveryScreen({ navigation }) {
   const handleConnect = async (userId) => {
     try {
       await sendConnectionRequest(userId);
-      setConnectedIds(prev => new Set(prev).add(userId));
+      setConnectedIds((prev) => new Set(prev).add(userId));
       Alert.alert('Request Sent', 'Connection request sent successfully!');
     } catch (err) {
-      setConnectedIds(prev => new Set(prev).add(userId));
+      setConnectedIds((prev) => new Set(prev).add(userId));
       Alert.alert('Notice', err.message || 'Request already pending or connected');
     }
   };
@@ -62,9 +62,11 @@ export default function PeopleDiscoveryScreen({ navigation }) {
             <Ionicons name="search" size={24} color="#44474d" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.profileBtn}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCAqI6ZpdvXDp5znehI-H4xiRoDJLBxjfth1BgVcfdOYnDdkNinrC-4hmTW51Y8qjEvOf0QNvrgs1TZgFKBVuj-GrWFWqbfWfeOq6dSjLPttkJpvFvWBk475GDn00feBsn5GV8K_nMbImzz1OBTJ_Bnff41UsCQPJ0nXNqpZa6DXIO6ik9IRnKV76maMgXBGWwzSKGuQNfQLhDhd8O3eUArH-LtExA06YluPW8Gmm0eWZvc34Us2Fy7RQ' }} 
-              style={styles.profileImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCAqI6ZpdvXDp5znehI-H4xiRoDJLBxjfth1BgVcfdOYnDdkNinrC-4hmTW51Y8qjEvOf0QNvrgs1TZgFKBVuj-GrWFWqbfWfeOq6dSjLPttkJpvFvWBk475GDn00feBsn5GV8K_nMbImzz1OBTJ_Bnff41UsCQPJ0nXNqpZa6DXIO6ik9IRnKV76maMgXBGWwzSKGuQNfQLhDhd8O3eUArH-LtExA06YluPW8Gmm0eWZvc34Us2Fy7RQ',
+              }}
+              style={styles.profileImg}
             />
           </TouchableOpacity>
         </View>
@@ -75,17 +77,19 @@ export default function PeopleDiscoveryScreen({ navigation }) {
         <View style={styles.headerSection}>
           <View style={styles.headerTextContainer}>
             <Text style={styles.headerTitle}>Discover Localites</Text>
-            <Text style={styles.headerSubtitle}>Meet the minds and makers shaping your neighborhood's culture.</Text>
+            <Text style={styles.headerSubtitle}>
+              Meet the minds and makers shaping your neighborhood's culture.
+            </Text>
           </View>
-          
+
           <View style={styles.toggleContainer}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.toggleBtn, viewMode === 'grid' && styles.toggleBtnActive]}
               onPress={() => setViewMode('grid')}
             >
               <Text style={[styles.toggleText, viewMode === 'grid' && styles.toggleTextActive]}>Grid</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.toggleBtn, viewMode === 'swipe' && styles.toggleBtnActive]}
               onPress={() => setViewMode('swipe')}
             >
@@ -100,12 +104,12 @@ export default function PeopleDiscoveryScreen({ navigation }) {
             <Ionicons name="options" size={16} color="#000000" />
             <Text style={styles.filterOptionsText}>Filters</Text>
           </TouchableOpacity>
-          
+
           <View style={styles.filterDivider} />
-          
+
           {FILTERS.map((filter, index) => (
-            <TouchableOpacity 
-              key={index} 
+            <TouchableOpacity
+              key={index}
               style={[styles.filterChip, index === 0 && styles.filterChipPrimary]}
             >
               <Text style={[styles.filterChipText, index === 0 && styles.filterChipTextPrimary]}>
@@ -121,7 +125,10 @@ export default function PeopleDiscoveryScreen({ navigation }) {
           <View style={styles.gridContainer}>
             {users.map((person) => (
               <View key={person.id} style={styles.personCard}>
-                <ImageBackground source={{ uri: person.image || person.profilePhotoUrl }} style={styles.personImageContainer}>
+                <ImageBackground
+                  source={{ uri: person.image || person.profilePhotoUrl }}
+                  style={styles.personImageContainer}
+                >
                   <View style={styles.personImageOverlay}>
                     <Text style={styles.personDistance}>{person.distance || person.neighborhood}</Text>
                     <Text style={styles.personName}>{person.name || person.username}</Text>
@@ -129,20 +136,42 @@ export default function PeopleDiscoveryScreen({ navigation }) {
                 </ImageBackground>
                 <View style={styles.personDetails}>
                   <Text style={styles.personRole}>{person.role || person.bio}</Text>
-                  <Text style={styles.personDesc} numberOfLines={2}>{person.description}</Text>
+                  <Text style={styles.personDesc} numberOfLines={2}>
+                    {person.description}
+                  </Text>
                   <View style={styles.tagsContainer}>
-                    {((person.interests && Array.isArray(person.interests) ? person.interests : (person.interests ? person.interests.split(',') : []))).slice(0, 3).map((tag, idx) => (
-                      <View key={idx} style={styles.tagBadge}>
-                        <Text style={styles.tagText}>{tag.trim()}</Text>
-                      </View>
-                    ))}
+                    {(person.interests && Array.isArray(person.interests)
+                      ? person.interests
+                      : person.interests
+                        ? person.interests.split(',')
+                        : []
+                    )
+                      .slice(0, 3)
+                      .map((tag, idx) => (
+                        <View key={idx} style={styles.tagBadge}>
+                          <Text style={styles.tagText}>{tag.trim()}</Text>
+                        </View>
+                      ))}
                   </View>
-                  <TouchableOpacity 
-                    style={{ marginTop: 8, paddingVertical: 6, paddingHorizontal: 12, backgroundColor: connectedIds.has(person.id) ? '#eae8e7' : '#775a19', borderRadius: 8, alignItems: 'center' }}
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 8,
+                      paddingVertical: 6,
+                      paddingHorizontal: 12,
+                      backgroundColor: connectedIds.has(person.id) ? '#eae8e7' : '#775a19',
+                      borderRadius: 8,
+                      alignItems: 'center',
+                    }}
                     onPress={() => handleConnect(person.id)}
                     disabled={connectedIds.has(person.id)}
                   >
-                    <Text style={{ fontSize: 11, fontWeight: '600', color: connectedIds.has(person.id) ? '#75777e' : '#fff' }}>
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: '600',
+                        color: connectedIds.has(person.id) ? '#75777e' : '#fff',
+                      }}
+                    >
                       {connectedIds.has(person.id) ? 'REQUESTED' : 'CONNECT'}
                     </Text>
                   </TouchableOpacity>
@@ -152,7 +181,12 @@ export default function PeopleDiscoveryScreen({ navigation }) {
 
             {/* Expand Circle Bento */}
             <View style={styles.expandCard}>
-              <Ionicons name="person-add" size={48} color="rgba(255,255,255,0.2)" style={styles.expandIconBg} />
+              <Ionicons
+                name="person-add"
+                size={48}
+                color="rgba(255,255,255,0.2)"
+                style={styles.expandIconBg}
+              />
               <Text style={styles.expandTitle}>Expand Your Circle</Text>
               <Text style={styles.expandDesc}>
                 Invite local curators to join the collective and discover even more unique perspectives.
@@ -166,26 +200,28 @@ export default function PeopleDiscoveryScreen({ navigation }) {
           <View style={styles.swipeContainer}>
             {users.length > 0 && (
               <View style={styles.swipeCard}>
-                <ImageBackground 
+                <ImageBackground
                   source={{ uri: users[0].image || users[0].profilePhotoUrl }}
                   style={styles.swipeImage}
                 >
                   <View style={styles.swipeOverlay}>
                     <Text style={styles.swipeName}>{users[0].name || users[0].username}</Text>
-                    <Text style={styles.swipeInfo}>{users[0].role || users[0].bio} • {users[0].distance || users[0].neighborhood}</Text>
+                    <Text style={styles.swipeInfo}>
+                      {users[0].role || users[0].bio} • {users[0].distance || users[0].neighborhood}
+                    </Text>
                   </View>
                 </ImageBackground>
                 <View style={styles.swipeActions}>
                   <TouchableOpacity style={[styles.actionBtn, styles.actionBtnSkip]}>
                     <Ionicons name="close" size={28} color="#ba1a1a" />
                   </TouchableOpacity>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[styles.actionBtn, styles.actionBtnMessage]}
                     onPress={() => navigation.navigate('MessagesTab')}
                   >
                     <Ionicons name="chatbubble" size={24} color="#ffffff" />
                   </TouchableOpacity>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[styles.actionBtn, styles.actionBtnLike]}
                     onPress={() => handleConnect(users[0].id)}
                   >
@@ -380,7 +416,7 @@ const styles = StyleSheet.create({
   },
   personImageContainer: {
     width: '100%',
-    aspectRatio: 4/5,
+    aspectRatio: 4 / 5,
   },
   personImageOverlay: {
     flex: 1,
@@ -491,7 +527,7 @@ const styles = StyleSheet.create({
   swipeCard: {
     width: '100%',
     maxWidth: 400,
-    aspectRatio: 3/4,
+    aspectRatio: 3 / 4,
     backgroundColor: '#ffffff',
     borderRadius: 24,
     overflow: 'hidden',
@@ -552,5 +588,5 @@ const styles = StyleSheet.create({
   actionBtnLike: {
     borderWidth: 1,
     borderColor: '#775a19',
-  }
+  },
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,40 +6,15 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  SafeAreaView,
   Dimensions,
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEvents } from '../../services/api';
 
 const { width } = Dimensions.get('window');
-
-const RECOMMENDED_EVENTS = [
-  {
-    id: '1',
-    category: 'EPICUREAN',
-    title: 'Vintage Garden Soirée',
-    date: 'OCT 14 • 7:00 PM',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA9HJ-SC0fDDQViO-zoNr16YJuh827URfenSy_zFwJFKzv15g34IRW4UJN_hyP1vOVtHdiy8uqACL_lVK_j8RIDeTHVUZfRlcrWuLgr_jb7gArdUcBQoPNEJA41BXKI5txUa0mrC67TEBFThc-eRoJSxZqChLYcff8mQ4mgy6M2JpLT1HWichlla8H22s4mRJILz5NkycST4JTPrWEHJrMsnmBsJ6FroOaWklpgjQWZbuzOvy-ih5PDHA',
-  },
-  {
-    id: '2',
-    category: 'CULTURE',
-    title: 'Abstract Vernissage',
-    date: 'OCT 16 • 6:30 PM',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC45bMnjmTCrmml6Hj31wj3r7telY8hKAZFDTf4863iTDFn4PDzC-anilVpsjB8HxtQFf4TrbWGUCqBMrsXrZRwMI9Lu0GfUdRv7kr56KjdYn2TVBHX_G-fi43wWuyVG2rB_1KmhtG9oRZL0TB3mKMWGWvr_kqqH0p5p6dDfaYD3nXSSqXehFSWUtqwoclw53wS71i8dl9Mp375cXTahc3-ZZhh03AU6K8OQ9jq4zsTETFzn1cMS4GRWw',
-  },
-  {
-    id: '3',
-    category: 'WELLNESS',
-    title: 'Sunrise Rooftop Yoga',
-    date: 'OCT 18 • 8:00 AM',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDVcGX7PT2pccw4Z2a03MbRxEmMM-rIIZHghm37tSg7fBm8O8JWWrmjjJwhfNeUkVc6SOYy6ws5_KtudjrNVd9EoBmPsKJkGqyG_j2Ou6JgeQyQVzgJpgZ_8OLONDXmtPiBlN_I3yTRxm67I0SduMGGbQlp-ZYPmPXgfj_gVqecg8ZwJ4jlrsPs8xUubL08JbdsSZc6WbFlOl1z9o39XHlvBHT9c-aVUtgabV3L2NyGplFPxE6SmH8sbg',
-  }
-];
 
 const COMMUNITY_PULSE = [
   {
@@ -48,7 +23,8 @@ const COMMUNITY_PULSE = [
     action: 'joined',
     target: 'Gourmet Guild',
     time: '2 HOURS AGO',
-    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBDnt6kUnzlfexewBWvx3qh0p6lGP1slZa_U49dNHJLaCXnwUUHQfSxdANjK83I-g5jOMkGy47jG46XcHbBwzdC142I8NvcdHgpYkTxoUPR7-AI_5lA8Sk1Oq4gvU080m_DeFJZo6UJkDDf9y7Ga92o_vnKhfw7qBRQzwzHKL-Zlc3nBw3mJ5fbKtQbnqlos66Nxl9dsNKuVQJLUMqOS-MCtU2sgoUQejgL6wMEkRxlGbHOWBHrdQ6jKA',
+    avatar:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBDnt6kUnzlfexewBWvx3qh0p6lGP1slZa_U49dNHJLaCXnwUUHQfSxdANjK83I-g5jOMkGy47jG46XcHbBwzdC142I8NvcdHgpYkTxoUPR7-AI_5lA8Sk1Oq4gvU080m_DeFJZo6UJkDDf9y7Ga92o_vnKhfw7qBRQzwzHKL-Zlc3nBw3mJ5fbKtQbnqlos66Nxl9dsNKuVQJLUMqOS-MCtU2sgoUQejgL6wMEkRxlGbHOWBHrdQ6jKA',
   },
   {
     id: '2',
@@ -56,8 +32,9 @@ const COMMUNITY_PULSE = [
     action: 'shared 4 photos from',
     target: 'Opera Night',
     time: '4 HOURS AGO',
-    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGEtf87RxFZYk7qf9Yo6Yx4k7kNZkPb6ipuBeIhN40ZH7PR4HlKQ20JrwkFvs4Vus6iX6W-TSZTGZ-JRk3lkvQj2sr8uhNqf70Eqak2NFUQV_mMseVjK19T045vjTWAIy1rTQgGQIGUvoELDoEFCarIqkfIQZWFIOQVdwJxI2lnr4Fl-yItwFPxce8oFnq4Xo7ttFlC0awoFQhVV7WpQz5BWmMzf-WJVadfxpWiOOp1DfBuZ9W0rDGCQ',
-  }
+    avatar:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAGEtf87RxFZYk7qf9Yo6Yx4k7kNZkPb6ipuBeIhN40ZH7PR4HlKQ20JrwkFvs4Vus6iX6W-TSZTGZ-JRk3lkvQj2sr8uhNqf70Eqak2NFUQV_mMseVjK19T045vjTWAIy1rTQgGQIGUvoELDoEFCarIqkfIQZWFIOQVdwJxI2lnr4Fl-yItwFPxce8oFnq4Xo7ttFlC0awoFQhVV7WpQz5BWmMzf-WJVadfxpWiOOp1DfBuZ9W0rDGCQ',
+  },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -71,7 +48,7 @@ export default function HomeScreen({ navigation }) {
         const data = await getEvents();
         setEvents(data);
       } catch (error) {
-        console.error("Failed to fetch events", error);
+        console.error('Failed to fetch events', error);
       } finally {
         setLoading(false);
       }
@@ -92,24 +69,24 @@ export default function HomeScreen({ navigation }) {
             <Ionicons name="search" size={24} color="#44474d" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.profileBtn}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCc4T_g39vqB_ldG28B6LoYWkSXF5i6mMh9jXRL8DdJf7SiwftM1IwuTy-iPSfWtUYFBOTKzSCnyFmoNU7Nbx-Wr4MgWZ-SZrX3hgvKVYpGfUzHFAXuuzOxqaZJqH9j8wvyOodRN6GrYgpocjqc77ZeefHuu3Z6orMu6Jg5IltMaDmQOxEed9qVJTMrNFLgroQuadJMZ_07vPI1z-YWDM0Cc1fnxaP8Zp_GgJ4GfzkTRNomnMeXMdwe2A' }} 
-              style={styles.profileImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCc4T_g39vqB_ldG28B6LoYWkSXF5i6mMh9jXRL8DdJf7SiwftM1IwuTy-iPSfWtUYFBOTKzSCnyFmoNU7Nbx-Wr4MgWZ-SZrX3hgvKVYpGfUzHFAXuuzOxqaZJqH9j8wvyOodRN6GrYgpocjqc77ZeefHuu3Z6orMu6Jg5IltMaDmQOxEed9qVJTMrNFLgroQuadJMZ_07vPI1z-YWDM0Cc1fnxaP8Zp_GgJ4GfzkTRNomnMeXMdwe2A',
+              }}
+              style={styles.profileImg}
             />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Hero Welcome */}
         <View style={styles.heroSection}>
           <Text style={styles.heroLabel}>CURATED SELECTION</Text>
           <Text style={styles.heroTitle}>Good Morning, Julian</Text>
           <Text style={styles.heroSubtitle}>
-            Explore the most refined gatherings and distinguished community updates happening in your circle today.
+            Explore the most refined gatherings and distinguished community updates happening in your circle
+            today.
           </Text>
         </View>
 
@@ -120,20 +97,20 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.viewAllBtn}>VIEW ALL</Text>
           </TouchableOpacity>
         </View>
-        
+
         {loading ? (
           <ActivityIndicator size="large" color="#775a19" style={{ marginVertical: 32 }} />
         ) : (
           <>
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false} 
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.carouselContainer}
             >
               {events.map((item) => (
-                <TouchableOpacity 
-                  key={item.id} 
-                  style={styles.carouselCard} 
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.carouselCard}
                   activeOpacity={0.9}
                   onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
                 >
@@ -159,14 +136,14 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             {events.length > 0 && (
-              <TouchableOpacity 
-                style={styles.largeFeatureCard} 
+              <TouchableOpacity
+                style={styles.largeFeatureCard}
                 activeOpacity={0.9}
                 onPress={() => navigation.navigate('EventDetail', { eventId: events[0].id })}
               >
-                <Image 
-                  source={{ uri: events[0].imageUrl || events[0].image }} 
-                  style={styles.largeFeatureImage} 
+                <Image
+                  source={{ uri: events[0].imageUrl || events[0].image }}
+                  style={styles.largeFeatureImage}
                 />
                 <View style={styles.largeFeatureOverlay}>
                   <View style={styles.featureBadge}>
@@ -186,16 +163,13 @@ export default function HomeScreen({ navigation }) {
             {/* Secondary Feature Cards */}
             <View style={styles.secondaryCardsContainer}>
               {events.slice(1, 3).map((item) => (
-                <TouchableOpacity 
-                  key={`sec-${item.id}`} 
-                  style={styles.secondaryCard} 
+                <TouchableOpacity
+                  key={`sec-${item.id}`}
+                  style={styles.secondaryCard}
                   activeOpacity={0.9}
                   onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
                 >
-                  <Image 
-                    source={{ uri: item.imageUrl || item.image }} 
-                    style={styles.secondaryCardImage} 
-                  />
+                  <Image source={{ uri: item.imageUrl || item.image }} style={styles.secondaryCardImage} />
                   <View style={styles.secondaryCardContent}>
                     <Text style={styles.cardCategory}>{item.category || item.eventType}</Text>
                     <Text style={styles.secondaryCardTitle}>{item.title}</Text>
@@ -222,8 +196,7 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.pulseTextContainer}>
                   <Text style={styles.pulseText}>
                     <Text style={styles.pulseUser}>{item.user} </Text>
-                    {item.action}{' '}
-                    <Text style={styles.pulseTarget}>{item.target}</Text>
+                    {item.action} <Text style={styles.pulseTarget}>{item.target}</Text>
                   </Text>
                   <Text style={styles.pulseTime}>{item.time}</Text>
                 </View>
@@ -231,7 +204,7 @@ export default function HomeScreen({ navigation }) {
               <Ionicons name="chevron-forward" size={20} color="#c5c6cd" />
             </TouchableOpacity>
           ))}
-          
+
           <TouchableOpacity style={styles.pulseItem}>
             <View style={styles.pulseLeft}>
               <View style={styles.pulseIconContainer}>
@@ -239,7 +212,8 @@ export default function HomeScreen({ navigation }) {
               </View>
               <View style={styles.pulseTextContainer}>
                 <Text style={styles.pulseText}>
-                  <Text style={styles.pulseUser}>New Member Highlight</Text>: Meet <Text style={styles.pulseTarget}>The Art Collective</Text>
+                  <Text style={styles.pulseUser}>New Member Highlight</Text>: Meet{' '}
+                  <Text style={styles.pulseTarget}>The Art Collective</Text>
                 </Text>
                 <Text style={styles.pulseTime}>YESTERDAY</Text>
               </View>
@@ -247,7 +221,7 @@ export default function HomeScreen({ navigation }) {
             <Ionicons name="chevron-forward" size={20} color="#c5c6cd" />
           </TouchableOpacity>
         </View>
-        
+
         {/* Padding for Bottom Tabs */}
         <View style={{ height: 100 }} />
       </ScrollView>
@@ -592,5 +566,5 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
     zIndex: 20,
-  }
+  },
 });

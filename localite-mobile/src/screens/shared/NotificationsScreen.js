@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Image } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { getNotifications, markNotificationAsRead } from '../../services/api';
-
-
 
 export default function NotificationsScreen() {
   const navigation = useNavigation();
@@ -68,9 +75,9 @@ export default function NotificationsScreen() {
 
         <View style={styles.listArea}>
           {loading ? (
-            <ActivityIndicator size="large" color="#775a19" style={{marginTop: 40}} />
+            <ActivityIndicator size="large" color="#775a19" style={{ marginTop: 40 }} />
           ) : (
-            notifications.map(notif => {
+            notifications.map((notif) => {
               // Map backend notification to UI
               // Backend notification has: id, type, message, isRead, createdAt, user
               const timeStr = new Date(notif.createdAt).toLocaleDateString();
@@ -79,7 +86,11 @@ export default function NotificationsScreen() {
 
               if (isEvent) {
                 return (
-                  <TouchableOpacity key={notif.id} style={[styles.eventCard, notif.read ? {opacity: 0.7} : {}]} onPress={() => handleMarkAsRead(notif.id)}>
+                  <TouchableOpacity
+                    key={notif.id}
+                    style={[styles.eventCard, notif.read ? { opacity: 0.7 } : {}]}
+                    onPress={() => handleMarkAsRead(notif.id)}
+                  >
                     <Image source={{ uri: 'https://via.placeholder.com/300x150' }} style={styles.eventImg} />
                     <View style={styles.eventBody}>
                       <View style={styles.notifTopRow}>
@@ -95,7 +106,11 @@ export default function NotificationsScreen() {
 
               if (isPremium) {
                 return (
-                  <TouchableOpacity key={notif.id} style={[styles.premiumCard, notif.read ? {opacity: 0.7} : {}]} onPress={() => handleMarkAsRead(notif.id)}>
+                  <TouchableOpacity
+                    key={notif.id}
+                    style={[styles.premiumCard, notif.read ? { opacity: 0.7 } : {}]}
+                    onPress={() => handleMarkAsRead(notif.id)}
+                  >
                     <View style={styles.notifTopRow}>
                       <Text style={styles.premiumType}>{notif.type}</Text>
                       <Text style={styles.premiumTime}>{timeStr}</Text>
@@ -106,9 +121,16 @@ export default function NotificationsScreen() {
               }
 
               return (
-                <TouchableOpacity key={notif.id} style={[styles.standardCard, notif.read ? {opacity: 0.7} : {}]} onPress={() => handleMarkAsRead(notif.id)}>
+                <TouchableOpacity
+                  key={notif.id}
+                  style={[styles.standardCard, notif.read ? { opacity: 0.7 } : {}]}
+                  onPress={() => handleMarkAsRead(notif.id)}
+                >
                   <View style={styles.avatarWrap}>
-                    <Image source={{ uri: notif.user?.profileImageUrl || 'https://via.placeholder.com/150' }} style={styles.avatar} />
+                    <Image
+                      source={{ uri: notif.user?.profileImageUrl || 'https://via.placeholder.com/150' }}
+                      style={styles.avatar}
+                    />
                   </View>
                   <View style={styles.notifContent}>
                     <View style={styles.notifTopRow}>
@@ -135,7 +157,9 @@ export default function NotificationsScreen() {
               <MaterialIcons name="group" size={20} color="#000" />
             </View>
             <View style={styles.subtleContent}>
-              <Text style={styles.subtleText}>3 new members joined the <Text style={styles.boldNameGold}>Vanguard Social Hub</Text></Text>
+              <Text style={styles.subtleText}>
+                3 new members joined the <Text style={styles.boldNameGold}>Vanguard Social Hub</Text>
+              </Text>
               <Text style={styles.subtleType}>COMMUNITY UPDATE</Text>
             </View>
           </View>

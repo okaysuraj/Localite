@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EventReminderDetailScreen() {
@@ -10,10 +19,10 @@ export default function EventReminderDetailScreen() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setMinutes(prev => {
+      setMinutes((prev) => {
         if (prev === 0) {
           if (hours > 0) {
-            setHours(h => h - 1);
+            setHours((h) => h - 1);
             return 59;
           }
           return 0;
@@ -39,12 +48,13 @@ export default function EventReminderDetailScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content} bounces={false}>
-        
         {/* Hero Section */}
         <View style={styles.heroWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAsrYjTqgwvMOOoku1Lr2WGig20d_H7IZVxr0LnkvRdCYAMgoQNxFuuzpyiKJBKLPE8-IaPKY8kbd83Ag-uK4DnjrhKMVCUy9Je_yF7jLY2shJT0BoMDAYNFQHyrtH_vDCMtMJXU4Ba32NowowEpVZMDEjWAgVSk1MP_Ad92xpw7QMrHBA7B3rRNy4Lrdr67Qt6T-Q468XM8wfwcOWeTop94CU-C-tRwHijV5Pzt8GmnKqkMTAK-gav5g' }} 
-            style={styles.heroImg} 
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAsrYjTqgwvMOOoku1Lr2WGig20d_H7IZVxr0LnkvRdCYAMgoQNxFuuzpyiKJBKLPE8-IaPKY8kbd83Ag-uK4DnjrhKMVCUy9Je_yF7jLY2shJT0BoMDAYNFQHyrtH_vDCMtMJXU4Ba32NowowEpVZMDEjWAgVSk1MP_Ad92xpw7QMrHBA7B3rRNy4Lrdr67Qt6T-Q468XM8wfwcOWeTop94CU-C-tRwHijV5Pzt8GmnKqkMTAK-gav5g',
+            }}
+            style={styles.heroImg}
           />
           <View style={styles.heroOverlay} />
         </View>
@@ -55,7 +65,7 @@ export default function EventReminderDetailScreen() {
             <Text style={styles.badgeText}>UPCOMING EVENT</Text>
             <Text style={styles.eventTitle}>The Winter Masquerade</Text>
             <Text style={styles.eventSubtitle}>“A Night of Veiled Elegance”</Text>
-            
+
             {/* Countdown */}
             <View style={styles.countdownRow}>
               <View style={styles.countBlock}>
@@ -100,7 +110,9 @@ export default function EventReminderDetailScreen() {
 
           {/* Supporting Info */}
           <View style={styles.supportInfo}>
-            <Text style={styles.supportText}>Your chauffeur has been alerted and will arrive at 7:15 PM.</Text>
+            <Text style={styles.supportText}>
+              Your chauffeur has been alerted and will arrive at 7:15 PM.
+            </Text>
             <View style={styles.supportLinks}>
               <TouchableOpacity>
                 <Text style={styles.linkText}>MODIFY BOOKING</Text>
@@ -111,7 +123,6 @@ export default function EventReminderDetailScreen() {
             </View>
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -317,5 +328,5 @@ const styles = StyleSheet.create({
     color: '#775a19',
     letterSpacing: 1,
     textDecorationLine: 'underline',
-  }
+  },
 });

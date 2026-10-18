@@ -1,6 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ReputationReviewsScreen() {
@@ -17,15 +25,16 @@ export default function ReputationReviewsScreen() {
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDebXXqo6iGjbLWIAjgIsHo5BKIB4FOQ9a4jUISpeEtNruO3cMCvD1Ds3cTg5cyFyZztChZYaWakGpVGRC8BC8kEgl7UPowZPgeUDM9j44weBQpPU_y1b4T1N8dMc1ScJuas_TbPpI1e3wj_2Ta1nmRftvNUh2bbEbhXLurubEOMBChCWzcNCCn8tz3jZ9_1b82hEn_C_9JVosWsmEwRU6T7AU3ynsOYeTcaiTXegusBX9LPSku-ibVVg' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDebXXqo6iGjbLWIAjgIsHo5BKIB4FOQ9a4jUISpeEtNruO3cMCvD1Ds3cTg5cyFyZztChZYaWakGpVGRC8BC8kEgl7UPowZPgeUDM9j44weBQpPU_y1b4T1N8dMc1ScJuas_TbPpI1e3wj_2Ta1nmRftvNUh2bbEbhXLurubEOMBChCWzcNCCn8tz3jZ9_1b82hEn_C_9JVosWsmEwRU6T7AU3ynsOYeTcaiTXegusBX9LPSku-ibVVg',
+            }}
             style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        
         {/* Main Score Card */}
         <View style={styles.scoreCard}>
           <Text style={styles.scorePre}>COMMUNITY STANDING</Text>
@@ -74,8 +83,10 @@ export default function ReputationReviewsScreen() {
           <View style={styles.reviewCard}>
             <View style={styles.reviewCardHeader}>
               <View style={styles.reviewUser}>
-                <Image 
-                  source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBa3xVLD2g-3E-rDT21wjImHX77jUti5l0c_UX9m7Z0CLzneKWMdpKwcEst_edySpY0txHWXRMrAQR1WxIR059AbgMHFCP2VKnFo23pTeMbMHINC6StkdzRqohHViSV-Sp2kscltABqH2-_WkN3tg4Nljz6IfiKPC46zmTOYOS7B4wPji5PEAPYCg7P0_FKfI1q4m5envoVfw01QGvUlzQ4jIoGvoQPFcNn4CMbdFn72M3fCIqLO9LQTA' }}
+                <Image
+                  source={{
+                    uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBa3xVLD2g-3E-rDT21wjImHX77jUti5l0c_UX9m7Z0CLzneKWMdpKwcEst_edySpY0txHWXRMrAQR1WxIR059AbgMHFCP2VKnFo23pTeMbMHINC6StkdzRqohHViSV-Sp2kscltABqH2-_WkN3tg4Nljz6IfiKPC46zmTOYOS7B4wPji5PEAPYCg7P0_FKfI1q4m5envoVfw01QGvUlzQ4jIoGvoQPFcNn4CMbdFn72M3fCIqLO9LQTA',
+                  }}
                   style={styles.reviewAvatar}
                 />
                 <View>
@@ -92,11 +103,16 @@ export default function ReputationReviewsScreen() {
               </View>
             </View>
             <Text style={styles.reviewText}>
-              "Great host for the tennis match! The coordination was seamless and the energy brought to the court was fantastic. Truly embodies the Localite spirit."
+              "Great host for the tennis match! The coordination was seamless and the energy brought to the
+              court was fantastic. Truly embodies the Localite spirit."
             </Text>
             <View style={styles.tagsRow}>
-              <View style={styles.tagWrap}><Text style={styles.tagText}>#Tennis</Text></View>
-              <View style={styles.tagWrap}><Text style={styles.tagText}>#Punctual</Text></View>
+              <View style={styles.tagWrap}>
+                <Text style={styles.tagText}>#Tennis</Text>
+              </View>
+              <View style={styles.tagWrap}>
+                <Text style={styles.tagText}>#Punctual</Text>
+              </View>
             </View>
           </View>
 
@@ -104,8 +120,10 @@ export default function ReputationReviewsScreen() {
           <View style={styles.reviewCard}>
             <View style={styles.reviewCardHeader}>
               <View style={styles.reviewUser}>
-                <Image 
-                  source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjeULbO6x7bkeRtA8G9rJ58VY7dhUem25JF8vOjlv9DdM4_Gydexvzbu-P2di-V4kirSOUV8v6winKtEDUJaJDWecfQOib4d-1obOpRFHuv39MniH5d8p383oafeLXr6E-0AcnoR4KJk5VTxynHn1S_T8d901yFDpkwAA8uPb4eGwUoLONWiA1yuR155yOxIBp9WG49AOQy2A-IhR9um1ZgGk0wbSOSCYvS60lkcNdYOpOlSryWI1BQA' }}
+                <Image
+                  source={{
+                    uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjeULbO6x7bkeRtA8G9rJ58VY7dhUem25JF8vOjlv9DdM4_Gydexvzbu-P2di-V4kirSOUV8v6winKtEDUJaJDWecfQOib4d-1obOpRFHuv39MniH5d8p383oafeLXr6E-0AcnoR4KJk5VTxynHn1S_T8d901yFDpkwAA8uPb4eGwUoLONWiA1yuR155yOxIBp9WG49AOQy2A-IhR9um1ZgGk0wbSOSCYvS60lkcNdYOpOlSryWI1BQA',
+                  }}
                   style={styles.reviewAvatar}
                 />
                 <View>
@@ -122,11 +140,16 @@ export default function ReputationReviewsScreen() {
               </View>
             </View>
             <Text style={styles.reviewText}>
-              "Organized an incredible book club mixer. The choice of venue was inspired and the conversation was curated perfectly. Highly recommend joining any event they organize."
+              "Organized an incredible book club mixer. The choice of venue was inspired and the conversation
+              was curated perfectly. Highly recommend joining any event they organize."
             </Text>
             <View style={styles.tagsRow}>
-              <View style={styles.tagWrap}><Text style={styles.tagText}>#Literature</Text></View>
-              <View style={styles.tagWrap}><Text style={styles.tagText}>#EliteHost</Text></View>
+              <View style={styles.tagWrap}>
+                <Text style={styles.tagText}>#Literature</Text>
+              </View>
+              <View style={styles.tagWrap}>
+                <Text style={styles.tagText}>#EliteHost</Text>
+              </View>
             </View>
           </View>
 
@@ -134,8 +157,10 @@ export default function ReputationReviewsScreen() {
           <View style={styles.reviewCard}>
             <View style={styles.reviewCardHeader}>
               <View style={styles.reviewUser}>
-                <Image 
-                  source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDx2ToPRyAncVGW8_TrBOFMm7CE_hvCp8-zn3jUuonBWBm2VIxwM75DRUww8_YjLlPrH8PFnVe-enIvPTx-RKH4KNq4PNBaej_n1SL1bMZEE5nKdqRPN28RW-iOBj8Yr7SC7pjV1JEbVsk-nBW3y4H-25nDaIJcAnVk1nZ1NDzPoWkykHdwtfBT66BDYwoIxKR5i63MefNLJnLwKzXI42PtPiM9vjvexnFEpC1cHFZZGSx3Rf1ylBGP9A' }}
+                <Image
+                  source={{
+                    uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDx2ToPRyAncVGW8_TrBOFMm7CE_hvCp8-zn3jUuonBWBm2VIxwM75DRUww8_YjLlPrH8PFnVe-enIvPTx-RKH4KNq4PNBaej_n1SL1bMZEE5nKdqRPN28RW-iOBj8Yr7SC7pjV1JEbVsk-nBW3y4H-25nDaIJcAnVk1nZ1NDzPoWkykHdwtfBT66BDYwoIxKR5i63MefNLJnLwKzXI42PtPiM9vjvexnFEpC1cHFZZGSx3Rf1ylBGP9A',
+                  }}
                   style={styles.reviewAvatar}
                 />
                 <View>
@@ -152,11 +177,11 @@ export default function ReputationReviewsScreen() {
               </View>
             </View>
             <Text style={styles.reviewText}>
-              "Consistently reliable and friendly. We've collaborated on three different neighborhood meetups and it's always a pleasure."
+              "Consistently reliable and friendly. We've collaborated on three different neighborhood meetups
+              and it's always a pleasure."
             </Text>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Bottom Nav Placeholder */}
@@ -462,5 +487,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#44474d',
     marginTop: 4,
-  }
+  },
 });

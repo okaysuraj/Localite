@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  MagnifyingGlass,
-  Plus,
-  ChatCircleDots,
-  PaperPlaneTilt,
-} from '@phosphor-icons/react';
+import { MagnifyingGlass, Plus, ChatCircleDots } from '@phosphor-icons/react';
 import NewMessageModal from '../../components/NewMessageModal';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
@@ -13,56 +8,57 @@ import { API_URL } from '../../config';
 export default function MessagesPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('MESSAGES'); // MESSAGES, REQUESTS
-  const [activeConversation, setActiveConversation] = useState(null);
+  // MESSAGES, REQUESTS
+  const [activeConversation] = useState(null);
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchConversations = async () => {
+      setLoading(true);
+      try {
+        const token = await auth.currentUser?.getIdToken();
+        if (!token) return;
+
+        const res = await fetch(`${API_URL}/messages/direct/conversations`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const formatted = data.map((msg) => {
+            const isSender = msg.sender.firebaseUid === auth.currentUser?.uid;
+            const otherUser = isSender ? msg.receiver : msg.sender;
+            return {
+              id: otherUser.id,
+              user: {
+                id: otherUser.id,
+                username: otherUser.username,
+                profileImageUrl:
+                  otherUser.profilePhotoUrl ||
+                  `https://api.dicebear.com/7.x/initials/svg?seed=${otherUser.username}`,
+              },
+              lastMessage: msg.content,
+              timestamp: new Date(msg.sentAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+              unread: false,
+            };
+          });
+          setConversations(formatted);
+        }
+      } catch (error) {
+        console.error('Error fetching conversations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchConversations();
   }, []);
-
-  const fetchConversations = async () => {
-    setLoading(true);
-    try {
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) return;
-
-      const res = await fetch(`${API_URL}/messages/direct/conversations`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        const formatted = data.map((msg) => {
-          const isSender = msg.sender.firebaseUid === auth.currentUser?.uid;
-          const otherUser = isSender ? msg.receiver : msg.sender;
-          return {
-            id: otherUser.id,
-            user: {
-              id: otherUser.id,
-              username: otherUser.username,
-              profileImageUrl:
-                otherUser.profilePhotoUrl ||
-                `https://api.dicebear.com/7.x/initials/svg?seed=${otherUser.username}`,
-            },
-            lastMessage: msg.content,
-            timestamp: new Date(msg.sentAt).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-            unread: false,
-          };
-        });
-        setConversations(formatted);
-      }
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filteredConversations = conversations.filter((c) =>
     c.user.username.toLowerCase().includes(searchQuery.toLowerCase())
@@ -70,17 +66,13 @@ export default function MessagesPage() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-[calc(100vh-65px)] bg-bg max-w-[1200px] mx-auto border-x border-border">
-      {showNewMessageModal && (
-        <NewMessageModal onClose={() => setShowNewMessageModal(false)} />
-      )}
+      {showNewMessageModal && <NewMessageModal onClose={() => setShowNewMessageModal(false)} />}
 
       {/* Left Sidebar: Conversations */}
       <aside className="w-full md:w-[380px] shrink-0 flex flex-col bg-white border-r border-border">
         <div className="p-6 pb-4 space-y-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-display font-semibold text-fg tracking-tight">
-              Messages
-            </h1>
+            <h1 className="text-2xl font-display font-semibold text-fg tracking-tight">Messages</h1>
             <button
               onClick={() => setShowNewMessageModal(true)}
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-btn bg-accent text-white text-xs font-mono tracking-wide hover:opacity-90 transition-opacity"
@@ -92,10 +84,7 @@ export default function MessagesPage() {
 
           {/* Search Input */}
           <div className="relative">
-            <MagnifyingGlass
-              size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted"
-            />
+            <MagnifyingGlass size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted" />
             <input
               className="w-full bg-bg-subtle border border-border rounded-btn py-2 pl-10 pr-4 text-xs font-mono text-fg placeholder:text-fg-faint focus:outline-none focus:border-accent transition-colors"
               placeholder="Filter conversations..."
@@ -129,9 +118,7 @@ export default function MessagesPage() {
         {/* Conversation List */}
         <div className="flex-1 overflow-y-auto px-3 pb-6 divide-y divide-border/60">
           {loading ? (
-            <div className="p-8 text-center text-xs font-mono text-fg-muted">
-              Loading conversations...
-            </div>
+            <div className="p-8 text-center text-xs font-mono text-fg-muted">Loading conversations...</div>
           ) : filteredConversations.length === 0 ? (
             <div className="p-8 text-center text-xs font-mono text-fg-muted">
               {searchQuery ? 'No matching conversations' : 'No conversations yet'}
@@ -167,9 +154,7 @@ export default function MessagesPage() {
                       {conv.timestamp}
                     </span>
                   </div>
-                  <p className="text-xs text-fg-muted truncate leading-relaxed">
-                    {conv.lastMessage}
-                  </p>
+                  <p className="text-xs text-fg-muted truncate leading-relaxed">{conv.lastMessage}</p>
                 </div>
               </div>
             ))
@@ -183,11 +168,10 @@ export default function MessagesPage() {
           <div className="w-16 h-16 rounded-full bg-bg-subtle border border-border flex items-center justify-center mx-auto text-fg-muted">
             <ChatCircleDots size={32} />
           </div>
-          <h2 className="text-xl font-display font-semibold text-fg tracking-tight">
-            Direct Messages
-          </h2>
+          <h2 className="text-xl font-display font-semibold text-fg tracking-tight">Direct Messages</h2>
           <p className="text-sm text-fg-muted leading-relaxed">
-            Select an existing conversation on the left, or click "New Chat" to connect with a community member.
+            Select an existing conversation on the left, or click "New Chat" to connect with a community
+            member.
           </p>
         </div>
       </section>

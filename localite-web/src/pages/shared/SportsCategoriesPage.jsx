@@ -1,12 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Trophy, 
-  ArrowUpRight, 
-  Users, 
-  CheckCircle,
-  MapPin
-} from '@phosphor-icons/react';
+import { ArrowUpRight, Users, MapPin } from '@phosphor-icons/react';
 
 export default function SportsCategoriesPage() {
   const navigate = useNavigate();
@@ -19,7 +13,7 @@ export default function SportsCategoriesPage() {
       matches: 24,
       venues: 12,
       desc: 'Grass, clay, and hardcourt singles and doubles fixtures across top district clubs.',
-      accent: '#1A6B4A'
+      accent: '#1A6B4A',
     },
     {
       title: 'Pickleball & Padel',
@@ -27,7 +21,7 @@ export default function SportsCategoriesPage() {
       matches: 38,
       venues: 16,
       desc: 'Fast-paced social doubles and weekly ranked community round-robins.',
-      accent: '#1A6B4A'
+      accent: '#1A6B4A',
     },
     {
       title: 'Cricket & Box Leagues',
@@ -35,7 +29,7 @@ export default function SportsCategoriesPage() {
       matches: 19,
       venues: 8,
       desc: 'Weekend turf tournaments, leather ball test matches, and indoor box cricket.',
-      accent: '#1A6B4A'
+      accent: '#1A6B4A',
     },
     {
       title: 'Squash & Racquetball',
@@ -43,7 +37,7 @@ export default function SportsCategoriesPage() {
       matches: 14,
       venues: 9,
       desc: 'Intense glass-court matches with vetted regional tournament seeds.',
-      accent: '#1A6B4A'
+      accent: '#1A6B4A',
     },
     {
       title: 'Golf & Putting Salons',
@@ -51,7 +45,7 @@ export default function SportsCategoriesPage() {
       matches: 8,
       venues: 6,
       desc: 'Weekend 18-hole rounds and twilight driving range clinics.',
-      accent: '#1A6B4A'
+      accent: '#1A6B4A',
     },
     {
       title: 'Badminton & Shuttle',
@@ -59,17 +53,14 @@ export default function SportsCategoriesPage() {
       matches: 27,
       venues: 14,
       desc: 'High-speed indoor court matches and mixed doubles ladders.',
-      accent: '#1A6B4A'
-    }
+      accent: '#1A6B4A',
+    },
   ];
 
-  const filteredSports = activeFilter === 'ALL' 
-    ? sports 
-    : sports.filter(s => s.category === activeFilter);
+  const filteredSports = activeFilter === 'ALL' ? sports : sports.filter((s) => s.category === activeFilter);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-24 min-h-screen font-sans text-[var(--fg)] animate-fade-in">
-      
       {/* Hero Header */}
       <section className="mb-12 border-b border-[var(--border)] pb-8">
         <div className="max-w-2xl space-y-3">
@@ -80,7 +71,8 @@ export default function SportsCategoriesPage() {
             Athletic Disciplines
           </h1>
           <p className="text-sm md:text-base text-[var(--fg-muted)] leading-relaxed">
-            Curated sporting circles where competitive standards meet camaraderie. Choose your discipline to find players, sparring partners, and tournament lobbies.
+            Curated sporting circles where competitive standards meet camaraderie. Choose your discipline to
+            find players, sparring partners, and tournament lobbies.
           </p>
         </div>
 
@@ -120,12 +112,8 @@ export default function SportsCategoriesPage() {
                 </span>
               </div>
 
-              <h2 className="text-xl font-semibold text-[var(--fg)] mb-2">
-                {sport.title}
-              </h2>
-              <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
-                {sport.desc}
-              </p>
+              <h2 className="text-xl font-semibold text-[var(--fg)] mb-2">{sport.title}</h2>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed">{sport.desc}</p>
             </div>
 
             <div className="pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs text-[var(--fg-muted)] font-mono">
@@ -139,7 +127,6 @@ export default function SportsCategoriesPage() {
           </div>
         ))}
       </section>
-
     </div>
   );
 }

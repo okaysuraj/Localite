@@ -1,52 +1,36 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client/dist/sockjs';
-import { API_BASE_URL } from '../services/api';
+import { WS_URL } from '../config';
 
 const WebSocketContext = createContext(null);
+export const useWebSocket = () => useContext(WebSocketContext);
 
-export const useWebSocket = () => {
-  return useContext(WebSocketContext);
-};
-
-export const WebSocketProvider = ({ children }) => {
-  const [stompClient, setStompClient] = useState(null);
+// Keep one connection per app and expose its live status to chat screens.
+export function WebSocketProvider({ children }) {
   const [isConnected, setIsConnected] = useState(false);
+  const [stompClient] = useState(
+    () =>
+      new Client({
+        webSocketFactory: () => new SockJS(WS_URL),
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        onConnect: () => setIsConnected(true),
+        onDisconnect: () => setIsConnected(false),
+        onWebSocketClose: () => setIsConnected(false),
+        onStompError: () => setIsConnected(false),
+      })
+  );
 
   useEffect(() => {
-    const rawBase = API_BASE_URL.replace(/\/api\/?$/, '');
-    const client = new Client({
-      webSocketFactory: () => new SockJS(`${rawBase}/ws`),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      onConnect: () => {
-        console.log('Connected to WebSocket');
-        setIsConnected(true);
-      },
-      onStompError: (frame) => {
-        console.warn('Broker reported error: ' + frame?.headers?.['message']);
-      },
-      onWebSocketError: () => {
-        console.log('WebSocket handshake error (backend offline or connecting)');
-      },
-      onDisconnect: () => {
-        console.log('Disconnected from WebSocket');
-        setIsConnected(false);
-      }
-    });
-
-    client.activate();
-    setStompClient(client);
-
+    stompClient.activate();
     return () => {
-      client.deactivate();
+      void stompClient.deactivate();
     };
-  }, []);
+  }, [stompClient]);
 
   return (
-    <WebSocketContext.Provider value={{ stompClient, isConnected }}>
-      {children}
-    </WebSocketContext.Provider>
+    <WebSocketContext.Provider value={{ stompClient, isConnected }}>{children}</WebSocketContext.Provider>
   );
-};
+}

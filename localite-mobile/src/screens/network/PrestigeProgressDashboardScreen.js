@@ -1,6 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Animated, Easing, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Animated,
+  Easing,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -35,8 +46,6 @@ export default function PrestigeProgressDashboardScreen() {
     fetchGamificationData();
   }, [animatedValue, circumference]);
 
-
-
   const strokeDashoffset = animatedValue.interpolate({
     inputRange: [0, circumference],
     outputRange: [circumference, 0], // The Animated Value will be up to progressPercent * circumference
@@ -51,9 +60,11 @@ export default function PrestigeProgressDashboardScreen() {
             <MaterialIcons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
           <View style={styles.avatarWrap}>
-            <Image 
-              source={{ uri: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }} 
-              style={styles.avatarImg} 
+            <Image
+              source={{
+                uri: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+              }}
+              style={styles.avatarImg}
             />
           </View>
           <Text style={styles.headerTitle}>Localite</Text>
@@ -64,12 +75,11 @@ export default function PrestigeProgressDashboardScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <Text style={styles.heroPreTitle}>COMMUNITY STANDING</Text>
           <Text style={styles.heroTitle}>Prestige Progress</Text>
-          
+
           <View style={styles.progressRingContainer}>
             <Svg height="240" width="240" viewBox="0 0 240 240">
               <Circle
@@ -112,7 +122,9 @@ export default function PrestigeProgressDashboardScreen() {
               <Text style={styles.breakdownTrend}>+12% MoM</Text>
             </View>
             <Text style={styles.breakdownTitle}>SPORTSMANSHIP</Text>
-            <Text style={styles.breakdownValue}>4,200 <Text style={styles.breakdownValueUnit}>XP</Text></Text>
+            <Text style={styles.breakdownValue}>
+              4,200 <Text style={styles.breakdownValueUnit}>XP</Text>
+            </Text>
             <View style={styles.breakdownBarBg}>
               <View style={[styles.breakdownBarFill, { width: '85%' }]} />
             </View>
@@ -124,7 +136,9 @@ export default function PrestigeProgressDashboardScreen() {
               <Text style={styles.breakdownTrend}>+8% MoM</Text>
             </View>
             <Text style={styles.breakdownTitle}>HOSTING</Text>
-            <Text style={styles.breakdownValue}>3,850 <Text style={styles.breakdownValueUnit}>XP</Text></Text>
+            <Text style={styles.breakdownValue}>
+              3,850 <Text style={styles.breakdownValueUnit}>XP</Text>
+            </Text>
             <View style={styles.breakdownBarBg}>
               <View style={[styles.breakdownBarFill, { width: '65%' }]} />
             </View>
@@ -136,7 +150,9 @@ export default function PrestigeProgressDashboardScreen() {
               <Text style={styles.breakdownTrend}>+15% MoM</Text>
             </View>
             <Text style={styles.breakdownTitle}>PARTICIPATION</Text>
-            <Text style={styles.breakdownValue}>4,400 <Text style={styles.breakdownValueUnit}>XP</Text></Text>
+            <Text style={styles.breakdownValue}>
+              4,400 <Text style={styles.breakdownValueUnit}>XP</Text>
+            </Text>
             <View style={styles.breakdownBarBg}>
               <View style={[styles.breakdownBarFill, { width: '92%' }]} />
             </View>
@@ -179,7 +195,7 @@ export default function PrestigeProgressDashboardScreen() {
               <Text style={styles.accoladeTime}>YESTERDAY</Text>
             </View>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.accoladeRow}>
             <View style={styles.accoladeIconWrap}>
               <MaterialIcons name="diamond" size={24} color="#775a19" />
@@ -219,7 +235,12 @@ export default function PrestigeProgressDashboardScreen() {
               <Text style={styles.privilegeItemText}>Priority Waitlist Positioning</Text>
             </View>
             <View style={styles.privilegeItem}>
-              <MaterialIcons name="lock" size={16} color="#e9c176" style={[styles.privilegeIcon, { opacity: 0.6 }]} />
+              <MaterialIcons
+                name="lock"
+                size={16}
+                color="#e9c176"
+                style={[styles.privilegeIcon, { opacity: 0.6 }]}
+              />
               <Text style={[styles.privilegeItemText, { opacity: 0.6 }]}>Elite Hub Access (Platinum)</Text>
             </View>
           </View>
@@ -228,7 +249,6 @@ export default function PrestigeProgressDashboardScreen() {
             <Text style={styles.claimBtnText}>CLAIM MONTHLY REWARD</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -527,5 +547,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#0d1c32',
     letterSpacing: 1,
-  }
+  },
 });

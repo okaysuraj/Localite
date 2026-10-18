@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SplashPage = () => {
@@ -22,9 +22,7 @@ const SplashPage = () => {
         </div>
 
         {/* Tagline */}
-        <p className="text-body text-fg-muted tagline-fade mb-12">
-          find your people nearby
-        </p>
+        <p className="text-body text-fg-muted tagline-fade mb-12">find your people nearby</p>
 
         {/* Loader */}
         <div className="tagline-fade" style={{ animationDelay: '0.8s' }}>

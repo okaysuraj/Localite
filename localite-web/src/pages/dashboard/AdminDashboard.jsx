@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Users,
-  CalendarBlank,
-  Warning,
-  ShieldSlash,
-  Prohibit,
-} from '@phosphor-icons/react';
+import { useState, useEffect } from 'react';
+import { Users, CalendarBlank, Warning, ShieldSlash, Prohibit } from '@phosphor-icons/react';
 import { getAdminAnalytics, getAdminReports, banUser } from '../../services/api';
 
 export default function AdminDashboard() {
@@ -17,25 +11,16 @@ export default function AdminDashboard() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = () =>
+    Promise.all([getAdminAnalytics(), getAdminReports()]).then(([stats, reportList]) => {
+      if (stats) setAnalytics(stats);
+      if (Array.isArray(reportList)) setReports(reportList);
+      setLoading(false);
+    });
+
   useEffect(() => {
     fetchData();
   }, []);
-
-  const fetchData = async () => {
-    try {
-      const [stats, reportList] = await Promise.all([
-        getAdminAnalytics(),
-        getAdminReports(),
-      ]);
-
-      if (stats) setAnalytics(stats);
-      if (Array.isArray(reportList)) setReports(reportList);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleBanUser = async (userId) => {
     if (window.confirm('Are you sure you want to suspend this user?')) {
@@ -80,9 +65,7 @@ export default function AdminDashboard() {
               <span>Total Members</span>
               <Users size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              {analytics.totalUsers}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">{analytics.totalUsers}</p>
           </div>
 
           <div className="bg-white border border-border rounded-card p-5 space-y-2">
@@ -90,9 +73,7 @@ export default function AdminDashboard() {
               <span>Total Gatherings</span>
               <CalendarBlank size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              {analytics.totalEvents}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">{analytics.totalEvents}</p>
           </div>
 
           <div className="bg-white border border-border rounded-card p-5 space-y-2">
@@ -100,9 +81,7 @@ export default function AdminDashboard() {
               <span>Pending Reports</span>
               <Warning size={16} className="text-error" />
             </div>
-            <p className="text-3xl font-display font-semibold text-error">
-              {analytics.pendingReports}
-            </p>
+            <p className="text-3xl font-display font-semibold text-error">{analytics.pendingReports}</p>
           </div>
         </div>
 

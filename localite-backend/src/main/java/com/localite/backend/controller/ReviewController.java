@@ -51,7 +51,7 @@ public class ReviewController {
 
             // Verify they actually attended
             Optional<Rsvp> rsvpOpt = rsvpRepository.findByEventIdAndUserId(eventId, reviewer.getId());
-            if (!rsvpOpt.isPresent() || rsvpOpt.get().getStatus() != RsvpStatus.ATTENDED) {
+            if (rsvpOpt.isEmpty() || rsvpOpt.get().getStatus() != RsvpStatus.ATTENDED) {
                 return ResponseEntity.badRequest().body("You must have attended the event to leave a review.");
             }
 

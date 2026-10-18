@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, Switch } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+  Switch,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function AvailabilityCalendarScreen() {
   const navigation = useNavigation();
   const [selectedSlots, setSelectedSlots] = useState({
-    'MON-MORNING': false, 'MON-AFTERNOON': false, 'MON-EVENING': true,
-    'TUE-MORNING': false, 'TUE-AFTERNOON': false, 'TUE-EVENING': true,
-    'WED-MORNING': false, 'WED-AFTERNOON': false, 'WED-EVENING': false,
-    'THU-MORNING': false, 'THU-AFTERNOON': false, 'THU-EVENING': true,
-    'FRI-MORNING': false, 'FRI-AFTERNOON': false, 'FRI-EVENING': true,
-    'SAT-MORNING': false, 'SAT-AFTERNOON': false, 'SAT-EVENING': true,
-    'SUN-MORNING': false, 'SUN-AFTERNOON': false, 'SUN-EVENING': true,
+    'MON-MORNING': false,
+    'MON-AFTERNOON': false,
+    'MON-EVENING': true,
+    'TUE-MORNING': false,
+    'TUE-AFTERNOON': false,
+    'TUE-EVENING': true,
+    'WED-MORNING': false,
+    'WED-AFTERNOON': false,
+    'WED-EVENING': false,
+    'THU-MORNING': false,
+    'THU-AFTERNOON': false,
+    'THU-EVENING': true,
+    'FRI-MORNING': false,
+    'FRI-AFTERNOON': false,
+    'FRI-EVENING': true,
+    'SAT-MORNING': false,
+    'SAT-AFTERNOON': false,
+    'SAT-EVENING': true,
+    'SUN-MORNING': false,
+    'SUN-AFTERNOON': false,
+    'SUN-EVENING': true,
   });
 
   const [prioritySync, setPrioritySync] = useState(true);
@@ -22,12 +46,12 @@ export default function AvailabilityCalendarScreen() {
   const times = [
     { id: 'MORNING', icon: 'light-mode' },
     { id: 'AFTERNOON', icon: 'wb-sunny' },
-    { id: 'EVENING', icon: 'dark-mode' }
+    { id: 'EVENING', icon: 'dark-mode' },
   ];
 
   const toggleSlot = (day, time) => {
     const key = `${day}-${time}`;
-    setSelectedSlots(prev => ({ ...prev, [key]: !prev[key] }));
+    setSelectedSlots((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   return (
@@ -41,15 +65,16 @@ export default function AvailabilityCalendarScreen() {
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8xw7fMG7n1nyv3YTNChFFwXVIqQsTEUzlcXFRfj4KbTIxk7A83D7tVSjmkjAnF0Nm-lN8wEOUryx5adya7NB32-i2YYzuzlYQto4CzHHoYvaWgfyI8pqp8ec-t6NEOJA_scLc8kxPfMfqFWfwP43Xlrs_G4Bbx7GasSixeNbKhr7DTIrcmyS3bjVCkyPh8aKk9MOjb0rHsDR4YZ1xPMIC-oLeEgb4j2rlB6JVhczMFwDiad2B5dq3yA' }} 
-            style={styles.avatarImg} 
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8xw7fMG7n1nyv3YTNChFFwXVIqQsTEUzlcXFRfj4KbTIxk7A83D7tVSjmkjAnF0Nm-lN8wEOUryx5adya7NB32-i2YYzuzlYQto4CzHHoYvaWgfyI8pqp8ec-t6NEOJA_scLc8kxPfMfqFWfwP43Xlrs_G4Bbx7GasSixeNbKhr7DTIrcmyS3bjVCkyPh8aKk9MOjb0rHsDR4YZ1xPMIC-oLeEgb4j2rlB6JVhczMFwDiad2B5dq3yA',
+            }}
+            style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         <View style={styles.pageInfo}>
           <Text style={styles.pageTitle}>Weekly Availability</Text>
           <Text style={styles.pageDesc}>
@@ -60,10 +85,10 @@ export default function AvailabilityCalendarScreen() {
         {/* Availability Grid Wrapper */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gridScroll}>
           <View style={styles.gridContainer}>
-            {days.map(day => (
+            {days.map((day) => (
               <View key={day} style={styles.dayCol}>
                 <Text style={styles.dayTitle}>{day}</Text>
-                {times.map(time => {
+                {times.map((time) => {
                   const key = `${day}-${time.id}`;
                   const isSelected = selectedSlots[key];
                   return (
@@ -73,11 +98,7 @@ export default function AvailabilityCalendarScreen() {
                       onPress={() => toggleSlot(day, time.id)}
                       activeOpacity={0.7}
                     >
-                      <MaterialIcons 
-                        name={time.icon} 
-                        size={20} 
-                        color={isSelected ? '#fff' : '#000'} 
-                      />
+                      <MaterialIcons name={time.icon} size={20} color={isSelected ? '#fff' : '#000'} />
                       <Text style={[styles.timeSlotText, isSelected && styles.timeSlotTextSelected]}>
                         {time.id}
                       </Text>
@@ -92,8 +113,12 @@ export default function AvailabilityCalendarScreen() {
         {/* Additional Preferences Section */}
         <View style={styles.prefsSection}>
           <Text style={styles.prefsTitle}>Notification Tiers</Text>
-          
-          <TouchableOpacity style={styles.prefItem} activeOpacity={0.8} onPress={() => setPrioritySync(!prioritySync)}>
+
+          <TouchableOpacity
+            style={styles.prefItem}
+            activeOpacity={0.8}
+            onPress={() => setPrioritySync(!prioritySync)}
+          >
             <View style={styles.prefTextWrap}>
               <Text style={styles.prefItemTitle}>Priority Sync</Text>
               <Text style={styles.prefItemDesc}>Alert me immediately for evening slots</Text>
@@ -106,7 +131,11 @@ export default function AvailabilityCalendarScreen() {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.prefItem} activeOpacity={0.8} onPress={() => setGuestDiscovery(!guestDiscovery)}>
+          <TouchableOpacity
+            style={styles.prefItem}
+            activeOpacity={0.8}
+            onPress={() => setGuestDiscovery(!guestDiscovery)}
+          >
             <View style={styles.prefTextWrap}>
               <Text style={styles.prefItemTitle}>Guest Discovery</Text>
               <Text style={styles.prefItemDesc}>Allow hubs to see my general availability</Text>
@@ -124,11 +153,17 @@ export default function AvailabilityCalendarScreen() {
         <View style={styles.proTipBox}>
           <View style={styles.proTipContent}>
             <Text style={styles.proTipHeader}>PRO TIP</Text>
-            <Text style={styles.proTipText}>Friday & Saturday evenings are peak social hours in your local Hub.</Text>
+            <Text style={styles.proTipText}>
+              Friday & Saturday evenings are peak social hours in your local Hub.
+            </Text>
           </View>
-          <MaterialIcons name="auto-awesome" size={80} color="rgba(119, 90, 25, 0.1)" style={styles.proTipIcon} />
+          <MaterialIcons
+            name="auto-awesome"
+            size={80}
+            color="rgba(119, 90, 25, 0.1)"
+            style={styles.proTipIcon}
+          />
         </View>
-
       </ScrollView>
 
       {/* Sticky Bottom Action Bar */}
@@ -370,5 +405,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#000',
     letterSpacing: 1,
-  }
+  },
 });

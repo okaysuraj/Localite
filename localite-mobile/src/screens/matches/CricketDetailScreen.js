@@ -1,14 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ImageBackground, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function CricketDetailScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} bounces={false}>
         {/* Hero Section */}
-        <ImageBackground 
-          source={{ uri: 'https://via.placeholder.com/600x800' }} 
+        <ImageBackground
+          source={{ uri: 'https://via.placeholder.com/600x800' }}
           style={styles.heroBackground}
         >
           <View style={styles.heroOverlay}>
@@ -25,7 +33,7 @@ export default function CricketDetailScreen({ navigation }) {
             <View style={styles.heroContent}>
               <Text style={styles.heroSubtitle}>PREMIER LEAGUE SELECTION</Text>
               <Text style={styles.heroTitle}>The Cricket Grounds</Text>
-              
+
               <View style={styles.heroActions}>
                 <TouchableOpacity style={styles.primaryAction}>
                   <Text style={styles.primaryActionText}>FIND A MATCH</Text>
@@ -51,7 +59,7 @@ export default function CricketDetailScreen({ navigation }) {
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statLabel}>FACILITY RATING</Text>
-              <Text style={[styles.statValue, {color: '#775a19'}]}>4.9/5</Text>
+              <Text style={[styles.statValue, { color: '#775a19' }]}>4.9/5</Text>
             </View>
           </View>
         </View>
@@ -68,8 +76,8 @@ export default function CricketDetailScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          <ImageBackground 
-            source={{ uri: 'https://via.placeholder.com/400x300' }} 
+          <ImageBackground
+            source={{ uri: 'https://via.placeholder.com/400x300' }}
             style={styles.featuredClub}
             imageStyle={{ borderRadius: 12 }}
           >
@@ -78,7 +86,9 @@ export default function CricketDetailScreen({ navigation }) {
                 <Text style={styles.badgeText}>FEATURED CLUB</Text>
               </View>
               <Text style={styles.clubName}>The Localite Cricket Club</Text>
-              <Text style={styles.clubDesc}>Our most active community collective, hosting weekly friendly matches and practice sessions.</Text>
+              <Text style={styles.clubDesc}>
+                Our most active community collective, hosting weekly friendly matches and practice sessions.
+              </Text>
             </View>
           </ImageBackground>
 
@@ -93,8 +103,10 @@ export default function CricketDetailScreen({ navigation }) {
             <View style={[styles.quickPanelItem, styles.quickPanelItemPrimary]}>
               <MaterialIcons name="military-tech" size={24} color="#ffdea5" />
               <View>
-                <Text style={[styles.panelTitle, {color: '#ffffff'}]}>Weekly Awards</Text>
-                <Text style={[styles.panelDesc, {color: 'rgba(255,255,255,0.7)'}]}>Top performances celebrated.</Text>
+                <Text style={[styles.panelTitle, { color: '#ffffff' }]}>Weekly Awards</Text>
+                <Text style={[styles.panelDesc, { color: 'rgba(255,255,255,0.7)' }]}>
+                  Top performances celebrated.
+                </Text>
               </View>
             </View>
           </View>
@@ -103,8 +115,12 @@ export default function CricketDetailScreen({ navigation }) {
         {/* Top Local Talent */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Top Local Talent</Text>
-          
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.talentList}>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.talentList}
+          >
             {/* Player 1 */}
             <View style={styles.talentCard}>
               <View style={styles.talentImageContainer}>
@@ -173,7 +189,7 @@ export default function CricketDetailScreen({ navigation }) {
                   </View>
                   <Text style={styles.teamNameSm}>Mayfair Lions</Text>
                 </View>
-                
+
                 <View style={styles.vsView}>
                   <Text style={styles.vsText}>VS</Text>
                   <View style={styles.timeBadge}>
@@ -199,14 +215,13 @@ export default function CricketDetailScreen({ navigation }) {
             </View>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Bottom Nav Simulation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
           <MaterialIcons name="stadium" size={24} color="#775a19" />
-          <Text style={[styles.navText, {color: '#775a19'}]}>ARENA</Text>
+          <Text style={[styles.navText, { color: '#775a19' }]}>ARENA</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
           <MaterialIcons name="explore" size={24} color="#75777e" />

@@ -1,8 +1,7 @@
-import React, { useState, useContext } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Switch 
-} from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useState, useContext } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Switch } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -23,9 +22,14 @@ export default function AccountSettingsScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.headerDesc}>
-          Manage your premium membership details, secure your identity, and customize your local concierge experience.
+          Manage your premium membership details, secure your identity, and customize your local concierge
+          experience.
         </Text>
 
         {/* Subscription Status */}
@@ -36,7 +40,7 @@ export default function AccountSettingsScreen({ navigation }) {
           </View>
           <Text style={styles.tierTitle}>Platinum Tier</Text>
           <Text style={styles.billingText}>Next billing cycle: Oct 12, 2024</Text>
-          
+
           <View style={styles.featuresList}>
             <View style={styles.featureItem}>
               <MaterialIcons name="check-circle" size={16} color="#ffffff" />
@@ -118,8 +122,8 @@ export default function AccountSettingsScreen({ navigation }) {
               <Text style={styles.actionTitle}>Two-Factor Authentication</Text>
               <Text style={styles.actionSubtitle}>Add an extra layer of security to your account.</Text>
             </View>
-            <Switch 
-              value={twoFactorEnabled} 
+            <Switch
+              value={twoFactorEnabled}
               onValueChange={setTwoFactorEnabled}
               trackColor={{ false: '#e4e2e2', true: '#775a19' }}
               thumbColor={'#ffffff'}
@@ -141,7 +145,9 @@ export default function AccountSettingsScreen({ navigation }) {
         <View style={styles.dangerZone}>
           <View style={{ flex: 1, paddingRight: 16 }}>
             <Text style={styles.dangerTitle}>Deactivate Account</Text>
-            <Text style={styles.dangerSubtitle}>Temporarily disable your profile or permanently delete your data.</Text>
+            <Text style={styles.dangerSubtitle}>
+              Temporarily disable your profile or permanently delete your data.
+            </Text>
           </View>
           <TouchableOpacity style={styles.dangerBtn}>
             <Text style={styles.dangerBtnText}>CLOSE ACCOUNT</Text>
@@ -361,5 +367,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#ba1a1a',
     letterSpacing: 1,
-  }
+  },
 });

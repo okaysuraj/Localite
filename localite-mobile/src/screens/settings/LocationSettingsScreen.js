@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Switch, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Switch,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LocationSettingsScreen() {
@@ -9,7 +19,7 @@ export default function LocationSettingsScreen() {
   // Toggles state
   const [guardian, setGuardian] = useState(true);
   const [discovery, setDiscovery] = useState(true);
-  
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -22,22 +32,24 @@ export default function LocationSettingsScreen() {
         </View>
         <View style={styles.headerRight}>
           <View style={styles.avatarWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAzXhNR0_nhdHY5iEySAwUYQKyYaWe4gWsGHk3krxy49w9A3EBj-pmxHOZ5PJQooH7JveFO30WU-MIhKfw1D8eb7dFUwmghhdyJDpYKIsooivJ0DAhBOCUgEebowt9Ac_fjuwDwrzK5oiT0znt7EXGZ6SFprlyOsVt7xLUyriFsuhP05031tMkbevItNTzyrNPk_1-uLSpUWWHx6huH-UhUvB6msaVDoC2bb8p4ATvGAGSvaK-LSJeclA' }} 
-              style={styles.avatarImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAzXhNR0_nhdHY5iEySAwUYQKyYaWe4gWsGHk3krxy49w9A3EBj-pmxHOZ5PJQooH7JveFO30WU-MIhKfw1D8eb7dFUwmghhdyJDpYKIsooivJ0DAhBOCUgEebowt9Ac_fjuwDwrzK5oiT0znt7EXGZ6SFprlyOsVt7xLUyriFsuhP05031tMkbevItNTzyrNPk_1-uLSpUWWHx6huH-UhUvB6msaVDoC2bb8p4ATvGAGSvaK-LSJeclA',
+              }}
+              style={styles.avatarImg}
             />
           </View>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Page Header */}
         <View style={styles.pageHeader}>
           <Text style={styles.preTitle}>PRIVACY & SAFETY</Text>
           <Text style={styles.pageTitle}>Your Location, Curated for Your Experience.</Text>
           <Text style={styles.pageDesc}>
-            At Localite, proximity is the catalyst for community. Manage how we use your location data to enhance safety, discovery, and seamless event arrivals.
+            At Localite, proximity is the catalyst for community. Manage how we use your location data to
+            enhance safety, discovery, and seamless event arrivals.
           </Text>
         </View>
 
@@ -58,7 +70,8 @@ export default function LocationSettingsScreen() {
           </View>
           <Text style={styles.cardTitle}>Guardian Presence</Text>
           <Text style={styles.cardDesc}>
-            Enable "Always On" tracking for comprehensive safety features. This mode powers our SOS Signal and Late-Night Check-in, allowing trusted community moderators to verify your safety.
+            Enable "Always On" tracking for comprehensive safety features. This mode powers our SOS Signal and
+            Late-Night Check-in, allowing trusted community moderators to verify your safety.
           </Text>
           <View style={styles.featureList}>
             <View style={styles.featureItem}>
@@ -92,12 +105,15 @@ export default function LocationSettingsScreen() {
           </View>
           <Text style={styles.cardTitle}>Smart Discovery</Text>
           <Text style={styles.cardDesc}>
-            Locate hidden boutiques and pop-up events only when the app is active. Perfect for the member who values privacy but seeks inspiration.
+            Locate hidden boutiques and pop-up events only when the app is active. Perfect for the member who
+            values privacy but seeks inspiration.
           </Text>
           <View style={styles.mapPreviewWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3vdSYSHvbuvMadnyeIvlFKMZN9sFUqXrFlgQjh7ce_koPLcyHG8Isrvn_HY_uHqUw21zczFlM4FnqvySEjn0Czm945JLHYSlg9TS2O2wS3rlUxKsZN7kqLIT9lxn-jCVh1mjqwfWpdneo3KxBQhWblZlmTr8OZgpDC8Tm9hZRgRxE9_AeJFvGyBTT3q90UC2N98ftMf0X896udrLYDaQ9Ah5-kJ7M5j1yOoMvBN_HsDsppNWIIbhLag' }} 
-              style={styles.mapPreview} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3vdSYSHvbuvMadnyeIvlFKMZN9sFUqXrFlgQjh7ce_koPLcyHG8Isrvn_HY_uHqUw21zczFlM4FnqvySEjn0Czm945JLHYSlg9TS2O2wS3rlUxKsZN7kqLIT9lxn-jCVh1mjqwfWpdneo3KxBQhWblZlmTr8OZgpDC8Tm9hZRgRxE9_AeJFvGyBTT3q90UC2N98ftMf0X896udrLYDaQ9Ah5-kJ7M5j1yOoMvBN_HsDsppNWIIbhLag',
+              }}
+              style={styles.mapPreview}
             />
           </View>
           <TouchableOpacity style={styles.secondaryBtn}>
@@ -113,7 +129,8 @@ export default function LocationSettingsScreen() {
           </View>
           <Text style={styles.darkCardTitle}>The Concierge Arrival</Text>
           <Text style={styles.darkCardDesc}>
-            Grant precise access for high-end event interactions. This allows for Hands-Free Check-ins and Hyper-Local Notifications.
+            Grant precise access for high-end event interactions. This allows for Hands-Free Check-ins and
+            Hyper-Local Notifications.
           </Text>
           <View style={styles.darkFeatureList}>
             <View style={styles.darkFeatureBox}>
@@ -126,9 +143,11 @@ export default function LocationSettingsScreen() {
             </View>
           </View>
           <View style={styles.darkImageWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2rm63TZFUS30Vqw7u4LHuhlSWr-NZakljeTtHuyhFYni_vrxjoGC_CHV9mAREWkMHfwHT60O4Sq2REi6ooUBM6mxJXwW-hOSWDYR_Vh3BO-QELxgiqJ5OIi6eZqGPh0NZTu9VOs7iHwsluVKgdH26_r_EJr-YBeXK2ahpFreXWT3Yho2eIazB0K0rcLHsNxQJw5AASY35q7Vqc7aGhPJrDBYQ3t63w6hdvD2Fvhkp9OsCgc2HyluZPw' }} 
-              style={styles.darkImage} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2rm63TZFUS30Vqw7u4LHuhlSWr-NZakljeTtHuyhFYni_vrxjoGC_CHV9mAREWkMHfwHT60O4Sq2REi6ooUBM6mxJXwW-hOSWDYR_Vh3BO-QELxgiqJ5OIi6eZqGPh0NZTu9VOs7iHwsluVKgdH26_r_EJr-YBeXK2ahpFreXWT3Yho2eIazB0K0rcLHsNxQJw5AASY35q7Vqc7aGhPJrDBYQ3t63w6hdvD2Fvhkp9OsCgc2HyluZPw',
+              }}
+              style={styles.darkImage}
             />
             <View style={styles.darkImageOverlay}>
               <TouchableOpacity style={styles.goldBtn}>
@@ -142,14 +161,14 @@ export default function LocationSettingsScreen() {
         <View style={styles.privacyNote}>
           <Text style={styles.privacyTitle}>A Note on Integrity</Text>
           <Text style={styles.privacyDesc}>
-            Localite never sells your movement data to third parties. We utilize your coordinates exclusively to craft the premium experiences and safety protocols that define our membership.
+            Localite never sells your movement data to third parties. We utilize your coordinates exclusively
+            to craft the premium experiences and safety protocols that define our membership.
           </Text>
           <TouchableOpacity style={styles.privacyLink}>
             <Text style={styles.privacyLinkText}>READ FULL PRIVACY CHARTER</Text>
             <MaterialIcons name="arrow-forward" size={16} color="#775a19" />
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -438,5 +457,5 @@ const styles = StyleSheet.create({
     color: '#775a19',
     letterSpacing: 1,
     textDecorationLine: 'underline',
-  }
+  },
 });

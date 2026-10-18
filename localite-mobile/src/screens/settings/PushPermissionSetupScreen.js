@@ -1,6 +1,5 @@
-import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function PushPermissionSetupScreen() {
@@ -14,13 +13,12 @@ export default function PushPermissionSetupScreen() {
       </View>
 
       <View style={styles.content}>
-        
         {/* Central Illustration Component */}
         <View style={styles.heroWrap}>
           {/* Background Decorative Rings */}
           <View style={[styles.circleLayer, styles.circleLayer1]} />
           <View style={[styles.circleLayer, styles.circleLayer2]} />
-          
+
           {/* Main Illustration Card */}
           <View style={styles.bentoCard}>
             <View style={styles.iconBg}>
@@ -79,7 +77,6 @@ export default function PushPermissionSetupScreen() {
             <Text style={styles.trustText}>CONTROL</Text>
           </View>
         </View>
-
       </View>
     </SafeAreaView>
   );
@@ -286,5 +283,5 @@ const styles = StyleSheet.create({
     color: '#44474d',
     letterSpacing: 1,
     marginTop: 4,
-  }
+  },
 });

@@ -1,21 +1,8 @@
-import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { 
-  CalendarBlank, 
-  MapPin, 
-  Users, 
-  DownloadSimple, 
-  ArrowLeft, 
-  Star, 
-  Sparkle, 
-  ChartLineUp, 
-  CheckCircle,
-  Clock 
-} from '@phosphor-icons/react';
+import { useNavigate } from 'react-router-dom';
+import { CalendarBlank, MapPin, Users, DownloadSimple, ArrowLeft, Star } from '@phosphor-icons/react';
 
 export default function EventInsightsPage() {
   const navigate = useNavigate();
-  const { id } = useParams();
 
   return (
     <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
@@ -23,8 +10,8 @@ export default function EventInsightsPage() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[var(--border)]">
           <div className="space-y-1">
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-2"
             >
@@ -51,8 +38,8 @@ export default function EventInsightsPage() {
             </div>
           </div>
 
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => alert('PDF export generated.')}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-card border border-[var(--border)] bg-white text-xs font-mono uppercase tracking-wider text-[var(--fg)] hover:bg-[var(--bg-subtle)] transition-colors self-start sm:self-auto"
           >
@@ -68,7 +55,9 @@ export default function EventInsightsPage() {
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-lg font-serif text-[var(--fg)]">Attendance Velocity</h3>
-                <p className="text-xs font-mono text-[var(--fg-muted)] mt-0.5">Real-time arrival rate throughout the evening</p>
+                <p className="text-xs font-mono text-[var(--fg-muted)] mt-0.5">
+                  Real-time arrival rate throughout the evening
+                </p>
               </div>
               <span className="text-xs font-mono text-[var(--accent)]">Peak: 21:30</span>
             </div>
@@ -80,11 +69,11 @@ export default function EventInsightsPage() {
                 { time: '20:00', pct: 88, highlight: true },
                 { time: '21:00', pct: 98, top: true },
                 { time: '22:00', pct: 80 },
-                { time: '23:00', pct: 40 }
+                { time: '23:00', pct: 40 },
               ].map((slot, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-2">
                   <div className="w-full bg-[var(--bg-subtle)] rounded-t-card h-40 flex items-end p-1">
-                    <div 
+                    <div
                       className={`w-full rounded-t-card transition-all duration-500 ${
                         slot.top ? 'bg-[var(--accent)]' : slot.highlight ? 'bg-[var(--fg)]' : 'bg-stone-300'
                       }`}
@@ -100,7 +89,9 @@ export default function EventInsightsPage() {
           {/* Satisfaction Score */}
           <div className="col-span-12 lg:col-span-4 bg-white rounded-card p-6 border border-[var(--border)] flex flex-col justify-between space-y-6">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block mb-1">Attendee Sentiment</span>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block mb-1">
+                Attendee Sentiment
+              </span>
               <h3 className="text-lg font-serif text-[var(--fg)]">Satisfaction Score</h3>
               <p className="text-xs text-[var(--fg-muted)] mt-0.5">Post-event rating and host score impact</p>
             </div>
@@ -112,7 +103,9 @@ export default function EventInsightsPage() {
                   <Star key={s} size={18} weight="fill" />
                 ))}
               </div>
-              <span className="text-[11px] font-mono text-[var(--fg-muted)] mt-1 block">Based on 64 community reviews</span>
+              <span className="text-[11px] font-mono text-[var(--fg-muted)] mt-1 block">
+                Based on 64 community reviews
+              </span>
             </div>
 
             <div className="p-3.5 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] text-xs text-[var(--fg-muted)] italic">
@@ -123,17 +116,23 @@ export default function EventInsightsPage() {
           {/* Key Insights & Highlights */}
           <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-5 rounded-card border border-[var(--border)] space-y-2">
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Check-in Efficiency</span>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Check-in Efficiency
+              </span>
               <p className="text-2xl font-mono text-[var(--fg)] font-medium">98.4%</p>
               <p className="text-xs text-[var(--fg-muted)]">Average gate scan time: 1.2 seconds</p>
             </div>
             <div className="bg-white p-5 rounded-card border border-[var(--border)] space-y-2">
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Repeat Members</span>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Repeat Members
+              </span>
               <p className="text-2xl font-mono text-[var(--fg)] font-medium">42 Guests</p>
               <p className="text-xs text-[var(--fg-muted)]">Over 50% attended past events with this host</p>
             </div>
             <div className="bg-white p-5 rounded-card border border-[var(--border)] space-y-2">
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Host Reputation XP</span>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Host Reputation XP
+              </span>
               <p className="text-2xl font-mono text-[var(--accent)] font-medium">+350 XP</p>
               <p className="text-xs text-[var(--fg-muted)]">Awarded for high attendance rating</p>
             </div>

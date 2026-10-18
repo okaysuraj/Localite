@@ -1,6 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Animated, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Animated,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EventInsightsScreen() {
@@ -18,7 +28,7 @@ export default function EventInsightsScreen() {
   const getWidth = (percentage) => {
     return animValue.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0%', `${percentage}%`]
+      outputRange: ['0%', `${percentage}%`],
     });
   };
 
@@ -27,7 +37,10 @@ export default function EventInsightsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.openDrawer && navigation.openDrawer()} style={styles.iconBtn}>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer && navigation.openDrawer()}
+            style={styles.iconBtn}
+          >
             <MaterialIcons name="menu" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Localite</Text>
@@ -38,7 +51,6 @@ export default function EventInsightsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Event Header Section */}
         <View style={styles.titleSection}>
           <Text style={styles.preTitle}>PERFORMANCE SUMMARY</Text>
@@ -60,9 +72,11 @@ export default function EventInsightsScreen() {
               <MaterialIcons name="trending-up" size={16} color="#775a19" />
             </View>
           </View>
-          
+
           <View style={styles.rateRow}>
-            <Text style={styles.rateBig}>84<Text style={styles.ratePercent}>%</Text></Text>
+            <Text style={styles.rateBig}>
+              84<Text style={styles.ratePercent}>%</Text>
+            </Text>
             <Text style={styles.rateDesc}>+12% from previous event</Text>
           </View>
 
@@ -129,20 +143,31 @@ export default function EventInsightsScreen() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.galleryScroll} contentContainerStyle={{ paddingRight: 24 }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.galleryScroll}
+          contentContainerStyle={{ paddingRight: 24 }}
+        >
           <View style={styles.galleryItem}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCUUJGYMIuSJnop6Y2lu57nBQhudB_JTtz4_I_utFyG2A2PjiXtTalHdKaFsZ7AjtAJiQj1nYcwOJLs6yvaUp_FQO5d-nTGCuw2eTsAounC8jVJq28aya3t0TC_hS6o9paCGeciBEvp6ylOSORLgKewHoGXGaqaEcmNmKQohlRxVJucAlxRHZe9lOWkCaWYyZwSBHhfe7Sn2AIqcQFVFdXoIZlFd8ScCDx_jB4zLpPhG7Ri52SnWYx5wA' }}
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCUUJGYMIuSJnop6Y2lu57nBQhudB_JTtz4_I_utFyG2A2PjiXtTalHdKaFsZ7AjtAJiQj1nYcwOJLs6yvaUp_FQO5d-nTGCuw2eTsAounC8jVJq28aya3t0TC_hS6o9paCGeciBEvp6ylOSORLgKewHoGXGaqaEcmNmKQohlRxVJucAlxRHZe9lOWkCaWYyZwSBHhfe7Sn2AIqcQFVFdXoIZlFd8ScCDx_jB4zLpPhG7Ri52SnWYx5wA',
+              }}
               style={styles.galleryImg}
             />
             <View style={styles.galleryOverlay}>
               <Text style={styles.galleryLikes}>42 Likes</Text>
-              <Text style={styles.galleryQuote}>"The transition during sunset was the absolute highlight!"</Text>
+              <Text style={styles.galleryQuote}>
+                "The transition during sunset was the absolute highlight!"
+              </Text>
             </View>
           </View>
           <View style={styles.galleryItem}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCf64icVN45KHhZbT-65kg4Hc45GPKaJlAp5frK1AN-GEqnBqn3fbPh2TdWlcjPWCThj8xg0rDRyhCz5zIkc_h5KeDG6qDbYAjLgeML9HcX7Xa0bKe30njKgq1SXR4Y6DM3U3D4LSh0eydAIen_ElTUMsm8sV4Jc9yHNtnAwgWMpN8Upa9KtTO8cuZlwPUbjG4-JncuTQQ-3HAqMSQI38r5IFtA1j7oEAEwlWcLOvICsy3OzerAqzf5_Q' }}
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCf64icVN45KHhZbT-65kg4Hc45GPKaJlAp5frK1AN-GEqnBqn3fbPh2TdWlcjPWCThj8xg0rDRyhCz5zIkc_h5KeDG6qDbYAjLgeML9HcX7Xa0bKe30njKgq1SXR4Y6DM3U3D4LSh0eydAIen_ElTUMsm8sV4Jc9yHNtnAwgWMpN8Upa9KtTO8cuZlwPUbjG4-JncuTQQ-3HAqMSQI38r5IFtA1j7oEAEwlWcLOvICsy3OzerAqzf5_Q',
+              }}
               style={styles.galleryImg}
             />
             <View style={styles.galleryOverlay}>
@@ -158,15 +183,20 @@ export default function EventInsightsScreen() {
           <View style={styles.recommendList}>
             <View style={styles.recommendRow}>
               <MaterialIcons name="lightbulb" size={20} color="#775a19" />
-              <Text style={styles.recommendText}>The cocktail hour transition had the highest social media engagement. Consider extending this segment for the next event.</Text>
+              <Text style={styles.recommendText}>
+                The cocktail hour transition had the highest social media engagement. Consider extending this
+                segment for the next event.
+              </Text>
             </View>
             <View style={styles.recommendRow}>
               <MaterialIcons name="lightbulb" size={20} color="#775a19" />
-              <Text style={styles.recommendText}>42% of attendees requested more information about the venue's history. Add a digital brochure for the next gathering.</Text>
+              <Text style={styles.recommendText}>
+                42% of attendees requested more information about the venue's history. Add a digital brochure
+                for the next gathering.
+              </Text>
             </View>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Bottom Nav */}
@@ -542,5 +572,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#775a19',
     marginTop: 4,
-  }
+  },
 });

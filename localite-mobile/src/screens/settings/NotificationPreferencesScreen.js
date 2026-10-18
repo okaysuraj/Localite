@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Switch, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Switch,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function NotificationPreferencesScreen() {
@@ -28,22 +38,24 @@ export default function NotificationPreferencesScreen() {
         </View>
         <View style={styles.headerRight}>
           <View style={styles.avatarWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAj0b3tfJnZBm7k7zhHcjoF8FW5r-EJMh3kmErl7byLvlvK6pyn9siwcty-5uiZ20fRCHb9qaq_y5F0RzNH5FPefT_SH1F2HwNgumR2O2gXw8OcUUJ-lkTirCTIVuUPk1NxgmNq16ItBB9gCALmg7YKzIpMOxrHDlnoaezzGExD8csmcUpdXuR46V5-nmscTYrB_gO2xOs0rBjo5vjQnRko9w__fYhAnYWu8xr1LoG3QR43Lqmya4OM6w' }} 
-              style={styles.avatarImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAj0b3tfJnZBm7k7zhHcjoF8FW5r-EJMh3kmErl7byLvlvK6pyn9siwcty-5uiZ20fRCHb9qaq_y5F0RzNH5FPefT_SH1F2HwNgumR2O2gXw8OcUUJ-lkTirCTIVuUPk1NxgmNq16ItBB9gCALmg7YKzIpMOxrHDlnoaezzGExD8csmcUpdXuR46V5-nmscTYrB_gO2xOs0rBjo5vjQnRko9w__fYhAnYWu8xr1LoG3QR43Lqmya4OM6w',
+              }}
+              style={styles.avatarImg}
             />
           </View>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Page Header */}
         <View style={styles.pageHeader}>
           <Text style={styles.preTitle}>ACCOUNT SETTINGS</Text>
           <Text style={styles.pageTitle}>Notification Preferences</Text>
           <Text style={styles.pageDesc}>
-            Curate your digital experience. Choose how and when you wish to be notified about the gatherings that matter to you.
+            Curate your digital experience. Choose how and when you wish to be notified about the gatherings
+            that matter to you.
           </Text>
         </View>
 
@@ -55,7 +67,9 @@ export default function NotificationPreferencesScreen() {
             </View>
             <View style={styles.sectionHeaderText}>
               <Text style={styles.sectionTitle}>Hub Invites</Text>
-              <Text style={styles.sectionDesc}>Manage invitations to exclusive community hubs and interest-based circles.</Text>
+              <Text style={styles.sectionDesc}>
+                Manage invitations to exclusive community hubs and interest-based circles.
+              </Text>
             </View>
           </View>
 
@@ -72,7 +86,7 @@ export default function NotificationPreferencesScreen() {
               value={hubEmail}
             />
           </View>
-          
+
           <View style={[styles.toggleRow, { borderBottomWidth: 0 }]}>
             <View style={styles.toggleInfo}>
               <Text style={styles.toggleTitle}>Push Notifications</Text>
@@ -96,7 +110,10 @@ export default function NotificationPreferencesScreen() {
             </View>
             <View style={styles.sectionHeaderText}>
               <Text style={styles.sectionTitle}>Event Updates</Text>
-              <Text style={styles.sectionDesc}>Stay informed about schedule changes, venue shifts, and attendee activity for your booked events.</Text>
+              <Text style={styles.sectionDesc}>
+                Stay informed about schedule changes, venue shifts, and attendee activity for your booked
+                events.
+              </Text>
             </View>
           </View>
 
@@ -113,7 +130,7 @@ export default function NotificationPreferencesScreen() {
               value={eventCritical}
             />
           </View>
-          
+
           <View style={[styles.toggleRow, { borderBottomWidth: 0 }]}>
             <View style={styles.toggleInfo}>
               <Text style={styles.toggleTitle}>Attendee Comments</Text>
@@ -137,7 +154,9 @@ export default function NotificationPreferencesScreen() {
             </View>
             <View style={styles.sectionHeaderText}>
               <Text style={styles.sectionTitle}>Direct Messages</Text>
-              <Text style={styles.sectionDesc}>Personal outreach from hub organizers and local connections.</Text>
+              <Text style={styles.sectionDesc}>
+                Personal outreach from hub organizers and local connections.
+              </Text>
             </View>
           </View>
 
@@ -154,7 +173,7 @@ export default function NotificationPreferencesScreen() {
               value={msgPreview}
             />
           </View>
-          
+
           <View style={[styles.toggleRow, { borderBottomWidth: 0 }]}>
             <View style={styles.toggleInfo}>
               <Text style={styles.toggleTitle}>Smart Reply Prompts</Text>
@@ -178,7 +197,10 @@ export default function NotificationPreferencesScreen() {
             </View>
             <View style={styles.sectionHeaderText}>
               <Text style={styles.sectionTitle}>Community Announcements</Text>
-              <Text style={styles.sectionDesc}>High-level updates regarding the Localite platform, membership benefits, and seasonal highlights.</Text>
+              <Text style={styles.sectionDesc}>
+                High-level updates regarding the Localite platform, membership benefits, and seasonal
+                highlights.
+              </Text>
             </View>
           </View>
 
@@ -195,7 +217,7 @@ export default function NotificationPreferencesScreen() {
               value={commHighlights}
             />
           </View>
-          
+
           <View style={[styles.toggleRow, { borderBottomWidth: 0 }]}>
             <View style={styles.toggleInfo}>
               <Text style={styles.toggleTitle}>Product Updates</Text>
@@ -223,7 +245,6 @@ export default function NotificationPreferencesScreen() {
             </TouchableOpacity>
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -420,5 +441,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#fff',
     letterSpacing: 1,
-  }
+  },
 });

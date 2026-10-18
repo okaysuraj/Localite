@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -34,7 +34,6 @@ export default function SelfieVerificationScreen() {
       </View>
 
       <View style={styles.content}>
-        
         {/* Instructional Header */}
         <View style={styles.instructionalHeader}>
           <Text style={styles.title}>Identity Verification</Text>
@@ -46,8 +45,10 @@ export default function SelfieVerificationScreen() {
         {/* Verification Frame */}
         <View style={styles.frameContainer}>
           <View style={styles.cameraPlaceholder}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgShfMHKZaLsbPETFdVi1BWVZ11Vm38Jy8FBX5eZj8C8SPi9_bi1LTdsAqyXTPh_eX4oc4zvA8mJ3mTc8lzq5C0oawxoQW5qqJwM8YsWp6J_AR-mGWuCbvFW7Y83Yv5VAtMQbWkCas66SE8aD7RekvvgGNd686C_3umKrR58lOvUwaUtIFTpKES9MTlSXrCzr8Q9JLxqls2jhH2neL2QCB2vB85HIlDlbe837oa6EDBewVE7LuvQE58A' }}
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgShfMHKZaLsbPETFdVi1BWVZ11Vm38Jy8FBX5eZj8C8SPi9_bi1LTdsAqyXTPh_eX4oc4zvA8mJ3mTc8lzq5C0oawxoQW5qqJwM8YsWp6J_AR-mGWuCbvFW7Y83Yv5VAtMQbWkCas66SE8aD7RekvvgGNd686C_3umKrR58lOvUwaUtIFTpKES9MTlSXrCzr8Q9JLxqls2jhH2neL2QCB2vB85HIlDlbe837oa6EDBewVE7LuvQE58A',
+              }}
               style={styles.cameraImg}
             />
           </View>
@@ -58,7 +59,13 @@ export default function SelfieVerificationScreen() {
             </View>
             <View style={styles.guideLines}>
               <Svg height="240" width="240" viewBox="0 0 240 240">
-                <Path d="M120 40C90 40 60 70 60 110C60 150 85 190 120 190C155 190 180 150 180 110C180 70 150 40 120 40Z" stroke="#775a19" strokeDasharray="8 8" strokeWidth="2" fill="none" />
+                <Path
+                  d="M120 40C90 40 60 70 60 110C60 150 85 190 120 190C155 190 180 150 180 110C180 70 150 40 120 40Z"
+                  stroke="#775a19"
+                  strokeDasharray="8 8"
+                  strokeWidth="2"
+                  fill="none"
+                />
               </Svg>
             </View>
           </View>
@@ -90,7 +97,11 @@ export default function SelfieVerificationScreen() {
 
         {/* Action */}
         <View style={styles.actionWrap}>
-          <TouchableOpacity style={[styles.captureBtn, processing && {opacity: 0.7}]} onPress={handleCapture} disabled={processing}>
+          <TouchableOpacity
+            style={[styles.captureBtn, processing && { opacity: 0.7 }]}
+            onPress={handleCapture}
+            disabled={processing}
+          >
             {processing ? (
               <MaterialIcons name="sync" size={24} color="#775a19" />
             ) : (
@@ -102,7 +113,6 @@ export default function SelfieVerificationScreen() {
           </TouchableOpacity>
           <Text style={styles.secureText}>Secure 256-bit encrypted verification.</Text>
         </View>
-
       </View>
 
       {/* Success Modal */}
@@ -113,14 +123,15 @@ export default function SelfieVerificationScreen() {
               <MaterialIcons name="verified-user" size={36} color="#785a1a" />
             </View>
             <Text style={styles.modalTitle}>Authenticated</Text>
-            <Text style={styles.modalDesc}>Your identity has been confirmed. Welcome to the inner circle.</Text>
+            <Text style={styles.modalDesc}>
+              Your identity has been confirmed. Welcome to the inner circle.
+            </Text>
             <TouchableOpacity style={styles.enterBtn} onPress={handleContinue}>
               <Text style={styles.enterBtnText}>ENTER HUB</Text>
             </TouchableOpacity>
           </View>
         </View>
       )}
-
     </SafeAreaView>
   );
 }
@@ -353,5 +364,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#fff',
     letterSpacing: 2,
-  }
+  },
 });

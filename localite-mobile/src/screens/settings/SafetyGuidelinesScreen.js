@@ -1,6 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function SafetyGuidelinesScreen() {
@@ -15,22 +23,24 @@ export default function SafetyGuidelinesScreen() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Safety Guidelines</Text>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBerB-u7VGnEL574wjiKMtuqz2QCvlmVrhyqM7GtRqO4w20fTxwKXNSJ0r2sYHLXUu-SJs-yZ0jNtkhxQoFB4yXO3qhtOrwIxwxl2gSJZelD8imuxmdYO7OjC70WSZwX1TAVeSQhyfNmWQd84egTDYDsw9XyM3g796fMtVEJ8-hpYQxkgwX6i3mWXKJlhhr71g_xu4NEX3JpCYqW1zRMcg3ynzqz1hhYsEEK5Iy1Uo0ADLoe0qpCazsmA' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBerB-u7VGnEL574wjiKMtuqz2QCvlmVrhyqM7GtRqO4w20fTxwKXNSJ0r2sYHLXUu-SJs-yZ0jNtkhxQoFB4yXO3qhtOrwIxwxl2gSJZelD8imuxmdYO7OjC70WSZwX1TAVeSQhyfNmWQd84egTDYDsw9XyM3g796fMtVEJ8-hpYQxkgwX6i3mWXKJlhhr71g_xu4NEX3JpCYqW1zRMcg3ynzqz1hhYsEEK5Iy1Uo0ADLoe0qpCazsmA',
+            }}
             style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        
         {/* Hero Section */}
         <View style={styles.hero}>
           <Text style={styles.heroPre}>THE LOCALITE PROTOCOL</Text>
           <Text style={styles.heroTitle}>Safety and Etiquette in the Third Place</Text>
           <View style={styles.heroDivider} />
           <Text style={styles.heroDesc}>
-            Our community is built on the pillars of mutual respect, intentional presence, and the sanctity of shared environments.
+            Our community is built on the pillars of mutual respect, intentional presence, and the sanctity of
+            shared environments.
           </Text>
         </View>
 
@@ -38,32 +48,48 @@ export default function SafetyGuidelinesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Respect the Third Place</Text>
           <Text style={styles.sectionText}>
-            The Third Place is a sanctuary between labor and domesticity. It is a shared canvas where diverse stories intersect. When entering a Localite-curated space, one must acknowledge that their presence affects the collective equilibrium. Respecting the physical environment and the emotional boundaries of others is not merely a rule, but a requirement of membership.
+            The Third Place is a sanctuary between labor and domesticity. It is a shared canvas where diverse
+            stories intersect. When entering a Localite-curated space, one must acknowledge that their
+            presence affects the collective equilibrium. Respecting the physical environment and the emotional
+            boundaries of others is not merely a rule, but a requirement of membership.
           </Text>
           <View style={styles.bulletList}>
             <View style={styles.bulletItem}>
               <MaterialIcons name="verified" size={20} color="#775a19" />
-              <Text style={styles.bulletText}>Maintain a curated volume; your conversation should remain within the immediate circle of your companions.</Text>
+              <Text style={styles.bulletText}>
+                Maintain a curated volume; your conversation should remain within the immediate circle of your
+                companions.
+              </Text>
             </View>
             <View style={styles.bulletItem}>
               <MaterialIcons name="verified" size={20} color="#775a19" />
-              <Text style={styles.bulletText}>Capture memories with discretion. Photography of other members without explicit consent is strictly prohibited.</Text>
+              <Text style={styles.bulletText}>
+                Capture memories with discretion. Photography of other members without explicit consent is
+                strictly prohibited.
+              </Text>
             </View>
             <View style={styles.bulletItem}>
               <MaterialIcons name="verified" size={20} color="#775a19" />
-              <Text style={styles.bulletText}>Treat the venue and its staff with the same reverence you would afford a host in their private residence.</Text>
+              <Text style={styles.bulletText}>
+                Treat the venue and its staff with the same reverence you would afford a host in their private
+                residence.
+              </Text>
             </View>
           </View>
         </View>
 
         {/* Feature Image */}
         <View style={styles.featureImageWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8lKwzvhF4ACk_6zFfA0UmUx-wgynV6yssOndLXjq_c6F8xdcvELdLe7o77mMVJlQiZHihiV4eMI2URvxFOfeW0vxT6PZ_sBf230kbNmpjDUz0ULgnJmuTY1rGACQpNa78ym7V3xu-3x2JkGOyigbQ8E6rzBDnu5MIjQRSChq9DBhsPPE3NI9gmnQQcaAtywoLdGGPcdrUCpw_D8rCOosE45jhdgN1tKW4nx9JcxYLypwi7hV06OlM0A' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8lKwzvhF4ACk_6zFfA0UmUx-wgynV6yssOndLXjq_c6F8xdcvELdLe7o77mMVJlQiZHihiV4eMI2URvxFOfeW0vxT6PZ_sBf230kbNmpjDUz0ULgnJmuTY1rGACQpNa78ym7V3xu-3x2JkGOyigbQ8E6rzBDnu5MIjQRSChq9DBhsPPE3NI9gmnQQcaAtywoLdGGPcdrUCpw_D8rCOosE45jhdgN1tKW4nx9JcxYLypwi7hV06OlM0A',
+            }}
             style={styles.featureImage}
           />
           <View style={styles.featureOverlay}>
-            <Text style={styles.featureQuote}>"True nobility is found in the way we honor the spaces we share."</Text>
+            <Text style={styles.featureQuote}>
+              "True nobility is found in the way we honor the spaces we share."
+            </Text>
           </View>
         </View>
 
@@ -71,18 +97,24 @@ export default function SafetyGuidelinesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Verification Standards</Text>
           <Text style={styles.sectionText}>
-            To maintain the integrity of our gatherings, every Localite member undergoes a multi-step verification process. This ensures that every individual you meet is a verified steward of our shared values.
+            To maintain the integrity of our gatherings, every Localite member undergoes a multi-step
+            verification process. This ensures that every individual you meet is a verified steward of our
+            shared values.
           </Text>
           <View style={styles.cardGrid}>
             <View style={styles.infoCard}>
               <MaterialIcons name="fingerprint" size={28} color="#775a19" style={styles.cardIcon} />
               <Text style={styles.cardTitle}>IDENTITY SHIELD</Text>
-              <Text style={styles.cardDesc}>Multi-factor identity verification via encrypted government ID matching for all tiers.</Text>
+              <Text style={styles.cardDesc}>
+                Multi-factor identity verification via encrypted government ID matching for all tiers.
+              </Text>
             </View>
             <View style={styles.infoCard}>
               <MaterialIcons name="stars" size={28} color="#775a19" style={styles.cardIcon} />
               <Text style={styles.cardTitle}>PEER CREDIBILITY</Text>
-              <Text style={styles.cardDesc}>A reputation-based system where community stewardship leads to increased access.</Text>
+              <Text style={styles.cardDesc}>
+                A reputation-based system where community stewardship leads to increased access.
+              </Text>
             </View>
           </View>
         </View>
@@ -91,7 +123,8 @@ export default function SafetyGuidelinesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Safe Transitions</Text>
           <Text style={styles.sectionText}>
-            Safety doesn't end at the venue door. We provide integrated tools to ensure your journey to and from our gatherings is as seamless and secure as the event itself.
+            Safety doesn't end at the venue door. We provide integrated tools to ensure your journey to and
+            from our gatherings is as seamless and secure as the event itself.
           </Text>
           <View style={styles.featureCard}>
             <View style={styles.featureCardHeader}>
@@ -109,7 +142,8 @@ export default function SafetyGuidelinesScreen() {
               </View>
             </View>
             <Text style={styles.featureCardDesc}>
-              Automatically share your real-time location with trusted community members or our concierge team until you reach your destination.
+              Automatically share your real-time location with trusted community members or our concierge team
+              until you reach your destination.
             </Text>
             <TouchableOpacity style={styles.actionBtn}>
               <Text style={styles.actionBtnText}>CONFIGURE GUARDIAN</Text>
@@ -121,7 +155,8 @@ export default function SafetyGuidelinesScreen() {
         <View style={styles.ctaSection}>
           <Text style={styles.ctaTitle}>Ready to Assemble?</Text>
           <Text style={styles.ctaDesc}>
-            By proceeding, you acknowledge that you have read and understood the Protocol. Membership is a privilege of conduct, not just subscription.
+            By proceeding, you acknowledge that you have read and understood the Protocol. Membership is a
+            privilege of conduct, not just subscription.
           </Text>
           <View style={styles.ctaActions}>
             <TouchableOpacity style={styles.primaryBtn} onPress={() => navigation.goBack()}>
@@ -132,7 +167,6 @@ export default function SafetyGuidelinesScreen() {
             </TouchableOpacity>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Bottom Nav Placeholder */}
@@ -475,5 +509,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#44474d',
     marginTop: 4,
-  }
+  },
 });

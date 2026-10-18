@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
-import {
-  EnvelopeSimple,
-  Buildings,
-  ShieldCheck,
-  PaperPlaneRight,
-} from '@phosphor-icons/react';
+import { useState } from 'react';
+import { EnvelopeSimple, Buildings, ShieldCheck, PaperPlaneRight } from '@phosphor-icons/react';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -20,14 +15,13 @@ const ContactPage = () => {
       <div className="max-w-3xl mx-auto space-y-12">
         {/* Header */}
         <div className="text-center space-y-3">
-          <span className="text-xs font-mono text-accent uppercase tracking-wider block">
-            Reach Out
-          </span>
+          <span className="text-xs font-mono text-accent uppercase tracking-wider block">Reach Out</span>
           <h1 className="text-3xl sm:text-4xl font-display font-semibold text-fg tracking-tight">
             Contact Support & Inquiries
           </h1>
           <p className="text-sm text-fg-muted max-w-md mx-auto leading-relaxed">
-            Have questions regarding gathering moderation, venue partnerships, or account settings? Our team is here to assist.
+            Have questions regarding gathering moderation, venue partnerships, or account settings? Our team
+            is here to assist.
           </p>
         </div>
 
@@ -37,9 +31,7 @@ const ContactPage = () => {
             <div className="w-9 h-9 rounded-full bg-accent-subtle text-accent flex items-center justify-center">
               <EnvelopeSimple size={18} />
             </div>
-            <h3 className="font-display font-semibold text-sm text-fg">
-              Community Help
-            </h3>
+            <h3 className="font-display font-semibold text-sm text-fg">Community Help</h3>
             <p className="text-xs font-mono text-fg-muted">support@localite.com</p>
           </div>
 
@@ -47,9 +39,7 @@ const ContactPage = () => {
             <div className="w-9 h-9 rounded-full bg-accent-subtle text-accent flex items-center justify-center">
               <Buildings size={18} />
             </div>
-            <h3 className="font-display font-semibold text-sm text-fg">
-              Venue Partnerships
-            </h3>
+            <h3 className="font-display font-semibold text-sm text-fg">Venue Partnerships</h3>
             <p className="text-xs font-mono text-fg-muted">partners@localite.com</p>
           </div>
 
@@ -57,35 +47,27 @@ const ContactPage = () => {
             <div className="w-9 h-9 rounded-full bg-accent-subtle text-accent flex items-center justify-center">
               <ShieldCheck size={18} />
             </div>
-            <h3 className="font-display font-semibold text-sm text-fg">
-              Trust & Safety
-            </h3>
+            <h3 className="font-display font-semibold text-sm text-fg">Trust & Safety</h3>
             <p className="text-xs font-mono text-fg-muted">safety@localite.com</p>
           </div>
         </div>
 
         {/* Message Form */}
         <div className="bg-white border border-border rounded-card p-6 sm:p-8 space-y-5">
-          <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
-            Send a Direct Note
-          </h2>
+          <h2 className="text-lg font-display font-semibold text-fg tracking-tight">Send a Direct Note</h2>
 
           {sent ? (
             <div className="p-6 bg-accent-subtle border border-accent/20 rounded-card text-center space-y-1">
               <p className="text-xs font-mono font-medium text-accent">
                 Thank you! Your message has been received.
               </p>
-              <p className="text-xs text-fg-muted">
-                Our support team typically responds within 24 hours.
-              </p>
+              <p className="text-xs text-fg-muted">Our support team typically responds within 24 hours.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4 text-xs font-mono">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
-                    Your Name
-                  </label>
+                  <label className="block uppercase tracking-wider text-fg-muted mb-1.5">Your Name</label>
                   <input
                     type="text"
                     required
@@ -96,9 +78,7 @@ const ContactPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
-                    Email Address
-                  </label>
+                  <label className="block uppercase tracking-wider text-fg-muted mb-1.5">Email Address</label>
                   <input
                     type="email"
                     required
@@ -111,9 +91,7 @@ const ContactPage = () => {
               </div>
 
               <div>
-                <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
-                  Message
-                </label>
+                <label className="block uppercase tracking-wider text-fg-muted mb-1.5">Message</label>
                 <textarea
                   rows="4"
                   required

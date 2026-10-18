@@ -1,8 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator
+import { useState, useEffect, useRef } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../config';
@@ -28,7 +38,7 @@ export default function ChatScreen1x1({ route, navigation }) {
       if (cuStr) setCurrentUser(JSON.parse(cuStr));
 
       const res = await fetch(`${API_URL}/messages/direct/${user.id}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
@@ -50,16 +60,16 @@ export default function ChatScreen1x1({ route, navigation }) {
 
       const res = await fetch(`${API_URL}/messages/direct/${user.id}`, {
         method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
-      
+
       if (res.ok) {
         const newMsg = await res.json();
-        setMessages(prev => [...prev, newMsg]);
+        setMessages((prev) => [...prev, newMsg]);
         setTimeout(() => scrollViewRef.current?.scrollToEnd({ animated: true }), 100);
       }
     } catch (error) {
@@ -89,7 +99,7 @@ export default function ChatScreen1x1({ route, navigation }) {
               </View>
             </View>
           </View>
-          
+
           <View style={styles.appBarRight}>
             <TouchableOpacity style={styles.iconBtn}>
               <Ionicons name="videocam-outline" size={24} color="#000000" />
@@ -101,21 +111,24 @@ export default function ChatScreen1x1({ route, navigation }) {
         </View>
       </SafeAreaView>
 
-      <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView 
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView
           ref={scrollViewRef}
           style={styles.chatArea}
           contentContainerStyle={styles.chatContent}
           showsVerticalScrollIndicator={false}
-          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({animated: false})}
+          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: false })}
         >
           {loading ? (
-            <ActivityIndicator size="large" color="#000000" style={{marginTop: 40}} />
+            <ActivityIndicator size="large" color="#000000" style={{ marginTop: 40 }} />
           ) : (
             messages.map((msg, idx) => {
               const isMe = msg.sender.id === currentUser?.id;
-              const timeStr = new Date(msg.sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-              
+              const timeStr = new Date(msg.sentAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+
               if (isMe) {
                 return (
                   <View key={msg.id || idx} style={styles.messageRowUser}>
@@ -145,7 +158,7 @@ export default function ChatScreen1x1({ route, navigation }) {
             <TouchableOpacity style={styles.attachBtn}>
               <Ionicons name="add-circle-outline" size={24} color="#75777e" />
             </TouchableOpacity>
-            <TextInput 
+            <TextInput
               style={styles.textInput}
               placeholder="Craft your message..."
               placeholderTextColor="#75777e"
@@ -443,5 +456,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 2,
     marginRight: 2,
-  }
+  },
 });

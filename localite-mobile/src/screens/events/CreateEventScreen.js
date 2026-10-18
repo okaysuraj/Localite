@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, TextInput, Alert, ScrollView, Platform, Dimensions, Image 
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  ScrollView,
+  Platform,
+  Dimensions,
+  Image,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { createEvent } from '../../services/api';
 
 const { width } = Dimensions.get('window');
@@ -10,7 +20,7 @@ const { width } = Dimensions.get('window');
 export default function CreateEventScreen({ navigation }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     title: '',
     category: 'Epicurean',
@@ -21,15 +31,15 @@ export default function CreateEventScreen({ navigation }) {
     maxAttendees: '',
     cost: '',
     rules: '',
-    imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
+    imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000',
   });
 
   const handleChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNext = () => setStep(prev => Math.min(prev + 1, 4));
-  const handleBack = () => setStep(prev => Math.max(prev - 1, 1));
+  const handleNext = () => setStep((prev) => Math.min(prev + 1, 4));
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleCreate = async () => {
     if (!formData.title || !formData.date || !formData.location) {
@@ -43,14 +53,24 @@ export default function CreateEventScreen({ navigation }) {
         ...formData,
         cost: parseFloat(formData.cost) || 0.0,
         maxAttendees: parseInt(formData.maxAttendees) || 0,
-        attendees: 0
+        attendees: 0,
       };
 
       await createEvent(payload);
-      
+
       Alert.alert('Success', 'Event Published Successfully!');
       setFormData({
-        title: '', category: 'Epicurean', eventType: 'Public', description: '', date: '', location: '', maxAttendees: '', cost: '', rules: '', imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
+        title: '',
+        category: 'Epicurean',
+        eventType: 'Public',
+        description: '',
+        date: '',
+        location: '',
+        maxAttendees: '',
+        cost: '',
+        rules: '',
+        imageUrl:
+          'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000',
       });
       setStep(1);
       navigation.navigate('MainApp', { screen: 'Events' });
@@ -73,11 +93,13 @@ export default function CreateEventScreen({ navigation }) {
     <View style={styles.formSection}>
       {renderStepIndicator()}
       <Text style={styles.sectionTitle}>The Foundation</Text>
-      <Text style={styles.sectionDesc}>Begin your journey by defining the core identity of your gathering.</Text>
+      <Text style={styles.sectionDesc}>
+        Begin your journey by defining the core identity of your gathering.
+      </Text>
 
       <View style={styles.field}>
         <Text style={styles.label}>Event Name</Text>
-        <TextInput 
+        <TextInput
           style={styles.input}
           value={formData.title}
           onChangeText={(text) => handleChange('title', text)}
@@ -87,10 +109,10 @@ export default function CreateEventScreen({ navigation }) {
       </View>
 
       <View style={styles.fieldRow}>
-        <View style={[styles.field, {flex: 1, marginRight: 12}]}>
+        <View style={[styles.field, { flex: 1, marginRight: 12 }]}>
           <Text style={styles.label}>Category</Text>
           <View style={styles.selectWrapper}>
-            <TextInput 
+            <TextInput
               style={styles.input}
               value={formData.category}
               onChangeText={(text) => handleChange('category', text)}
@@ -99,10 +121,10 @@ export default function CreateEventScreen({ navigation }) {
             />
           </View>
         </View>
-        <View style={[styles.field, {flex: 1}]}>
+        <View style={[styles.field, { flex: 1 }]}>
           <Text style={styles.label}>Audience</Text>
           <View style={styles.selectWrapper}>
-            <TextInput 
+            <TextInput
               style={styles.input}
               value={formData.eventType}
               onChangeText={(text) => handleChange('eventType', text)}
@@ -115,8 +137,8 @@ export default function CreateEventScreen({ navigation }) {
 
       <View style={styles.field}>
         <Text style={styles.label}>The Narrative</Text>
-        <TextInput 
-          style={[styles.input, {height: 100, textAlignVertical: 'top'}]}
+        <TextInput
+          style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
           multiline
           value={formData.description}
           onChangeText={(text) => handleChange('description', text)}
@@ -135,7 +157,7 @@ export default function CreateEventScreen({ navigation }) {
 
       <View style={styles.field}>
         <Text style={styles.label}>Date & Time</Text>
-        <TextInput 
+        <TextInput
           style={styles.input}
           value={formData.date}
           onChangeText={(text) => handleChange('date', text)}
@@ -146,7 +168,7 @@ export default function CreateEventScreen({ navigation }) {
 
       <View style={styles.field}>
         <Text style={styles.label}>Location</Text>
-        <TextInput 
+        <TextInput
           style={styles.input}
           value={formData.location}
           onChangeText={(text) => handleChange('location', text)}
@@ -154,10 +176,10 @@ export default function CreateEventScreen({ navigation }) {
           placeholderTextColor="#75777e"
         />
       </View>
-      
+
       <View style={styles.field}>
         <Text style={styles.label}>Cover Image URL</Text>
-        <TextInput 
+        <TextInput
           style={styles.input}
           value={formData.imageUrl}
           onChangeText={(text) => handleChange('imageUrl', text)}
@@ -175,9 +197,9 @@ export default function CreateEventScreen({ navigation }) {
       <Text style={styles.sectionDesc}>Set the boundaries for your gathering.</Text>
 
       <View style={styles.fieldRow}>
-        <View style={[styles.field, {flex: 1, marginRight: 12}]}>
+        <View style={[styles.field, { flex: 1, marginRight: 12 }]}>
           <Text style={styles.label}>Max Attendees</Text>
-          <TextInput 
+          <TextInput
             style={styles.input}
             value={formData.maxAttendees}
             onChangeText={(text) => handleChange('maxAttendees', text)}
@@ -186,9 +208,9 @@ export default function CreateEventScreen({ navigation }) {
             placeholderTextColor="#75777e"
           />
         </View>
-        <View style={[styles.field, {flex: 1}]}>
+        <View style={[styles.field, { flex: 1 }]}>
           <Text style={styles.label}>Cost (USD)</Text>
-          <TextInput 
+          <TextInput
             style={styles.input}
             value={formData.cost}
             onChangeText={(text) => handleChange('cost', text)}
@@ -201,8 +223,8 @@ export default function CreateEventScreen({ navigation }) {
 
       <View style={styles.field}>
         <Text style={styles.label}>House Rules</Text>
-        <TextInput 
-          style={[styles.input, {height: 80, textAlignVertical: 'top'}]}
+        <TextInput
+          style={[styles.input, { height: 80, textAlignVertical: 'top' }]}
           multiline
           value={formData.rules}
           onChangeText={(text) => handleChange('rules', text)}
@@ -217,14 +239,16 @@ export default function CreateEventScreen({ navigation }) {
     <View style={styles.formSection}>
       {renderStepIndicator()}
       <Text style={styles.sectionTitle}>Review & Publish</Text>
-      <Text style={styles.sectionDesc}>Ensure every detail reflects the premium experience you're curating.</Text>
+      <Text style={styles.sectionDesc}>
+        Ensure every detail reflects the premium experience you're curating.
+      </Text>
 
       <View style={styles.previewCard}>
         <Image source={{ uri: formData.imageUrl }} style={styles.previewImage} />
         <View style={styles.previewOverlay}>
           <Text style={styles.previewTitle}>{formData.title || 'Untitled Event'}</Text>
         </View>
-        
+
         <View style={styles.previewContent}>
           <View style={styles.previewGrid}>
             <View style={styles.previewItem}>
@@ -271,22 +295,22 @@ export default function CreateEventScreen({ navigation }) {
 
       {/* Action Footer */}
       <View style={styles.footerBar}>
-        <TouchableOpacity 
-          style={[styles.footerBtnLeft, step === 1 && { opacity: 0 }]} 
+        <TouchableOpacity
+          style={[styles.footerBtnLeft, step === 1 && { opacity: 0 }]}
           onPress={handleBack}
           disabled={step === 1}
         >
           <Ionicons name="arrow-back" size={16} color="#44474d" />
           <Text style={styles.footerBtnLeftText}>BACK</Text>
         </TouchableOpacity>
-        
+
         {step < 4 ? (
           <TouchableOpacity style={styles.footerBtnRight} onPress={handleNext}>
             <Text style={styles.footerBtnRightText}>CONTINUE</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity 
-            style={[styles.footerBtnRight, { backgroundColor: '#000000' }]} 
+          <TouchableOpacity
+            style={[styles.footerBtnRight, { backgroundColor: '#000000' }]}
             onPress={handleCreate}
             disabled={loading}
           >
@@ -493,5 +517,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ffffff',
     letterSpacing: 1,
-  }
+  },
 });

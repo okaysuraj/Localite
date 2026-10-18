@@ -1,13 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  ShieldCheck, 
-  Warning, 
-  ArrowLeft, 
-  CheckCircle, 
-  CalendarBlank, 
-  User 
-} from '@phosphor-icons/react';
+import { ShieldCheck, ArrowLeft, CheckCircle } from '@phosphor-icons/react';
 
 export default function ReportEventPage() {
   const navigate = useNavigate();
@@ -24,10 +17,26 @@ export default function ReportEventPage() {
   };
 
   const reportReasons = [
-    { id: 'misleading', title: 'Misleading Information', desc: 'Inaccurate date, venue, or false host claims.' },
-    { id: 'safety', title: 'Safety Concerns', desc: 'Hazardous venue conditions or violation of physical safety.' },
-    { id: 'inappropriate', title: 'Code of Conduct Violation', desc: 'Discriminatory language or prohibited activity.' },
-    { id: 'spam', title: 'Spam or Commercial Solicitation', desc: 'Unauthorized promotional spam or scam activity.' },
+    {
+      id: 'misleading',
+      title: 'Misleading Information',
+      desc: 'Inaccurate date, venue, or false host claims.',
+    },
+    {
+      id: 'safety',
+      title: 'Safety Concerns',
+      desc: 'Hazardous venue conditions or violation of physical safety.',
+    },
+    {
+      id: 'inappropriate',
+      title: 'Code of Conduct Violation',
+      desc: 'Discriminatory language or prohibited activity.',
+    },
+    {
+      id: 'spam',
+      title: 'Spam or Commercial Solicitation',
+      desc: 'Unauthorized promotional spam or scam activity.',
+    },
   ];
 
   return (
@@ -35,8 +44,8 @@ export default function ReportEventPage() {
       <main className="max-w-4xl mx-auto space-y-8">
         {/* Navigation & Header */}
         <div>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-3"
           >
@@ -58,15 +67,19 @@ export default function ReportEventPage() {
           {/* Target Event Mini Card */}
           <div className="p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] flex items-start gap-4">
             <div className="w-16 h-16 rounded-card overflow-hidden bg-white shrink-0 border border-[var(--border)]">
-              <img 
-                src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=300" 
-                alt="Event" 
-                className="w-full h-full object-cover" 
+              <img
+                src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=300"
+                alt="Event"
+                className="w-full h-full object-cover"
               />
             </div>
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--fg-muted)] block">Event In Question</span>
-              <h3 className="text-sm font-medium text-[var(--fg)] mt-0.5">The Midnight Gala: Vernissage & Cocktails</h3>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--fg-muted)] block">
+                Event In Question
+              </span>
+              <h3 className="text-sm font-medium text-[var(--fg)] mt-0.5">
+                The Midnight Gala: Vernissage & Cocktails
+              </h3>
               <p className="text-xs text-[var(--fg-muted)] mt-0.5">Hosted by Julian Thorne • Oct 24, 2026</p>
             </div>
           </div>
@@ -74,7 +87,9 @@ export default function ReportEventPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Reason Radio Group */}
             <div className="space-y-3">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Select Reason</label>
+              <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Select Reason
+              </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {reportReasons.map((item) => {
                   const isChecked = reason === item.id;
@@ -83,19 +98,23 @@ export default function ReportEventPage() {
                       key={item.id}
                       onClick={() => setReason(item.id)}
                       className={`p-4 rounded-card border transition-all cursor-pointer ${
-                        isChecked 
-                          ? 'border-[var(--accent)] bg-[var(--accent)]/[0.03]' 
+                        isChecked
+                          ? 'border-[var(--accent)] bg-[var(--accent)]/[0.03]'
                           : 'border-[var(--border)] hover:border-[var(--fg-muted)] bg-white'
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${
-                          isChecked ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
-                        }`}>
+                        <div
+                          className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${
+                            isChecked ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
+                          }`}
+                        >
                           {isChecked && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
                         <div>
-                          <p className={`text-xs font-medium ${isChecked ? 'text-[var(--fg)]' : 'text-[var(--fg-muted)]'}`}>
+                          <p
+                            className={`text-xs font-medium ${isChecked ? 'text-[var(--fg)]' : 'text-[var(--fg-muted)]'}`}
+                          >
                             {item.title}
                           </p>
                           <p className="text-[11px] text-[var(--fg-muted)] mt-0.5">{item.desc}</p>
@@ -110,7 +129,9 @@ export default function ReportEventPage() {
             {/* Details Field */}
             <div className="space-y-2">
               <div className="flex justify-between items-end">
-                <label className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Incident Details</label>
+                <label className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                  Incident Details
+                </label>
                 <span className="text-xs font-mono text-[var(--fg-muted)]">{details.length} / 500</span>
               </div>
               <textarea
@@ -151,7 +172,8 @@ export default function ReportEventPage() {
             <CheckCircle size={40} className="mx-auto text-[var(--accent)]" weight="fill" />
             <h3 className="text-xl font-serif text-[var(--fg)]">Report Received</h3>
             <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
-              Thank you for helping keep Localite safe. Our safety team will review this gathering within 4 hours.
+              Thank you for helping keep Localite safe. Our safety team will review this gathering within 4
+              hours.
             </p>
           </div>
         </div>

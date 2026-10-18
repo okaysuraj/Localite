@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, TextInput, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  TextInput,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function EventTimelineUpdatesScreen() {
@@ -25,21 +35,24 @@ export default function EventTimelineUpdatesScreen() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Event Timeline</Text>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbwD6J0sji-Yo1YJXcMVhppWAFQcskoDDivj7ejOPeVzud4El79o19zbO5pAJphlIZTxhG_l0xEgOBgpar90ImA4QQ-L8tMGsRoxrkwESxUCS6eJEynoPwTfMOnGORGPB5tw0502czjjRgTgbZryBlB_8wQMzrfFLKqMM6vzW_RU07JJFXVax4KkJue17CXNfRRPh2PLpE3At26ZhfzjvFY5KMfqRbhlhEF6lIH852-4w6bqY5HRkT9w' }} 
-            style={styles.avatarImg} 
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbwD6J0sji-Yo1YJXcMVhppWAFQcskoDDivj7ejOPeVzud4El79o19zbO5pAJphlIZTxhG_l0xEgOBgpar90ImA4QQ-L8tMGsRoxrkwESxUCS6eJEynoPwTfMOnGORGPB5tw0502czjjRgTgbZryBlB_8wQMzrfFLKqMM6vzW_RU07JJFXVax4KkJue17CXNfRRPh2PLpE3At26ZhfzjvFY5KMfqRbhlhEF6lIH852-4w6bqY5HRkT9w',
+            }}
+            style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <View style={styles.heroImageWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCaL8X2rEK6vzlkFFomji-WRSOu0CqAIDn4NL5GoMnA4vZ7tqQ2Fo4m20zxG5pk5aZzJVuOUCaqzcWxt3Zs0iLks7D1FJ-nXjfxsTdJBeDTREGtZEEvj2b1QlChZfRsXu2P3L-adAWKme-WKm_UyN0QZW2ydLC4X20uqNlb5wux4-NCdNBRg5_DUtBPM_vuXA2KUF-iZDYJrEIVx_oFBiLtqlPYkaWuV2s1BbyelYbDHw_zB0FPtNa6Tg' }} 
-              style={styles.heroImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCaL8X2rEK6vzlkFFomji-WRSOu0CqAIDn4NL5GoMnA4vZ7tqQ2Fo4m20zxG5pk5aZzJVuOUCaqzcWxt3Zs0iLks7D1FJ-nXjfxsTdJBeDTREGtZEEvj2b1QlChZfRsXu2P3L-adAWKme-WKm_UyN0QZW2ydLC4X20uqNlb5wux4-NCdNBRg5_DUtBPM_vuXA2KUF-iZDYJrEIVx_oFBiLtqlPYkaWuV2s1BbyelYbDHw_zB0FPtNa6Tg',
+              }}
+              style={styles.heroImg}
             />
             <View style={styles.heroOverlay} />
             <View style={styles.heroTextWrap}>
@@ -73,7 +86,9 @@ export default function EventTimelineUpdatesScreen() {
                   <MaterialIcons name="check-circle" size={16} color="#75777e" />
                 </View>
                 <Text style={styles.cardTitle}>Welcome Cocktails</Text>
-                <Text style={styles.cardDesc}>Arrivals at the West Garden. Artisanal botanical drinks served on vintage glassware.</Text>
+                <Text style={styles.cardDesc}>
+                  Arrivals at the West Garden. Artisanal botanical drinks served on vintage glassware.
+                </Text>
               </View>
             </View>
 
@@ -88,7 +103,9 @@ export default function EventTimelineUpdatesScreen() {
                   <MaterialIcons name="check-circle" size={16} color="#75777e" />
                 </View>
                 <Text style={styles.cardTitle}>Live Jazz Ensemble</Text>
-                <Text style={styles.cardDesc}>The Sterling Quartet begins their performance by the fountain. Smooth jazz selections.</Text>
+                <Text style={styles.cardDesc}>
+                  The Sterling Quartet begins their performance by the fountain. Smooth jazz selections.
+                </Text>
               </View>
             </View>
 
@@ -107,8 +124,10 @@ export default function EventTimelineUpdatesScreen() {
                   <Text style={styles.timeText}>8:15 PM</Text>
                 </View>
                 <Text style={styles.cardTitle}>Host Announcement</Text>
-                <Text style={styles.cardDesc}>A special toast and introduction to the evening's main proceedings by the Grand Host.</Text>
-                
+                <Text style={styles.cardDesc}>
+                  A special toast and introduction to the evening's main proceedings by the Grand Host.
+                </Text>
+
                 <View style={styles.cardActions}>
                   <TouchableOpacity style={styles.actionBtnPrimary}>
                     <Text style={styles.actionBtnPrimaryText}>NOTIFY ALL</Text>
@@ -140,7 +159,7 @@ export default function EventTimelineUpdatesScreen() {
               <MaterialIcons name="edit-note" size={28} color="#775a19" />
               <Text style={styles.updateTitle}>Post an Update</Text>
             </View>
-            
+
             <TextInput
               style={styles.updateInput}
               placeholder="Share a moment or update the schedule..."
@@ -161,9 +180,9 @@ export default function EventTimelineUpdatesScreen() {
                   <Text style={styles.toolBtnText}>SET TIME</Text>
                 </TouchableOpacity>
               </View>
-              
-              <TouchableOpacity 
-                style={[styles.publishBtn, isPublishing && styles.publishingBtn]} 
+
+              <TouchableOpacity
+                style={[styles.publishBtn, isPublishing && styles.publishingBtn]}
                 onPress={handlePublish}
                 disabled={isPublishing}
               >
@@ -176,7 +195,6 @@ export default function EventTimelineUpdatesScreen() {
             </View>
           </View>
         </View>
-
       </ScrollView>
 
       {/* Bottom Nav */}
@@ -250,7 +268,7 @@ const styles = StyleSheet.create({
   },
   heroImageWrap: {
     width: '100%',
-    aspectRatio: 16/9,
+    aspectRatio: 16 / 9,
     borderRadius: 12,
     overflow: 'hidden',
     position: 'relative',
@@ -585,5 +603,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#775a19',
     marginTop: 4,
-  }
+  },
 });

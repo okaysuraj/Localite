@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform, ActivityIndicator, TextInput, KeyboardAvoidingView 
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { colors } from '../../theme';
 
 export default function MatchLobbyScreen({ route, navigation }) {
   const { matchId = '1' } = route.params || {};
-  const [loading, setLoading] = useState(false);
+
   const [timeLeft, setTimeLeft] = useState({ minutes: 14, seconds: 59 });
   const [chatMessage, setChatMessage] = useState('');
   const [chatList, setChatList] = useState([
@@ -40,12 +47,12 @@ export default function MatchLobbyScreen({ route, navigation }) {
     teamBravo: [
       { id: 3, name: 'Sophia Valente', role: 'CAPTAIN', status: 'Arrived', ready: true },
       { id: 4, name: 'Julian Knight', role: 'PARTNER', status: 'In Transit', ready: false },
-    ]
+    ],
   };
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev.seconds === 0) {
           if (prev.minutes === 0) {
             clearInterval(timer);
@@ -62,7 +69,7 @@ export default function MatchLobbyScreen({ route, navigation }) {
 
   const handleSendChat = () => {
     if (!chatMessage.trim()) return;
-    setChatList(prev => [
+    setChatList((prev) => [
       ...prev,
       {
         id: Date.now(),
@@ -70,16 +77,13 @@ export default function MatchLobbyScreen({ route, navigation }) {
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isMe: true,
         text: chatMessage.trim(),
-      }
+      },
     ]);
     setChatMessage('');
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <MaterialIcons name="arrow-back" size={24} color="#1A1A1A" />
@@ -88,8 +92,8 @@ export default function MatchLobbyScreen({ route, navigation }) {
           <Text style={styles.headerTitle}>Match Lobby</Text>
           <Text style={styles.headerSubtitle}>{match.title}</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.liveNavBtn} 
+        <TouchableOpacity
+          style={styles.liveNavBtn}
           onPress={() => navigation.navigate('LiveMatch', { matchId })}
         >
           <MaterialIcons name="play-circle-outline" size={24} color={colors.accent} />
@@ -111,7 +115,7 @@ export default function MatchLobbyScreen({ route, navigation }) {
               <Text style={styles.timeLabel}>SECS</Text>
             </View>
           </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.confirmBtn}
             onPress={() => navigation.navigate('LiveMatch', { matchId })}
           >
@@ -138,7 +142,7 @@ export default function MatchLobbyScreen({ route, navigation }) {
             <Text style={styles.teamName}>TEAM ALPHA</Text>
             <Text style={[styles.teamStatus, { color: colors.accent }]}>2/2 READY</Text>
           </View>
-          {match.teamAlpha.map(player => (
+          {match.teamAlpha.map((player) => (
             <View key={player.id} style={styles.playerRow}>
               <View style={styles.playerInfo}>
                 <View style={styles.avatarCircle}>
@@ -146,7 +150,9 @@ export default function MatchLobbyScreen({ route, navigation }) {
                 </View>
                 <View>
                   <Text style={styles.playerName}>{player.name}</Text>
-                  <Text style={styles.playerRole}>{player.role} • {player.status.toUpperCase()}</Text>
+                  <Text style={styles.playerRole}>
+                    {player.role} • {player.status.toUpperCase()}
+                  </Text>
                 </View>
               </View>
               <MaterialIcons name="check-circle" size={20} color={colors.accent} />
@@ -159,7 +165,7 @@ export default function MatchLobbyScreen({ route, navigation }) {
             <Text style={styles.teamName}>TEAM BRAVO</Text>
             <Text style={[styles.teamStatus, { color: '#E67E22' }]}>1/2 READY</Text>
           </View>
-          {match.teamBravo.map(player => (
+          {match.teamBravo.map((player) => (
             <View key={player.id} style={styles.playerRow}>
               <View style={styles.playerInfo}>
                 <View style={[styles.avatarCircle, !player.ready && { opacity: 0.6 }]}>
@@ -167,7 +173,9 @@ export default function MatchLobbyScreen({ route, navigation }) {
                 </View>
                 <View>
                   <Text style={[styles.playerName, !player.ready && { opacity: 0.6 }]}>{player.name}</Text>
-                  <Text style={[styles.playerRole, !player.ready && { opacity: 0.6 }]}>{player.role} • {player.status.toUpperCase()}</Text>
+                  <Text style={[styles.playerRole, !player.ready && { opacity: 0.6 }]}>
+                    {player.role} • {player.status.toUpperCase()}
+                  </Text>
                 </View>
               </View>
               {player.ready ? (
@@ -182,8 +190,11 @@ export default function MatchLobbyScreen({ route, navigation }) {
         {/* Live Lobby Chat List */}
         <View style={styles.chatSection}>
           <Text style={styles.chatSectionTitle}>LOBBY CHAT</Text>
-          {chatList.map(msg => (
-            <View key={msg.id} style={[styles.chatBubble, msg.isMe ? styles.chatBubbleMe : styles.chatBubbleOther]}>
+          {chatList.map((msg) => (
+            <View
+              key={msg.id}
+              style={[styles.chatBubble, msg.isMe ? styles.chatBubbleMe : styles.chatBubbleOther]}
+            >
               <View style={styles.chatMeta}>
                 <Text style={styles.chatSender}>{msg.sender}</Text>
                 <Text style={styles.chatTime}>{msg.time}</Text>
@@ -196,7 +207,7 @@ export default function MatchLobbyScreen({ route, navigation }) {
 
       {/* Chat Input Bar */}
       <View style={styles.chatInputContainer}>
-        <TextInput 
+        <TextInput
           placeholder="Message players in lobby..."
           placeholderTextColor="#9CA3AF"
           style={styles.chatInput}

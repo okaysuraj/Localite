@@ -1,6 +1,5 @@
-import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ExtendInvitationScreen() {
@@ -26,9 +25,7 @@ export default function ExtendInvitationScreen() {
         <View style={styles.heroSection}>
           <Text style={styles.heroLabel}>THE INNER CIRCLE</Text>
           <Text style={styles.heroTitle}>Extend the Invitation</Text>
-          <Text style={styles.heroDesc}>
-            A curated community grows by invitation only.
-          </Text>
+          <Text style={styles.heroDesc}>A curated community grows by invitation only.</Text>
         </View>
 
         {/* Referral Code Card */}
@@ -36,18 +33,20 @@ export default function ExtendInvitationScreen() {
           <View style={styles.glow} />
           <View style={styles.referralContent}>
             <Text style={styles.referralLabel}>YOUR PERSONAL CIPHER</Text>
-            
+
             <View style={styles.codeWrap}>
-              <Text style={styles.codeText} selectable>LOCAL-MARQUIS-24</Text>
+              <Text style={styles.codeText} selectable>
+                LOCAL-MARQUIS-24
+              </Text>
               <TouchableOpacity style={styles.copyBtn}>
                 <MaterialIcons name="content-copy" size={20} color="#775a19" />
               </TouchableOpacity>
             </View>
-            
+
             <Text style={styles.referralDesc}>
               Share this unique code with those who embody the modern nobility of our gathering.
             </Text>
-            
+
             <TouchableOpacity style={styles.shareBtn}>
               <Text style={styles.shareBtnText}>SHARE INVITATION</Text>
             </TouchableOpacity>
@@ -65,11 +64,11 @@ export default function ExtendInvitationScreen() {
               <Text style={styles.progressNumber}>2</Text>
             </View>
           </View>
-          
+
           <View style={styles.progressBarBg}>
             <View style={[styles.progressBarFill, { width: '66%' }]} />
           </View>
-          
+
           <View style={styles.progressAvatars}>
             <View style={styles.avatarItem}>
               <MaterialIcons name="verified-user" size={20} color="#775a19" />
@@ -89,7 +88,7 @@ export default function ExtendInvitationScreen() {
         {/* Reward Tiers */}
         <View style={styles.tiersSection}>
           <Text style={styles.tiersTitle}>Tiers of Influence</Text>
-          
+
           <View style={styles.tiersGrid}>
             {/* Tier 1 */}
             <View style={styles.tierCard}>
@@ -103,7 +102,7 @@ export default function ExtendInvitationScreen() {
               <Text style={styles.tierDesc}>Unlock early access to curated salon evenings.</Text>
               <Text style={styles.tierReq}>1 INVITE</Text>
             </View>
-            
+
             {/* Tier 2 */}
             <View style={styles.tierCardActive}>
               <View style={styles.tierTop}>
@@ -113,22 +112,26 @@ export default function ExtendInvitationScreen() {
                 </View>
               </View>
               <Text style={styles.tierNameActive}>Elite Status</Text>
-              <Text style={styles.tierDescActive}>Waved entry fees and private concierge for all localite hubs.</Text>
-              
+              <Text style={styles.tierDescActive}>
+                Waved entry fees and private concierge for all localite hubs.
+              </Text>
+
               <View style={styles.tierBottomActive}>
                 <Text style={styles.tierReqActive}>3 INVITES</Text>
                 <MaterialIcons name="lock" size={16} color="rgba(255, 255, 255, 0.5)" />
               </View>
             </View>
           </View>
-          
+
           {/* Tier 3 */}
           <View style={styles.tierCardFuture}>
             <View style={styles.tierFutureLeft}>
               <MaterialIcons name="stadium" size={36} color="#44474d" />
               <View style={styles.tierFutureText}>
                 <Text style={styles.tierNameFuture}>Patron Circle</Text>
-                <Text style={styles.tierDescFuture}>Lifetime platform access and limited edition physical token.</Text>
+                <Text style={styles.tierDescFuture}>
+                  Lifetime platform access and limited edition physical token.
+                </Text>
               </View>
             </View>
             <Text style={styles.tierReqFuture}>10 INVITES</Text>
@@ -570,5 +573,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 10,
     color: '#775a19',
-  }
+  },
 });

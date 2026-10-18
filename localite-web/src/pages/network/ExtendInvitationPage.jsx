@@ -1,17 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Copy, 
-  Check, 
-  PaperPlaneTilt, 
-  ShareNetwork, 
-  Sparkle, 
-  Users,
-  ShieldCheck
-} from '@phosphor-icons/react';
+import { useState } from 'react';
+
+import { Copy, Check, PaperPlaneTilt, Sparkle, ShieldCheck } from '@phosphor-icons/react';
 
 export default function ExtendInvitationPage() {
-  const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [nomineeName, setNomineeName] = useState('');
   const [nomineeEmail, setNomineeEmail] = useState('');
@@ -35,13 +26,12 @@ export default function ExtendInvitationPage() {
       setNomineeName('');
       setNomineeEmail('');
       setNomineeNote('');
-      alert("Invitation dispatched to prospective member.");
+      alert('Invitation dispatched to prospective member.');
     }, 1000);
   };
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] pt-24 pb-16 px-6 max-w-7xl mx-auto font-sans animate-fade-in">
-      
       {/* Header */}
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
         <div>
@@ -52,7 +42,8 @@ export default function ExtendInvitationPage() {
             Extend the Circle
           </h1>
           <p className="text-sm text-[var(--fg-muted)] mt-1 max-w-xl">
-            Nominate individuals of high caliber to join our neighborhood sporting fixtures and cultural salons.
+            Nominate individuals of high caliber to join our neighborhood sporting fixtures and cultural
+            salons.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
@@ -62,7 +53,6 @@ export default function ExtendInvitationPage() {
 
       {/* Bento Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
         {/* Personal Invite Cipher Card */}
         <section className="col-span-1 lg:col-span-5 bg-[var(--bg)] rounded-card border border-[var(--border)] p-6 md:p-8 flex flex-col justify-between space-y-6">
           <div className="space-y-4">
@@ -70,17 +60,18 @@ export default function ExtendInvitationPage() {
               <Sparkle size={16} weight="fill" />
               <span>Personal Access Cipher</span>
             </div>
-            
+
             <h2 className="text-xl font-semibold text-[var(--fg)]">Exclusive Referral Code</h2>
             <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
-              When a prospective attendee registers using your cipher, their verification is prioritized and your personal vouch is permanently inscribed in their member pedigree.
+              When a prospective attendee registers using your cipher, their verification is prioritized and
+              your personal vouch is permanently inscribed in their member pedigree.
             </p>
 
             <div className="p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] flex items-center justify-between gap-3">
               <span className="font-mono text-sm font-semibold tracking-wider text-[var(--fg)]">
                 {inviteCode}
               </span>
-              <button 
+              <button
                 onClick={handleCopy}
                 className="p-2 border border-[var(--border)] hover:bg-[var(--bg)] rounded-card text-xs font-semibold uppercase tracking-wider text-[var(--fg)] flex items-center gap-1.5 transition-colors"
               >
@@ -96,7 +87,8 @@ export default function ExtendInvitationPage() {
               <span>Vouching Responsibility</span>
             </div>
             <p className="text-[11px] leading-relaxed">
-              You share reciprocal reputation standing with nominated members during their first 90 days of salon and sports participation.
+              You share reciprocal reputation standing with nominated members during their first 90 days of
+              salon and sports participation.
             </p>
           </div>
         </section>
@@ -105,7 +97,9 @@ export default function ExtendInvitationPage() {
         <section className="col-span-1 lg:col-span-7 bg-[var(--bg)] rounded-card border border-[var(--border)] p-6 md:p-8">
           <div className="mb-6 pb-4 border-b border-[var(--border)]">
             <h3 className="text-base font-semibold text-[var(--fg)]">Direct Member Nomination</h3>
-            <p className="text-xs text-[var(--fg-muted)]">Dispatch a personalized invitation link directly to their inbox.</p>
+            <p className="text-xs text-[var(--fg-muted)]">
+              Dispatch a personalized invitation link directly to their inbox.
+            </p>
           </div>
 
           <form onSubmit={handleNominate} className="space-y-4">
@@ -113,8 +107,8 @@ export default function ExtendInvitationPage() {
               <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)] block mb-1.5">
                 Nominee Full Name
               </label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 required
                 placeholder="e.g. Maya Chen"
                 value={nomineeName}
@@ -127,8 +121,8 @@ export default function ExtendInvitationPage() {
               <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)] block mb-1.5">
                 Nominee Email Address
               </label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 required
                 placeholder="maya.chen@example.com"
                 value={nomineeEmail}
@@ -141,7 +135,7 @@ export default function ExtendInvitationPage() {
               <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)] block mb-1.5">
                 Personal Note / Recommendation (Optional)
               </label>
-              <textarea 
+              <textarea
                 rows="3"
                 placeholder="Share why this member would enrich our gatherings and sporting community..."
                 value={nomineeNote}
@@ -151,7 +145,7 @@ export default function ExtendInvitationPage() {
             </div>
 
             <div className="pt-2 flex justify-end">
-              <button 
+              <button
                 type="submit"
                 disabled={sent}
                 className="px-6 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white rounded-card text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm active:scale-95"
@@ -162,7 +156,6 @@ export default function ExtendInvitationPage() {
             </div>
           </form>
         </section>
-
       </div>
     </div>
   );

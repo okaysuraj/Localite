@@ -1,6 +1,5 @@
-import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function RestrictedAccessScreen() {
@@ -14,7 +13,6 @@ export default function RestrictedAccessScreen() {
       </View>
 
       <View style={styles.content}>
-        
         {/* Visual Metaphor Door */}
         <View style={styles.doorContainer}>
           <View style={styles.doorPanel}>
@@ -37,9 +35,11 @@ export default function RestrictedAccessScreen() {
           </View>
 
           <Text style={styles.title}>Reserved for the Exquisite Few.</Text>
-          
+
           <Text style={styles.desc}>
-            Access to the Elite Lounge is a privilege reserved for our Gold Tier members and above. Within these digital walls lie curated experiences, private concierge services, and early-access invitations that define modern nobility.
+            Access to the Elite Lounge is a privilege reserved for our Gold Tier members and above. Within
+            these digital walls lie curated experiences, private concierge services, and early-access
+            invitations that define modern nobility.
           </Text>
         </View>
 
@@ -65,7 +65,6 @@ export default function RestrictedAccessScreen() {
             <Text style={styles.statusValue}>#LX-88921</Text>
           </View>
         </View>
-
       </View>
     </SafeAreaView>
   );
@@ -244,5 +243,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 14,
     color: '#000',
-  }
+  },
 });

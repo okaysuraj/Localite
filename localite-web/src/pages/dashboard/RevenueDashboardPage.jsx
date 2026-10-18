@@ -1,50 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  CurrencyDollar,
-  ArrowDownLeft,
-  ArrowUpRight,
-  DownloadSimple,
-  CreditCard,
-  CheckCircle,
-  Clock,
-  ArrowRight,
-  ArrowLeft
-} from '@phosphor-icons/react';
-import { getMyEvents, getUserAnalytics } from '../../services/api';
+import { useState, useEffect } from 'react';
+
+import { CurrencyDollar, ArrowDownLeft, DownloadSimple, CreditCard, Clock } from '@phosphor-icons/react';
+import { getMyEvents } from '../../services/api';
 
 export default function RevenueDashboardPage() {
-  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const [analytics, setAnalytics] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [myEvents, stats] = await Promise.all([
-          getMyEvents().catch(() => []),
-          getUserAnalytics().catch(() => null)
-        ]);
+        const myEvents = await getMyEvents();
         setEvents(Array.isArray(myEvents) ? myEvents : []);
-        setAnalytics(stats);
       } catch (err) {
         console.error('Failed to load revenue data:', err);
-      } finally {
-        setLoading(false);
       }
     }
     loadData();
   }, []);
 
   const totalTickets = events.reduce((acc, ev) => acc + (ev.attendeeCount || 0), 0);
-  const grossEarnings = events.reduce((acc, ev) => acc + ((ev.price || 0) * (ev.attendeeCount || 0)), 0);
+  const grossEarnings = events.reduce((acc, ev) => acc + (ev.price || 0) * (ev.attendeeCount || 0), 0);
   const availablePayout = (grossEarnings * 0.85).toFixed(2);
   const pendingEscrow = (grossEarnings * 0.15).toFixed(2);
   const avgTicket = totalTickets > 0 ? (grossEarnings / totalTickets).toFixed(2) : '0.00';
 
   // Derive transaction list from hosted events
-  const transactions = events.flatMap((ev, evIdx) => {
+  const transactions = events.flatMap((ev) => {
     const attendees = ev.attendeeCount || 0;
     const price = ev.price || 0;
     if (attendees === 0) return [];
@@ -54,7 +35,7 @@ export default function RevenueDashboardPage() {
       date: ev.date || 'Recent',
       attendee: `Guest #${i + 1}`,
       amount: `$${price.toFixed(2)}`,
-      status: 'Settled'
+      status: 'Settled',
     }));
   });
 
@@ -64,9 +45,7 @@ export default function RevenueDashboardPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-border">
           <div>
-            <h1 className="text-3xl font-display font-semibold text-fg tracking-tight">
-              Event Earnings
-            </h1>
+            <h1 className="text-3xl font-display font-semibold text-fg tracking-tight">Event Earnings</h1>
             <p className="text-sm text-fg-muted mt-1">
               Track ticket proceeds, attendee payouts, and financial settlements.
             </p>
@@ -96,9 +75,7 @@ export default function RevenueDashboardPage() {
               <span>Gross Earnings</span>
               <CurrencyDollar size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              ${grossEarnings.toFixed(2)}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">${grossEarnings.toFixed(2)}</p>
             <span className="text-[11px] font-mono text-accent inline-block">
               Total lifetime event revenue
             </span>
@@ -109,12 +86,8 @@ export default function RevenueDashboardPage() {
               <span>Available for Payout</span>
               <ArrowDownLeft size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              ${availablePayout}
-            </p>
-            <span className="text-[11px] font-mono text-fg-muted inline-block">
-              Ready to transfer
-            </span>
+            <p className="text-3xl font-display font-semibold text-fg">${availablePayout}</p>
+            <span className="text-[11px] font-mono text-fg-muted inline-block">Ready to transfer</span>
           </div>
 
           <div className="bg-white border border-border rounded-card p-5 space-y-2">
@@ -122,9 +95,7 @@ export default function RevenueDashboardPage() {
               <span>Pending Escrow</span>
               <Clock size={16} className="text-fg-muted" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              ${pendingEscrow}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">${pendingEscrow}</p>
             <span className="text-[11px] font-mono text-fg-muted inline-block">
               Settles after event completion
             </span>
@@ -135,9 +106,7 @@ export default function RevenueDashboardPage() {
               <span>Average Ticket</span>
               <CreditCard size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              ${avgTicket}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">${avgTicket}</p>
             <span className="text-[11px] font-mono text-fg-muted inline-block">
               Across {totalTickets} tickets sold
             </span>
@@ -155,9 +124,7 @@ export default function RevenueDashboardPage() {
                 Detailed record of ticket purchases and participant payments.
               </p>
             </div>
-            <span className="text-xs font-mono text-fg-muted">
-              {transactions.length} transactions
-            </span>
+            <span className="text-xs font-mono text-fg-muted">{transactions.length} transactions</span>
           </div>
 
           <div className="overflow-x-auto">
@@ -190,9 +157,7 @@ export default function RevenueDashboardPage() {
                         {tx.status}
                       </span>
                     </td>
-                    <td className="py-3.5 text-right text-fg font-semibold">
-                      {tx.amount}
-                    </td>
+                    <td className="py-3.5 text-right text-fg font-semibold">{tx.amount}</td>
                   </tr>
                 ))}
               </tbody>

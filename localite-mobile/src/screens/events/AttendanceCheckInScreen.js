@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform, Alert } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { checkInAttendee, awardXp } from '../../services/api';
 
@@ -57,7 +57,7 @@ export default function AttendanceCheckInScreen({ route }) {
           <View style={styles.badgeContainer}>
             <Text style={styles.badgeText}>ELITE MEMBER</Text>
           </View>
-          
+
           <Text style={styles.title}>Arrive at The Willows</Text>
           <Text style={styles.subtitle}>"You've Arrived"</Text>
 
@@ -71,14 +71,8 @@ export default function AttendanceCheckInScreen({ route }) {
             <Text style={styles.qrLabel}>SCAN FOR ENTRY</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.actionButton}
-            onPress={handleCheckIn}
-            disabled={loading}
-          >
-            <Text style={styles.actionButtonText}>
-              {loading ? 'PROCESSING...' : 'CHECK-IN NOW'}
-            </Text>
+          <TouchableOpacity style={styles.actionButton} onPress={handleCheckIn} disabled={loading}>
+            <Text style={styles.actionButtonText}>{loading ? 'PROCESSING...' : 'CHECK-IN NOW'}</Text>
             {!loading && <MaterialIcons name="arrow-forward" size={20} color="#fff" />}
           </TouchableOpacity>
 

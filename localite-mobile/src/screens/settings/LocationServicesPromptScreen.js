@@ -1,8 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
 
 export default function LocationServicesPromptScreen() {
   const navigation = useNavigation();
@@ -10,13 +9,12 @@ export default function LocationServicesPromptScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        
         {/* Hero Illustration Container */}
         <View style={styles.heroWrap}>
           {/* Decorative Layers - Simplified for Native */}
           <View style={[styles.circleLayer, styles.circleLayer1]} />
           <View style={[styles.circleLayer, styles.circleLayer2]} />
-          
+
           <View style={styles.mapContainer}>
             <MapView
               style={styles.mapView}
@@ -91,7 +89,6 @@ export default function LocationServicesPromptScreen() {
         <TouchableOpacity style={styles.dismissBtn} onPress={() => navigation.goBack()}>
           <Text style={styles.dismissBtnText}>MAYBE LATER</Text>
         </TouchableOpacity>
-
       </View>
     </SafeAreaView>
   );
@@ -278,5 +275,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#75777e',
     letterSpacing: 2,
-  }
+  },
 });

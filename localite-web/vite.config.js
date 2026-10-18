@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
+// Keep the largest browser dependencies in reusable chunks.
 export default defineConfig({
   plugins: [react()],
   build: {
@@ -10,18 +10,15 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('three') || id.includes('@react-three')) return 'vendor-three';
-            if (id.includes('leaflet') || id.includes('react-leaflet')) return 'vendor-leaflet';
             if (id.includes('recharts')) return 'vendor-recharts';
             if (id.includes('firebase')) return 'vendor-firebase';
-            if (id.includes('framer-motion') || id.includes('gsap') || id.includes('lenis')) return 'vendor-motion';
-            if (id.includes('@phosphor-icons') || id.includes('lucide-react')) return 'vendor-icons';
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) return 'vendor-react-core';
+            if (id.includes('@phosphor-icons')) return 'vendor-icons';
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router'))
+              return 'vendor-react-core';
             return 'vendor-libs';
           }
-        }
-      }
-    }
-  }
-})
-
+        },
+      },
+    },
+  },
+});

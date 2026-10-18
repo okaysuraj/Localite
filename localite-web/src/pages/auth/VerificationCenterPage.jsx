@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -26,21 +25,15 @@ const VerificationCenterPage = () => {
               Member Verification
             </h1>
             <p className="text-sm text-fg-muted leading-relaxed">
-              Verification ensures authentic local connections. Complete your verification to earn the verified badge and host gatherings with confidence.
+              Verification ensures authentic local connections. Complete your verification to earn the
+              verified badge and host gatherings with confidence.
             </p>
           </div>
 
           <div className="flex items-center gap-4 bg-white border border-border rounded-card p-4 sm:p-5 shrink-0 self-start md:self-auto">
             <div className="relative w-14 h-14 flex items-center justify-center">
               <svg className="w-full h-full -rotate-90">
-                <circle
-                  cx="28"
-                  cy="28"
-                  r="23"
-                  fill="transparent"
-                  stroke="#E8E8E8"
-                  strokeWidth="3.5"
-                />
+                <circle cx="28" cy="28" r="23" fill="transparent" stroke="#E8E8E8" strokeWidth="3.5" />
                 <circle
                   cx="28"
                   cy="28"
@@ -53,17 +46,11 @@ const VerificationCenterPage = () => {
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="absolute font-display font-semibold text-xs text-fg">
-                66%
-              </span>
+              <span className="absolute font-display font-semibold text-xs text-fg">66%</span>
             </div>
             <div>
-              <p className="text-xs font-display font-semibold text-fg">
-                2 of 3 Completed
-              </p>
-              <p className="text-[11px] font-mono text-accent mt-0.5">
-                Nearly verified
-              </p>
+              <p className="text-xs font-display font-semibold text-fg">2 of 3 Completed</p>
+              <p className="text-[11px] font-mono text-accent mt-0.5">Nearly verified</p>
             </div>
           </div>
         </div>
@@ -82,17 +69,13 @@ const VerificationCenterPage = () => {
                 </span>
               </div>
               <div>
-                <h3 className="text-base font-display font-semibold text-fg tracking-tight">
-                  Government ID
-                </h3>
+                <h3 className="text-base font-display font-semibold text-fg tracking-tight">Government ID</h3>
                 <p className="text-xs text-fg-muted mt-1 leading-relaxed">
                   Your identity documents have been verified against official records.
                 </p>
               </div>
             </div>
-            <p className="text-[10px] font-mono text-fg-muted">
-              Completed on Sep 10, 2026
-            </p>
+            <p className="text-[10px] font-mono text-fg-muted">Completed on Sep 10, 2026</p>
           </div>
 
           {/* Step 2: Photo Match Verified */}
@@ -115,9 +98,7 @@ const VerificationCenterPage = () => {
                 </p>
               </div>
             </div>
-            <p className="text-[10px] font-mono text-fg-muted">
-              Completed on Sep 10, 2026
-            </p>
+            <p className="text-[10px] font-mono text-fg-muted">Completed on Sep 10, 2026</p>
           </div>
 
           {/* Step 3: Social / Phone */}
@@ -165,9 +146,7 @@ const VerificationCenterPage = () => {
               <div className="w-8 h-8 rounded-full bg-bg-subtle flex items-center justify-center text-accent">
                 <LockKey size={16} />
               </div>
-              <h3 className="font-display font-semibold text-sm text-fg">
-                Accountability First
-              </h3>
+              <h3 className="font-display font-semibold text-sm text-fg">Accountability First</h3>
               <p className="text-xs text-fg-muted leading-relaxed">
                 Knowing everyone is verified drastically reduces no-shows and ensures dependable gatherings.
               </p>
@@ -177,9 +156,7 @@ const VerificationCenterPage = () => {
               <div className="w-8 h-8 rounded-full bg-bg-subtle flex items-center justify-center text-accent">
                 <ShieldCheck size={16} />
               </div>
-              <h3 className="font-display font-semibold text-sm text-fg">
-                Verified Badge
-              </h3>
+              <h3 className="font-display font-semibold text-sm text-fg">Verified Badge</h3>
               <p className="text-xs text-fg-muted leading-relaxed">
                 Display the verified badge next to your name when joining teams, matches, and local events.
               </p>
@@ -189,9 +166,7 @@ const VerificationCenterPage = () => {
               <div className="w-8 h-8 rounded-full bg-bg-subtle flex items-center justify-center text-accent">
                 <Trophy size={16} />
               </div>
-              <h3 className="font-display font-semibold text-sm text-fg">
-                Hosting Privileges
-              </h3>
+              <h3 className="font-display font-semibold text-sm text-fg">Hosting Privileges</h3>
               <p className="text-xs text-fg-muted leading-relaxed">
                 Verified organizers can create ticketed gatherings, private leagues, and high-capacity events.
               </p>

@@ -1,8 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Animated, Easing, Vibration, Image, Alert
+import { useState, useEffect, useRef } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Animated,
+  Easing,
+  Vibration,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Marker } from 'react-native-maps';
 import Svg, { Circle } from 'react-native-svg';
@@ -16,10 +24,10 @@ const HOLD_DURATION = 3000;
 
 export default function EmergencySOSScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  
+
   const [isHolding, setIsHolding] = useState(false);
   const [isTriggered, setIsTriggered] = useState(false);
-  
+
   const progressAnimation = useRef(new Animated.Value(0)).current;
   const pulseAnimation1 = useRef(new Animated.Value(0)).current;
   const pulseAnimation2 = useRef(new Animated.Value(0)).current;
@@ -35,11 +43,11 @@ export default function EmergencySOSScreen({ navigation }) {
             duration: 3000,
             easing: Easing.inOut(Easing.ease),
             useNativeDriver: true,
-          })
+          }),
         ])
       ).start();
     };
-    
+
     createPulse(pulseAnimation1, 0);
     createPulse(pulseAnimation2, 1000);
   }, []);
@@ -114,7 +122,6 @@ export default function EmergencySOSScreen({ navigation }) {
       </SafeAreaView>
 
       <View style={styles.content}>
-        
         {/* Header Text */}
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Immediate Assistance</Text>
@@ -125,29 +132,48 @@ export default function EmergencySOSScreen({ navigation }) {
 
         {/* SOS Button Area */}
         <View style={styles.sosContainer}>
-          
           {/* Pulsing Rings */}
-          <Animated.View style={[
-            styles.pulseRing, 
-            { width: 256, height: 256, borderRadius: 128 },
-            {
-              transform: [{
-                scale: pulseAnimation1.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.95, 1.05, 0.95] })
-              }],
-              opacity: pulseAnimation1.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.5, 0.2, 0.5] })
-            }
-          ]} />
-          
-          <Animated.View style={[
-            styles.pulseRing, 
-            { width: 320, height: 320, borderRadius: 160 },
-            {
-              transform: [{
-                scale: pulseAnimation2.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.95, 1.05, 0.95] })
-              }],
-              opacity: pulseAnimation2.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.5, 0.2, 0.5] })
-            }
-          ]} />
+          <Animated.View
+            style={[
+              styles.pulseRing,
+              { width: 256, height: 256, borderRadius: 128 },
+              {
+                transform: [
+                  {
+                    scale: pulseAnimation1.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [0.95, 1.05, 0.95],
+                    }),
+                  },
+                ],
+                opacity: pulseAnimation1.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [0.5, 0.2, 0.5],
+                }),
+              },
+            ]}
+          />
+
+          <Animated.View
+            style={[
+              styles.pulseRing,
+              { width: 320, height: 320, borderRadius: 160 },
+              {
+                transform: [
+                  {
+                    scale: pulseAnimation2.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [0.95, 1.05, 0.95],
+                    }),
+                  },
+                ],
+                opacity: pulseAnimation2.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [0.5, 0.2, 0.5],
+                }),
+              },
+            ]}
+          />
 
           {/* Progress Circle SVG */}
           <View style={{ position: 'absolute', transform: [{ rotate: '-90deg' }] }}>
@@ -183,12 +209,9 @@ export default function EmergencySOSScreen({ navigation }) {
           >
             <View style={styles.mainButton}>
               <MaterialIcons name="emergency" size={48} color="#0d1c32" />
-              <Text style={styles.mainButtonText}>
-                {isTriggered ? 'TRIGGERED' : 'Hold to SOS'}
-              </Text>
+              <Text style={styles.mainButtonText}>{isTriggered ? 'TRIGGERED' : 'Hold to SOS'}</Text>
             </View>
           </TouchableOpacity>
-
         </View>
 
         {/* Location Info */}
@@ -239,13 +262,11 @@ export default function EmergencySOSScreen({ navigation }) {
             <Text style={styles.actionBtnTextSecondary}>Alert Contacts</Text>
           </TouchableOpacity>
         </View>
-
       </View>
-      
+
       <View style={styles.footer}>
         <Text style={styles.footerText}>PRIORITY ENCRYPTED CONNECTION ACTIVE</Text>
       </View>
-
     </View>
   );
 }
@@ -436,5 +457,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(255,255,255,0.4)',
     letterSpacing: 2,
-  }
+  },
 });

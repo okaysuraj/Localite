@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,9 +9,9 @@ import {
   SafeAreaView,
   ScrollView,
   Platform,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
@@ -31,28 +31,38 @@ export default function MapScreen({ navigation }) {
   ];
 
   const getMarkerIcon = (type) => {
-    switch(type) {
-      case 'cafe': return 'restaurant';
-      case 'sports': return 'tennisball';
-      case 'social': return 'people';
-      default: return 'location';
+    switch (type) {
+      case 'cafe':
+        return 'restaurant';
+      case 'sports':
+        return 'tennisball';
+      case 'social':
+        return 'people';
+      default:
+        return 'location';
     }
   };
 
   const getMarkerColor = (type) => {
-    switch(type) {
-      case 'cafe': return '#000000'; // primary
-      case 'sports': return '#775a19'; // secondary
-      case 'social': return '#0d1c32'; // primary-container
-      default: return '#000000';
+    switch (type) {
+      case 'cafe':
+        return '#000000'; // primary
+      case 'sports':
+        return '#775a19'; // secondary
+      case 'social':
+        return '#0d1c32'; // primary-container
+      default:
+        return '#000000';
     }
   };
 
   return (
     <View style={styles.container}>
       {/* Background Map Placeholder */}
-      <ImageBackground 
-        source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA0TDe9b7AICO9jjtO1GrE0Mwpw11dUTlv7dudUsS4D7ccPMgoYnC8_fWYQ1tD49gfwaWi0L76EqNsixT_YINq4rRCs4BG-eLjBGYIRFjb3XuW5NYASFmXQaty6SB2ugDn1ZRSVPSNm8jHBrqD1zkbVacw2VQnPHlxVk6zSMu9-ZMt1gtyCn7bRAXq-oQwfi-uj-1X1APMiXXp81aYBYGiFFvswoA1_DgsuMPCw9FmKhwzErZ4c2UuCfQ' }}
+      <ImageBackground
+        source={{
+          uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA0TDe9b7AICO9jjtO1GrE0Mwpw11dUTlv7dudUsS4D7ccPMgoYnC8_fWYQ1tD49gfwaWi0L76EqNsixT_YINq4rRCs4BG-eLjBGYIRFjb3XuW5NYASFmXQaty6SB2ugDn1ZRSVPSNm8jHBrqD1zkbVacw2VQnPHlxVk6zSMu9-ZMt1gtyCn7bRAXq-oQwfi-uj-1X1APMiXXp81aYBYGiFFvswoA1_DgsuMPCw9FmKhwzErZ4c2UuCfQ',
+        }}
         style={styles.mapBackground}
       >
         {/* Top App Bar Overlay */}
@@ -67,9 +77,11 @@ export default function MapScreen({ navigation }) {
                 <Ionicons name="notifications-outline" size={24} color="#44474d" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.profileBtn}>
-                <Image 
-                  source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBanyrDvcvhDd9E7Uao1bWhf5_uUaUGOiwpUgLUU4TpJMGAHrr4dI9oGK52o1zsOJL_-mRbWeP9SfxbpFx09mjs61rHwcJhcWwZOttIPIMVPokl-rM5kbkuUQK2iDAYQm6TQW40cI8T035fRoslBxNRX0YRwinSqBVjurzSsZDmY731fwhg8JtjrKzNm5vk8VvC0WTGcU0s7lXlTyFkdPUJGINzNz1ztwV4Br6lP6ISvjOPyhfWTJscbA' }} 
-                  style={styles.profileImg} 
+                <Image
+                  source={{
+                    uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBanyrDvcvhDd9E7Uao1bWhf5_uUaUGOiwpUgLUU4TpJMGAHrr4dI9oGK52o1zsOJL_-mRbWeP9SfxbpFx09mjs61rHwcJhcWwZOttIPIMVPokl-rM5kbkuUQK2iDAYQm6TQW40cI8T035fRoslBxNRX0YRwinSqBVjurzSsZDmY731fwhg8JtjrKzNm5vk8VvC0WTGcU0s7lXlTyFkdPUJGINzNz1ztwV4Br6lP6ISvjOPyhfWTJscbA',
+                  }}
+                  style={styles.profileImg}
                 />
               </TouchableOpacity>
             </View>
@@ -85,21 +97,19 @@ export default function MapScreen({ navigation }) {
                 <Ionicons name="options" size={20} color="#ffffff" />
               </TouchableOpacity>
             </View>
-            
+
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
               {FILTERS.map((filter, index) => (
-                <TouchableOpacity 
+                <TouchableOpacity
                   key={index}
-                  style={[
-                    styles.filterChip, 
-                    selectedFilter === filter && styles.filterChipActive
-                  ]}
+                  style={[styles.filterChip, selectedFilter === filter && styles.filterChipActive]}
                   onPress={() => setSelectedFilter(filter)}
                 >
-                  <Text style={[
-                    styles.filterChipText,
-                    selectedFilter === filter && styles.filterChipTextActive
-                  ]}>{filter}</Text>
+                  <Text
+                    style={[styles.filterChipText, selectedFilter === filter && styles.filterChipTextActive]}
+                  >
+                    {filter}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -108,8 +118,8 @@ export default function MapScreen({ navigation }) {
 
         {/* Mock Markers */}
         {markers.map((marker) => (
-          <TouchableOpacity 
-            key={marker.id} 
+          <TouchableOpacity
+            key={marker.id}
             style={[styles.markerContainer, { top: marker.top, left: marker.left }]}
             onPress={() => setSelectedMarker(marker)}
             activeOpacity={0.8}
@@ -118,7 +128,7 @@ export default function MapScreen({ navigation }) {
               <Ionicons name={getMarkerIcon(marker.type)} size={18} color="#ffffff" />
             </View>
             <View style={[styles.markerStem, { backgroundColor: getMarkerColor(marker.type) }]} />
-            
+
             {selectedMarker?.id === marker.id && (
               <View style={styles.markerLabel}>
                 <Text style={styles.markerLabelText}>{marker.title}</Text>
@@ -131,11 +141,13 @@ export default function MapScreen({ navigation }) {
         {selectedMarker && (
           <View style={styles.bottomSheet}>
             <View style={styles.sheetDragHandle} />
-            
+
             <View style={styles.sheetHeader}>
               <View style={styles.sheetHeaderLeft}>
                 <Text style={styles.sheetStatus}>ACTIVE NOW</Text>
-                <Text style={styles.sheetTitle}>{selectedMarker.title === 'SOCIAL GARDEN' ? 'Weekend Art Soirée' : selectedMarker.title}</Text>
+                <Text style={styles.sheetTitle}>
+                  {selectedMarker.title === 'SOCIAL GARDEN' ? 'Weekend Art Soirée' : selectedMarker.title}
+                </Text>
                 <View style={styles.sheetLocationRow}>
                   <Ionicons name="location-outline" size={16} color="#44474d" />
                   <Text style={styles.sheetLocationText}>Le Marais, 4th Arr.</Text>
@@ -143,8 +155,18 @@ export default function MapScreen({ navigation }) {
               </View>
               <View style={styles.sheetHeaderRight}>
                 <View style={styles.avatarStack}>
-                  <Image source={{uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDBUaEwGVPMkVrwEF3O_F3yKYvmQkuewIcNiVDZsb4_3ePNdO_al2AYsIUwj9BL0NegMgEHV4-VfLXVZH2s9kpk_ZdA0tvnuLzP9Bd2lCJ7_4C7xP2OAVA6lOU53I1FMrAQBFjvLTsfZBOEi5gnuVbB1unyFh0QcJHL1FRHyMedJu3a75xqI0SiKA2h5fqgbKFPhqoChreVTWjOnG9qFZmzXtR5SSux0OYcxPMmCMh5Q72XfFrGmJuT0w'}} style={styles.stackAvatar} />
-                  <Image source={{uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBE-BEwk_rtWU7KwlzdcmalKlq_jBv4T2o04tda69nobt3OC980ulezKYCqHP5JPsur1xLLumAhbqscTDrHAOL_xF2AT-8-DVCicWINq0YHuYubjQDfc1lQzVu7RR20BCEDrNuxoh_G8tCo8_JrqNAIeFkxeQ3sn-e2Vh6UNrdwnKc54JBSY9n5o-oyHqOwdAYWa26QENYvEX4LNuEGYSG2XDQc2MKKaPsQ2-8y1UaHpt4fBRjVKFEN2Q'}} style={[styles.stackAvatar, { marginLeft: -12 }]} />
+                  <Image
+                    source={{
+                      uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDBUaEwGVPMkVrwEF3O_F3yKYvmQkuewIcNiVDZsb4_3ePNdO_al2AYsIUwj9BL0NegMgEHV4-VfLXVZH2s9kpk_ZdA0tvnuLzP9Bd2lCJ7_4C7xP2OAVA6lOU53I1FMrAQBFjvLTsfZBOEi5gnuVbB1unyFh0QcJHL1FRHyMedJu3a75xqI0SiKA2h5fqgbKFPhqoChreVTWjOnG9qFZmzXtR5SSux0OYcxPMmCMh5Q72XfFrGmJuT0w',
+                    }}
+                    style={styles.stackAvatar}
+                  />
+                  <Image
+                    source={{
+                      uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBE-BEwk_rtWU7KwlzdcmalKlq_jBv4T2o04tda69nobt3OC980ulezKYCqHP5JPsur1xLLumAhbqscTDrHAOL_xF2AT-8-DVCicWINq0YHuYubjQDfc1lQzVu7RR20BCEDrNuxoh_G8tCo8_JrqNAIeFkxeQ3sn-e2Vh6UNrdwnKc54JBSY9n5o-oyHqOwdAYWa26QENYvEX4LNuEGYSG2XDQc2MKKaPsQ2-8y1UaHpt4fBRjVKFEN2Q',
+                    }}
+                    style={[styles.stackAvatar, { marginLeft: -12 }]}
+                  />
                   <View style={[styles.stackAvatarMore, { marginLeft: -12 }]}>
                     <Text style={styles.stackMoreText}>+12</Text>
                   </View>
@@ -171,7 +193,8 @@ export default function MapScreen({ navigation }) {
             </View>
 
             <Text style={styles.sheetDescription}>
-              An evening of contemporary art, artisanal cocktails, and networking with local creatives. This weekend's hub features live installations from emerging sculptors.
+              An evening of contemporary art, artisanal cocktails, and networking with local creatives. This
+              weekend's hub features live installations from emerging sculptors.
             </Text>
 
             <TouchableOpacity style={styles.joinBtn}>
@@ -182,7 +205,7 @@ export default function MapScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         )}
-        
+
         {/* Map Controls */}
         <View style={styles.mapControls}>
           <View style={styles.zoomControls}>
@@ -198,7 +221,6 @@ export default function MapScreen({ navigation }) {
             <Ionicons name="locate" size={24} color="#ffffff" />
           </TouchableOpacity>
         </View>
-
       </ImageBackground>
     </View>
   );
@@ -558,5 +580,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#000000',
     letterSpacing: 1,
-  }
+  },
 });

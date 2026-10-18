@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Switch 
-} from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Switch } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,13 +9,12 @@ import { API_URL } from '../../config';
 
 export default function NotificationSettingsScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  
+
   const [pushInvitations, setPushInvitations] = useState(true);
   const [pushMessages, setPushMessages] = useState(true);
   const [pushLocation, setPushLocation] = useState(false);
   const [safetyAlerts, setSafetyAlerts] = useState(true);
   const [emailDigest, setEmailDigest] = useState('weekly');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchSettings();
@@ -26,7 +24,7 @@ export default function NotificationSettingsScreen({ navigation }) {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const res = await fetch(`${API_URL}/users/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const user = await res.json();
@@ -38,8 +36,6 @@ export default function NotificationSettingsScreen({ navigation }) {
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -51,18 +47,18 @@ export default function NotificationSettingsScreen({ navigation }) {
         pushMessages,
         pushLocation,
         safetyAlerts,
-        emailDigest
+        emailDigest,
       };
-      
+
       const res = await fetch(`${API_URL}/users/me`, {
         method: 'PUT',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
-      
+
       if (res.ok) {
         navigation.goBack();
       }
@@ -83,8 +79,11 @@ export default function NotificationSettingsScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-        
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.headerSection}>
           <Text style={styles.headerSubtitle}>Personalization</Text>
           <Text style={styles.headerDesc}>
@@ -107,8 +106,8 @@ export default function NotificationSettingsScreen({ navigation }) {
               <Text style={styles.settingTitle}>New Invitations</Text>
               <Text style={styles.settingDesc}>Instant alerts for exclusive events.</Text>
             </View>
-            <Switch 
-              value={pushInvitations} 
+            <Switch
+              value={pushInvitations}
               onValueChange={setPushInvitations}
               trackColor={{ false: '#e4e2e2', true: '#775a19' }}
               thumbColor={'#ffffff'}
@@ -123,8 +122,8 @@ export default function NotificationSettingsScreen({ navigation }) {
               <Text style={styles.settingTitle}>Messages</Text>
               <Text style={styles.settingDesc}>Real-time chat updates.</Text>
             </View>
-            <Switch 
-              value={pushMessages} 
+            <Switch
+              value={pushMessages}
               onValueChange={setPushMessages}
               trackColor={{ false: '#e4e2e2', true: '#775a19' }}
               thumbColor={'#ffffff'}
@@ -139,8 +138,8 @@ export default function NotificationSettingsScreen({ navigation }) {
               <Text style={styles.settingTitle}>Location Proximity</Text>
               <Text style={styles.settingDesc}>Discover hidden gems nearby.</Text>
             </View>
-            <Switch 
-              value={pushLocation} 
+            <Switch
+              value={pushLocation}
               onValueChange={setPushLocation}
               trackColor={{ false: '#e4e2e2', true: '#775a19' }}
               thumbColor={'#ffffff'}
@@ -158,10 +157,12 @@ export default function NotificationSettingsScreen({ navigation }) {
           <View style={styles.actionRow}>
             <View style={{ flex: 1, paddingRight: 16 }}>
               <Text style={[styles.actionTitle, { color: '#e9c176' }]}>Safety Alerts</Text>
-              <Text style={[styles.actionSubtitle, { color: '#b9c7e4' }]}>Critical updates regarding local safety protocols.</Text>
+              <Text style={[styles.actionSubtitle, { color: '#b9c7e4' }]}>
+                Critical updates regarding local safety protocols.
+              </Text>
             </View>
-            <Switch 
-              value={safetyAlerts} 
+            <Switch
+              value={safetyAlerts}
               onValueChange={setSafetyAlerts}
               trackColor={{ false: '#46473f', true: '#e9c176' }}
               thumbColor={safetyAlerts ? '#000000' : '#ffffff'}
@@ -191,12 +192,9 @@ export default function NotificationSettingsScreen({ navigation }) {
 
           <View style={styles.digestGrid}>
             {['weekly', 'monthly', 'off'].map((freq) => (
-              <TouchableOpacity 
+              <TouchableOpacity
                 key={freq}
-                style={[
-                  styles.digestOption, 
-                  emailDigest === freq && styles.digestOptionActive
-                ]}
+                style={[styles.digestOption, emailDigest === freq && styles.digestOptionActive]}
                 onPress={() => setEmailDigest(freq)}
               >
                 <Text style={styles.digestOptionLabel}>FREQUENCY</Text>
@@ -218,7 +216,6 @@ export default function NotificationSettingsScreen({ navigation }) {
             <Text style={styles.saveBtnText}>SAVE PREFERENCES</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     </View>
   );
@@ -440,5 +437,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ffffff',
     letterSpacing: 1,
-  }
+  },
 });

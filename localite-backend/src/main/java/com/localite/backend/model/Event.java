@@ -43,7 +43,6 @@ public class Event {
     @Transient
     private LocalDateTime recurrenceEndDate;
 
-    // Phase 5: Monetization
     private boolean isHighlighted = false;
 
     public Event() {}

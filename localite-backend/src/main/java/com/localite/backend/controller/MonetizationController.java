@@ -4,7 +4,6 @@ import com.localite.backend.model.Event;
 import com.localite.backend.model.User;
 import com.localite.backend.repository.EventRepository;
 import com.localite.backend.repository.UserRepository;
-import com.localite.backend.service.StripePaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +18,11 @@ public class MonetizationController {
 
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
-    private final StripePaymentService stripePaymentService;
     private final com.localite.backend.repository.RsvpRepository rsvpRepository;
 
-    public MonetizationController(UserRepository userRepository, EventRepository eventRepository, StripePaymentService stripePaymentService, com.localite.backend.repository.RsvpRepository rsvpRepository) {
+    public MonetizationController(UserRepository userRepository, EventRepository eventRepository, com.localite.backend.repository.RsvpRepository rsvpRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
-        this.stripePaymentService = stripePaymentService;
         this.rsvpRepository = rsvpRepository;
     }
 
@@ -65,21 +62,14 @@ public class MonetizationController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!userOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (userOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
 
         Optional<Event> eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
             User user = userOpt.get();
 
-            double amount = event.getCost() != null ? event.getCost() : 0.0;
-            if (amount > 0) {
-                boolean success = stripePaymentService.processPayment(amount, "USD", "tok_visa");
-                if (!success) {
-                    return ResponseEntity.badRequest().body("Payment failed");
-                }
-            }
-
+            // This flow creates an RSVP only; no payment provider is configured.
             Optional<com.localite.backend.model.Rsvp> existingRsvp = rsvpRepository.findByEventIdAndUserId(eventId, user.getId());
             com.localite.backend.model.Rsvp rsvp;
             if (existingRsvp.isPresent()) {

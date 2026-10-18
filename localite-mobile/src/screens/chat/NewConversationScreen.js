@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform 
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ScrollView,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SUGGESTED_CONTACTS = [
@@ -11,33 +19,37 @@ const SUGGESTED_CONTACTS = [
     name: 'Arthur Sterling',
     hub: 'Wine Collectors',
     icon: 'workspace-premium', // mapping 'workspace_premium' to material icons or standard
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCoT3QrhhDRsRlU7lLQWtjsw5u9YfIxexpV37-PbNEWYdvSR24D6jVlSZC5XrXDT7XcbfVwUUw_ZZqOW286_CNUp1XkxEEJrtmAmM8Qm-1_GeHdmJygW6dkvUJTMEQq6yApxR9GZ3O8_Ifdhb5rHWZuwBgdCtCD_qp0DqZX0knMoiw29QkvPdg-2yB4RY-8B3TqVQLEJmW6oTas3Zpkx1y209TgXOQwSt-eOyGn85uteWrAYrZ0OCaD9g',
-    online: true
+    imageUrl:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCoT3QrhhDRsRlU7lLQWtjsw5u9YfIxexpV37-PbNEWYdvSR24D6jVlSZC5XrXDT7XcbfVwUUw_ZZqOW286_CNUp1XkxEEJrtmAmM8Qm-1_GeHdmJygW6dkvUJTMEQq6yApxR9GZ3O8_Ifdhb5rHWZuwBgdCtCD_qp0DqZX0knMoiw29QkvPdg-2yB4RY-8B3TqVQLEJmW6oTas3Zpkx1y209TgXOQwSt-eOyGn85uteWrAYrZ0OCaD9g',
+    online: true,
   },
   {
     id: 2,
     name: 'Elena Rossi',
     hub: 'Tennis Hub',
     icon: 'sports-tennis',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8pc4criHwQ3IFAKaltSqkq2qWTrqUa57cNQ0ZwAMtxCcezZ0C5kKkm4aqfWQfprXopPl5wW840Xo-x1f2Y0mTWMjJeELWe7DJlEjDTi8gm2izqcur25-cZofHswIyTe1XUIISmvYRtPMACgZ3Ld_jS8qyLz-3hw2-75K43EOZnOJo9CYehfytzPM-2z9wog70PVvA8hXCHiMvPd84DNF7jKqxAmwJ9Z9QJ1-4pyVvPFI97htp0nw4Bw',
-    online: false
+    imageUrl:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuC8pc4criHwQ3IFAKaltSqkq2qWTrqUa57cNQ0ZwAMtxCcezZ0C5kKkm4aqfWQfprXopPl5wW840Xo-x1f2Y0mTWMjJeELWe7DJlEjDTi8gm2izqcur25-cZofHswIyTe1XUIISmvYRtPMACgZ3Ld_jS8qyLz-3hw2-75K43EOZnOJo9CYehfytzPM-2z9wog70PVvA8hXCHiMvPd84DNF7jKqxAmwJ9Z9QJ1-4pyVvPFI97htp0nw4Bw',
+    online: false,
   },
   {
     id: 3,
     name: 'Julian Vane',
     hub: 'Modern Art Hub',
     icon: 'palette',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAdA9dF4WOfA_xgtLED9Rnadzfk7zQfdYN7jvcsEHcjr1TgDBZ0wzUM-vhFWZhcSz4v2ZHAc3YT4K2J8pZ9VrGtuoTTU-Row0DXtnanYOL7vLRHqdAdBW1tOhoIZo3gF4rbiscpUyrvflCluiDpvhsyY7AaRyedtHoa4S90ffQmTdLdNzL3zRW8s_RNr0DQNYyt7d5nHwwTaGyLKwpvIVfqL85p2MMO7Q7tYoUG7K7budqACDr1gj090g',
-    online: false
+    imageUrl:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAdA9dF4WOfA_xgtLED9Rnadzfk7zQfdYN7jvcsEHcjr1TgDBZ0wzUM-vhFWZhcSz4v2ZHAc3YT4K2J8pZ9VrGtuoTTU-Row0DXtnanYOL7vLRHqdAdBW1tOhoIZo3gF4rbiscpUyrvflCluiDpvhsyY7AaRyedtHoa4S90ffQmTdLdNzL3zRW8s_RNr0DQNYyt7d5nHwwTaGyLKwpvIVfqL85p2MMO7Q7tYoUG7K7budqACDr1gj090g',
+    online: false,
   },
   {
     id: 4,
     name: 'Beatrice Thorne',
     hub: 'Wine Collectors',
     icon: 'history-edu',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBn10SAhgFYPqaESPpOFJM73v4yoVZYDCwZ4q2tEJNf-myCjTvM3VQ6p3txrhfXjh9ACB5j8SZqvpw5TR19h4PuEo7z8BOyX5TxKuMFdcs6dClZinSHgYFu54wBEaQ5J5CYQKx9Gg3YL0bi6Mw5Y2-me5M4SqWmgzvArVrN27XGY_Z8ovFA1tF64INkH4n776DZpWQnTlDqegdcbAw0IPbo9Z8CNyWjD2gdYJacT6dL0wC9-qHSAiKvsw',
-    online: false
-  }
+    imageUrl:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBn10SAhgFYPqaESPpOFJM73v4yoVZYDCwZ4q2tEJNf-myCjTvM3VQ6p3txrhfXjh9ACB5j8SZqvpw5TR19h4PuEo7z8BOyX5TxKuMFdcs6dClZinSHgYFu54wBEaQ5J5CYQKx9Gg3YL0bi6Mw5Y2-me5M4SqWmgzvArVrN27XGY_Z8ovFA1tF64INkH4n776DZpWQnTlDqegdcbAw0IPbo9Z8CNyWjD2gdYJacT6dL0wC9-qHSAiKvsw',
+    online: false,
+  },
 ];
 
 export default function NewConversationScreen({ navigation }) {
@@ -61,7 +73,7 @@ export default function NewConversationScreen({ navigation }) {
         <View style={styles.searchSection}>
           <View style={styles.searchBox}>
             <Ionicons name="search" size={20} color="#75777e" />
-            <TextInput 
+            <TextInput
               style={styles.searchInput}
               placeholder="Search Localites"
               placeholderTextColor="#75777e"
@@ -70,7 +82,7 @@ export default function NewConversationScreen({ navigation }) {
             />
           </View>
           <TouchableOpacity style={styles.startGroupBtn}>
-            <Ionicons name="people" size={18} color="#ffffff" style={{marginRight: 8}} />
+            <Ionicons name="people" size={18} color="#ffffff" style={{ marginRight: 8 }} />
             <Text style={styles.startGroupBtnText}>START GROUP</Text>
           </TouchableOpacity>
         </View>
@@ -78,19 +90,29 @@ export default function NewConversationScreen({ navigation }) {
         {/* List */}
         <ScrollView style={styles.listArea} showsVerticalScrollIndicator={false}>
           <Text style={styles.sectionHeader}>SUGGESTED CONTACTS</Text>
-          
+
           <View style={styles.grid}>
-            {SUGGESTED_CONTACTS.map(contact => (
-              <TouchableOpacity key={contact.id} style={styles.contactCard} onPress={() => navigation.navigate('ChatScreen1x1', { chatId: contact.id, title: contact.name })}>
+            {SUGGESTED_CONTACTS.map((contact) => (
+              <TouchableOpacity
+                key={contact.id}
+                style={styles.contactCard}
+                onPress={() =>
+                  navigation.navigate('ChatScreen1x1', { chatId: contact.id, title: contact.name })
+                }
+              >
                 <View style={styles.avatarContainer}>
                   <Image source={{ uri: contact.imageUrl }} style={styles.avatarImg} />
                   {contact.online && <View style={styles.onlineDot} />}
                 </View>
                 <View style={styles.contactInfo}>
-                  <Text style={styles.contactName} numberOfLines={1}>{contact.name}</Text>
+                  <Text style={styles.contactName} numberOfLines={1}>
+                    {contact.name}
+                  </Text>
                   <View style={styles.hubInfo}>
                     <MaterialIcons name={contact.icon} size={14} color="#775a19" />
-                    <Text style={styles.hubText} numberOfLines={1}>{contact.hub}</Text>
+                    <Text style={styles.hubText} numberOfLines={1}>
+                      {contact.hub}
+                    </Text>
                   </View>
                 </View>
                 <View style={styles.mailBtn}>
@@ -247,5 +269,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 12,
-  }
+  },
 });

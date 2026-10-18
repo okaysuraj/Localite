@@ -1,18 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
-import { 
-  Trophy, 
-  ArrowLeft, 
-  CalendarBlank, 
-  Clock, 
-  Users, 
-  Lock, 
-  ShieldCheck, 
-  Sparkle,
-  ArrowRight 
-} from '@phosphor-icons/react';
+import { Trophy, ArrowLeft, Users, Lock } from '@phosphor-icons/react';
 
 export default function CreateMatchPage() {
   const navigate = useNavigate();
@@ -41,25 +31,25 @@ export default function CreateMatchPage() {
 
       const payload = {
         title: `${level} ${sport} Match`,
-        category: sport.split(' ')[0], 
+        category: sport.split(' ')[0],
         skillLevel: level,
         eventType: isPrivate ? 'Private Match' : 'Public Match',
         date: `${date}T${time}:00`,
         maxAttendees: maxPlayers,
         rules: houseRules,
-        location: 'Heritage Sports Complex, Court 4', 
+        location: 'Heritage Sports Complex, Court 4',
         cost: 0,
       };
 
       const res = await fetch(`${API_URL}/events`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
-      
+
       if (res.ok) {
         const createdMatch = await res.json().catch(() => null);
         alert('Match created successfully!');
@@ -82,8 +72,8 @@ export default function CreateMatchPage() {
       <main className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-3"
           >
@@ -111,9 +101,11 @@ export default function CreateMatchPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Sport Category</label>
-                  <input 
-                    type="text" 
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                    Sport Category
+                  </label>
+                  <input
+                    type="text"
                     value={sport}
                     onChange={(e) => setSport(e.target.value)}
                     placeholder="e.g. Tennis (Singles)"
@@ -122,7 +114,9 @@ export default function CreateMatchPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Competitive Tier</label>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                    Competitive Tier
+                  </label>
                   <div className="grid grid-cols-3 gap-2">
                     {['Novice', 'Amateur', 'Elite'].map((lvl) => (
                       <button
@@ -130,8 +124,8 @@ export default function CreateMatchPage() {
                         type="button"
                         onClick={() => setLevel(lvl)}
                         className={`py-2 rounded-card text-xs font-mono uppercase tracking-wider transition-colors border ${
-                          level === lvl 
-                            ? 'bg-[var(--accent)] text-white border-[var(--accent)]' 
+                          level === lvl
+                            ? 'bg-[var(--accent)] text-white border-[var(--accent)]'
                             : 'bg-[var(--bg-subtle)] border-[var(--border)] text-[var(--fg)] hover:border-[var(--fg-muted)]'
                         }`}
                       >
@@ -144,8 +138,10 @@ export default function CreateMatchPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Schedule Date</label>
-                  <input 
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                    Schedule Date
+                  </label>
+                  <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
@@ -154,8 +150,10 @@ export default function CreateMatchPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Start Time</label>
-                  <input 
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                    Start Time
+                  </label>
+                  <input
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
@@ -178,7 +176,7 @@ export default function CreateMatchPage() {
                     <span className="text-[var(--fg-muted)] uppercase">Maximum Players</span>
                     <span className="text-[var(--fg)] font-medium">{maxPlayers} Spots</span>
                   </div>
-                  <input 
+                  <input
                     type="range"
                     min="2"
                     max="16"
@@ -203,9 +201,11 @@ export default function CreateMatchPage() {
                       isPrivate ? 'bg-[var(--accent)]' : 'bg-gray-300'
                     }`}
                   >
-                    <span className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
-                      isPrivate ? 'right-0.5' : 'left-0.5'
-                    }`} />
+                    <span
+                      className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
+                        isPrivate ? 'right-0.5' : 'left-0.5'
+                      }`}
+                    />
                   </button>
                 </div>
               </div>
@@ -213,8 +213,10 @@ export default function CreateMatchPage() {
 
             {/* Rules */}
             <section className="bg-white rounded-card border border-[var(--border)] p-6 sm:p-8 space-y-4">
-              <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Court Etiquette & Rules</label>
-              <textarea 
+              <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Court Etiquette & Rules
+              </label>
+              <textarea
                 rows="3"
                 value={houseRules}
                 onChange={(e) => setHouseRules(e.target.value)}
@@ -227,9 +229,13 @@ export default function CreateMatchPage() {
           {/* Sticky Summary Card */}
           <aside className="lg:col-span-4 bg-white rounded-card border border-[var(--border)] p-6 space-y-6 sticky top-24">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block mb-1">Match Draft</span>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block mb-1">
+                Match Draft
+              </span>
               <h3 className="text-lg font-serif text-[var(--fg)]">{sport}</h3>
-              <p className="text-xs text-[var(--fg-muted)]">{level} Division • {isPrivate ? 'Private' : 'Open'}</p>
+              <p className="text-xs text-[var(--fg-muted)]">
+                {level} Division • {isPrivate ? 'Private' : 'Open'}
+              </p>
             </div>
 
             <div className="space-y-2.5 text-xs font-mono border-y border-[var(--border)] py-4">
@@ -247,7 +253,7 @@ export default function CreateMatchPage() {
               </div>
             </div>
 
-            <button 
+            <button
               type="submit"
               disabled={isSubmitting}
               className="w-full py-3 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors disabled:opacity-50"

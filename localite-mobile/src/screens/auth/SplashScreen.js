@@ -1,12 +1,6 @@
-import React, { useEffect } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  Animated, 
-  Dimensions 
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useEffect } from 'react';
+import { StyleSheet, Text, View, Animated, Dimensions } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../firebase';
 import { useAuth } from '../../context/AuthContext';
@@ -36,20 +30,20 @@ export default function SplashScreen({ navigation }) {
         toValue: width * 0.4, // progress bar width
         duration: 2000,
         useNativeDriver: false,
-      })
+      }),
     ]).start();
 
     // Check auth and navigate
     const checkAuth = async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 2200));
+        await new Promise((resolve) => setTimeout(resolve, 2200));
         const userToken = await AsyncStorage.getItem('userToken');
         if (userToken || user || auth.currentUser) {
           navigation.replace('MainApp');
         } else {
           navigation.replace('WelcomeCarousel');
         }
-      } catch (err) {
+      } catch {
         navigation.replace('WelcomeCarousel');
       }
     };
@@ -61,16 +55,18 @@ export default function SplashScreen({ navigation }) {
     <View style={styles.container}>
       {/* Background Glow */}
       <View style={styles.glow} />
-      
+
       <View style={styles.mainContent}>
         {/* Central Branding Cluster */}
-        <Animated.View style={[styles.brandCluster, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
+        <Animated.View
+          style={[styles.brandCluster, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}
+        >
           <View style={styles.decorativeLine} />
-          
+
           <Text style={styles.title}>LOCALITE</Text>
-          
+
           <View style={styles.separator} />
-          
+
           <View style={styles.iconContainer}>
             <Ionicons name="sparkles-outline" size={36} color="#775a19" />
           </View>
@@ -79,13 +75,13 @@ export default function SplashScreen({ navigation }) {
         {/* Footer / Tagline */}
         <Animated.View style={[styles.footer, { opacity: fadeAnim }]}>
           <Text style={styles.tagline}>INTENTIONAL CONNECTION</Text>
-          
+
           <View style={styles.progressContainer}>
             <Animated.View style={[styles.progressBar, { width: progressAnim }]} />
           </View>
         </Animated.View>
       </View>
-      
+
       {/* Contextual Accents */}
       <View style={styles.topLeftAccent}>
         <Text style={[styles.accentText, { transform: [{ rotate: '-90deg' }] }]}>EST. MMXXIV</Text>
@@ -114,10 +110,7 @@ const styles = StyleSheet.create({
     opacity: 0.05,
     top: '50%',
     left: '50%',
-    transform: [
-      { translateX: -width * 0.75 },
-      { translateY: -width * 0.75 }
-    ],
+    transform: [{ translateX: -width * 0.75 }, { translateY: -width * 0.75 }],
   },
   mainContent: {
     flex: 1,
@@ -189,5 +182,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#f5f3f3',
     letterSpacing: 3,
-  }
+  },
 });

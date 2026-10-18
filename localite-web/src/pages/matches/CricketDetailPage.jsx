@@ -1,16 +1,13 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Trophy, 
-  ArrowLeft, 
-  CalendarBlank, 
-  Users, 
-  Star, 
-  Clock, 
-  Broadcast, 
-  MapPin, 
-  Bell, 
-  Ticket 
+import {
+  Trophy,
+  ArrowLeft,
+  CalendarBlank,
+  Users,
+  Star,
+  Broadcast,
+  Bell,
+  Ticket,
 } from '@phosphor-icons/react';
 
 export default function CricketDetailPage() {
@@ -21,21 +18,21 @@ export default function CricketDetailPage() {
       <main className="max-w-6xl mx-auto space-y-8">
         {/* Navigation & Header */}
         <div className="space-y-3">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
           >
             <ArrowLeft size={16} />
             Back to Sports
           </button>
-          
+
           <div className="rounded-card border border-[var(--border)] overflow-hidden bg-white relative">
             <div className="h-64 sm:h-80 w-full relative bg-[var(--bg-subtle)] overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=1200" 
-                alt="Cricket Pitch" 
-                className="w-full h-full object-cover" 
+              <img
+                src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=1200"
+                alt="Cricket Pitch"
+                className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-6 sm:p-10">
                 <div className="text-white space-y-2 max-w-2xl">
@@ -44,7 +41,8 @@ export default function CricketDetailPage() {
                   </span>
                   <h1 className="text-3xl sm:text-5xl font-serif text-white">Arena Alpha Cricket Grounds</h1>
                   <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                    Home to local amateur leagues and high-prestige seasonal tournaments featuring natural turf pitches.
+                    Home to local amateur leagues and high-prestige seasonal tournaments featuring natural
+                    turf pitches.
                   </p>
                 </div>
               </div>
@@ -123,26 +121,52 @@ export default function CricketDetailPage() {
 
           <div className="space-y-3">
             {[
-              { day: '24', month: 'OCT', teamA: 'Regent CC', teamB: 'Belgravia 11', venue: 'Oval Pitch A', time: '14:00' },
-              { day: '28', month: 'OCT', teamA: 'Chelsea Royals', teamB: 'Kensington Wanderers', venue: 'Pitch B', time: '15:30' }
+              {
+                day: '24',
+                month: 'OCT',
+                teamA: 'Regent CC',
+                teamB: 'Belgravia 11',
+                venue: 'Oval Pitch A',
+                time: '14:00',
+              },
+              {
+                day: '28',
+                month: 'OCT',
+                teamA: 'Chelsea Royals',
+                teamB: 'Kensington Wanderers',
+                venue: 'Pitch B',
+                time: '15:30',
+              },
             ].map((fix, idx) => (
-              <div key={idx} className="p-4 rounded-card border border-[var(--border)] bg-[var(--bg-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div
+                key={idx}
+                className="p-4 rounded-card border border-[var(--border)] bg-[var(--bg-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-card bg-white border border-[var(--border)] text-center flex flex-col justify-center">
-                    <span className="font-mono text-sm font-bold text-[var(--fg)] leading-none">{fix.day}</span>
+                    <span className="font-mono text-sm font-bold text-[var(--fg)] leading-none">
+                      {fix.day}
+                    </span>
                     <span className="font-mono text-[9px] text-[var(--fg-muted)] uppercase">{fix.month}</span>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-[var(--fg)]">{fix.teamA} vs {fix.teamB}</h4>
-                    <p className="text-xs text-[var(--fg-muted)]">{fix.venue} • {fix.time}</p>
+                    <h4 className="text-sm font-medium text-[var(--fg)]">
+                      {fix.teamA} vs {fix.teamB}
+                    </h4>
+                    <p className="text-xs text-[var(--fg-muted)]">
+                      {fix.venue} • {fix.time}
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <button type="button" className="p-2 rounded-card border border-[var(--border)] bg-white text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
+                  <button
+                    type="button"
+                    className="p-2 rounded-card border border-[var(--border)] bg-white text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
+                  >
                     <Bell size={16} />
                   </button>
-                  <button 
+                  <button
                     type="button"
                     onClick={() => navigate('/matches/join')}
                     className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"

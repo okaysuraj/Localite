@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Image, TextInput, ActivityIndicator
+import { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../config';
 
@@ -27,30 +35,30 @@ export default function MessagesInboxScreen({ navigation }) {
       const token = await AsyncStorage.getItem('userToken');
       const currentUserStr = await AsyncStorage.getItem('user');
       if (!token || !currentUserStr) return;
-      
+
       const currentUser = JSON.parse(currentUserStr);
 
       const response = await fetch(`${API_URL}/messages/direct/conversations`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
-        const formatted = data.map(msg => {
+        const formatted = data.map((msg) => {
           const isSender = msg.sender.id === currentUser.id;
           const otherUser = isSender ? msg.receiver : msg.sender;
-          
+
           return {
             id: otherUser.id.toString(),
             user: {
               id: otherUser.id,
               username: otherUser.username,
-              profileImageUrl: otherUser.profilePhotoUrl || 'https://via.placeholder.com/150'
+              profileImageUrl: otherUser.profilePhotoUrl || 'https://via.placeholder.com/150',
             },
             lastMessage: msg.content,
-            timestamp: new Date(msg.sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+            timestamp: new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             unread: false,
-            online: false
+            online: false,
           };
         });
         setConversations(formatted);
@@ -67,22 +75,24 @@ export default function MessagesInboxScreen({ navigation }) {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await fetch(`${API_URL}/users/connections/pending`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
-        setRequests(data.map(req => ({
-          id: req.connectionId.toString(),
-          user: {
-            id: req.requesterId,
-            username: req.requesterName,
-            profileImageUrl: `https://api.dicebear.com/7.x/notionists/svg?seed=${req.requesterName}&backgroundColor=b9c7e4`
-          },
-          lastMessage: 'Sent you a connection request',
-          timestamp: 'Just now',
-          unread: true,
-          online: false
-        })));
+        setRequests(
+          data.map((req) => ({
+            id: req.connectionId.toString(),
+            user: {
+              id: req.requesterId,
+              username: req.requesterName,
+              profileImageUrl: `https://api.dicebear.com/7.x/notionists/svg?seed=${req.requesterName}&backgroundColor=b9c7e4`,
+            },
+            lastMessage: 'Sent you a connection request',
+            timestamp: 'Just now',
+            unread: true,
+            online: false,
+          }))
+        );
       }
     } catch (error) {
       console.error(error);
@@ -96,9 +106,9 @@ export default function MessagesInboxScreen({ navigation }) {
       const token = await AsyncStorage.getItem('userToken');
       await fetch(`${API_URL}/users/connections/${id}/accept`, {
         method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setRequests(prev => prev.filter(r => r.id !== id));
+      setRequests((prev) => prev.filter((r) => r.id !== id));
     } catch (e) {
       console.error(e);
     }
@@ -109,16 +119,16 @@ export default function MessagesInboxScreen({ navigation }) {
       const token = await AsyncStorage.getItem('userToken');
       await fetch(`${API_URL}/users/connections/${id}/decline`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setRequests(prev => prev.filter(r => r.id !== id));
+      setRequests((prev) => prev.filter((r) => r.id !== id));
     } catch (e) {
       console.error(e);
     }
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.conversationCard, item.unread && styles.unreadCard]}
       onPress={() => navigation.navigate('ChatScreen1x1', { user: item.user })}
     >
@@ -150,12 +160,30 @@ export default function MessagesInboxScreen({ navigation }) {
         <Text style={styles.lastMessage} numberOfLines={1}>
           {item.lastMessage}
         </Text>
-        <View style={{flexDirection: 'row', gap: 8, marginTop: 8}}>
-          <TouchableOpacity onPress={() => handleDeclineRequest(item.id)} style={{paddingVertical: 6, paddingHorizontal: 12, borderRadius: 16, backgroundColor: '#eae8e7'}}>
-            <Text style={{fontFamily: 'PlusJakartaSans_700Bold', fontSize: 10}}>Decline</Text>
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+          <TouchableOpacity
+            onPress={() => handleDeclineRequest(item.id)}
+            style={{
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+              borderRadius: 16,
+              backgroundColor: '#eae8e7',
+            }}
+          >
+            <Text style={{ fontFamily: 'PlusJakartaSans_700Bold', fontSize: 10 }}>Decline</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleAcceptRequest(item.id)} style={{paddingVertical: 6, paddingHorizontal: 12, borderRadius: 16, backgroundColor: '#000000'}}>
-            <Text style={{fontFamily: 'PlusJakartaSans_700Bold', fontSize: 10, color: '#ffffff'}}>Accept</Text>
+          <TouchableOpacity
+            onPress={() => handleAcceptRequest(item.id)}
+            style={{
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+              borderRadius: 16,
+              backgroundColor: '#000000',
+            }}
+          >
+            <Text style={{ fontFamily: 'PlusJakartaSans_700Bold', fontSize: 10, color: '#ffffff' }}>
+              Accept
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -174,7 +202,7 @@ export default function MessagesInboxScreen({ navigation }) {
 
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#75777e" style={styles.searchIcon} />
-        <TextInput 
+        <TextInput
           style={styles.searchInput}
           placeholder="Search conversations..."
           placeholderTextColor="#75777e"
@@ -184,13 +212,13 @@ export default function MessagesInboxScreen({ navigation }) {
       </View>
 
       <View style={styles.tabsContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'MESSAGES' && styles.activeTab]}
           onPress={() => setActiveTab('MESSAGES')}
         >
           <Text style={[styles.tabText, activeTab === 'MESSAGES' && styles.activeTabText]}>MESSAGES</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'REQUESTS' && styles.activeTab]}
           onPress={() => setActiveTab('REQUESTS')}
         >
@@ -203,7 +231,9 @@ export default function MessagesInboxScreen({ navigation }) {
       ) : activeTab === 'MESSAGES' ? (
         conversations.length === 0 ? (
           <View style={{ padding: 24, alignItems: 'center' }}>
-            <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', color: '#75777e' }}>No conversations yet.</Text>
+            <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', color: '#75777e' }}>
+              No conversations yet.
+            </Text>
           </View>
         ) : (
           <FlatList
@@ -214,20 +244,20 @@ export default function MessagesInboxScreen({ navigation }) {
             showsVerticalScrollIndicator={false}
           />
         )
+      ) : requests.length === 0 ? (
+        <View style={{ padding: 24, alignItems: 'center' }}>
+          <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', color: '#75777e' }}>
+            No pending requests.
+          </Text>
+        </View>
       ) : (
-        requests.length === 0 ? (
-          <View style={{ padding: 24, alignItems: 'center' }}>
-            <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', color: '#75777e' }}>No pending requests.</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={requests}
-            keyExtractor={(item) => item.id}
-            renderItem={renderRequestItem}
-            contentContainerStyle={styles.listContainer}
-            showsVerticalScrollIndicator={false}
-          />
-        )
+        <FlatList
+          data={requests}
+          keyExtractor={(item) => item.id}
+          renderItem={renderRequestItem}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
+        />
       )}
     </SafeAreaView>
   );
@@ -380,5 +410,5 @@ const styles = StyleSheet.create({
   unreadMessageText: {
     fontFamily: 'PlusJakartaSans_600SemiBold',
     color: '#1b1c1c',
-  }
+  },
 });

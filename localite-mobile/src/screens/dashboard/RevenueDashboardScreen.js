@@ -1,13 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Animated, Platform, ActivityIndicator } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Animated,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { getMyEvents } from '../../services/api';
 
 export default function RevenueDashboardScreen() {
   const navigation = useNavigation();
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+
   const [animValue] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -17,8 +26,6 @@ export default function RevenueDashboardScreen() {
         setEvents(Array.isArray(myEvents) ? myEvents : []);
       } catch (err) {
         console.error('Failed to load revenue events:', err);
-      } finally {
-        setLoading(false);
       }
     }
     loadData();
@@ -30,13 +37,13 @@ export default function RevenueDashboardScreen() {
     }).start();
   }, []);
 
-  const totalEarnings = events.reduce((acc, ev) => acc + ((ev.price || 0) * (ev.attendeeCount || 0)), 0);
+  const totalEarnings = events.reduce((acc, ev) => acc + (ev.price || 0) * (ev.attendeeCount || 0), 0);
   const totalTickets = events.reduce((acc, ev) => acc + (ev.attendeeCount || 0), 0);
 
   const getBarHeight = (percentage) => {
     return animValue.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0%', `${percentage}%`]
+      outputRange: ['0%', `${percentage}%`],
     });
   };
 
@@ -45,7 +52,10 @@ export default function RevenueDashboardScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.openDrawer && navigation.openDrawer()} style={styles.iconBtn}>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer && navigation.openDrawer()}
+            style={styles.iconBtn}
+          >
             <MaterialIcons name="menu" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Localite</Text>
@@ -56,7 +66,6 @@ export default function RevenueDashboardScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Total Earnings */}
         <View style={styles.earningsSection}>
           <View>
@@ -72,19 +81,26 @@ export default function RevenueDashboardScreen() {
         {/* Premium Bar Graph */}
         <View style={styles.graphCard}>
           <View style={styles.graphContainer}>
-            {[ 
+            {[
               { month: 'JAN', height: totalEarnings > 0 ? 40 : 10, color: 'rgba(119, 90, 25, 0.4)' },
               { month: 'FEB', height: totalEarnings > 0 ? 55 : 10, color: 'rgba(119, 90, 25, 0.4)' },
               { month: 'MAR', height: totalEarnings > 0 ? 65 : 10, color: 'rgba(119, 90, 25, 0.6)' },
               { month: 'APR', height: totalEarnings > 0 ? 90 : 10, color: '#000' },
               { month: 'MAY', height: totalEarnings > 0 ? 70 : 10, color: 'rgba(119, 90, 25, 0.4)' },
-              { month: 'JUN', height: totalEarnings > 0 ? 80 : 10, color: 'rgba(119, 90, 25, 0.5)' }
+              { month: 'JUN', height: totalEarnings > 0 ? 80 : 10, color: 'rgba(119, 90, 25, 0.5)' },
             ].map((item, idx) => (
               <View key={idx} style={styles.graphBarCol}>
                 <View style={styles.graphBarBg}>
-                  <Animated.View style={[styles.graphBarFill, { height: getBarHeight(item.height), backgroundColor: item.color }]} />
+                  <Animated.View
+                    style={[
+                      styles.graphBarFill,
+                      { height: getBarHeight(item.height), backgroundColor: item.color },
+                    ]}
+                  />
                 </View>
-                <Text style={[styles.graphMonth, item.month === 'APR' && styles.graphMonthActive]}>{item.month}</Text>
+                <Text style={[styles.graphMonth, item.month === 'APR' && styles.graphMonthActive]}>
+                  {item.month}
+                </Text>
               </View>
             ))}
           </View>
@@ -137,7 +153,7 @@ export default function RevenueDashboardScreen() {
             <Text style={[styles.payoutCol, { flex: 1 }]}>AMOUNT</Text>
             <Text style={[styles.payoutCol, { flex: 1, textAlign: 'right' }]}>STATUS</Text>
           </View>
-          
+
           {[
             { date: 'Oct 14, 2023', amount: '$4,250.00', status: 'Processing', processing: true },
             { date: 'Oct 07, 2023', amount: '$3,840.00', status: 'Deposited', processing: false },
@@ -148,18 +164,29 @@ export default function RevenueDashboardScreen() {
               <Text style={[styles.payoutDataText, { flex: 1.5 }]}>{item.date}</Text>
               <Text style={[styles.payoutDataBold, { flex: 1 }]}>{item.amount}</Text>
               <View style={[styles.statusWrap, { flex: 1, alignItems: 'flex-end' }]}>
-                <View style={[styles.statusBadge, item.processing ? styles.statusBadgeProcessing : styles.statusBadgeSuccess]}>
-                  <Text style={[styles.statusText, item.processing ? styles.statusTextProcessing : styles.statusTextSuccess]}>{item.status}</Text>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    item.processing ? styles.statusBadgeProcessing : styles.statusBadgeSuccess,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.statusText,
+                      item.processing ? styles.statusTextProcessing : styles.statusTextSuccess,
+                    ]}
+                  >
+                    {item.status}
+                  </Text>
                 </View>
               </View>
             </View>
           ))}
-          
+
           <TouchableOpacity style={styles.viewAllBtn}>
             <Text style={styles.viewAllBtnText}>VIEW ALL HISTORY</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
 
       {/* Bottom Nav */}
@@ -487,5 +514,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#775a19',
     marginTop: 4,
-  }
+  },
 });

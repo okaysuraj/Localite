@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
-import { 
-  Warning, 
-  ShieldCheck, 
-  ArrowLeft, 
-  CheckCircle,
-  PaperPlaneTilt
-} from '@phosphor-icons/react';
+import { ArrowLeft, PaperPlaneTilt } from '@phosphor-icons/react';
 
 export default function ReportMemberPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const targetId = location.state?.targetId || 1;
-  const targetName = location.state?.targetName || 'Member';
   const [selectedCategory, setSelectedCategory] = useState('Inappropriate Behavior');
   const [details, setDetails] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,7 +16,7 @@ export default function ReportMemberPage() {
 
   const handleSubmit = async () => {
     if (!confirmed) {
-      alert("Please confirm that this report is submitted in good faith.");
+      alert('Please confirm that this report is submitted in good faith.');
       return;
     }
     setIsSubmitting(true);
@@ -35,20 +28,20 @@ export default function ReportMemberPage() {
         targetType: 'USER',
         targetId: targetId,
         reason: selectedCategory,
-        details: details
+        details: details,
       };
 
       const res = await fetch(`${API_URL}/reports`, {
         method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
-      
+
       if (res.ok) {
-        alert("Report submitted to Concierge Safety board.");
+        alert('Report submitted to Concierge Safety board.');
         navigate(-1);
       }
     } catch (error) {
@@ -62,15 +55,14 @@ export default function ReportMemberPage() {
     'Inappropriate Behavior',
     'Harassment or Intimidation',
     'Solicitation or Commercial Spam',
-    'Misleading Identity or Impersonation'
+    'Misleading Identity or Impersonation',
   ];
 
   return (
     <SettingsLayout>
       <div className="space-y-8 animate-fade-in pb-12 max-w-3xl">
-        
         {/* Back Link */}
-        <button 
+        <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
         >
@@ -83,17 +75,15 @@ export default function ReportMemberPage() {
           <span className="text-[11px] font-semibold text-rose-600 uppercase tracking-wider block">
             Safety Grievance
           </span>
-          <h1 className="text-3xl font-semibold tracking-tight text-[var(--fg)]">
-            Report Member Incident
-          </h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-[var(--fg)]">Report Member Incident</h1>
           <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
-            Localite maintains strict community standards. All reports are independently investigated by our safety board under complete member confidentiality.
+            Localite maintains strict community standards. All reports are independently investigated by our
+            safety board under complete member confidentiality.
           </p>
         </header>
 
         {/* Incident Form Card */}
         <section className="bg-[var(--bg)] rounded-card border border-[var(--border)] p-6 md:p-8 space-y-6">
-          
           {/* Violation Category */}
           <div className="space-y-2">
             <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)] block">
@@ -133,14 +123,15 @@ export default function ReportMemberPage() {
 
           {/* Confirmation Checkbox */}
           <label className="flex items-start gap-3 p-3.5 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] cursor-pointer">
-            <input 
+            <input
               type="checkbox"
               checked={confirmed}
               onChange={(e) => setConfirmed(e.target.checked)}
               className="mt-0.5 rounded text-[var(--accent)] focus:ring-0 cursor-pointer"
             />
             <span className="text-xs text-[var(--fg-muted)] leading-relaxed">
-              I affirm that this incident report is accurate, submitted in good faith, and complies with Localite's integrity code.
+              I affirm that this incident report is accurate, submitted in good faith, and complies with
+              Localite's integrity code.
             </span>
           </label>
 
@@ -162,7 +153,6 @@ export default function ReportMemberPage() {
             </button>
           </div>
         </section>
-
       </div>
     </SettingsLayout>
   );

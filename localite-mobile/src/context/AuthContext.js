@@ -1,155 +1,124 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { onIdTokenChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  onIdTokenChanged,
+  signOut,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../firebase';
-import apiClient from '../api/apiClient';
-import { API_URL } from '../config';
+import { request } from '../api/apiClient';
 
+const LOGIN_ERRORS = {
+  'auth/user-not-found': "Invalid email or password. If you don't have an account, please sign up.",
+  'auth/invalid-credential': "Invalid email or password. If you don't have an account, please sign up.",
+  'auth/wrong-password': 'Incorrect password. Please try again.',
+  'auth/invalid-email': 'Please enter a valid email address.',
+  'auth/too-many-requests': 'Too many failed login attempts. Please try again later.',
+};
+
+const SESSION_KEYS = ['token', 'userToken', 'user', 'username'];
 export const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }) => {
+async function readCachedProfile(uid) {
+  try {
+    const profile = JSON.parse(await AsyncStorage.getItem('user')) || {};
+    return profile.firebaseUid && profile.firebaseUid !== uid ? {} : profile;
+  } catch {
+    return {}; // A damaged cache must not prevent sign-in.
+  }
+}
+
+// Show the cached profile immediately, then refresh it without blocking navigation.
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-
+    let active = true;
+    let version = 0;
     const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
+      const sessionVersion = ++version;
+      const isCurrent = () => active && version === sessionVersion;
       try {
-        if (currentUser) {
-          if (!currentUser.emailVerified) {
-            // If they aren't verified, sign them out silently
-            await signOut(auth);
-            if (isMounted) setUser(null);
-            await AsyncStorage.multiRemove(['token', 'userToken', 'user', 'username']);
-          } else {
-            const token = await currentUser.getIdToken();
-            await AsyncStorage.setItem('token', token);
-            await AsyncStorage.setItem('userToken', token);
-            
-            // 1. Immediately hydrate cached user profile from AsyncStorage (fast, non-blocking)
-            let dbUser = {};
-            try {
-              const cached = await AsyncStorage.getItem('user');
-              if (cached) {
-                dbUser = JSON.parse(cached);
-              }
-            } catch (e) {
-              console.warn('Failed to parse cached user:', e);
-            }
-
-            if (isMounted) {
-              setUser({ 
-                uid: currentUser.uid, 
-                email: currentUser.email,
-                token: token,
-                ...dbUser
-              });
-            }
-
-            // 2. Fetch fresh user profile in background with an AbortController timeout so it never hangs
-            (async () => {
-              try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                const res = await fetch(`${API_URL}/users/me`, {
-                  headers: { Authorization: `Bearer ${token}` },
-                  signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                if (res.ok) {
-                  const freshUser = await res.json();
-                  await AsyncStorage.setItem('user', JSON.stringify(freshUser));
-                  if (freshUser.username) {
-                    await AsyncStorage.setItem('username', freshUser.username);
-                  }
-                  if (isMounted) {
-                    setUser(prev => ({ ...prev, ...freshUser }));
-                  }
-                }
-              } catch (e) {
-                // Background refresh skipped (backend offline or unreachable)
-              }
-            })();
-          }
-        } else {
-          if (isMounted) setUser(null);
-          await AsyncStorage.multiRemove(['token', 'userToken', 'user', 'username']);
+        if (!currentUser?.emailVerified) {
+          if (isCurrent()) setUser(null);
+          await AsyncStorage.multiRemove(SESSION_KEYS);
+          return;
         }
-      } catch (err) {
-        console.error('Error in onIdTokenChanged:', err);
+        const token = await currentUser.getIdToken();
+        if (!isCurrent()) return;
+        await AsyncStorage.multiSet([
+          ['token', token],
+          ['userToken', token],
+        ]);
+        const profile = await readCachedProfile(currentUser.uid);
+        const identity = { uid: currentUser.uid, email: currentUser.email, token };
+        if (!isCurrent()) return;
+        setUser({ ...profile, ...identity });
+
+        // The version check prevents a late response from restoring a signed-out account.
+        void request('/users/me', { timeout: 4000, fallback: null })
+          .then(async (freshProfile) => {
+            if (!freshProfile || !isCurrent()) return;
+            await AsyncStorage.setItem('user', JSON.stringify(freshProfile));
+            if (freshProfile.username) await AsyncStorage.setItem('username', freshProfile.username);
+            if (isCurrent()) setUser({ ...freshProfile, ...identity });
+          })
+          .catch(() => {
+            // Keep the cached profile if storage is temporarily unavailable.
+          });
+      } catch {
+        if (isCurrent()) setUser(null);
       } finally {
-        if (isMounted) setLoading(false);
+        if (isCurrent()) setLoading(false);
       }
     });
-
     return () => {
-      isMounted = false;
+      active = false;
       unsubscribe();
     };
   }, []);
 
-  const login = async (email, password) => {
+  async function login(email, password) {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      if (!userCredential.user.emailVerified) {
+      const { user: firebaseUser } = await signInWithEmailAndPassword(auth, email, password);
+      if (!firebaseUser.emailVerified) {
         await signOut(auth);
-        throw new Error("Please verify your email before logging in. Check your inbox.");
+        throw new Error('Please verify your email before logging in. Check your inbox.');
       }
       return { success: true };
     } catch (error) {
-      console.error("Login failed:", error);
-      let errorMessage = "An error occurred during login. Please try again.";
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        errorMessage = "Invalid email or password. If you don't have an account, please sign up.";
-      } else if (error.code === 'auth/wrong-password') {
-        errorMessage = "Incorrect password. Please try again.";
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = "Please enter a valid email address.";
-      } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = "Too many failed login attempts. Please try again later.";
-      }
-      throw new Error(errorMessage);
+      throw new Error(LOGIN_ERRORS[error.code] || error.message, { cause: error });
     }
-  };
+  }
 
-  const register = async (username, email, password) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
-      
-      // Sync user with backend
-      try {
-        await apiClient.post('/auth/sync-user', { username, email });
-      } catch (err) {
-        console.error("Backend sync failed", err);
-      }
-      
-      await sendEmailVerification(userCredential.user);
-      await signOut(auth);
-      
-      return { success: true, message: "Please check your email to verify your account before logging in." };
-    } catch (error) {
-      console.error("Registration failed:", error);
-      throw error;
-    }
-  };
+  async function register(username, email, password) {
+    const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password);
+    const token = await firebaseUser.getIdToken();
+    // Preserve verification when the backend is temporarily unavailable.
+    await request('/auth/sync-user', {
+      method: 'POST',
+      data: { username, email },
+      headers: { Authorization: `Bearer ${token}` },
+      fallback: null,
+    });
+    await sendEmailVerification(firebaseUser);
+    await signOut(auth);
+    return { success: true, message: 'Please check your email to verify your account before logging in.' };
+  }
 
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      await AsyncStorage.multiRemove(['token', 'userToken', 'user', 'username']);
-      setUser(null);
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+  async function logout() {
+    await signOut(auth);
+    await AsyncStorage.multiRemove(SESSION_KEYS);
+    setUser(null);
+  }
 
   return (
     <AuthContext.Provider value={{ user, currentUser: user, login, register, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}

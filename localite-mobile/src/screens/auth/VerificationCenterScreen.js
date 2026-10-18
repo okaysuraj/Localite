@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Image, Alert
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Alert,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../config';
@@ -18,11 +26,11 @@ export default function VerificationCenterScreen({ navigation }) {
       const token = await AsyncStorage.getItem('userToken');
       const res = await fetch(`${API_URL}/users/verify-identity`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         setSocialLinked(true);
-        Alert.alert("Verified", "Social profile linked successfully!");
+        Alert.alert('Verified', 'Social profile linked successfully!');
       }
     } catch (error) {
       console.error(error);
@@ -43,13 +51,17 @@ export default function VerificationCenterScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-        
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Hero Header */}
         <View style={styles.heroSection}>
           <Text style={styles.heroTitle}>Trust & Safety</Text>
           <Text style={styles.heroDesc}>
-            Verification ensures a secure and exclusive environment for all Localite members. Complete the steps below to unlock full hub access.
+            Verification ensures a secure and exclusive environment for all Localite members. Complete the
+            steps below to unlock full hub access.
           </Text>
         </View>
 
@@ -67,7 +79,6 @@ export default function VerificationCenterScreen({ navigation }) {
 
         {/* Verification List */}
         <View style={styles.verificationList}>
-          
           {/* Item 1 */}
           <TouchableOpacity style={styles.verifyItem} activeOpacity={0.7}>
             <View style={styles.verifyItemLeft}>
@@ -115,21 +126,22 @@ export default function VerificationCenterScreen({ navigation }) {
               <Text style={[styles.statusText, { color: '#44474d' }]}>Not Started</Text>
             </View>
           </TouchableOpacity>
-
         </View>
 
         {/* Featured Info Section */}
         <View style={styles.infoSection}>
           <View style={styles.infoHeroImageWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7eEMFYb3nVTDlwo1CnwvcKs02CqE8xyTsmL4RSAV7mOzShIUg2QDO7pkJVnxFltJ132jaXH7BPZ3hDRP37dXNPdlzDFuIvF66xu5k-xfPScfVoAzviKQEfmJ83SF-t1n3AAfCm8jjX1Zz1pduhKTXYyJStW5zCc79oVOFNoTtnlI0jOKD7jNir6QroFrOIs01EdPKMCNR6gzmEBhCANDZ7ZO2bGEgnLKx0Pz5iuBPMByA7cv0bSWERQ' }}
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7eEMFYb3nVTDlwo1CnwvcKs02CqE8xyTsmL4RSAV7mOzShIUg2QDO7pkJVnxFltJ132jaXH7BPZ3hDRP37dXNPdlzDFuIvF66xu5k-xfPScfVoAzviKQEfmJ83SF-t1n3AAfCm8jjX1Zz1pduhKTXYyJStW5zCc79oVOFNoTtnlI0jOKD7jNir6QroFrOIs01EdPKMCNR6gzmEBhCANDZ7ZO2bGEgnLKx0Pz5iuBPMByA7cv0bSWERQ',
+              }}
               style={styles.infoImage}
             />
             <View style={styles.infoImageOverlay}>
               <Text style={styles.infoImageText}>Why Verify?</Text>
             </View>
           </View>
-          
+
           <View style={styles.infoGrid}>
             <View style={styles.infoGridItem}>
               <MaterialIcons name="lock" size={24} color="#775a19" style={{ marginBottom: 8 }} />
@@ -147,11 +159,12 @@ export default function VerificationCenterScreen({ navigation }) {
         {/* CTA Button */}
         {!socialLinked && (
           <TouchableOpacity style={styles.ctaButton} onPress={handleVerify} disabled={isVerifying}>
-            <Text style={styles.ctaButtonText}>{isVerifying ? 'Connecting...' : 'Continue Verification'}</Text>
+            <Text style={styles.ctaButtonText}>
+              {isVerifying ? 'Connecting...' : 'Continue Verification'}
+            </Text>
             {!isVerifying && <MaterialIcons name="arrow-forward" size={16} color="#ffffff" />}
           </TouchableOpacity>
         )}
-
       </ScrollView>
     </View>
   );
@@ -377,5 +390,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans_700Bold',
     fontSize: 14,
     color: '#ffffff',
-  }
+  },
 });

@@ -26,7 +26,7 @@ public class GamificationController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!userOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (userOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
         
         User user = userOpt.get();
         String action = payload.get("action");

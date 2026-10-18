@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,9 +8,9 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
-  Platform
+  Platform,
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { getAdminAnalytics, getAdminReports, banUser } from '../../services/api';
 
@@ -31,10 +31,7 @@ export default function AdminDashboardScreen() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [stats, reportList] = await Promise.all([
-        getAdminAnalytics(),
-        getAdminReports()
-      ]);
+      const [stats, reportList] = await Promise.all([getAdminAnalytics(), getAdminReports()]);
       setAnalytics(stats || { totalUsers: 0, totalEvents: 0, pendingReports: 0 });
       setReports(Array.isArray(reportList) ? reportList : []);
     } catch (err) {
@@ -45,26 +42,22 @@ export default function AdminDashboardScreen() {
   };
 
   const handleBan = (userId, username) => {
-    Alert.alert(
-      'Suspend Account',
-      `Are you sure you want to suspend ${username || 'this user'}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Suspend',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await banUser(userId);
-              Alert.alert('Account Suspended', 'User account has been restricted.');
-              fetchData();
-            } catch (err) {
-              Alert.alert('Error', err.message || 'Failed to suspend account.');
-            }
+    Alert.alert('Suspend Account', `Are you sure you want to suspend ${username || 'this user'}?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Suspend',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await banUser(userId);
+            Alert.alert('Account Suspended', 'User account has been restricted.');
+            fetchData();
+          } catch (err) {
+            Alert.alert('Error', err.message || 'Failed to suspend account.');
           }
-        }
-      ]
-    );
+        },
+      },
+    ]);
   };
 
   return (
@@ -143,11 +136,15 @@ export default function AdminDashboardScreen() {
                 </View>
                 <Text style={styles.reportDate}>{report.createdAt || 'Recent'}</Text>
               </View>
-              <Text style={styles.reportTarget}>Target: {report.reportedUserName || `User #${report.reportedUserId}`}</Text>
-              <Text style={styles.reportReason}>Reason: {report.reason || 'Safety flag raised by member.'}</Text>
-              
+              <Text style={styles.reportTarget}>
+                Target: {report.reportedUserName || `User #${report.reportedUserId}`}
+              </Text>
+              <Text style={styles.reportReason}>
+                Reason: {report.reason || 'Safety flag raised by member.'}
+              </Text>
+
               <View style={styles.reportActions}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.banBtn}
                   onPress={() => handleBan(report.reportedUserId, report.reportedUserName)}
                 >

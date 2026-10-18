@@ -1,16 +1,10 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MainTabs from './MainTabs';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 
-import HomeScreen from '../screens/shared/HomeScreen';
 import DiscoverScreen from '../screens/shared/DiscoverScreen';
-import SearchExploreScreen from '../screens/shared/SearchExploreScreen';
 import MapScreen from '../screens/shared/MapScreen';
-import CreateEventScreen from '../screens/events/CreateEventScreen';
-import PeopleDiscoveryScreen from '../screens/network/PeopleDiscoveryScreen';
-import ProfileScreen from '../screens/profile/ProfileScreen';
 import SplashScreen from '../screens/auth/SplashScreen';
 import WelcomeCarouselScreen from '../screens/auth/WelcomeCarouselScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -20,7 +14,7 @@ import ChatScreen from '../screens/chat/ChatScreen';
 import NotificationsScreen from '../screens/shared/NotificationsScreen';
 import DirectMessageScreen from '../screens/chat/DirectMessageScreen';
 import ScannerScreen from '../screens/shared/ScannerScreen';
-import FeedScreen from '../screens/shared/FeedScreen';
+
 import PublicProfileScreen from '../screens/profile/PublicProfileScreen';
 import AnalyticsScreen from '../screens/dashboard/AnalyticsScreen';
 import LeaderboardScreen from '../screens/network/LeaderboardScreen';
@@ -98,58 +92,7 @@ import ExtendInvitationScreen from '../screens/network/ExtendInvitationScreen';
 import MyActivityStatsScreen from '../screens/dashboard/MyActivityStatsScreen';
 import AdminDashboardScreen from '../screens/dashboard/AdminDashboardScreen';
 
-const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-
-function MainTabNavigator() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === 'Hubs') iconName = focused ? 'compass' : 'compass-outline';
-          else if (route.name === 'Events') iconName = focused ? 'calendar' : 'calendar-outline';
-          else if (route.name === 'Organize') iconName = focused ? 'add-circle' : 'add-circle-outline';
-          else if (route.name === 'Social') iconName = focused ? 'people' : 'people-outline';
-          
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#1A6B4A', // Forest Emerald matching Web
-        tabBarInactiveTintColor: '#6b7280', // Neutral gray
-        tabBarStyle: {
-          backgroundColor: '#ffffff', // Clean white matching Web design
-          borderTopColor: '#e5e7eb',
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-          paddingBottom: 8,
-          paddingTop: 8,
-          height: 65,
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          shadowColor: '#1f2937',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.06,
-          shadowRadius: 12,
-          elevation: 8,
-        },
-        tabBarLabelStyle: {
-          fontFamily: 'PlusJakartaSans_700Bold',
-          fontSize: 10,
-          textTransform: 'uppercase',
-          letterSpacing: 0.5,
-        },
-        headerShown: false,
-      })}
-    >
-      <Tab.Screen name="Hubs" component={HomeScreen} />
-      <Tab.Screen name="Events" component={SearchExploreScreen} />
-      <Tab.Screen name="Organize" component={CreateEventScreen} />
-      <Tab.Screen name="Social" component={PeopleDiscoveryScreen} />
-    </Tab.Navigator>
-  );
-}
 
 export default function AppNavigator() {
   return (
@@ -160,7 +103,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} />
-        <Stack.Screen name="MainApp" component={MainTabNavigator} />
+        <Stack.Screen name="MainApp" component={MainTabs} />
         <Stack.Screen name="Discover" component={DiscoverScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
@@ -179,70 +122,74 @@ export default function AppNavigator() {
         <Stack.Screen name="SettingsHome" component={SettingsHomeScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="AccountSettings" component={AccountSettingsScreen} />
-        <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PrivacySettings" component={PrivacySettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SafetyCenter" component={SafetyCenterScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EmergencySOS" component={EmergencySOSScreen} options={{ headerShown: false, presentation: 'fullScreenModal' }} />
-        <Stack.Screen name="VerificationCenter" component={VerificationCenterScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ReportUser" component={ReportUserScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateMatch" component={CreateMatchScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="FindPlayers" component={FindPlayersScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="JoinMatch" component={JoinMatchScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MatchLobby" component={MatchLobbyScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LiveMatch" component={LiveMatchScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MatchHistory" component={MatchHistoryScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TeamFormation" component={TeamFormationScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CricketDetail" component={CricketDetailScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SportsCategories" component={SportsCategoriesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="AttendanceCheckIn" component={AttendanceCheckInScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TicketQRCode" component={TicketQRCodeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="AttendeeManagement" component={AttendeeManagementScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LiveEventDashboard" component={LiveEventDashboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LiveEventPoll" component={LiveEventPollScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LiveMapTracking" component={LiveMapTrackingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
+        <Stack.Screen name="PrivacySettings" component={PrivacySettingsScreen} />
+        <Stack.Screen name="SafetyCenter" component={SafetyCenterScreen} />
+        <Stack.Screen
+          name="EmergencySOS"
+          component={EmergencySOSScreen}
+          options={{ presentation: 'fullScreenModal' }}
+        />
+        <Stack.Screen name="VerificationCenter" component={VerificationCenterScreen} />
+        <Stack.Screen name="ReportUser" component={ReportUserScreen} />
+        <Stack.Screen name="CreateMatch" component={CreateMatchScreen} />
+        <Stack.Screen name="FindPlayers" component={FindPlayersScreen} />
+        <Stack.Screen name="JoinMatch" component={JoinMatchScreen} />
+        <Stack.Screen name="MatchLobby" component={MatchLobbyScreen} />
+        <Stack.Screen name="LiveMatch" component={LiveMatchScreen} />
+        <Stack.Screen name="MatchHistory" component={MatchHistoryScreen} />
+        <Stack.Screen name="TeamFormation" component={TeamFormationScreen} />
+        <Stack.Screen name="CricketDetail" component={CricketDetailScreen} />
+        <Stack.Screen name="SportsCategories" component={SportsCategoriesScreen} />
+        <Stack.Screen name="AttendanceCheckIn" component={AttendanceCheckInScreen} />
+        <Stack.Screen name="TicketQRCode" component={TicketQRCodeScreen} />
+        <Stack.Screen name="AttendeeManagement" component={AttendeeManagementScreen} />
+        <Stack.Screen name="LiveEventDashboard" component={LiveEventDashboardScreen} />
+        <Stack.Screen name="LiveEventPoll" component={LiveEventPollScreen} />
+        <Stack.Screen name="LiveMapTracking" component={LiveMapTrackingScreen} />
         <Stack.Screen name="MessageRequestsScreen" component={MessageRequestsScreen} />
-        <Stack.Screen name="VoiceNotesScreen" component={VoiceNotesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEventBasicInfo" component={CreateEventBasicInfoScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEventDateTime" component={CreateEventDateTimeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEventLocationPicker" component={CreateEventLocationPickerScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEventCapacityRules" component={CreateEventCapacityRulesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEventPaymentSetup" component={CreateEventPaymentSetupScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEventReviewPublish" component={CreateEventReviewPublishScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CreateEventAnalytics" component={CreateEventAnalyticsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="OrganizerDashboard" component={OrganizerDashboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="RevenueDashboard" component={RevenueDashboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EventInsights" component={EventInsightsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EventsList" component={EventsListScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MyEvents" component={MyEventsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="AvailabilityCalendar" component={AvailabilityCalendarScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EventTimelineUpdates" component={EventTimelineUpdatesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EventReminderDetail" component={EventReminderDetailScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="NotificationPreferences" component={NotificationPreferencesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LocationSettings" component={LocationSettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="DataStorageSettings" component={DataStorageSettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LogoutDeleteAccount" component={LogoutDeleteAccountScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PrestigeProgress" component={PrestigeProgressDashboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MomentumOfGrace" component={MomentumOfGraceStreaksScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TheHallOfHonor" component={TheHallOfHonorAchievementsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="IDVerificationUpload" component={IDVerificationUploadScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SelfieVerification" component={SelfieVerificationScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="TrustedContactsSetup" component={TrustedContactsSetupScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="VerifiedBadgeInfo" component={VerifiedBadgeInfoScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ReportEvent" component={ReportEventScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BlockUser" component={BlockUserScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SafetyGuidelines" component={SafetyGuidelinesScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ReputationReviews" component={ReputationReviewsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LocationServicesPrompt" component={LocationServicesPromptScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="PushPermissionSetup" component={PushPermissionSetupScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="RestrictedAccess" component={RestrictedAccessScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="OfflineError" component={OfflineErrorScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="EmptyGatherings" component={EmptyGatheringsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LoadingState" component={LoadingStateScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MediaViewer" component={MediaViewerScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SocialLinking" component={SocialLinkingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ExtendInvitation" component={ExtendInvitationScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MyActivityStats" component={MyActivityStatsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="VoiceNotesScreen" component={VoiceNotesScreen} />
+        <Stack.Screen name="CreateEventBasicInfo" component={CreateEventBasicInfoScreen} />
+        <Stack.Screen name="CreateEventDateTime" component={CreateEventDateTimeScreen} />
+        <Stack.Screen name="CreateEventLocationPicker" component={CreateEventLocationPickerScreen} />
+        <Stack.Screen name="CreateEventCapacityRules" component={CreateEventCapacityRulesScreen} />
+        <Stack.Screen name="CreateEventPaymentSetup" component={CreateEventPaymentSetupScreen} />
+        <Stack.Screen name="CreateEventReviewPublish" component={CreateEventReviewPublishScreen} />
+        <Stack.Screen name="CreateEventAnalytics" component={CreateEventAnalyticsScreen} />
+        <Stack.Screen name="OrganizerDashboard" component={OrganizerDashboardScreen} />
+        <Stack.Screen name="RevenueDashboard" component={RevenueDashboardScreen} />
+        <Stack.Screen name="EventInsights" component={EventInsightsScreen} />
+        <Stack.Screen name="EventsList" component={EventsListScreen} />
+        <Stack.Screen name="MyEvents" component={MyEventsScreen} />
+        <Stack.Screen name="AvailabilityCalendar" component={AvailabilityCalendarScreen} />
+        <Stack.Screen name="EventTimelineUpdates" component={EventTimelineUpdatesScreen} />
+        <Stack.Screen name="EventReminderDetail" component={EventReminderDetailScreen} />
+        <Stack.Screen name="NotificationPreferences" component={NotificationPreferencesScreen} />
+        <Stack.Screen name="LocationSettings" component={LocationSettingsScreen} />
+        <Stack.Screen name="DataStorageSettings" component={DataStorageSettingsScreen} />
+        <Stack.Screen name="LogoutDeleteAccount" component={LogoutDeleteAccountScreen} />
+        <Stack.Screen name="PrestigeProgress" component={PrestigeProgressDashboardScreen} />
+        <Stack.Screen name="MomentumOfGrace" component={MomentumOfGraceStreaksScreen} />
+        <Stack.Screen name="TheHallOfHonor" component={TheHallOfHonorAchievementsScreen} />
+        <Stack.Screen name="IDVerificationUpload" component={IDVerificationUploadScreen} />
+        <Stack.Screen name="SelfieVerification" component={SelfieVerificationScreen} />
+        <Stack.Screen name="TrustedContactsSetup" component={TrustedContactsSetupScreen} />
+        <Stack.Screen name="VerifiedBadgeInfo" component={VerifiedBadgeInfoScreen} />
+        <Stack.Screen name="ReportEvent" component={ReportEventScreen} />
+        <Stack.Screen name="BlockUser" component={BlockUserScreen} />
+        <Stack.Screen name="SafetyGuidelines" component={SafetyGuidelinesScreen} />
+        <Stack.Screen name="ReputationReviews" component={ReputationReviewsScreen} />
+        <Stack.Screen name="LocationServicesPrompt" component={LocationServicesPromptScreen} />
+        <Stack.Screen name="PushPermissionSetup" component={PushPermissionSetupScreen} />
+        <Stack.Screen name="RestrictedAccess" component={RestrictedAccessScreen} />
+        <Stack.Screen name="OfflineError" component={OfflineErrorScreen} />
+        <Stack.Screen name="EmptyGatherings" component={EmptyGatheringsScreen} />
+        <Stack.Screen name="LoadingState" component={LoadingStateScreen} />
+        <Stack.Screen name="MediaViewer" component={MediaViewerScreen} />
+        <Stack.Screen name="SocialLinking" component={SocialLinkingScreen} />
+        <Stack.Screen name="ExtendInvitation" component={ExtendInvitationScreen} />
+        <Stack.Screen name="MyActivityStats" component={MyActivityStatsScreen} />
+        <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,6 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function MyActivityStatsScreen() {
@@ -16,9 +24,11 @@ export default function MyActivityStatsScreen() {
         </View>
         <View style={styles.headerRight}>
           <View style={styles.profileBtn}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-Xe0uRqNil6OUUkIU88qUX7Mo9MAIlOSDNuNE5rF2QNruHLEwpNLM1CEodOXTOwrsFzRTwFbaEvt3daim3whsaNR6KTcEWypjkihanw41ZChn4xhm7fgyNvCmhk0y6QKRdnrml_zB-ktJP6GgNEcByvsnF0IhkpL9wEb54dfl10Q7OxykM6n-9U9kOl3zcuGFJz_-IBTNfrAg45-jupB7ORqYqQPe90qI7SJf4nEvRYouE0vmKYi5kA' }} 
-              style={styles.profileImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-Xe0uRqNil6OUUkIU88qUX7Mo9MAIlOSDNuNE5rF2QNruHLEwpNLM1CEodOXTOwrsFzRTwFbaEvt3daim3whsaNR6KTcEWypjkihanw41ZChn4xhm7fgyNvCmhk0y6QKRdnrml_zB-ktJP6GgNEcByvsnF0IhkpL9wEb54dfl10Q7OxykM6n-9U9kOl3zcuGFJz_-IBTNfrAg45-jupB7ORqYqQPe90qI7SJf4nEvRYouE0vmKYi5kA',
+              }}
+              style={styles.profileImg}
             />
           </View>
         </View>
@@ -100,10 +110,12 @@ export default function MyActivityStatsScreen() {
           <View style={styles.chartHeader}>
             <View>
               <Text style={styles.chartTitle}>Activity Overview</Text>
-              <Text style={styles.chartSubtitle}>Comparison of hosting vs attending over the last 6 months.</Text>
+              <Text style={styles.chartSubtitle}>
+                Comparison of hosting vs attending over the last 6 months.
+              </Text>
             </View>
           </View>
-          
+
           <View style={styles.chartArea}>
             {/* Simple Bar Chart Mockup */}
             <View style={styles.chartCol}>
@@ -173,9 +185,11 @@ export default function MyActivityStatsScreen() {
 
           <View style={styles.hubCard}>
             <View style={styles.hubImageWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA29wfZB7dGleVI3Z2uHhTS1QokVdxgwnkDSFwGbpWVYiKcx57oVbYBVAmPzwo4J5yp3zhOsWLA77putSyuvfMd6FBQvB626KzgsZM5hqnximJKrC4okZcDLiFBsabpLq3Ol1q1uDWl3YYLsPOkOhoxusneU8omOnfz7YRBsOGnvWZWB2EtPO6zK3vf9NWOP5mEJ2AOoBJXHoHcZYY6oTb_zCftruuvz2BGUAz-7RcEHcJdcUpl0fRByQ' }} 
-                style={styles.hubImage} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA29wfZB7dGleVI3Z2uHhTS1QokVdxgwnkDSFwGbpWVYiKcx57oVbYBVAmPzwo4J5yp3zhOsWLA77putSyuvfMd6FBQvB626KzgsZM5hqnximJKrC4okZcDLiFBsabpLq3Ol1q1uDWl3YYLsPOkOhoxusneU8omOnfz7YRBsOGnvWZWB2EtPO6zK3vf9NWOP5mEJ2AOoBJXHoHcZYY6oTb_zCftruuvz2BGUAz-7RcEHcJdcUpl0fRByQ',
+                }}
+                style={styles.hubImage}
               />
               <View style={styles.hubBadge}>
                 <Text style={styles.hubBadgeText}>TOP 1% PARTICIPANT</Text>
@@ -192,9 +206,11 @@ export default function MyActivityStatsScreen() {
 
           <View style={styles.hubCard}>
             <View style={styles.hubImageWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBniztRbFJxdHbU0xmNuGK2fqJj1CYatFddEscU_dPMqckZiqLtmHECHXE9NVqdN2DB7MctysU-oEMDGJ1EE7KwbDIEHBY1D2_uwq3nNIJCiruqKg2WzxPAnI5z8Lc-slsoz_5RrUBxc6ytV_bDopZeGntsUjamZpvnutZnONQf93oaOVeA6_6wJATAziGGT176wg-FxjQ8VTR6bS-9y-KPp31G3xcFhR6MStfq3BW5j0w94S-2b4xauw' }} 
-                style={styles.hubImage} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBniztRbFJxdHbU0xmNuGK2fqJj1CYatFddEscU_dPMqckZiqLtmHECHXE9NVqdN2DB7MctysU-oEMDGJ1EE7KwbDIEHBY1D2_uwq3nNIJCiruqKg2WzxPAnI5z8Lc-slsoz_5RrUBxc6ytV_bDopZeGntsUjamZpvnutZnONQf93oaOVeA6_6wJATAziGGT176wg-FxjQ8VTR6bS-9y-KPp31G3xcFhR6MStfq3BW5j0w94S-2b4xauw',
+                }}
+                style={styles.hubImage}
               />
             </View>
             <View style={styles.hubInfo}>
@@ -206,7 +222,6 @@ export default function MyActivityStatsScreen() {
             </View>
           </View>
         </View>
-
       </ScrollView>
 
       {/* FAB */}
@@ -614,5 +629,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 10,
     color: '#775a19',
-  }
+  },
 });

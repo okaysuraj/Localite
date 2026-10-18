@@ -1,12 +1,7 @@
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { blockUser } from '../../services/api';
-import { 
-  Prohibit, 
-  ShieldCheck, 
-  ArrowLeft, 
-  CircleNotch,
-  EyeSlash,
-  ChatCircleSlash
-} from '@phosphor-icons/react';
+import { Prohibit, ShieldCheck, CircleNotch, EyeSlash, ChatCircleSlash } from '@phosphor-icons/react';
 
 export default function BlockUserPage() {
   const navigate = useNavigate();
@@ -33,7 +28,6 @@ export default function BlockUserPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-subtle)] text-[var(--fg)] flex items-center justify-center p-6 font-sans">
       <div className="max-w-md w-full bg-[var(--bg)] rounded-card border border-[var(--border)] p-8 shadow-sm space-y-6 animate-fade-in text-center">
-        
         {/* Icon Header */}
         <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center mx-auto">
           <Prohibit size={32} weight="bold" />
@@ -41,11 +35,10 @@ export default function BlockUserPage() {
 
         {/* Title */}
         <div className="space-y-1.5">
-          <h1 className="text-2xl font-semibold text-[var(--fg)] tracking-tight">
-            Restrict {targetName}?
-          </h1>
+          <h1 className="text-2xl font-semibold text-[var(--fg)] tracking-tight">Restrict {targetName}?</h1>
           <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
-            Restricting this member immediately severs communication channels and isolates mutual presence across the Localite platform.
+            Restricting this member immediately severs communication channels and isolates mutual presence
+            across the Localite platform.
           </p>
         </div>
 
@@ -82,7 +75,6 @@ export default function BlockUserPage() {
             <span>{loading ? 'Restricting...' : 'Confirm Block'}</span>
           </button>
         </div>
-
       </div>
     </div>
   );

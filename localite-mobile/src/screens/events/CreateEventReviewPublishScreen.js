@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, Modal } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Platform,
+  Modal,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 
@@ -26,9 +35,7 @@ export default function CreateEventReviewPublishScreen() {
           <MaterialIcons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Localite</Text>
-        <View style={styles.avatarWrap}>
-          {/* Avatar placeholder */}
-        </View>
+        <View style={styles.avatarWrap}>{/* Avatar placeholder */}</View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -43,7 +50,8 @@ export default function CreateEventReviewPublishScreen() {
         </View>
 
         <Text style={styles.introText}>
-          Your event is almost ready to go live. Take a final look at the details before sharing it with the community.
+          Your event is almost ready to go live. Take a final look at the details before sharing it with the
+          community.
         </Text>
 
         {/* Summary Card */}
@@ -58,7 +66,8 @@ export default function CreateEventReviewPublishScreen() {
           <View style={styles.cardContent}>
             <Text style={styles.eventTitle}>Midnight Garden Soirée</Text>
             <Text style={styles.eventDesc}>
-              An exclusive evening of artisanal cocktails, live jazz, and botanical exploration under the stars at the historic Montgomery Estates.
+              An exclusive evening of artisanal cocktails, live jazz, and botanical exploration under the
+              stars at the historic Montgomery Estates.
             </Text>
 
             <View style={styles.gridInfo}>
@@ -127,10 +136,10 @@ export default function CreateEventReviewPublishScreen() {
             {termsAccepted && <MaterialIcons name="check" size={16} color="#fff" />}
           </View>
           <Text style={styles.termsText}>
-            I confirm that all provided event details are accurate and adhere to the Localite community guidelines for premium local gatherings.
+            I confirm that all provided event details are accurate and adhere to the Localite community
+            guidelines for premium local gatherings.
           </Text>
         </TouchableOpacity>
-
       </ScrollView>
 
       {/* Footer Actions */}
@@ -138,8 +147,8 @@ export default function CreateEventReviewPublishScreen() {
         <TouchableOpacity style={styles.draftBtn}>
           <Text style={styles.draftText}>Save Draft</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.publishBtn, !termsAccepted && styles.publishBtnDisabled]} 
+        <TouchableOpacity
+          style={[styles.publishBtn, !termsAccepted && styles.publishBtnDisabled]}
           onPress={handlePublish}
           disabled={!termsAccepted}
         >
@@ -156,9 +165,10 @@ export default function CreateEventReviewPublishScreen() {
             </View>
             <Text style={styles.modalTitle}>Event Published</Text>
             <Text style={styles.modalDesc}>
-              Your event is now live and visible to the Localite community. Invitations are being sent to relevant members.
+              Your event is now live and visible to the Localite community. Invitations are being sent to
+              relevant members.
             </Text>
-            
+
             <TouchableOpacity style={styles.modalPrimaryBtn}>
               <Text style={styles.modalPrimaryText}>VIEW PUBLIC PAGE</Text>
             </TouchableOpacity>
@@ -168,7 +178,6 @@ export default function CreateEventReviewPublishScreen() {
           </View>
         </View>
       </Modal>
-
     </SafeAreaView>
   );
 }
@@ -490,5 +499,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#44474d',
     letterSpacing: 1,
-  }
+  },
 });

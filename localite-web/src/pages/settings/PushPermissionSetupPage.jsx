@@ -1,13 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Bell, 
-  ShieldCheck, 
-  Sparkle, 
-  CircleNotch,
-  CheckCircle,
-  ArrowRight
-} from '@phosphor-icons/react';
+import { Bell, ShieldCheck, Sparkle, CircleNotch, CheckCircle } from '@phosphor-icons/react';
 
 export default function PushPermissionSetupPage() {
   const navigate = useNavigate();
@@ -33,7 +26,6 @@ export default function PushPermissionSetupPage() {
   return (
     <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen flex items-center justify-center p-6 font-sans">
       <div className="max-w-md w-full bg-[var(--bg)] rounded-card border border-[var(--border)] p-8 shadow-sm text-center space-y-6 animate-fade-in">
-        
         {/* Icon Cluster */}
         <div className="w-16 h-16 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mx-auto relative">
           <Bell size={28} weight="fill" />
@@ -44,17 +36,16 @@ export default function PushPermissionSetupPage() {
 
         {/* Text */}
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-[var(--fg)]">
-            Stay in the Circle
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--fg)]">Stay in the Circle</h1>
           <p className="text-xs text-[var(--fg-muted)] leading-relaxed max-w-xs mx-auto">
-            Receive real-time invitations to curated sports matches, gathering RSVP status changes, and critical safety check-ins.
+            Receive real-time invitations to curated sports matches, gathering RSVP status changes, and
+            critical safety check-ins.
           </p>
         </div>
 
         {/* Action Buttons */}
         <div className="space-y-3 pt-2">
-          <button 
+          <button
             onClick={handleEnable}
             disabled={loading || status === 'Preferences Saved'}
             className="w-full py-3.5 px-4 bg-[var(--accent)] hover:bg-[var(--accent)]/90 disabled:opacity-75 text-white rounded-card text-xs font-semibold uppercase tracking-wider transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2"
@@ -63,8 +54,8 @@ export default function PushPermissionSetupPage() {
             {status === 'Preferences Saved' && <CheckCircle size={16} weight="fill" />}
             <span>{status}</span>
           </button>
-          
-          <button 
+
+          <button
             onClick={handleSkip}
             className="w-full py-3 px-4 border border-[var(--border)] hover:bg-[var(--bg-subtle)] text-[var(--fg-muted)] hover:text-[var(--fg)] rounded-card text-xs font-semibold uppercase tracking-wider transition-colors"
           >
@@ -84,7 +75,6 @@ export default function PushPermissionSetupPage() {
             <span>Curated Only</span>
           </div>
         </div>
-
       </div>
     </div>
   );

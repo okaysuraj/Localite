@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getUsers, sendConnectionRequest } from '../../services/api';
-import { 
-  Users, 
-  UserPlus, 
-  MapPin, 
-  Briefcase, 
-  SlidersHorizontal,
+import {
+  Users,
+  UserPlus,
+  MapPin,
+  Briefcase,
   SquaresFour,
   ListBullets,
   ShieldCheck,
-  CheckCircle
+  CheckCircle,
 } from '@phosphor-icons/react';
 
 export default function PeopleDiscoveryPage() {
@@ -18,7 +17,6 @@ export default function PeopleDiscoveryPage() {
   const [viewMode, setViewMode] = useState('grid');
   const [filterInterest, setFilterInterest] = useState('all');
   const [connectedIds, setConnectedIds] = useState(new Set());
-  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -26,7 +24,7 @@ export default function PeopleDiscoveryPage() {
         const data = await getUsers();
         setUsers(data || []);
       } catch (error) {
-        console.error("Failed to fetch users", error);
+        console.error('Failed to fetch users', error);
       } finally {
         setLoading(false);
       }
@@ -37,11 +35,11 @@ export default function PeopleDiscoveryPage() {
   const handleConnect = async (id) => {
     try {
       await sendConnectionRequest(id);
-      setConnectedIds(prev => new Set(prev).add(id));
+      setConnectedIds((prev) => new Set(prev).add(id));
     } catch (err) {
       console.error('Error sending connection request:', err);
       // Even if already sent or pending, mark as requested
-      setConnectedIds(prev => new Set(prev).add(id));
+      setConnectedIds((prev) => new Set(prev).add(id));
     }
   };
 
@@ -65,7 +63,7 @@ export default function PeopleDiscoveryPage() {
             <span className="text-xs text-[var(--fg-muted)]">{users.length} active in district</span>
           </div>
         </div>
-        
+
         {/* Filter Toolbar */}
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2">
@@ -83,16 +81,16 @@ export default function PeopleDiscoveryPage() {
               </button>
             ))}
           </div>
-          
+
           <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-card border border-[var(--border)]">
-            <button 
+            <button
               onClick={() => setViewMode('grid')}
               className={`p-1.5 rounded text-xs transition-colors ${viewMode === 'grid' ? 'bg-[var(--bg)] text-[var(--fg)] shadow-sm' : 'text-[var(--fg-muted)]'}`}
               title="Grid view"
             >
               <SquaresFour size={16} />
             </button>
-            <button 
+            <button
               onClick={() => setViewMode('list')}
               className={`p-1.5 rounded text-xs transition-colors ${viewMode === 'list' ? 'bg-[var(--bg)] text-[var(--fg)] shadow-sm' : 'text-[var(--fg-muted)]'}`}
               title="List view"
@@ -112,15 +110,21 @@ export default function PeopleDiscoveryPage() {
         <div className="py-20 text-center bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] p-8">
           <Users size={32} className="mx-auto text-[var(--fg-muted)] mb-3" />
           <p className="text-sm font-semibold text-[var(--fg)]">No Members Found</p>
-          <p className="text-xs text-[var(--fg-muted)] mt-1">Try widening your filters to see more members.</p>
+          <p className="text-xs text-[var(--fg-muted)] mt-1">
+            Try widening your filters to see more members.
+          </p>
         </div>
       ) : (
-        <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-3"}>
+        <div
+          className={
+            viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-3'
+          }
+        >
           {users.map((user, index) => {
             const isSent = connectedIds.has(user.id || index);
             return (
-              <article 
-                key={user.id || index} 
+              <article
+                key={user.id || index}
                 className={`bg-[var(--bg)] rounded-card border border-[var(--border)] hover:border-[var(--fg-muted)] transition-all overflow-hidden flex flex-col justify-between ${
                   viewMode === 'list' ? 'p-5 md:flex-row md:items-center' : 'p-6'
                 }`}
@@ -136,10 +140,15 @@ export default function PeopleDiscoveryPage() {
                         {user.name || user.username || 'Localite Member'}
                       </h3>
                       {user.isVerified && (
-                        <ShieldCheck size={16} weight="fill" className="text-emerald-600" title="Verified Member" />
+                        <ShieldCheck
+                          size={16}
+                          weight="fill"
+                          className="text-emerald-600"
+                          title="Verified Member"
+                        />
                       )}
                     </div>
-                    
+
                     <p className="text-xs text-[var(--accent)] font-medium flex items-center gap-1 mt-0.5">
                       <MapPin size={13} />
                       <span>{user.neighborhood || user.location || 'Local Metro'}</span>
@@ -158,23 +167,30 @@ export default function PeopleDiscoveryPage() {
 
                     {user.interests && (
                       <div className="flex flex-wrap gap-1 mt-3">
-                        {(Array.isArray(user.interests) ? user.interests : user.interests.split(',')).map((tag, i) => (
-                          <span key={i} className="text-[10px] px-2 py-0.5 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-full text-[var(--fg-muted)]">
-                            {tag.trim()}
-                          </span>
-                        ))}
+                        {(Array.isArray(user.interests) ? user.interests : user.interests.split(',')).map(
+                          (tag, i) => (
+                            <span
+                              key={i}
+                              className="text-[10px] px-2 py-0.5 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-full text-[var(--fg-muted)]"
+                            >
+                              {tag.trim()}
+                            </span>
+                          )
+                        )}
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className={`mt-5 pt-4 border-t border-[var(--border)] ${viewMode === 'list' ? 'md:mt-0 md:pt-0 md:border-t-0 md:ml-4' : ''}`}>
-                  <button 
+                <div
+                  className={`mt-5 pt-4 border-t border-[var(--border)] ${viewMode === 'list' ? 'md:mt-0 md:pt-0 md:border-t-0 md:ml-4' : ''}`}
+                >
+                  <button
                     onClick={() => handleConnect(user.id || index)}
                     disabled={isSent}
                     className={`w-full md:w-auto px-4 py-2 rounded-card text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
-                      isSent 
-                        ? 'bg-[var(--bg-subtle)] text-emerald-600 border border-emerald-600/30' 
+                      isSent
+                        ? 'bg-[var(--bg-subtle)] text-emerald-600 border border-emerald-600/30'
                         : 'bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white shadow-sm active:scale-95'
                     }`}
                   >

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, User } from '@phosphor-icons/react';
+import { useState, useEffect } from 'react';
+import { Trophy, User } from '@phosphor-icons/react';
 import { getLeaderboard } from '../../services/api';
 
 const LeaderboardPage = () => {
@@ -7,30 +7,23 @@ const LeaderboardPage = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const sports = [
-    'Badminton',
-    'Football',
-    'Tennis',
-    'Cricket',
-    'Basketball',
-    'Running',
-  ];
+  const sports = ['Badminton', 'Football', 'Tennis', 'Cricket', 'Basketball', 'Running'];
 
   useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      setLoading(true);
+      try {
+        const data = await getLeaderboard(sport);
+        setLeaderboard(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchLeaderboardData();
   }, [sport]);
-
-  const fetchLeaderboardData = async () => {
-    setLoading(true);
-    try {
-      const data = await getLeaderboard(sport);
-      setLeaderboard(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="bg-bg min-h-screen py-10 px-6">

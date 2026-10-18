@@ -1,18 +1,18 @@
-import React, { useState, useRef } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TextInput, 
-  TouchableOpacity, 
-  SafeAreaView, 
+import { useState, useRef } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
   Image,
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
+  ScrollView,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function EmailVerificationScreen({ navigation }) {
   const [otp, setOtp] = useState(['', '', '', '']);
@@ -42,13 +42,13 @@ export default function EmailVerificationScreen({ navigation }) {
       Alert.alert('Error', 'Please enter the 4-digit code');
       return;
     }
-    
+
     setLoading(true);
     // Simulate verification
     setTimeout(() => {
       setLoading(false);
       Alert.alert('Success', 'Email verified successfully!', [
-        { text: 'OK', onPress: () => navigation.replace('MainApp') }
+        { text: 'OK', onPress: () => navigation.replace('MainApp') },
       ]);
     }, 1500);
   };
@@ -59,13 +59,13 @@ export default function EmailVerificationScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {/* App Bar */}
         <View style={styles.appBar}>
-          <TouchableOpacity onPress={() => navigation.canGoBack() ? navigation.goBack() : null} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={() => (navigation.canGoBack() ? navigation.goBack() : null)}
+            style={styles.backButton}
+          >
             <Ionicons name="arrow-back" size={24} color="#1b1c1c" />
             <Text style={styles.backText}>BACK</Text>
           </TouchableOpacity>
@@ -74,13 +74,14 @@ export default function EmailVerificationScreen({ navigation }) {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-          
           <View style={styles.card}>
             {/* Hero Image */}
             <View style={styles.imageContainer}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ6Pn0s-rlGp_WV3NLokmsK2Epkwo446eUPdgmOmugLpAbXL9A4wA_TC7L4BrRZIx43bFqXJVzt6gUwmnSKWrCzWPmC1CMIPN36oBFg_5jfccnTs2PqDzq4C01vxTkP7D81cuebtDwMJ6pkfSWExey8dfNfeoNQ3hcnMwf-y8DmLsM4bHMlvsjTb_rGUcivlLg6n0xwb9jDjqIq1y5EgyebACh7tj97KfdMtqPNbleUpfLZCL-OJJBRA' }} 
-                style={styles.image} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ6Pn0s-rlGp_WV3NLokmsK2Epkwo446eUPdgmOmugLpAbXL9A4wA_TC7L4BrRZIx43bFqXJVzt6gUwmnSKWrCzWPmC1CMIPN36oBFg_5jfccnTs2PqDzq4C01vxTkP7D81cuebtDwMJ6pkfSWExey8dfNfeoNQ3hcnMwf-y8DmLsM4bHMlvsjTb_rGUcivlLg6n0xwb9jDjqIq1y5EgyebACh7tj97KfdMtqPNbleUpfLZCL-OJJBRA',
+                }}
+                style={styles.image}
               />
               <View style={styles.imageOverlay} />
               <View style={styles.imageBadge}>
@@ -99,7 +100,7 @@ export default function EmailVerificationScreen({ navigation }) {
               {otp.map((digit, index) => (
                 <TextInput
                   key={index}
-                  ref={ref => inputs.current[index] = ref}
+                  ref={(ref) => (inputs.current[index] = ref)}
                   style={[styles.otpInput, digit ? styles.otpInputFilled : null]}
                   value={digit}
                   onChangeText={(val) => handleOtpChange(val, index)}
@@ -112,32 +113,24 @@ export default function EmailVerificationScreen({ navigation }) {
             </View>
 
             {/* Verify Button */}
-            <TouchableOpacity 
-              style={styles.verifyBtn} 
-              onPress={handleVerify}
-              disabled={loading}
-            >
+            <TouchableOpacity style={styles.verifyBtn} onPress={handleVerify} disabled={loading}>
               <Text style={styles.verifyBtnText}>{loading ? 'VERIFYING...' : 'VERIFY'}</Text>
             </TouchableOpacity>
 
             {/* Resend Link */}
             <View style={styles.resendPrompt}>
-              <Text style={styles.resendText}>
-                Didn't receive the code?{' '}
-              </Text>
+              <Text style={styles.resendText}>Didn't receive the code? </Text>
               <TouchableOpacity onPress={handleResend}>
                 <Text style={styles.resendLink}>Resend Code</Text>
               </TouchableOpacity>
             </View>
-
           </View>
         </ScrollView>
-        
+
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>LOCALITE COLLECTIVE © 2024 • PRIVACY FIRST</Text>
         </View>
-
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

@@ -1,33 +1,65 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Users, 
-  ArrowLeft, 
-  ShieldCheck, 
-  Sparkle, 
-  Plus, 
-  CheckCircle,
-  ArrowsLeftRight 
-} from '@phosphor-icons/react';
+import { ArrowLeft } from '@phosphor-icons/react';
 
 export default function TeamFormationPage() {
   const navigate = useNavigate();
 
-  const [reserves, setReserves] = useState([
-    { id: 1, name: 'Alexander Thorne', power: 88, role: 'Midfield' },
-    { id: 2, name: 'Elena Vance', power: 92, role: 'Forward' },
-    { id: 3, name: 'Julian Saint', power: 79, role: 'Defender' },
-    { id: 4, name: 'Marcus Aurelius', power: 85, role: 'Keeper' },
+  const [reserves] = useState([
+    {
+      id: 1,
+      name: 'Alexander Thorne',
+      power: 88,
+      role: 'Midfield',
+    },
+    {
+      id: 2,
+      name: 'Elena Vance',
+      power: 92,
+      role: 'Forward',
+    },
+    {
+      id: 3,
+      name: 'Julian Saint',
+      power: 79,
+      role: 'Defender',
+    },
+    {
+      id: 4,
+      name: 'Marcus Aurelius',
+      power: 85,
+      role: 'Keeper',
+    },
   ]);
 
-  const [teamA, setTeamA] = useState([
-    { id: 10, name: 'Dominic King', power: 94, role: 'Captain' },
-    { id: 11, name: 'Sophia Laurent', power: 88, role: 'Forward' },
+  const [teamA] = useState([
+    {
+      id: 10,
+      name: 'Dominic King',
+      power: 94,
+      role: 'Captain',
+    },
+    {
+      id: 11,
+      name: 'Sophia Laurent',
+      power: 88,
+      role: 'Forward',
+    },
   ]);
 
-  const [teamB, setTeamB] = useState([
-    { id: 20, name: 'Cassius Reed', power: 91, role: 'Captain' },
-    { id: 21, name: 'Chloe Dubois', power: 86, role: 'Midfield' },
+  const [teamB] = useState([
+    {
+      id: 20,
+      name: 'Cassius Reed',
+      power: 91,
+      role: 'Captain',
+    },
+    {
+      id: 21,
+      name: 'Chloe Dubois',
+      power: 86,
+      role: 'Midfield',
+    },
   ]);
 
   return (
@@ -36,8 +68,8 @@ export default function TeamFormationPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[var(--border)]">
           <div>
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-2"
             >
@@ -69,21 +101,27 @@ export default function TeamFormationPage() {
           {/* Reserve Roster (Col 4) */}
           <div className="lg:col-span-4 bg-white rounded-card border border-[var(--border)] p-5 space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Available Reserves</span>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Available Reserves
+              </span>
               <span className="text-xs font-mono text-[var(--accent)]">{reserves.length} Players</span>
             </div>
 
             <div className="space-y-2">
               {reserves.map((p) => (
-                <div 
+                <div
                   key={p.id}
                   className="p-3 rounded-card border border-[var(--border)] bg-[var(--bg-subtle)] flex items-center justify-between text-xs"
                 >
                   <div>
                     <p className="font-medium text-[var(--fg)]">{p.name}</p>
-                    <p className="text-[10px] font-mono text-[var(--fg-muted)]">{p.role} • Skill: {p.power}</p>
+                    <p className="text-[10px] font-mono text-[var(--fg-muted)]">
+                      {p.role} • Skill: {p.power}
+                    </p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase text-[var(--accent)] font-medium">Ready</span>
+                  <span className="font-mono text-[10px] uppercase text-[var(--accent)] font-medium">
+                    Ready
+                  </span>
                 </div>
               ))}
             </div>
@@ -103,7 +141,10 @@ export default function TeamFormationPage() {
 
               <div className="space-y-2">
                 {teamA.map((p) => (
-                  <div key={p.id} className="p-3 rounded-card border border-[var(--border)] bg-white flex items-center justify-between text-xs">
+                  <div
+                    key={p.id}
+                    className="p-3 rounded-card border border-[var(--border)] bg-white flex items-center justify-between text-xs"
+                  >
                     <div>
                       <p className="font-medium text-[var(--fg)]">{p.name}</p>
                       <p className="text-[10px] font-mono text-[var(--fg-muted)]">{p.role}</p>
@@ -130,7 +171,10 @@ export default function TeamFormationPage() {
 
               <div className="space-y-2">
                 {teamB.map((p) => (
-                  <div key={p.id} className="p-3 rounded-card border border-[var(--border)] bg-white flex items-center justify-between text-xs">
+                  <div
+                    key={p.id}
+                    className="p-3 rounded-card border border-[var(--border)] bg-white flex items-center justify-between text-xs"
+                  >
                     <div>
                       <p className="font-medium text-[var(--fg)]">{p.name}</p>
                       <p className="text-[10px] font-mono text-[var(--fg-muted)]">{p.role}</p>

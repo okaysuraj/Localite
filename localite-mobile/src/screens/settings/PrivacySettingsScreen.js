@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Switch, Platform 
+import { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Switch,
+  Platform,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,12 +18,11 @@ import { API_URL } from '../../config';
 
 export default function PrivacySettingsScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  
+
   const [publicProfile, setPublicProfile] = useState(false);
   const [liveActivity, setLiveActivity] = useState(true);
   const [preciseLocation, setPreciseLocation] = useState(false);
   const [showBlocked, setShowBlocked] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchSettings();
@@ -25,7 +32,7 @@ export default function PrivacySettingsScreen({ navigation }) {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const res = await fetch(`${API_URL}/users/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const user = await res.json();
@@ -35,8 +42,6 @@ export default function PrivacySettingsScreen({ navigation }) {
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -46,18 +51,18 @@ export default function PrivacySettingsScreen({ navigation }) {
       const payload = {
         publicProfile,
         liveActivity,
-        preciseLocation
+        preciseLocation,
       };
-      
+
       const res = await fetch(`${API_URL}/users/me`, {
         method: 'PUT',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
-      
+
       if (res.ok) {
         navigation.goBack();
       }
@@ -78,12 +83,16 @@ export default function PrivacySettingsScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-        
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.headerSection}>
           <Text style={styles.headerSubtitle}>Your Digital Sovereignty</Text>
           <Text style={styles.headerDesc}>
-            Manage your visibility and digital footprint within the Localite ecosystem. We prioritize your anonymity.
+            Manage your visibility and digital footprint within the Localite ecosystem. We prioritize your
+            anonymity.
           </Text>
         </View>
 
@@ -99,8 +108,8 @@ export default function PrivacySettingsScreen({ navigation }) {
               <Text style={styles.settingTitle}>Public Profile Visibility</Text>
               <Text style={styles.settingDesc}>Allow non-members to view your basic profile.</Text>
             </View>
-            <Switch 
-              value={publicProfile} 
+            <Switch
+              value={publicProfile}
               onValueChange={setPublicProfile}
               trackColor={{ false: '#e4e2e2', true: '#000000' }}
               thumbColor={'#ffffff'}
@@ -112,8 +121,8 @@ export default function PrivacySettingsScreen({ navigation }) {
               <Text style={styles.settingTitle}>Live Activity Status</Text>
               <Text style={styles.settingDesc}>Show others when you are active at a gathering.</Text>
             </View>
-            <Switch 
-              value={liveActivity} 
+            <Switch
+              value={liveActivity}
               onValueChange={setLiveActivity}
               trackColor={{ false: '#e4e2e2', true: '#000000' }}
               thumbColor={'#ffffff'}
@@ -125,8 +134,8 @@ export default function PrivacySettingsScreen({ navigation }) {
               <Text style={styles.settingTitle}>Precise Location Sharing</Text>
               <Text style={styles.settingDesc}>Share exact GPS coordinates with attendees.</Text>
             </View>
-            <Switch 
-              value={preciseLocation} 
+            <Switch
+              value={preciseLocation}
               onValueChange={setPreciseLocation}
               trackColor={{ false: '#e4e2e2', true: '#000000' }}
               thumbColor={'#ffffff'}
@@ -154,7 +163,7 @@ export default function PrivacySettingsScreen({ navigation }) {
               </View>
               <MaterialIcons name="remove-circle" size={20} color="#ba1a1a" />
             </View>
-            
+
             <View style={styles.trustedItem}>
               <View style={styles.trustedUser}>
                 <View style={[styles.trustedAvatar, { backgroundColor: '#0d1c32' }]}>
@@ -173,7 +182,7 @@ export default function PrivacySettingsScreen({ navigation }) {
 
         {/* Restricted Access */}
         <View style={styles.sectionBlock}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.expandableHeader}
             onPress={() => setShowBlocked(!showBlocked)}
             activeOpacity={0.7}
@@ -182,7 +191,7 @@ export default function PrivacySettingsScreen({ navigation }) {
               <MaterialIcons name="block" size={20} color="#75777e" />
               <Text style={styles.sectionTitle}>Restricted Access</Text>
             </View>
-            <MaterialIcons name={showBlocked ? "expand-less" : "expand-more"} size={24} color="#000000" />
+            <MaterialIcons name={showBlocked ? 'expand-less' : 'expand-more'} size={24} color="#000000" />
           </TouchableOpacity>
 
           {showBlocked && (
@@ -219,7 +228,8 @@ export default function PrivacySettingsScreen({ navigation }) {
             <MaterialIcons name="enhanced-encryption" size={32} color="#ffffff" style={{ opacity: 0.8 }} />
           </View>
           <Text style={styles.zkDesc}>
-            Your private data is encrypted locally on your device before it ever reaches our servers. You hold the only keys.
+            Your private data is encrypted locally on your device before it ever reaches our servers. You hold
+            the only keys.
           </Text>
         </View>
 
@@ -232,7 +242,6 @@ export default function PrivacySettingsScreen({ navigation }) {
             <Text style={styles.saveBtnText}>APPLY MANIFEST</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     </View>
   );
@@ -492,5 +501,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ffffff',
     letterSpacing: 1,
-  }
+  },
 });

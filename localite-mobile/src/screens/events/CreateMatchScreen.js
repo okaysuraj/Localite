@@ -1,6 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity, Switch, Alert, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+  Alert,
+  StyleSheet,
+  Platform,
+  KeyboardAvoidingView,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { API_URL } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -38,12 +49,12 @@ export default function CreateMatchScreen({ navigation }) {
       const response = await fetch(`${API_URL}/events`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
-      
+
       if (response.ok) {
         Alert.alert('Success', 'Match created successfully!');
         navigation.goBack();
@@ -68,7 +79,7 @@ export default function CreateMatchScreen({ navigation }) {
         <Text style={styles.headerTitle}>Create Match</Text>
         <View style={styles.placeholder} />
       </View>
-      
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerContext}>
           <Text style={styles.preTitle}>CREATE NEW MATCH</Text>
@@ -86,16 +97,18 @@ export default function CreateMatchScreen({ navigation }) {
               placeholder="e.g. Tennis (Singles)"
             />
           </View>
-          
-          <Text style={[styles.label, {marginTop: 20}]}>COMPETITIVE LEVEL</Text>
+
+          <Text style={[styles.label, { marginTop: 20 }]}>COMPETITIVE LEVEL</Text>
           <View style={styles.levelRow}>
             {['Novice', 'Amateur', 'Elite'].map((lvl) => (
-              <TouchableOpacity 
+              <TouchableOpacity
                 key={lvl}
                 style={[styles.levelBtn, level === lvl && styles.levelBtnActive]}
                 onPress={() => setLevel(lvl)}
               >
-                <Text style={[styles.levelText, level === lvl && styles.levelTextActive]}>{lvl.toUpperCase()}</Text>
+                <Text style={[styles.levelText, level === lvl && styles.levelTextActive]}>
+                  {lvl.toUpperCase()}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -106,21 +119,11 @@ export default function CreateMatchScreen({ navigation }) {
           <View style={styles.dateTimeRow}>
             <View style={styles.dateTimeInput}>
               <MaterialIcons name="calendar-today" size={20} color="#775a19" />
-              <TextInput
-                style={styles.input}
-                placeholder="YYYY-MM-DD"
-                value={date}
-                onChangeText={setDate}
-              />
+              <TextInput style={styles.input} placeholder="YYYY-MM-DD" value={date} onChangeText={setDate} />
             </View>
             <View style={styles.dateTimeInput}>
               <MaterialIcons name="schedule" size={20} color="#775a19" />
-              <TextInput
-                style={styles.input}
-                placeholder="HH:MM"
-                value={time}
-                onChangeText={setTime}
-              />
+              <TextInput style={styles.input} placeholder="HH:MM" value={time} onChangeText={setTime} />
             </View>
           </View>
         </View>
@@ -130,11 +133,17 @@ export default function CreateMatchScreen({ navigation }) {
           <View style={styles.dynamicsRow}>
             <Text style={styles.subLabel}>MAX PLAYERS</Text>
             <View style={styles.counterRow}>
-              <TouchableOpacity onPress={() => setMaxPlayers(Math.max(2, maxPlayers - 1))} style={styles.counterBtn}>
+              <TouchableOpacity
+                onPress={() => setMaxPlayers(Math.max(2, maxPlayers - 1))}
+                style={styles.counterBtn}
+              >
                 <Text style={styles.counterBtnText}>-</Text>
               </TouchableOpacity>
               <Text style={styles.counterValue}>{maxPlayers}</Text>
-              <TouchableOpacity onPress={() => setMaxPlayers(Math.min(16, maxPlayers + 1))} style={styles.counterBtnActive}>
+              <TouchableOpacity
+                onPress={() => setMaxPlayers(Math.min(16, maxPlayers + 1))}
+                style={styles.counterBtnActive}
+              >
                 <Text style={styles.counterBtnTextActive}>+</Text>
               </TouchableOpacity>
             </View>
@@ -145,8 +154,8 @@ export default function CreateMatchScreen({ navigation }) {
             <Switch
               value={isPrivate}
               onValueChange={setIsPrivate}
-              trackColor={{ false: "#e4e2e2", true: "#fed488" }}
-              thumbColor={isPrivate ? "#775a19" : "#f4f3f4"}
+              trackColor={{ false: '#e4e2e2', true: '#fed488' }}
+              thumbColor={isPrivate ? '#775a19' : '#f4f3f4'}
             />
           </View>
         </View>
@@ -155,7 +164,7 @@ export default function CreateMatchScreen({ navigation }) {
           <Text style={styles.label}>HOUSE RULES</Text>
           <View style={styles.inputContainer}>
             <TextInput
-              style={[styles.input, {height: 80, textAlignVertical: 'top'}]}
+              style={[styles.input, { height: 80, textAlignVertical: 'top' }]}
               value={houseRules}
               onChangeText={setHouseRules}
               placeholder="Example: Respect court times, no aggressive behavior..."
@@ -164,11 +173,7 @@ export default function CreateMatchScreen({ navigation }) {
           </View>
         </View>
 
-        <TouchableOpacity 
-          style={styles.submitBtn} 
-          onPress={handleSubmit}
-          disabled={isSubmitting}
-        >
+        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} disabled={isSubmitting}>
           <Text style={styles.submitBtnText}>{isSubmitting ? 'PUBLISHING...' : 'PUBLISH MATCH'}</Text>
         </TouchableOpacity>
       </ScrollView>

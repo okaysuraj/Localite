@@ -1,16 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
-import { 
-  Trophy, 
-  MapPin, 
-  CalendarBlank, 
-  Users, 
-  ArrowLeft, 
-  Plus, 
-  ArrowRight 
-} from '@phosphor-icons/react';
+import { Trophy, MapPin, CalendarBlank, ArrowLeft, Plus } from '@phosphor-icons/react';
 
 export default function JoinMatchPage() {
   const navigate = useNavigate();
@@ -18,31 +10,31 @@ export default function JoinMatchPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        setLoading(true);
+        const token = await auth.currentUser?.getIdToken();
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch(`${API_URL}/matches/events`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setMatches(data || []);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchMatches();
   }, []);
-
-  const fetchMatches = async () => {
-    try {
-      setLoading(true);
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      const res = await fetch(`${API_URL}/matches/events`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setMatches(data || []);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
@@ -50,8 +42,8 @@ export default function JoinMatchPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[var(--border)]">
           <div className="space-y-1">
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-2"
             >
@@ -63,12 +55,13 @@ export default function JoinMatchPage() {
             </span>
             <h1 className="text-3xl sm:text-4xl font-serif text-[var(--fg)]">Find Competitive Matches</h1>
             <p className="text-xs sm:text-sm text-[var(--fg-muted)] max-w-xl mt-1">
-              Join open court sessions, soccer fixtures, and tennis leagues organized by verified local players.
+              Join open court sessions, soccer fixtures, and tennis leagues organized by verified local
+              players.
             </p>
           </div>
 
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => navigate('/matches/create')}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors self-start sm:self-auto"
           >
@@ -100,16 +93,19 @@ export default function JoinMatchPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {matches.map((match) => (
-              <div 
+              <div
                 key={match.id}
                 onClick={() => navigate(`/events/${match.id}`)}
                 className="bg-white rounded-card border border-[var(--border)] overflow-hidden hover:border-[var(--fg-muted)] transition-all cursor-pointer group flex flex-col"
               >
                 <div className="h-44 w-full relative bg-[var(--bg-subtle)] overflow-hidden">
-                  <img 
-                    src={match.imageUrl || 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=600'} 
+                  <img
+                    src={
+                      match.imageUrl ||
+                      'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=600'
+                    }
                     alt={match.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-3 right-3 bg-[var(--accent)] text-white px-2.5 py-0.5 rounded-card text-[10px] font-mono">
                     {match.category || 'Athletics'}

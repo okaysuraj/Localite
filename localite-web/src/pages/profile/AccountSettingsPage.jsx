@@ -1,28 +1,18 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
 import { AuthContext } from '../../context/AuthContext';
-import {
-  User,
-  Lock,
-  ShieldCheck,
-  Trash,
-  Check,
-  PencilSimple,
-} from '@phosphor-icons/react';
+import { User, Lock, ShieldCheck, Trash } from '@phosphor-icons/react';
 
 export default function AccountSettingsPage() {
   const { user } = useContext(AuthContext);
   const [twoFactor, setTwoFactor] = useState(false);
-  const [editingField, setEditingField] = useState(null);
 
   return (
     <SettingsLayout>
       <div className="space-y-8">
         {/* Header */}
         <div className="space-y-1 pb-6 border-b border-border">
-          <h1 className="text-2xl font-display font-semibold text-fg tracking-tight">
-            Account Settings
-          </h1>
+          <h1 className="text-2xl font-display font-semibold text-fg tracking-tight">Account Settings</h1>
           <p className="text-xs text-fg-muted">
             Manage your personal login credentials, security preferences, and data privacy.
           </p>
@@ -74,18 +64,14 @@ export default function AccountSettingsPage() {
         <div className="bg-white border border-border rounded-card p-6 sm:p-8 space-y-6">
           <div className="flex items-center gap-2">
             <Lock size={18} className="text-accent" />
-            <h2 className="text-base font-display font-semibold text-fg tracking-tight">
-              Security & Login
-            </h2>
+            <h2 className="text-base font-display font-semibold text-fg tracking-tight">Security & Login</h2>
           </div>
 
           <div className="space-y-4 text-xs font-mono">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-bg-subtle border border-border rounded-card">
               <div className="space-y-0.5">
                 <p className="text-fg font-medium">Password</p>
-                <p className="text-fg-muted text-[11px]">
-                  Last changed 3 months ago
-                </p>
+                <p className="text-fg-muted text-[11px]">Last changed 3 months ago</p>
               </div>
               <button
                 onClick={() => alert('Password reset link sent to your registered email.')}
@@ -98,16 +84,12 @@ export default function AccountSettingsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-bg-subtle border border-border rounded-card">
               <div className="space-y-0.5">
                 <p className="text-fg font-medium">Two-Factor Authentication (2FA)</p>
-                <p className="text-fg-muted text-[11px]">
-                  Require verification code for login attempts
-                </p>
+                <p className="text-fg-muted text-[11px]">Require verification code for login attempts</p>
               </div>
               <button
                 onClick={() => setTwoFactor(!twoFactor)}
                 className={`px-3.5 py-1.5 rounded-btn text-xs tracking-wide transition-colors self-start sm:self-auto ${
-                  twoFactor
-                    ? 'bg-accent text-white'
-                    : 'border border-border bg-white text-fg hover:bg-bg'
+                  twoFactor ? 'bg-accent text-white' : 'border border-border bg-white text-fg hover:bg-bg'
                 }`}
               >
                 {twoFactor ? 'Enabled' : 'Enable 2FA'}
@@ -122,7 +104,8 @@ export default function AccountSettingsPage() {
             <Trash size={16} /> Danger Zone
           </h2>
           <p className="text-xs text-fg-muted leading-relaxed">
-            Deleting your account will remove your profile, hosted gatherings history, team records, and XP stats. This action is permanent.
+            Deleting your account will remove your profile, hosted gatherings history, team records, and XP
+            stats. This action is permanent.
           </p>
           <button
             onClick={() => {

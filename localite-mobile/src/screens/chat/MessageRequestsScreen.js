@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Image } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 const REQUESTS = [
@@ -9,17 +9,19 @@ const REQUESTS = [
     name: 'Julian Thorne',
     verified: true,
     title: 'Art Enthusiast • London',
-    message: '"I saw your recent contribution to the Gallery Circle. I\'d love to discuss the upcoming exhibition..."',
-    image: 'https://via.placeholder.com/150'
+    message:
+      '"I saw your recent contribution to the Gallery Circle. I\'d love to discuss the upcoming exhibition..."',
+    image: 'https://via.placeholder.com/150',
   },
   {
     id: 2,
     name: 'Elena Rossi',
     verified: false,
     title: 'Product Designer • Milan',
-    message: '"Would you be open to a coffee chat about the Localite design systems? I\'m visiting next week."',
-    image: 'https://via.placeholder.com/150'
-  }
+    message:
+      '"Would you be open to a coffee chat about the Localite design systems? I\'m visiting next week."',
+    image: 'https://via.placeholder.com/150',
+  },
 ];
 
 export default function MessageRequestsScreen() {
@@ -28,7 +30,7 @@ export default function MessageRequestsScreen() {
 
   const handleAction = (id, action) => {
     // In a real app, this would call the backend to accept/decline
-    setRequests(prev => prev.filter(req => req.id !== id));
+    setRequests((prev) => prev.filter((req) => req.id !== id));
   };
 
   return (
@@ -53,7 +55,10 @@ export default function MessageRequestsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.titleSection}>
           <Text style={styles.pageTitle}>Message Requests</Text>
-          <Text style={styles.pageDesc}>Messages from people who are not in your circle. To protect your privacy, they won't know you've seen their message until you connect.</Text>
+          <Text style={styles.pageDesc}>
+            Messages from people who are not in your circle. To protect your privacy, they won't know you've
+            seen their message until you connect.
+          </Text>
         </View>
 
         <View style={styles.banner}>
@@ -62,12 +67,15 @@ export default function MessageRequestsScreen() {
           </View>
           <View style={styles.bannerTextWrap}>
             <Text style={styles.bannerTitle}>TRUST-BASED FILTERING</Text>
-            <Text style={styles.bannerDesc}>Our AI concierge has curated these requests based on shared interests and community standing. Only high-integrity interactions reach this inbox.</Text>
+            <Text style={styles.bannerDesc}>
+              Our AI concierge has curated these requests based on shared interests and community standing.
+              Only high-integrity interactions reach this inbox.
+            </Text>
           </View>
         </View>
 
         <View style={styles.requestsList}>
-          {requests.map(req => (
+          {requests.map((req) => (
             <View key={req.id} style={styles.requestCard}>
               <View style={styles.reqTop}>
                 <Image source={{ uri: req.image }} style={styles.reqAvatar} />
@@ -77,7 +85,9 @@ export default function MessageRequestsScreen() {
                     {req.verified && <MaterialIcons name="verified" size={16} color="#775a19" />}
                   </View>
                   <Text style={styles.reqTitle}>{req.title}</Text>
-                  <Text style={styles.reqMessage} numberOfLines={3}>{req.message}</Text>
+                  <Text style={styles.reqMessage} numberOfLines={3}>
+                    {req.message}
+                  </Text>
                 </View>
               </View>
               <View style={styles.reqActions}>
@@ -90,14 +100,14 @@ export default function MessageRequestsScreen() {
               </View>
             </View>
           ))}
-          {requests.length === 0 && (
-            <Text style={styles.emptyText}>No pending requests.</Text>
-          )}
+          {requests.length === 0 && <Text style={styles.emptyText}>No pending requests.</Text>}
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerTitle}>ENCRYPTED & SECURE</Text>
-          <Text style={styles.footerText}>Localite respects your space. All conversations remain private and untracked.</Text>
+          <Text style={styles.footerText}>
+            Localite respects your space. All conversations remain private and untracked.
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -310,5 +320,5 @@ const styles = StyleSheet.create({
     color: '#44474d',
     fontStyle: 'italic',
     textAlign: 'center',
-  }
+  },
 });

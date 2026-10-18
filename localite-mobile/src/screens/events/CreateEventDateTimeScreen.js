@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function CreateEventDateTimeScreen() {
@@ -23,9 +23,7 @@ export default function CreateEventDateTimeScreen() {
           <MaterialIcons name="close" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Localite</Text>
-        <View style={styles.avatarWrap}>
-          {/* Avatar placeholder */}
-        </View>
+        <View style={styles.avatarWrap}>{/* Avatar placeholder */}</View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -61,18 +59,20 @@ export default function CreateEventDateTimeScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          
+
           <View style={styles.calendarGrid}>
-            {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
-              <Text key={day} style={styles.dayLabel}>{day}</Text>
+            {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => (
+              <Text key={day} style={styles.dayLabel}>
+                {day}
+              </Text>
             ))}
             {/* Empty slots for start of month */}
             <Text style={styles.disabledDay}>29</Text>
             <Text style={styles.disabledDay}>30</Text>
-            
-            {days.map(day => (
-              <TouchableOpacity 
-                key={day} 
+
+            {days.map((day) => (
+              <TouchableOpacity
+                key={day}
                 style={[styles.dayCell, selectedDay === day && styles.dayCellActive]}
                 onPress={() => setSelectedDay(day)}
               >
@@ -108,14 +108,20 @@ export default function CreateEventDateTimeScreen() {
           <View style={styles.divider} />
 
           <Text style={styles.cardLabel}>DURATION</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.durationRow}>
-            {['1 HR', '2 HRS', '3 HRS', 'ALL DAY'].map(dur => (
-              <TouchableOpacity 
-                key={dur} 
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.durationRow}
+          >
+            {['1 HR', '2 HRS', '3 HRS', 'ALL DAY'].map((dur) => (
+              <TouchableOpacity
+                key={dur}
                 style={[styles.durationBtn, duration === dur && styles.durationBtnActive]}
                 onPress={() => setDuration(dur)}
               >
-                <Text style={[styles.durationText, duration === dur && styles.durationTextActive]}>{dur}</Text>
+                <Text style={[styles.durationText, duration === dur && styles.durationTextActive]}>
+                  {dur}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -132,14 +138,13 @@ export default function CreateEventDateTimeScreen() {
               <Text style={styles.repeatSub}>Weekly on Sundays</Text>
             </View>
           </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.toggleWrap, isRepeat && styles.toggleWrapActive]}
             onPress={() => setIsRepeat(!isRepeat)}
           >
             <View style={[styles.toggleCircle, isRepeat && styles.toggleCircleActive]} />
           </TouchableOpacity>
         </View>
-
       </ScrollView>
 
       {/* Footer Actions */}
@@ -148,7 +153,10 @@ export default function CreateEventDateTimeScreen() {
           <MaterialIcons name="arrow-back" size={18} color="#775a19" />
           <Text style={styles.backText}>PREVIOUS</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.continueBtn} onPress={() => navigation.navigate('CreateEventLocationPicker')}>
+        <TouchableOpacity
+          style={styles.continueBtn}
+          onPress={() => navigation.navigate('CreateEventLocationPicker')}
+        >
           <Text style={styles.continueText}>CONTINUE TO LOCATION</Text>
           <MaterialIcons name="arrow-forward" size={18} color="#fff" />
         </TouchableOpacity>
@@ -500,5 +508,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 12,
     color: '#fff',
-  }
+  },
 });

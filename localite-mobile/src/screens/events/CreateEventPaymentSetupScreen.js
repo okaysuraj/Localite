@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TextInput, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function CreateEventPaymentSetupScreen() {
@@ -11,7 +20,7 @@ export default function CreateEventPaymentSetupScreen() {
   const renderRadio = (value, icon, title, desc) => {
     const isSelected = ticketType === value;
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.radioCard, isSelected && styles.radioCardSelected]}
         onPress={() => setTicketType(value)}
       >
@@ -35,7 +44,7 @@ export default function CreateEventPaymentSetupScreen() {
             <Text style={styles.inputLabel}>TICKET PRICE</Text>
             <View style={styles.priceInputRow}>
               <Text style={styles.currencySymbol}>$</Text>
-              <TextInput 
+              <TextInput
                 style={styles.priceInput}
                 placeholder="0.00"
                 placeholderTextColor="#75777e"
@@ -56,7 +65,8 @@ export default function CreateEventPaymentSetupScreen() {
   const parsedPrice = parseFloat(price) || 0;
   const platformFee = parsedPrice > 0 ? (parsedPrice * 0.035).toFixed(2) : '0.00';
   const processingFee = parsedPrice > 0 ? (parsedPrice * 0.03).toFixed(2) : '0.00'; // mockup
-  const total = parsedPrice > 0 ? (parsedPrice - parseFloat(platformFee) - parseFloat(processingFee)).toFixed(2) : '0.00';
+  const total =
+    parsedPrice > 0 ? (parsedPrice - parseFloat(platformFee) - parseFloat(processingFee)).toFixed(2) : '0.00';
 
   return (
     <SafeAreaView style={styles.container}>
@@ -74,19 +84,37 @@ export default function CreateEventPaymentSetupScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.titleSection}>
           <Text style={styles.pageTitle}>Payment Setup</Text>
-          <Text style={styles.pageDesc}>Define the financial structure of your event. Choose between free admission, standard ticketing, or an exclusive experience for members.</Text>
+          <Text style={styles.pageDesc}>
+            Define the financial structure of your event. Choose between free admission, standard ticketing,
+            or an exclusive experience for members.
+          </Text>
         </View>
 
         <View style={styles.optionsWrap}>
-          {renderRadio('free', 'confirmation-number', 'Free Event', 'Ideal for community gatherings and open networking.')}
-          {renderRadio('paid', 'payments', 'Paid Ticket', 'Set a custom price and manage secure transactions.')}
-          {renderRadio('exclusive', 'stars', 'Member Exclusive', 'Restricted to your approved community members.')}
+          {renderRadio(
+            'free',
+            'confirmation-number',
+            'Free Event',
+            'Ideal for community gatherings and open networking.'
+          )}
+          {renderRadio(
+            'paid',
+            'payments',
+            'Paid Ticket',
+            'Set a custom price and manage secure transactions.'
+          )}
+          {renderRadio(
+            'exclusive',
+            'stars',
+            'Member Exclusive',
+            'Restricted to your approved community members.'
+          )}
         </View>
 
         {/* Financial Summary */}
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>FINANCIAL SUMMARY</Text>
-          
+
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Ticket Price</Text>
             <Text style={styles.summaryValueBold}>${parsedPrice.toFixed(2)}</Text>
@@ -99,9 +127,9 @@ export default function CreateEventPaymentSetupScreen() {
             <Text style={styles.summaryLabel}>Processing Fee</Text>
             <Text style={styles.summaryValue}>${processingFee}</Text>
           </View>
-          
+
           <View style={styles.divider} />
-          
+
           <View style={styles.summaryRow}>
             <Text style={styles.summaryTotalLabel}>Estimated Earnings</Text>
             <Text style={styles.summaryTotalValue}>${total}</Text>
@@ -109,7 +137,10 @@ export default function CreateEventPaymentSetupScreen() {
 
           <View style={styles.infoBox}>
             <MaterialIcons name="info" size={16} color="#775a19" />
-            <Text style={styles.infoText}>Fees are calculated per transaction. Payouts are typically processed 48 hours after the event completion to your connected bank account.</Text>
+            <Text style={styles.infoText}>
+              Fees are calculated per transaction. Payouts are typically processed 48 hours after the event
+              completion to your connected bank account.
+            </Text>
           </View>
 
           <TouchableOpacity style={styles.payoutAccount}>
@@ -123,7 +154,6 @@ export default function CreateEventPaymentSetupScreen() {
             <MaterialIcons name="edit" size={20} color="#75777e" />
           </TouchableOpacity>
         </View>
-
       </ScrollView>
 
       {/* Footer Actions */}
@@ -131,7 +161,10 @@ export default function CreateEventPaymentSetupScreen() {
         <TouchableOpacity style={styles.draftBtn}>
           <Text style={styles.draftText}>SAVE AS DRAFT</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.continueBtn} onPress={() => navigation.navigate('CreateEventReviewPublish')}>
+        <TouchableOpacity
+          style={styles.continueBtn}
+          onPress={() => navigation.navigate('CreateEventReviewPublish')}
+        >
           <Text style={styles.continueText}>CONTINUE TO REVIEW</Text>
         </TouchableOpacity>
       </View>
@@ -449,5 +482,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#fff',
     letterSpacing: 1,
-  }
+  },
 });

@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getPendingRequests, acceptRequest, declineRequest } from '../../services/api';
-import { 
-  Tray, 
-  EnvelopeOpen, 
-  UserCheck, 
-  X, 
-  ShieldCheck, 
-  CheckCircle,
-  Clock
-} from '@phosphor-icons/react';
+import { Tray, EnvelopeOpen, UserCheck, X, ShieldCheck } from '@phosphor-icons/react';
 
 export default function MessageRequestsPage() {
   const navigate = useNavigate();
@@ -17,25 +9,25 @@ export default function MessageRequestsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const data = await getPendingRequests();
+        const formatted = (data || []).map((req) => ({
+          id: req.connectionId,
+          name: req.requesterName,
+          message: 'Would like to connect with you on Localite.',
+          date: 'Recently',
+        }));
+        setRequests(formatted);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchRequests();
   }, []);
-
-  const fetchRequests = async () => {
-    try {
-      const data = await getPendingRequests();
-      const formatted = (data || []).map(req => ({
-        id: req.connectionId,
-        name: req.requesterName,
-        message: 'Would like to connect with you on Localite.',
-        date: 'Recently'
-      }));
-      setRequests(formatted);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleAction = async (id, action) => {
     try {
@@ -44,7 +36,7 @@ export default function MessageRequestsPage() {
       } else if (action === 'decline') {
         await declineRequest(id);
       }
-      setRequests(prev => prev.filter(r => r.id !== id));
+      setRequests((prev) => prev.filter((r) => r.id !== id));
     } catch (error) {
       console.error(`Error performing ${action} on request:`, error);
     }
@@ -52,7 +44,6 @@ export default function MessageRequestsPage() {
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] text-[var(--fg)] max-w-7xl mx-auto px-6 py-24 font-sans animate-fade-in">
-      
       {/* Header */}
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
         <div>
@@ -67,7 +58,7 @@ export default function MessageRequestsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => navigate('/messages')}
             className="px-4 py-2 border border-[var(--border)] text-[var(--fg)] text-xs font-semibold uppercase tracking-wider rounded-card hover:bg-[var(--bg-subtle)] transition-colors flex items-center gap-2"
           >
@@ -79,13 +70,12 @@ export default function MessageRequestsPage() {
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        
         {/* Left Status Column */}
         <aside className="md:col-span-4 space-y-6">
           <div className="bg-[var(--bg)] rounded-card border border-[var(--border)] p-6 space-y-4">
             <h3 className="text-sm font-semibold text-[var(--fg)]">Navigation</h3>
             <div className="space-y-1 text-xs">
-              <button 
+              <button
                 onClick={() => navigate('/messages')}
                 className="w-full flex items-center justify-between p-2.5 rounded-card text-[var(--fg-muted)] hover:bg-[var(--bg-subtle)] transition-colors text-left"
               >
@@ -110,7 +100,8 @@ export default function MessageRequestsPage() {
               <span>Trust-Filtered Inflow</span>
             </div>
             <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">
-              Message requests from unvetted accounts are held here. Accepting grants full direct messaging access.
+              Message requests from unvetted accounts are held here. Accepting grants full direct messaging
+              access.
             </p>
           </div>
         </aside>
@@ -125,13 +116,15 @@ export default function MessageRequestsPage() {
             <div className="py-24 text-center bg-[var(--bg)] rounded-card border border-[var(--border)] p-8">
               <EnvelopeOpen size={32} className="mx-auto text-[var(--fg-muted)] mb-3" />
               <p className="text-sm font-semibold text-[var(--fg)]">No Pending Message Requests</p>
-              <p className="text-xs text-[var(--fg-muted)] mt-1">Your inbox is clear of unsolicited inquiries.</p>
+              <p className="text-xs text-[var(--fg-muted)] mt-1">
+                Your inbox is clear of unsolicited inquiries.
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
-              {requests.map(req => (
-                <div 
-                  key={req.id} 
+              {requests.map((req) => (
+                <div
+                  key={req.id}
                   className="p-6 bg-[var(--bg)] rounded-card border border-[var(--border)] hover:border-[var(--fg-muted)] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-6"
                 >
                   <div className="flex items-start gap-4">
@@ -148,14 +141,14 @@ export default function MessageRequestsPage() {
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    <button 
+                    <button
                       onClick={() => handleAction(req.id, 'decline')}
                       className="px-4 py-2 border border-[var(--border)] hover:bg-[var(--bg-subtle)] text-[var(--fg-muted)] hover:text-rose-600 rounded-card text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5"
                     >
                       <X size={14} />
                       <span>Decline</span>
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleAction(req.id, 'connect')}
                       className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white rounded-card text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
@@ -168,7 +161,6 @@ export default function MessageRequestsPage() {
             </div>
           )}
         </section>
-
       </div>
     </div>
   );

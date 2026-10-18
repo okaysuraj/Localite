@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { colors } from '../../theme';
 
 export default function LiveMatchScreen({ navigation }) {
   const [matchData, setMatchData] = useState({
-    time: "74:22",
-    homeTeam: "Kensington United",
-    awayTeam: "Belgravia Rovers",
+    time: '74:22',
+    homeTeam: 'Kensington United',
+    awayTeam: 'Belgravia Rovers',
     homeScore: 2,
     awayScore: 1,
     stats: {
@@ -18,12 +18,40 @@ export default function LiveMatchScreen({ navigation }) {
       corners: { home: 6, away: 3 },
     },
     timeline: [
-      { id: 1, minute: 68, type: 'GOAL', team: 'HOME', player: 'Sebastian Sterling', extra: 'ASSIST: MARCUS CHEN' },
-      { id: 2, minute: 54, type: 'YELLOW_CARD', team: 'AWAY', player: 'Julian Knight', extra: 'TACTICAL FOUL' },
-      { id: 3, minute: 45, type: 'SUBSTITUTION', team: 'HOME', playerIn: 'David Park', playerOut: 'Alex Wong' },
-      { id: 4, minute: 32, type: 'GOAL', team: 'AWAY', player: 'Sophia Valente', extra: 'HEADER FROM CORNER' },
-      { id: 5, minute: 18, type: 'GOAL', team: 'HOME', player: 'Sebastian Sterling', extra: 'PENALTY' }
-    ]
+      {
+        id: 1,
+        minute: 68,
+        type: 'GOAL',
+        team: 'HOME',
+        player: 'Sebastian Sterling',
+        extra: 'ASSIST: MARCUS CHEN',
+      },
+      {
+        id: 2,
+        minute: 54,
+        type: 'YELLOW_CARD',
+        team: 'AWAY',
+        player: 'Julian Knight',
+        extra: 'TACTICAL FOUL',
+      },
+      {
+        id: 3,
+        minute: 45,
+        type: 'SUBSTITUTION',
+        team: 'HOME',
+        playerIn: 'David Park',
+        playerOut: 'Alex Wong',
+      },
+      {
+        id: 4,
+        minute: 32,
+        type: 'GOAL',
+        team: 'AWAY',
+        player: 'Sophia Valente',
+        extra: 'HEADER FROM CORNER',
+      },
+      { id: 5, minute: 18, type: 'GOAL', team: 'HOME', player: 'Sebastian Sterling', extra: 'PENALTY' },
+    ],
   });
 
   useEffect(() => {
@@ -37,7 +65,7 @@ export default function LiveMatchScreen({ navigation }) {
         }
         return {
           ...prev,
-          time: `${mins}:${String(secs).padStart(2, '0')}`
+          time: `${mins}:${String(secs).padStart(2, '0')}`,
         };
       });
     }, 1000);
@@ -75,7 +103,9 @@ export default function LiveMatchScreen({ navigation }) {
             </View>
 
             <View style={styles.scoreInfo}>
-              <Text style={styles.scoreText}>{matchData.homeScore} : {matchData.awayScore}</Text>
+              <Text style={styles.scoreText}>
+                {matchData.homeScore} : {matchData.awayScore}
+              </Text>
               <View style={styles.timerBadge}>
                 <Text style={styles.timerText}>{matchData.time}</Text>
               </View>
@@ -94,7 +124,7 @@ export default function LiveMatchScreen({ navigation }) {
         {/* Match Statistics */}
         <View style={styles.statsCard}>
           <Text style={styles.sectionTitle}>MATCH STATISTICS</Text>
-          
+
           {/* Possession Bar */}
           <View style={styles.statRow}>
             <View style={styles.statHeader}>
@@ -103,8 +133,18 @@ export default function LiveMatchScreen({ navigation }) {
               <Text style={styles.statValRight}>{matchData.stats.possession.away}%</Text>
             </View>
             <View style={styles.statBarTrack}>
-              <View style={[styles.statBarFill, { width: `${matchData.stats.possession.home}%`, backgroundColor: colors.accent }]} />
-              <View style={[styles.statBarFill, { width: `${matchData.stats.possession.away}%`, backgroundColor: '#9CA3AF' }]} />
+              <View
+                style={[
+                  styles.statBarFill,
+                  { width: `${matchData.stats.possession.home}%`, backgroundColor: colors.accent },
+                ]}
+              />
+              <View
+                style={[
+                  styles.statBarFill,
+                  { width: `${matchData.stats.possession.away}%`, backgroundColor: '#9CA3AF' },
+                ]}
+              />
             </View>
           </View>
 
@@ -116,7 +156,12 @@ export default function LiveMatchScreen({ navigation }) {
               <Text style={styles.statValRight}>{matchData.stats.shots.away}</Text>
             </View>
             <View style={styles.statBarTrack}>
-              <View style={[styles.statBarFill, { width: `${(matchData.stats.shots.home / 20) * 100}%`, backgroundColor: colors.accent }]} />
+              <View
+                style={[
+                  styles.statBarFill,
+                  { width: `${(matchData.stats.shots.home / 20) * 100}%`, backgroundColor: colors.accent },
+                ]}
+              />
             </View>
           </View>
 
@@ -128,8 +173,18 @@ export default function LiveMatchScreen({ navigation }) {
               <Text style={styles.statValRight}>{matchData.stats.passAccuracy.away}%</Text>
             </View>
             <View style={styles.statBarTrack}>
-              <View style={[styles.statBarFill, { width: `${matchData.stats.passAccuracy.home}%`, backgroundColor: colors.accent }]} />
-              <View style={[styles.statBarFill, { width: `${matchData.stats.passAccuracy.away}%`, backgroundColor: '#9CA3AF' }]} />
+              <View
+                style={[
+                  styles.statBarFill,
+                  { width: `${matchData.stats.passAccuracy.home}%`, backgroundColor: colors.accent },
+                ]}
+              />
+              <View
+                style={[
+                  styles.statBarFill,
+                  { width: `${matchData.stats.passAccuracy.away}%`, backgroundColor: '#9CA3AF' },
+                ]}
+              />
             </View>
           </View>
 
@@ -154,13 +209,16 @@ export default function LiveMatchScreen({ navigation }) {
               <View style={styles.timelineDetail}>
                 <View style={styles.timelineHeader}>
                   <Text style={styles.timelinePlayer}>{event.player}</Text>
-                  <Text style={[styles.timelineType, event.type === 'GOAL' ? { color: colors.accent } : { color: '#E67E22' }]}>
+                  <Text
+                    style={[
+                      styles.timelineType,
+                      event.type === 'GOAL' ? { color: colors.accent } : { color: '#E67E22' },
+                    ]}
+                  >
                     {event.type}
                   </Text>
                 </View>
-                {event.extra ? (
-                  <Text style={styles.timelineExtra}>{event.extra}</Text>
-                ) : null}
+                {event.extra ? <Text style={styles.timelineExtra}>{event.extra}</Text> : null}
               </View>
             </View>
           ))}

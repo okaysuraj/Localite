@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,9 @@ import {
   ActivityIndicator,
   Platform,
   Dimensions,
-  Alert
+  Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getEventById, rsvpToEvent, awardXp, buyTicket } from '../../services/api';
 
@@ -30,7 +30,7 @@ export default function EventDetailScreen({ route, navigation }) {
       const data = await getEventById(eventId);
       setEvent(data);
     } catch (error) {
-      console.error("Failed to fetch event:", error);
+      console.error('Failed to fetch event:', error);
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ export default function EventDetailScreen({ route, navigation }) {
       }
       Alert.alert('Success', 'Successfully requested invitation! (+50 XP)');
       await fetchEvent();
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to request invitation.');
     } finally {
       setRsvpLoading(false);
@@ -94,19 +94,29 @@ export default function EventDetailScreen({ route, navigation }) {
           </TouchableOpacity>
           <Text style={styles.appBarTitle}>Localite</Text>
           <View style={styles.profileBtn}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBG2iPQg1VcnEF4Z-wLCUYy9brn-PPR9FI-Moo3J_zXrO0ft7X2Bf71r11ozvKg4PcorUjlwCmFXmeilfStBk0dziVvSKJ0gxZ62ibPQ3VysmlMqiDKyAy31PMJycF_n-NMGN7Gs8f5foHUuql7WqMG_4_QEUEVccsW9gwGnZVO-lUBzDFzsAThotKh53NrcPGcJ3QmFly3LMB5F0LdtN0hKtcDDgkR5S0UnGwHndNyTIKdfu3uwGw5gQ' }} 
-              style={styles.profileImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBG2iPQg1VcnEF4Z-wLCUYy9brn-PPR9FI-Moo3J_zXrO0ft7X2Bf71r11ozvKg4PcorUjlwCmFXmeilfStBk0dziVvSKJ0gxZ62ibPQ3VysmlMqiDKyAy31PMJycF_n-NMGN7Gs8f5foHUuql7WqMG_4_QEUEVccsW9gwGnZVO-lUBzDFzsAThotKh53NrcPGcJ3QmFly3LMB5F0LdtN0hKtcDDgkR5S0UnGwHndNyTIKdfu3uwGw5gQ',
+              }}
+              style={styles.profileImg}
             />
           </View>
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
         {/* Hero Section */}
         <View style={styles.heroSection}>
-          <Image 
-            source={{ uri: event.imageUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuC6aGXoO6vJOcXeBMB-uQWLwK44yQiXS6jMAmbRC8IvsvzJCqgDDYAIcPM5xVDnS2T1o3o94sRIuT9mEZtnzwDeI3G0FKh5Fl_3XyBSV2-XLoqUHU8Eu5QpnzYW9ocmbGdbWaQ-Nyph_GAw6lDSPBkfe1EGm3IbUngD4_5v3UTb2uJUnH01fO2ZJ7jcK-TpxPzeLBQ2ykIhAxEp7n9Bfxad7l17bgC-wgSy_h2Qz6c4KdkW4-vBXrj9PA' }}
+          <Image
+            source={{
+              uri:
+                event.imageUrl ||
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuC6aGXoO6vJOcXeBMB-uQWLwK44yQiXS6jMAmbRC8IvsvzJCqgDDYAIcPM5xVDnS2T1o3o94sRIuT9mEZtnzwDeI3G0FKh5Fl_3XyBSV2-XLoqUHU8Eu5QpnzYW9ocmbGdbWaQ-Nyph_GAw6lDSPBkfe1EGm3IbUngD4_5v3UTb2uJUnH01fO2ZJ7jcK-TpxPzeLBQ2ykIhAxEp7n9Bfxad7l17bgC-wgSy_h2Qz6c4KdkW4-vBXrj9PA',
+            }}
             style={styles.heroImage}
           />
           <View style={styles.heroGradient}>
@@ -115,7 +125,11 @@ export default function EventDetailScreen({ route, navigation }) {
                 <Text style={styles.tagBadgeText}>{event.category || 'PRIVATE EVENT'}</Text>
               </View>
               <Text style={styles.dateText}>
-                {event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase() : 'JUNE 24, 2024'}
+                {event.date
+                  ? new Date(event.date)
+                      .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                      .toUpperCase()
+                  : 'JUNE 24, 2024'}
               </Text>
             </View>
             <Text style={styles.heroTitle}>{event.title}</Text>
@@ -123,7 +137,11 @@ export default function EventDetailScreen({ route, navigation }) {
               <View style={styles.detailItem}>
                 <Ionicons name="time-outline" size={16} color="#ffffff" />
                 <Text style={styles.detailText}>
-                  {event.date ? new Date(event.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }).toUpperCase() : '18:00 — 22:00'}
+                  {event.date
+                    ? new Date(event.date)
+                        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                        .toUpperCase()
+                    : '18:00 — 22:00'}
                 </Text>
               </View>
               <View style={styles.detailItem}>
@@ -140,11 +158,15 @@ export default function EventDetailScreen({ route, navigation }) {
             <Text style={styles.sectionHeader}>THE EXPERIENCE</Text>
             <View style={styles.quoteBlock}>
               <Text style={styles.quoteText}>
-                "{event.rules || 'An evening where time stands still, amidst the scent of blooming jasmine and the soft clinking of crystal.'}"
+                "
+                {event.rules ||
+                  'An evening where time stands still, amidst the scent of blooming jasmine and the soft clinking of crystal.'}
+                "
               </Text>
             </View>
             <Text style={styles.descriptionText}>
-              {event.description || "Join an intimate gathering of the city's most discerning patrons for a curated evening at the historic Willows Estate."}
+              {event.description ||
+                "Join an intimate gathering of the city's most discerning patrons for a curated evening at the historic Willows Estate."}
             </Text>
 
             <View style={styles.amenitiesGrid}>
@@ -159,7 +181,9 @@ export default function EventDetailScreen({ route, navigation }) {
                 <Ionicons name="people" size={24} color="#775a19" />
                 <View style={styles.amenityTextCol}>
                   <Text style={styles.amenityTitle}>CAPACITY</Text>
-                  <Text style={styles.amenitySub}>{event.maxAttendees > 0 ? `${event.maxAttendees} Guests` : 'Unlimited'}</Text>
+                  <Text style={styles.amenitySub}>
+                    {event.maxAttendees > 0 ? `${event.maxAttendees} Guests` : 'Unlimited'}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -171,7 +195,12 @@ export default function EventDetailScreen({ route, navigation }) {
             <View style={styles.guestRow}>
               {['Elena', 'Marcus', 'Sarah'].map((guest, i) => (
                 <View key={i} style={[styles.guestAvatar, { marginLeft: i > 0 ? -12 : 0, zIndex: 10 - i }]}>
-                  <Image source={{ uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${guest}&backgroundColor=b9c7e4` }} style={styles.guestImg} />
+                  <Image
+                    source={{
+                      uri: `https://api.dicebear.com/7.x/notionists/svg?seed=${guest}&backgroundColor=b9c7e4`,
+                    }}
+                    style={styles.guestImg}
+                  />
                 </View>
               ))}
               <View style={[styles.guestMoreBox, { marginLeft: -12, zIndex: 0 }]}>
@@ -179,14 +208,22 @@ export default function EventDetailScreen({ route, navigation }) {
               </View>
             </View>
             <Text style={styles.guestSubtitle}>Including Julian Montgomery and elite members.</Text>
-            
+
             <View style={styles.actionRow}>
-              <TouchableOpacity onPress={() => navigation.navigate('EventGroupChat', { event })} style={styles.actionBtn}>
-                <Ionicons name="chatbubble-outline" size={16} color="#000" style={{marginRight: 8}} />
+              <TouchableOpacity
+                onPress={() => navigation.navigate('EventGroupChat', { event })}
+                style={styles.actionBtn}
+              >
+                <Ionicons name="chatbubble-outline" size={16} color="#000" style={{ marginRight: 8 }} />
                 <Text style={styles.viewGuestsText}>GROUP CHAT</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('EventParticipants', { eventId: event.id, eventTitle: event.title })} style={styles.actionBtn}>
-                <Ionicons name="people-outline" size={16} color="#000" style={{marginRight: 8}} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('EventParticipants', { eventId: event.id, eventTitle: event.title })
+                }
+                style={styles.actionBtn}
+              >
+                <Ionicons name="people-outline" size={16} color="#000" style={{ marginRight: 8 }} />
                 <Text style={styles.viewGuestsText}>GUESTLIST</Text>
               </TouchableOpacity>
             </View>
@@ -196,9 +233,11 @@ export default function EventDetailScreen({ route, navigation }) {
           <View style={styles.cardSection}>
             <Text style={styles.sectionHeader}>THE VENUE</Text>
             <View style={styles.mapPreview}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBOOjGNDgG6iOs15-aXw7GrcOcUzyto8x-ZmSZ78AiaFNpWJYTYsCYJ0BjFrmLf1C4d_lUZ74tPtlEyBe9T7vihuLrr3xnXiJ-AOYWDfj4QAMtDLGWfiMni5bO0Y4c2xS49o19b4Mm4rxhoeF0xHEXor6qvis3x8rGGpAhakmoOt-AWXzn47Ci5-z6czVHxsJ3mLgltiFeN3EDGmFMra38bY4wpfexBYZeFJlNUTJ3xI6MUuHnDY3l5GQ' }} 
-                style={styles.mapImg} 
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBOOjGNDgG6iOs15-aXw7GrcOcUzyto8x-ZmSZ78AiaFNpWJYTYsCYJ0BjFrmLf1C4d_lUZ74tPtlEyBe9T7vihuLrr3xnXiJ-AOYWDfj4QAMtDLGWfiMni5bO0Y4c2xS49o19b4Mm4rxhoeF0xHEXor6qvis3x8rGGpAhakmoOt-AWXzn47Ci5-z6czVHxsJ3mLgltiFeN3EDGmFMra38bY4wpfexBYZeFJlNUTJ3xI6MUuHnDY3l5GQ',
+                }}
+                style={styles.mapImg}
               />
             </View>
             <Text style={styles.venueTitle}>{event.location}</Text>
@@ -208,16 +247,16 @@ export default function EventDetailScreen({ route, navigation }) {
       </ScrollView>
 
       {/* Action Bar Bottom Fixed */}
-      <View style={[styles.bottomActionBar, { paddingBottom: Platform.OS === 'ios' ? insets.bottom || 24 : 24 }]}>
+      <View
+        style={[styles.bottomActionBar, { paddingBottom: Platform.OS === 'ios' ? insets.bottom || 24 : 24 }]}
+      >
         <View style={styles.actionInfo}>
           <Text style={styles.actionLabel}>ADMISSION</Text>
-          <Text style={styles.actionPrice}>{event.cost > 0 ? `$${event.cost}` : 'Free'} <Text style={styles.actionPer}>/ guest</Text></Text>
+          <Text style={styles.actionPrice}>
+            {event.cost > 0 ? `$${event.cost}` : 'Free'} <Text style={styles.actionPer}>/ guest</Text>
+          </Text>
         </View>
-        <TouchableOpacity 
-          style={styles.joinBtn}
-          onPress={handleRsvp}
-          disabled={rsvpLoading}
-        >
+        <TouchableOpacity style={styles.joinBtn} onPress={handleRsvp} disabled={rsvpLoading}>
           <Text style={styles.joinBtnText}>{rsvpLoading ? 'PROCESSING...' : 'REQUEST INVITATION'}</Text>
         </TouchableOpacity>
       </View>
@@ -566,5 +605,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ffffff',
     letterSpacing: 1,
-  }
+  },
 });

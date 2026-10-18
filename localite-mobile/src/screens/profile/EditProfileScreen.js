@@ -1,8 +1,19 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform, ActivityIndicator, Alert 
+import { useState, useContext, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ScrollView,
+  Platform,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthContext } from '../../context/AuthContext';
 import { updateProfile } from '../../services/api';
@@ -32,11 +43,11 @@ export default function EditProfileScreen({ navigation }) {
       const payload = {
         neighborhood: neighborhood.trim(),
         bio: bio.trim(),
-        sportsInterests: sportsInterests.trim()
+        sportsInterests: sportsInterests.trim(),
       };
       await updateProfile(payload);
       Alert.alert('Success', 'Profile updated successfully!', [
-        { text: 'OK', onPress: () => navigation.goBack() }
+        { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (err) {
       console.error('Failed to update profile:', err);
@@ -58,26 +69,39 @@ export default function EditProfileScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header Text */}
         <View style={styles.headerSection}>
           <Text style={styles.title}>Refine your presence</Text>
-          <Text style={styles.subtitle}>Your details help us curate better connections within the Localite community.</Text>
+          <Text style={styles.subtitle}>
+            Your details help us curate better connections within the Localite community.
+          </Text>
         </View>
 
         {/* Avatar Module */}
         <View style={styles.avatarSection}>
           <View style={styles.avatarWrapper}>
-            <Image 
-              source={{ uri: user?.profilePhotoUrl || user?.profileImageUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400' }} 
-              style={styles.avatar} 
+            <Image
+              source={{
+                uri:
+                  user?.profilePhotoUrl ||
+                  user?.profileImageUrl ||
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+              }}
+              style={styles.avatar}
             />
             <TouchableOpacity style={styles.cameraBtn}>
               <MaterialIcons name="photo-camera" size={20} color="#ffffff" />
             </TouchableOpacity>
           </View>
           <View style={styles.verifiedBadge}>
-            <Text style={styles.verifiedText}>{user?.verified ? 'Verified Localite' : 'Localite Member'}</Text>
+            <Text style={styles.verifiedText}>
+              {user?.verified ? 'Verified Localite' : 'Localite Member'}
+            </Text>
           </View>
         </View>
 
@@ -85,8 +109,8 @@ export default function EditProfileScreen({ navigation }) {
         <View style={styles.formSection}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Username</Text>
-            <TextInput 
-              style={[styles.input, { opacity: 0.8 }]} 
+            <TextInput
+              style={[styles.input, { opacity: 0.8 }]}
               value={fullName}
               editable={false}
               placeholder="Username"
@@ -96,8 +120,8 @@ export default function EditProfileScreen({ navigation }) {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Sports & Hobbies</Text>
-            <TextInput 
-              style={styles.input} 
+            <TextInput
+              style={styles.input}
               value={sportsInterests}
               onChangeText={setSportsInterests}
               placeholder="e.g. Badminton, Running, Tennis"
@@ -109,8 +133,8 @@ export default function EditProfileScreen({ navigation }) {
             <Text style={styles.label}>Primary Location / Neighborhood</Text>
             <View style={styles.locationInputWrapper}>
               <MaterialIcons name="location-on" size={20} color="#75777e" style={styles.locationIcon} />
-              <TextInput 
-                style={[styles.input, { paddingLeft: 40 }]} 
+              <TextInput
+                style={[styles.input, { paddingLeft: 40 }]}
                 value={neighborhood}
                 onChangeText={setNeighborhood}
                 placeholder="District or Neighborhood"
@@ -121,8 +145,8 @@ export default function EditProfileScreen({ navigation }) {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Personal Narrative (Bio)</Text>
-            <TextInput 
-              style={styles.textArea} 
+            <TextInput
+              style={styles.textArea}
               value={bio}
               onChangeText={setBio}
               placeholder="Share your story, interests..."
@@ -136,8 +160,8 @@ export default function EditProfileScreen({ navigation }) {
         </View>
 
         {/* Save Button */}
-        <TouchableOpacity 
-          style={[styles.saveBtn, saving && { opacity: 0.7 }]} 
+        <TouchableOpacity
+          style={[styles.saveBtn, saving && { opacity: 0.7 }]}
           onPress={handleSave}
           disabled={saving}
         >
@@ -153,7 +177,9 @@ export default function EditProfileScreen({ navigation }) {
           <MaterialIcons name="shield" size={20} color="#775a19" style={{ marginTop: 2 }} />
           <View style={styles.privacyTextContainer}>
             <Text style={styles.privacyTitle}>Privacy Guarantee</Text>
-            <Text style={styles.privacyText}>Your data is only visible to verified members of the hubs you have joined.</Text>
+            <Text style={styles.privacyText}>
+              Your data is only visible to verified members of the hubs you have joined.
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -347,5 +373,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#44474d',
     lineHeight: 18,
-  }
+  },
 });

@@ -1,6 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Platform, Image } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  Image,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 
@@ -27,7 +35,7 @@ export default function LiveEventDashboardScreen() {
           </View>
           <Text style={styles.heroTitle}>Vintage Garden Soiree</Text>
           <Text style={styles.heroSubtitle}>The Willows Estate</Text>
-          
+
           <View style={styles.actionRow}>
             <TouchableOpacity style={styles.primaryButton}>
               <MaterialIcons name="directions-walk" size={16} color="#fff" />
@@ -61,7 +69,7 @@ export default function LiveEventDashboardScreen() {
                 <Text style={styles.guestStatusText}>ARRIVED</Text>
               </View>
             </View>
-            
+
             <View style={styles.guestItem}>
               <View style={styles.guestLeft}>
                 <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.guestAvatar} />
@@ -76,7 +84,7 @@ export default function LiveEventDashboardScreen() {
               </View>
             </View>
           </View>
-          
+
           <TouchableOpacity style={styles.viewAllBtn}>
             <Text style={styles.viewAllText}>VIEW ALL ATTENDEES</Text>
           </TouchableOpacity>
@@ -127,7 +135,6 @@ export default function LiveEventDashboardScreen() {
             <Text style={styles.milestoneSub}>MIN REMAINING</Text>
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );

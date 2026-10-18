@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Platform, Image, ActivityIndicator, Alert } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  SafeAreaView,
+  Platform,
+  Image,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { getEventById, getEventRsvps, getMyEvents, checkInAttendee } from '../../services/api';
 
 export default function AttendeeManagementScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  
+
   const [eventId, setEventId] = useState(route.params?.eventId || null);
   const [event, setEvent] = useState(null);
   const [attendees, setAttendees] = useState([]);
@@ -28,7 +40,7 @@ export default function AttendeeManagementScreen() {
         if (currentId) {
           const [eventData, rsvps] = await Promise.all([
             getEventById(currentId).catch(() => null),
-            getEventRsvps(currentId).catch(() => [])
+            getEventRsvps(currentId).catch(() => []),
           ]);
           setEvent(eventData);
           setAttendees(Array.isArray(rsvps) ? rsvps : []);
@@ -55,7 +67,7 @@ export default function AttendeeManagementScreen() {
     }
   };
 
-  const filtered = attendees.filter(a => {
+  const filtered = attendees.filter((a) => {
     const name = a.user?.username || a.username || '';
     return name.toLowerCase().includes(search.toLowerCase());
   });
@@ -85,7 +97,7 @@ export default function AttendeeManagementScreen() {
         <View style={styles.filtersSection}>
           <View style={styles.searchBar}>
             <MaterialIcons name="search" size={20} color="#75777e" style={styles.searchIcon} />
-            <TextInput 
+            <TextInput
               style={styles.searchInput}
               placeholder="Search guests..."
               placeholderTextColor="#75777e"
@@ -106,7 +118,7 @@ export default function AttendeeManagementScreen() {
         ) : (
           /* Attendee List */
           <View style={styles.listContainer}>
-            {filtered.map(rsvp => {
+            {filtered.map((rsvp) => {
               const name = rsvp.user?.username || rsvp.username || 'Member';
               const isCheckedIn = rsvp.checkedIn || rsvp.status === 'ATTENDED';
               const statusText = isCheckedIn ? 'CHECKED IN' : rsvp.status || 'GOING';
@@ -117,13 +129,19 @@ export default function AttendeeManagementScreen() {
                 <View key={rsvp.id} style={styles.card}>
                   <View style={styles.cardTop}>
                     <View style={styles.userInfo}>
-                      <Image 
-                        source={{ uri: rsvp.user?.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }} 
-                        style={styles.userAvatar} 
+                      <Image
+                        source={{
+                          uri:
+                            rsvp.user?.profilePhotoUrl ||
+                            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+                        }}
+                        style={styles.userAvatar}
                       />
                       <View>
                         <Text style={styles.userName}>{name}</Text>
-                        <Text style={styles.userSub}>Ticket: {rsvp.ticketId ? `#${rsvp.ticketId.slice(0, 8)}` : 'Standard Pass'}</Text>
+                        <Text style={styles.userSub}>
+                          Ticket: {rsvp.ticketId ? `#${rsvp.ticketId.slice(0, 8)}` : 'Standard Pass'}
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -136,7 +154,7 @@ export default function AttendeeManagementScreen() {
                     </View>
                     <View style={styles.cardActions}>
                       {!isCheckedIn && rsvp.ticketId && (
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           style={styles.primaryButton}
                           onPress={() => handleCheckIn(rsvp.ticketId, name)}
                         >

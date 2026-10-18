@@ -1,8 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Dimensions, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  Dimensions,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { BlurView } from 'expo-blur';
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,8 +19,10 @@ export default function MediaViewerScreen() {
   return (
     <View style={styles.container}>
       {/* Background with blur (simulated) */}
-      <Image 
-        source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_5Mnpll2b0BB_cu6RqDkjTRsjDce8befJTWIVSDjUh_HhSbadRsfHII3mX4CxxeIlGB1CGYrZFulcU8TfuJfz2CrZxvJ1MM72s-_okzNoiBHh697AmKAcfXO9J_sL5NKsO9SkEZcoIMNCASlS2F3QHpxqTEuxaXcHK-3Cg1G5V_qF1hTy7CYRnOWJIZPdc3RyWunG2dMJ5r7DjZmO9tjKune8vuzg6ZiMQL4e0h4RMgERiWL3wwJqgg' }}
+      <Image
+        source={{
+          uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_5Mnpll2b0BB_cu6RqDkjTRsjDce8befJTWIVSDjUh_HhSbadRsfHII3mX4CxxeIlGB1CGYrZFulcU8TfuJfz2CrZxvJ1MM72s-_okzNoiBHh697AmKAcfXO9J_sL5NKsO9SkEZcoIMNCASlS2F3QHpxqTEuxaXcHK-3Cg1G5V_qF1hTy7CYRnOWJIZPdc3RyWunG2dMJ5r7DjZmO9tjKune8vuzg6ZiMQL4e0h4RMgERiWL3wwJqgg',
+        }}
         style={styles.bgImage}
         blurRadius={10}
       />
@@ -22,8 +31,10 @@ export default function MediaViewerScreen() {
       {/* Main Image */}
       <View style={styles.mainImageContainer}>
         <View style={styles.glow} />
-        <Image 
-          source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAo5ODwGRGowQL_6nLpoFwlF_c7nVRqS24fZetry3jxyTnRn76Wr__G7KJcoQFzfJd0KC--gmyLtjqKtL-9MemrD3MG-ZxQqwOIVm0xAgygExroQSAB81aNt-Z3IFjvKCd2o7aJAxg0MoxjsJEq4DtYovBjQ2d6pFFPDhth-OX3RFz06dQRpGbX22u3UJ1mq157-iQnbDe8e59R6jQj2ujExsNLOjNFx7sKmMjd9ZH4fTxTOuSgc4xSFg' }}
+        <Image
+          source={{
+            uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAo5ODwGRGowQL_6nLpoFwlF_c7nVRqS24fZetry3jxyTnRn76Wr__G7KJcoQFzfJd0KC--gmyLtjqKtL-9MemrD3MG-ZxQqwOIVm0xAgygExroQSAB81aNt-Z3IFjvKCd2o7aJAxg0MoxjsJEq4DtYovBjQ2d6pFFPDhth-OX3RFz06dQRpGbX22u3UJ1mq157-iQnbDe8e59R6jQj2ujExsNLOjNFx7sKmMjd9ZH4fTxTOuSgc4xSFg',
+          }}
           style={styles.mainImage}
           resizeMode="contain"
         />
@@ -55,8 +66,10 @@ export default function MediaViewerScreen() {
             <Text style={styles.curatorName}>Julian Thorne</Text>
           </View>
           <View style={styles.curatorAvatar}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgHGf3SwuW-UYT0p6p6z98MhVQcMQQ11Haix5KC0C-xIXY3KHVE4tsTmW_BRg_IuwByC4dJyl7JTZfitwijTbTTBHI_KLUn9nFt-McjtRoB_R63moj3OYtWyf5CdZPtAgO0gTG6l5hfSYkAkvky9JNFKXeJ_K0-qe_5hFpuvITerr9esoMswkshSdAXIJxHl_e3xvFugkc9znIUrlBaiTvA-sm5KmUeB3v9Ygtno-Qo3FRZcBZLgJyDQ' }}
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgHGf3SwuW-UYT0p6p6z98MhVQcMQQ11Haix5KC0C-xIXY3KHVE4tsTmW_BRg_IuwByC4dJyl7JTZfitwijTbTTBHI_KLUn9nFt-McjtRoB_R63moj3OYtWyf5CdZPtAgO0gTG6l5hfSYkAkvky9JNFKXeJ_K0-qe_5hFpuvITerr9esoMswkshSdAXIJxHl_e3xvFugkc9znIUrlBaiTvA-sm5KmUeB3v9Ygtno-Qo3FRZcBZLgJyDQ',
+              }}
               style={styles.avatarImg}
             />
           </View>
@@ -186,5 +199,5 @@ const styles = StyleSheet.create({
   avatarImg: {
     width: '100%',
     height: '100%',
-  }
+  },
 });

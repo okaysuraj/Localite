@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getEvents, getSuggestedPartners } from '../../services/api';
 import { MapPin, Users, User } from '@phosphor-icons/react';
@@ -11,10 +11,7 @@ const ExplorePage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const [data, partnersData] = await Promise.all([
-          getEvents(),
-          getSuggestedPartners(),
-        ]);
+        const [data, partnersData] = await Promise.all([getEvents(), getSuggestedPartners()]);
         setEvents(data);
         setSuggestedPartners(partnersData);
       } catch (error) {
@@ -43,12 +40,8 @@ const ExplorePage = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute bottom-0 left-0 p-8 md:p-10 w-full">
               <span className="tag mb-3 inline-block">Featured</span>
-              <h1 className="text-display-sm md:text-display text-white mb-2">
-                {events[0].title}
-              </h1>
-              <p className="text-body text-white/80 max-w-xl line-clamp-2">
-                {events[0].description}
-              </p>
+              <h1 className="text-display-sm md:text-display text-white mb-2">{events[0].title}</h1>
+              <p className="text-body text-white/80 max-w-xl line-clamp-2">{events[0].description}</p>
             </div>
           </Link>
         </section>
@@ -60,10 +53,7 @@ const ExplorePage = () => {
         <div className="lg:col-span-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-title-sm text-fg">Upcoming events</h2>
-            <Link
-              to="/events"
-              className="text-body-sm text-accent font-medium hover:underline"
-            >
+            <Link to="/events" className="text-body-sm text-accent font-medium hover:underline">
               View all
             </Link>
           </div>
@@ -71,10 +61,7 @@ const ExplorePage = () => {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="card animate-pulse"
-                >
+                <div key={i} className="card animate-pulse">
                   <div className="aspect-[16/10] bg-bg-subtle" />
                   <div className="p-5 space-y-3">
                     <div className="h-3 w-16 bg-bg-subtle rounded" />
@@ -87,11 +74,7 @@ const ExplorePage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {events.slice(1).map((event, index) => (
-                <Link
-                  key={event.id || index}
-                  to={`/events/${event.id}`}
-                  className="card card-hover group"
-                >
+                <Link key={event.id || index} to={`/events/${event.id}`} className="card card-hover group">
                   {/* Image */}
                   <div className="aspect-[16/10] overflow-hidden bg-bg-subtle">
                     <img
@@ -121,11 +104,7 @@ const ExplorePage = () => {
                       </span>
                     </div>
 
-                    {event.date && (
-                      <p className="text-caption text-fg-faint font-mono mt-3">
-                        {event.date}
-                      </p>
-                    )}
+                    {event.date && <p className="text-caption text-fg-faint font-mono mt-3">{event.date}</p>}
                   </div>
                 </Link>
               ))}
@@ -136,21 +115,14 @@ const ExplorePage = () => {
         {/* Right: Sidebar */}
         <aside className="lg:col-span-4">
           <div className="card p-6 sticky top-20">
-            <h3 className="text-body font-semibold text-fg mb-5">
-              People you may know
-            </h3>
+            <h3 className="text-body font-semibold text-fg mb-5">People you may know</h3>
 
             <div className="space-y-4">
               {suggestedPartners.length === 0 ? (
-                <p className="text-body-sm text-fg-muted">
-                  No suggestions right now.
-                </p>
+                <p className="text-body-sm text-fg-muted">No suggestions right now.</p>
               ) : (
                 suggestedPartners.map((partner) => (
-                  <div
-                    key={partner.id}
-                    className="flex justify-between items-center"
-                  >
+                  <div key={partner.id} className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-bg-subtle overflow-hidden flex items-center justify-center flex-shrink-0">
                         {partner.profilePhotoUrl ? (
@@ -160,29 +132,18 @@ const ExplorePage = () => {
                             src={partner.profilePhotoUrl}
                           />
                         ) : (
-                          <User
-                            size={16}
-                            weight="bold"
-                            className="text-fg-faint"
-                          />
+                          <User size={16} weight="bold" className="text-fg-faint" />
                         )}
                       </div>
-                      <span className="text-body-sm font-medium text-fg">
-                        {partner.username}
-                      </span>
+                      <span className="text-body-sm font-medium text-fg">{partner.username}</span>
                     </div>
-                    <button className="text-caption text-accent font-medium hover:underline">
-                      Follow
-                    </button>
+                    <button className="text-caption text-accent font-medium hover:underline">Follow</button>
                   </div>
                 ))
               )}
             </div>
 
-            <Link
-              to="/network"
-              className="btn-ghost w-full text-center mt-6 text-sm py-2"
-            >
+            <Link to="/network" className="btn-ghost w-full text-center mt-6 text-sm py-2">
               See more
             </Link>
           </div>

@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function IDVerificationUploadScreen() {
@@ -30,28 +39,32 @@ export default function IDVerificationUploadScreen() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Localite</Text>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCu3qSCZ4MZR0fXFRHrnauD2kzNHtrLGQTHoOQ3vvIwZ1fSa6k8tz0G1WvZJOala39IbkvjzRJyICncOKHSqBNHYcy8uab9IkbKrISlafSJPciEt0EGHgFx38zvogDFGSOCzni7dcbX-pC-nNc_9ql_t5SxrbwktgX0GKzh-yS9FY8n_5YqO5oNcTQzC-Le5-PnDAB-47HwzWY6FuVxZdz2fTcR9ix6nG0zJFt24ZY8jVn5Amp5uiPJhQ' }} 
-            style={styles.avatarImg} 
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCu3qSCZ4MZR0fXFRHrnauD2kzNHtrLGQTHoOQ3vvIwZ1fSa6k8tz0G1WvZJOala39IbkvjzRJyICncOKHSqBNHYcy8uab9IkbKrISlafSJPciEt0EGHgFx38zvogDFGSOCzni7dcbX-pC-nNc_9ql_t5SxrbwktgX0GKzh-yS9FY8n_5YqO5oNcTQzC-Le5-PnDAB-47HwzWY6FuVxZdz2fTcR9ix6nG0zJFt24ZY8jVn5Amp5uiPJhQ',
+            }}
+            style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Header Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.preTitle}>SECURE VERIFICATION</Text>
           <Text style={styles.title}>Verify your Identity</Text>
           <Text style={styles.subtitle}>
-            To maintain our community's standard of safety, please provide a clear image of your government-issued ID.
+            To maintain our community's standard of safety, please provide a clear image of your
+            government-issued ID.
           </Text>
         </View>
 
         {/* Viewfinder */}
         <View style={styles.viewfinderContainer}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-hltUIF0yQv4Yehrp8iNhonDrcvRN7Y-tTkY8YD4D2fhfo9FfL1iymxCVlvQVEj76D2PpL1lmnQM-LXwmYbE-_0YXHL8NQxqJb7J1kXcHe9OixBsH3tWAFeiQOqdzmOqhAlkZzGNuq2MXCgGRMXKP3NIKB1RI6onONsppQS5X8TU36CXyk8jFxzYfRv4lwCJOBloc-K_5Ggk6ifFQSF0mP3ywzY97BmtQM7sxmoaO_-7W9pfLCO135Q' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-hltUIF0yQv4Yehrp8iNhonDrcvRN7Y-tTkY8YD4D2fhfo9FfL1iymxCVlvQVEj76D2PpL1lmnQM-LXwmYbE-_0YXHL8NQxqJb7J1kXcHe9OixBsH3tWAFeiQOqdzmOqhAlkZzGNuq2MXCgGRMXKP3NIKB1RI6onONsppQS5X8TU36CXyk8jFxzYfRv4lwCJOBloc-K_5Ggk6ifFQSF0mP3ywzY97BmtQM7sxmoaO_-7W9pfLCO135Q',
+            }}
             style={styles.viewfinderBg}
           />
           <View style={styles.viewfinderMask}>
@@ -63,7 +76,7 @@ export default function IDVerificationUploadScreen() {
               <View style={[styles.corner, styles.cornerBR]} />
             </View>
           </View>
-          
+
           <View style={styles.cameraControls}>
             <TouchableOpacity style={styles.cameraBtnSmall}>
               <MaterialIcons name="flash-on" size={24} color="#fff" />
@@ -85,7 +98,9 @@ export default function IDVerificationUploadScreen() {
             </View>
             <View style={styles.instructionTextWrap}>
               <Text style={styles.instructionTitle}>LIGHTING</Text>
-              <Text style={styles.instructionDesc}>Find a well-lit area. Avoid harsh direct sunlight or deep shadows on the document.</Text>
+              <Text style={styles.instructionDesc}>
+                Find a well-lit area. Avoid harsh direct sunlight or deep shadows on the document.
+              </Text>
             </View>
           </View>
           <View style={styles.instructionCard}>
@@ -94,7 +109,9 @@ export default function IDVerificationUploadScreen() {
             </View>
             <View style={styles.instructionTextWrap}>
               <Text style={styles.instructionTitle}>CLARITY</Text>
-              <Text style={styles.instructionDesc}>Ensure all four corners are visible. Text and photo must be sharp and legible.</Text>
+              <Text style={styles.instructionDesc}>
+                Ensure all four corners are visible. Text and photo must be sharp and legible.
+              </Text>
             </View>
           </View>
         </View>
@@ -103,7 +120,6 @@ export default function IDVerificationUploadScreen() {
         <TouchableOpacity style={styles.uploadBtn}>
           <Text style={styles.uploadBtnText}>UPLOAD FROM GALLERY</Text>
         </TouchableOpacity>
-
       </ScrollView>
 
       {/* Processing Overlay */}
@@ -112,7 +128,9 @@ export default function IDVerificationUploadScreen() {
           <View style={styles.overlayContent}>
             <View style={styles.spinner} />
             <Text style={styles.overlayTitle}>Analyzing Document</Text>
-            <Text style={styles.overlayDesc}>Our high-security protocol is verifying your credentials. This typically takes a few moments.</Text>
+            <Text style={styles.overlayDesc}>
+              Our high-security protocol is verifying your credentials. This typically takes a few moments.
+            </Text>
           </View>
         </View>
       )}
@@ -123,7 +141,9 @@ export default function IDVerificationUploadScreen() {
           <View style={styles.overlayContent}>
             <MaterialIcons name="check-circle" size={80} color="#775a19" style={{ marginBottom: 24 }} />
             <Text style={styles.overlayTitle}>Verification Sent</Text>
-            <Text style={styles.overlayDesc}>Your identity has been successfully submitted for review. Welcome to the inner circle.</Text>
+            <Text style={styles.overlayDesc}>
+              Your identity has been successfully submitted for review. Welcome to the inner circle.
+            </Text>
             <TouchableOpacity style={styles.continueBtn} onPress={handleContinue}>
               <Text style={styles.continueBtnText}>CONTINUE</Text>
             </TouchableOpacity>
@@ -200,7 +220,7 @@ const styles = StyleSheet.create({
   },
   viewfinderContainer: {
     width: '100%',
-    aspectRatio: 4/3,
+    aspectRatio: 4 / 3,
     backgroundColor: '#0d1c32',
     borderRadius: 16,
     overflow: 'hidden',
@@ -376,5 +396,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#fff',
     letterSpacing: 2,
-  }
+  },
 });

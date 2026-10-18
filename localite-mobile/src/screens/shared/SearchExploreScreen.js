@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,10 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  SafeAreaView,
-  Platform
+  Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const TABS = ['Events', 'Users', 'Activities'];
@@ -24,7 +23,8 @@ const TRENDS = [
     title: 'Vernissage: Abstract Nobility',
     location: 'The Royal Pavilion, London',
     icon: 'location-outline',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAnadVJNGTYHzb255w4mVrVSyvIJ1M1IcADzjqmpeZ-vryJZ3E3S1MrgLlKNhZHfMECKnMuqjZGBaKrDoRgRRllL31ZSSWGGW6xaNvv1Ziw8OjFbSURm5Nm7ueP7mwm6eazMfeiMs4DWZBPoKpdJ3hErIKNLVrheSaB4yov0fmbUoDMhZcuNUvp9pMfNMCXFqUSlT653KgVrESlxKadwCriSmJDlPYsxncaGU8L93gVuUmdWNjhbR5s_A'
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAnadVJNGTYHzb255w4mVrVSyvIJ1M1IcADzjqmpeZ-vryJZ3E3S1MrgLlKNhZHfMECKnMuqjZGBaKrDoRgRRllL31ZSSWGGW6xaNvv1Ziw8OjFbSURm5Nm7ueP7mwm6eazMfeiMs4DWZBPoKpdJ3hErIKNLVrheSaB4yov0fmbUoDMhZcuNUvp9pMfNMCXFqUSlT653KgVrESlxKadwCriSmJDlPYsxncaGU8L93gVuUmdWNjhbR5s_A',
   },
   {
     id: '2',
@@ -33,7 +33,8 @@ const TRENDS = [
     title: 'Chelsea Garden Collective',
     location: '142 Members Active',
     icon: 'people-outline',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAmLU-huarD63JFM3A7tJSHQfhclv1WjpSoIKmFcYBUyR8LCL7TPN9dGIYWehCohHwRMuht5vOh272Z1N8Dvuj0PiYSEQ4b6csvrohlb0zd_dtF48X4SgicWaNBnKeS8-0tVButLuif3p3mVg2jPrIkOUhnadcNyOSlsPNaAaMK9WnS9DyE8XtU1NhnypFGaQWEwToGsmCUsv5J4xzG9U3-O3JK-Gkqx85i5w0TaFFqK8eN8M8EFQEVyQ'
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAmLU-huarD63JFM3A7tJSHQfhclv1WjpSoIKmFcYBUyR8LCL7TPN9dGIYWehCohHwRMuht5vOh272Z1N8Dvuj0PiYSEQ4b6csvrohlb0zd_dtF48X4SgicWaNBnKeS8-0tVButLuif3p3mVg2jPrIkOUhnadcNyOSlsPNaAaMK9WnS9DyE8XtU1NhnypFGaQWEwToGsmCUsv5J4xzG9U3-O3JK-Gkqx85i5w0TaFFqK8eN8M8EFQEVyQ',
   },
   {
     id: '3',
@@ -42,8 +43,9 @@ const TRENDS = [
     title: 'Night Tennis Tournament',
     location: 'Advanced Level · 8 Slots Left',
     icon: 'flash-outline',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwdDkBPHwKKjyI7zsL6VqL1kRcTgeJ5rnpfco0bxK79Ae7V5moCsiaULt093r52LkeK6G96eT7UsUgrOAugqepcFhR-SHj3AjSWTiub9AHkz0mkSONhVxgjAokl6yu7IFZmk7iKpx7ggD5GtUf4nZn__2YT023NYdIBy-wWLGwUjUtf-LhN_P_cIVF0tLhZ-nXk5qo4FKr4bXuQ0gM7qNhGuq1CYMfNvPeBaFlDEdC-dJ7oN189f2tRA'
-  }
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAwdDkBPHwKKjyI7zsL6VqL1kRcTgeJ5rnpfco0bxK79Ae7V5moCsiaULt093r52LkeK6G96eT7UsUgrOAugqepcFhR-SHj3AjSWTiub9AHkz0mkSONhVxgjAokl6yu7IFZmk7iKpx7ggD5GtUf4nZn__2YT023NYdIBy-wWLGwUjUtf-LhN_P_cIVF0tLhZ-nXk5qo4FKr4bXuQ0gM7qNhGuq1CYMfNvPeBaFlDEdC-dJ7oN189f2tRA',
+  },
 ];
 
 export default function SearchExploreScreen({ navigation }) {
@@ -64,9 +66,11 @@ export default function SearchExploreScreen({ navigation }) {
             <Ionicons name="notifications-outline" size={24} color="#44474d" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.profileBtn}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBg6aX_K2AjkX75d3xCfKvv8CQYsXGoEjyaLmUjv1diYLY2QI4hdkVZuqeXYed5r7frFTo0feX20z9M0JIh5Z_yBU-ZNAZ6zMKaUfd3Jl0m3H0UC0amdQ8P1R-SR5v1vkWAsZ3aWixkGlRAjoCARhl8cRz0UCm79M3wS-S0QPkkKYvXVlqAEOpasXzzGw2N1MiydCOPwUFna779zGFO9VCP2bOVdSOoquoChn3n1Zk31Odx6hIMJCe_Aw' }} 
-              style={styles.profileImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBg6aX_K2AjkX75d3xCfKvv8CQYsXGoEjyaLmUjv1diYLY2QI4hdkVZuqeXYed5r7frFTo0feX20z9M0JIh5Z_yBU-ZNAZ6zMKaUfd3Jl0m3H0UC0amdQ8P1R-SR5v1vkWAsZ3aWixkGlRAjoCARhl8cRz0UCm79M3wS-S0QPkkKYvXVlqAEOpasXzzGw2N1MiydCOPwUFna779zGFO9VCP2bOVdSOoquoChn3n1Zk31Odx6hIMJCe_Aw',
+              }}
+              style={styles.profileImg}
             />
           </TouchableOpacity>
         </View>
@@ -90,14 +94,12 @@ export default function SearchExploreScreen({ navigation }) {
         {/* Tabs */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsContainer}>
           {TABS.map((tab) => (
-            <TouchableOpacity 
-              key={tab} 
+            <TouchableOpacity
+              key={tab}
               style={[styles.tabBtn, activeTab === tab && styles.tabBtnActive]}
               onPress={() => setActiveTab(tab)}
             >
-              <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-                {tab}
-              </Text>
+              <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>{tab}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -142,12 +144,12 @@ export default function SearchExploreScreen({ navigation }) {
         {/* Discover Trends */}
         <View style={styles.trendsSection}>
           <Text style={styles.sectionTitle}>Discover Trends</Text>
-          
+
           <View style={styles.trendList}>
             {TRENDS.map((item) => (
-              <TouchableOpacity 
-                key={item.id} 
-                style={styles.trendCard} 
+              <TouchableOpacity
+                key={item.id}
+                style={styles.trendCard}
                 activeOpacity={0.8}
                 onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
               >
@@ -423,5 +425,5 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#75777e',
     marginLeft: 4,
-  }
+  },
 });

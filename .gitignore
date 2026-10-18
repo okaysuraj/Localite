@@ -1,65 +1,57 @@
-# Node.js
+# Dependencies and generated output
 node_modules/
-npm-debug.log
-yarn-error.log
-.pnp
-.pnp.js
-
-# Testing
-coverage/
-skills/
-# Production
-build/
 dist/
-
-# Java / Spring Boot (Backend)
+build/
 target/
+web-build/
+coverage/
 *.class
 *.jar
 *.war
 *.ear
 *.nar
-.mvn/
-!/.mvn/wrapper/maven-wrapper.jar
-!/.mvn/wrapper/maven-wrapper.properties
+*.tsbuildinfo
+*.log
 
-# React Native / Expo (Mobile)
+# Expo and generated native projects
 .expo/
+.kotlin/
+.metro-health-check*
+expo-env.d.ts
+/localite-mobile/android/
+/localite-mobile/ios/
+
+# Credentials and local environment
+.env
+.env.*
+!.env.example
+firebase-service-account.json
 *.jks
 *.p8
 *.p12
 *.key
+*.pem
 *.mobileprovision
-*.orig.*
 
-# Environment Variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# IDEs and Editors
+# Local editor, OS, and agent files
 .idea/
 .vscode/
+.claude/
+.gemini/
+.agents/
+.system_generated/
+skills/
+scratch/
+brain/
+*.iml
 *.swp
 *.swo
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
-
-# System Files
+*.orig.*
+.DS_Store
 Thumbs.db
 ehthumbs.db
 Desktop.ini
-
-# Agent / Tooling
-.gemini/
-.system_generated/
-scratch/
-brain/
-localite-backend/firebase-service-account.json
-localite-web/firebase-service-account.json

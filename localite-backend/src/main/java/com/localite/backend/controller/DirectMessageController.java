@@ -35,7 +35,7 @@ public class DirectMessageController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
         
         Long currentUserId = currentUserOpt.get().getId();
         List<DirectMessage> allMessages = directMessageRepository.findBySenderIdOrReceiverIdOrderBySentAtDesc(currentUserId, currentUserId);
@@ -61,7 +61,7 @@ public class DirectMessageController {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
-        if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).body("User not found");
 
         List<DirectMessage> messages = directMessageRepository.findConversation(currentUserOpt.get().getId(), otherUserId);
         return ResponseEntity.ok(messages);

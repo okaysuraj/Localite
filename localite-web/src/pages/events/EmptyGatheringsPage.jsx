@@ -1,12 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  CalendarBlank, 
-  Plus, 
-  Compass, 
-  Sparkle, 
-  Users 
-} from '@phosphor-icons/react';
+import { CalendarBlank, Plus, Compass, Users } from '@phosphor-icons/react';
 
 export default function EmptyGatheringsPage() {
   const navigate = useNavigate();
@@ -22,11 +15,10 @@ export default function EmptyGatheringsPage() {
           <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)]">
             Community Schedule
           </span>
-          <h1 className="text-2xl sm:text-3xl font-serif text-[var(--fg)]">
-            The Calendar is Clear
-          </h1>
+          <h1 className="text-2xl sm:text-3xl font-serif text-[var(--fg)]">The Calendar is Clear</h1>
           <p className="text-xs sm:text-sm text-[var(--fg-muted)] leading-relaxed max-w-md mx-auto">
-            A quiet interval before the next wave of gatherings. Take this opportunity to propose an experience of your own or explore neighborhood circles.
+            A quiet interval before the next wave of gatherings. Take this opportunity to propose an
+            experience of your own or explore neighborhood circles.
           </p>
         </div>
 

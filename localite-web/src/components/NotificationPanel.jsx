@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Bell, X, Check } from '@phosphor-icons/react';
-import { API_BASE_URL, getAuthHeaders, getNotifications } from '../services/api';
+import { getNotifications, markNotificationAsRead } from '../services/api';
 
 const NotificationPanel = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
+
+  const fetchNotifications = () => getNotifications().then(setNotifications);
 
   useEffect(() => {
     if (isOpen) {
@@ -11,30 +13,10 @@ const NotificationPanel = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const fetchNotifications = async () => {
-    try {
-      const data = await getNotifications();
-      if (Array.isArray(data)) {
-        setNotifications(data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const markAsRead = async (id) => {
     try {
-      const headers = await getAuthHeaders();
-      const res = await fetch(
-        `${API_BASE_URL}/notifications/${id}/read`,
-        {
-          method: 'PUT',
-          headers,
-        }
-      );
-      if (res.ok) {
-        fetchNotifications();
-      }
+      await markNotificationAsRead(id);
+      await fetchNotifications();
     } catch (err) {
       console.error(err);
     }
@@ -48,9 +30,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
       <div className="px-4 py-3 border-b border-border flex justify-between items-center bg-white">
         <div className="flex items-center gap-2">
           <Bell size={16} className="text-accent" />
-          <h3 className="font-display font-semibold text-fg text-sm">
-            Notifications
-          </h3>
+          <h3 className="font-display font-semibold text-fg text-sm">Notifications</h3>
         </div>
         <button
           onClick={onClose}
@@ -63,9 +43,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
       {/* List */}
       <div className="max-h-96 overflow-y-auto p-2 divide-y divide-border/40">
         {notifications.length === 0 ? (
-          <div className="p-8 text-center text-fg-muted font-mono text-xs">
-            No active notifications.
-          </div>
+          <div className="p-8 text-center text-fg-muted font-mono text-xs">No active notifications.</div>
         ) : (
           notifications.map((notif) => (
             <div
@@ -77,9 +55,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
               }`}
             >
               <div className="flex justify-between items-start gap-3">
-                <p className="text-xs leading-relaxed flex-1 font-sans">
-                  {notif.message}
-                </p>
+                <p className="text-xs leading-relaxed flex-1 font-sans">{notif.message}</p>
                 {!notif.read && (
                   <button
                     onClick={() => markAsRead(notif.id)}

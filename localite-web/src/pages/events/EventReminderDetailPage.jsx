@@ -1,16 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { 
-  CalendarBlank, 
-  MapPin, 
-  Clock, 
-  ArrowLeft, 
-  QrCode, 
-  ShieldCheck, 
-  Sparkle, 
-  CoatHanger,
-  NavigationArrow 
-} from '@phosphor-icons/react';
+import { CalendarBlank, MapPin, ArrowLeft, QrCode, ShieldCheck, CoatHanger } from '@phosphor-icons/react';
 
 export default function EventReminderDetailPage() {
   const navigate = useNavigate();
@@ -38,8 +28,8 @@ export default function EventReminderDetailPage() {
     <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
       <main className="max-w-4xl mx-auto space-y-8">
         {/* Navigation */}
-        <button 
-          type="button" 
+        <button
+          type="button"
           onClick={() => navigate(-1)}
           className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
         >
@@ -50,10 +40,10 @@ export default function EventReminderDetailPage() {
         {/* Hero Card */}
         <div className="rounded-card border border-[var(--border)] overflow-hidden bg-white shadow-sm">
           <div className="h-64 sm:h-72 w-full relative bg-[var(--bg-subtle)]">
-            <img 
-              src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200" 
-              alt="Event Hero" 
-              className="w-full h-full object-cover" 
+            <img
+              src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200"
+              alt="Event Hero"
+              className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
               <div className="text-white space-y-1">
@@ -109,15 +99,21 @@ export default function EventReminderDetailPage() {
 
             {/* Protocol Advice */}
             <div className="p-5 rounded-card border border-[var(--border)] bg-white space-y-3">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Arrival Protocol</h3>
+              <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
+                Arrival Protocol
+              </h3>
               <div className="space-y-2 text-xs text-[var(--fg-muted)]">
                 <div className="flex items-start gap-2.5">
                   <CoatHanger size={16} className="text-[var(--accent)] shrink-0 mt-0.5" />
-                  <span>Attire: Smart evening attire or mask optional. Complimentary coat check on arrival.</span>
+                  <span>
+                    Attire: Smart evening attire or mask optional. Complimentary coat check on arrival.
+                  </span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <ShieldCheck size={16} className="text-[var(--accent)] shrink-0 mt-0.5" />
-                  <span>Gate Security: Please have your digital member QR pass ready for instant check-in.</span>
+                  <span>
+                    Gate Security: Please have your digital member QR pass ready for instant check-in.
+                  </span>
                 </div>
               </div>
             </div>

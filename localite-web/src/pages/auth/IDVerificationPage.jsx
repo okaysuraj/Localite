@@ -1,15 +1,6 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  UploadSimple,
-  FileText,
-  Sun,
-  Eye,
-  ShieldCheck,
-  Check,
-  ArrowLeft,
-  ArrowRight,
-} from '@phosphor-icons/react';
+import { UploadSimple, Sun, Eye, ShieldCheck, Check, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 
 const IDVerificationPage = () => {
   const navigate = useNavigate();
@@ -119,9 +110,7 @@ const IDVerificationPage = () => {
         <div className="p-8 sm:p-10 flex flex-col justify-between space-y-6 bg-bg-subtle/40">
           <div
             className={`w-full border border-dashed rounded-card flex flex-col items-center justify-center p-8 transition-colors cursor-pointer bg-white ${
-              dragOver
-                ? 'border-accent bg-accent-subtle/30'
-                : 'border-border hover:border-accent/50'
+              dragOver ? 'border-accent bg-accent-subtle/30' : 'border-border hover:border-accent/50'
             }`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -144,21 +133,15 @@ const IDVerificationPage = () => {
                 <p className="text-xs font-mono font-medium text-fg truncate max-w-[200px]">
                   {selectedFile.name}
                 </p>
-                <p className="text-[10px] font-mono text-fg-muted">
-                  Click to replace document
-                </p>
+                <p className="text-[10px] font-mono text-fg-muted">Click to replace document</p>
               </div>
             ) : (
               <div className="text-center space-y-2">
                 <div className="w-12 h-12 rounded-full bg-bg-subtle text-fg-muted flex items-center justify-center mx-auto">
                   <UploadSimple size={24} />
                 </div>
-                <h3 className="text-sm font-display font-medium text-fg">
-                  Upload Document
-                </h3>
-                <p className="text-xs text-fg-muted">
-                  Drag and drop your file here, or click to browse.
-                </p>
+                <h3 className="text-sm font-display font-medium text-fg">Upload Document</h3>
+                <p className="text-xs text-fg-muted">Drag and drop your file here, or click to browse.</p>
                 <span className="inline-block text-[10px] font-mono text-fg-faint">
                   JPG, PNG, PDF up to 10MB
                 </span>

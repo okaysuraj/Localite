@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform, ActivityIndicator } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { API_URL } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -17,7 +26,7 @@ export default function JoinMatchScreen({ navigation }) {
       setLoading(true);
       const token = await AsyncStorage.getItem('userToken');
       const response = await fetch(`${API_URL}/matches/events`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
@@ -44,7 +53,7 @@ export default function JoinMatchScreen({ navigation }) {
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.sectionTitle}>Available Matches</Text>
-        
+
         <View style={styles.filtersContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <TouchableOpacity style={styles.filterBtnActive}>
@@ -63,17 +72,17 @@ export default function JoinMatchScreen({ navigation }) {
         </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#775a19" style={{marginTop: 40}} />
+          <ActivityIndicator size="large" color="#775a19" style={{ marginTop: 40 }} />
         ) : (
           <View style={styles.matchesList}>
             {matches.map((match, index) => (
-              <TouchableOpacity 
-                key={match.id} 
+              <TouchableOpacity
+                key={match.id}
                 style={index === 0 ? styles.featuredCard : styles.matchCard}
                 onPress={() => navigation.navigate('EventDetail', { eventId: match.id })}
               >
                 <View style={index === 0 ? styles.featuredImageContainer : styles.imageContainer}>
-                  <Image 
+                  <Image
                     source={{ uri: match.imageUrl || 'https://via.placeholder.com/400x200' }}
                     style={styles.cardImage}
                   />
@@ -93,15 +102,17 @@ export default function JoinMatchScreen({ navigation }) {
                       </View>
                     )}
                   </View>
-                  
+
                   <View style={styles.matchDetails}>
                     <MaterialIcons name="location-on" size={16} color="#44474d" />
                     <Text style={styles.matchLocation}>{match.location}</Text>
                   </View>
-                  
+
                   <View style={styles.matchTimeContainer}>
                     <Text style={styles.matchDate}>{new Date(match.date).toLocaleDateString()}</Text>
-                    <Text style={styles.matchTime}>{new Date(match.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</Text>
+                    <Text style={styles.matchTime}>
+                      {new Date(match.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </Text>
                   </View>
 
                   {index === 0 && (

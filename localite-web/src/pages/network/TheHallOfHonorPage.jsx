@@ -1,22 +1,11 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Trophy, 
-  Medal, 
-  Crown, 
-  Star, 
-  Sparkle, 
-  ShieldCheck, 
-  ArrowRight,
-  CheckCircle
-} from '@phosphor-icons/react';
+import { Trophy, Medal, Crown, Star, Sparkle, ShieldCheck, CheckCircle } from '@phosphor-icons/react';
 
 export default function TheHallOfHonorPage() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] pt-24 pb-16 px-6 max-w-7xl mx-auto font-sans animate-fade-in">
-      
       {/* Header */}
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
         <div>
@@ -31,7 +20,7 @@ export default function TheHallOfHonorPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => navigate('/network/prestige')}
             className="px-4 py-2 border border-[var(--border)] text-[var(--fg)] text-xs font-semibold uppercase tracking-wider rounded-card hover:bg-[var(--bg-subtle)] transition-colors"
           >
@@ -52,7 +41,8 @@ export default function TheHallOfHonorPage() {
           </div>
           <h2 className="text-2xl font-semibold text-[var(--fg)]">The Grand Tournament Champion</h2>
           <p className="text-xs md:text-sm text-[var(--fg-muted)] max-w-2xl leading-relaxed">
-            Awarded for clinching the Metropolitan Inter-Club Tennis Doubles Championship with an undefeated set record. Commended for exemplary sportsmanship and community leadership.
+            Awarded for clinching the Metropolitan Inter-Club Tennis Doubles Championship with an undefeated
+            set record. Commended for exemplary sportsmanship and community leadership.
           </p>
           <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-[var(--fg-muted)] justify-center md:justify-start font-mono">
             <span>Conferred: Autumn 2024</span>
@@ -65,7 +55,7 @@ export default function TheHallOfHonorPage() {
       {/* Honors Bento Grid */}
       <section className="space-y-6">
         <h3 className="text-base font-semibold text-[var(--fg)]">Honors & Conferred Medals</h3>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             {
@@ -73,47 +63,47 @@ export default function TheHallOfHonorPage() {
               cat: 'Athletic Excellence',
               desc: 'Champion of the Winter Table Tennis Invitational across 32 seeded players.',
               year: '2024',
-              icon: Medal
+              icon: Medal,
             },
             {
               title: 'The Gracious Host',
               cat: 'Civic Leadership',
               desc: 'Hosted 25 consecutive cultural salons with 100% attendee satisfaction ratings.',
               year: '2024',
-              icon: Crown
+              icon: Crown,
             },
             {
               title: 'Fidelity of Presence',
               cat: 'Community Standard',
               desc: 'Over 100 verified attendances with zero unexcused cancellations.',
               year: '2023',
-              icon: ShieldCheck
+              icon: ShieldCheck,
             },
             {
               title: 'Pacesetter of the Court',
               cat: 'Endurance',
               desc: 'Completed 50 official squash spar matches within a single seasonal calendar.',
               year: '2023',
-              icon: Trophy
+              icon: Trophy,
             },
             {
               title: 'Fellow of the Salons',
               cat: 'Literary & Arts',
               desc: 'Curated 12 architectural walkabouts and historical salons in central districts.',
               year: '2023',
-              icon: Star
+              icon: Star,
             },
             {
               title: 'Founding Patron',
               cat: 'Honorary Order',
               desc: 'One of the inaugural 100 members who helped establish the Localite standard.',
               year: '2023',
-              icon: Sparkle
-            }
+              icon: Sparkle,
+            },
           ].map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div 
+              <div
                 key={idx}
                 className="bg-[var(--bg)] p-6 rounded-card border border-[var(--border)] hover:border-[var(--fg-muted)] transition-all flex flex-col justify-between"
               >
@@ -126,7 +116,9 @@ export default function TheHallOfHonorPage() {
                       {item.year}
                     </span>
                   </div>
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--accent)] mb-1">{item.cat}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--accent)] mb-1">
+                    {item.cat}
+                  </p>
                   <h4 className="text-sm font-semibold text-[var(--fg)] mb-2">{item.title}</h4>
                   <p className="text-xs text-[var(--fg-muted)] leading-relaxed">{item.desc}</p>
                 </div>
@@ -141,7 +133,6 @@ export default function TheHallOfHonorPage() {
           })}
         </div>
       </section>
-
     </div>
   );
 }

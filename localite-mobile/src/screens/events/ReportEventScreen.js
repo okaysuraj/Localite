@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, TextInput, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  TextInput,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ReportEventScreen() {
@@ -12,7 +22,7 @@ export default function ReportEventScreen() {
     { id: 'misleading', icon: 'info', label: 'Misleading Info' },
     { id: 'safety', icon: 'gpp-maybe', label: 'Safety Concerns' },
     { id: 'illegal', icon: 'gavel', label: 'Illegal Activity' },
-    { id: 'spam', icon: 'sentiment-dissatisfied', label: 'Spam or Inappropriate' }
+    { id: 'spam', icon: 'sentiment-dissatisfied', label: 'Spam or Inappropriate' },
   ];
 
   return (
@@ -24,22 +34,25 @@ export default function ReportEventScreen() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Report Event</Text>
         <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuABD8stMizR2Q1UIgCWjtRbsSPaCIXs8XS0TMP2WtK17sUpzuL14QfrGbgTNSonKgjVsWlmLaYmF0TnvXJa2LxH4tFi3TO8rG6EEzkJ0YVDgt9sTUAThvEWxrPdsp00w3nOZtCd9ohdLqv3E_vAi3pupC6CRxyvNddYDUWU96aiNBh-e8Q3V1cIDXJQP_MLHeB4YPHdW2KY5BtW6gT5GLDdcyX0Dfi-bRFKoMNU2wy-yUiZoMbzovKx2g' }}
+          <Image
+            source={{
+              uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuABD8stMizR2Q1UIgCWjtRbsSPaCIXs8XS0TMP2WtK17sUpzuL14QfrGbgTNSonKgjVsWlmLaYmF0TnvXJa2LxH4tFi3TO8rG6EEzkJ0YVDgt9sTUAThvEWxrPdsp00w3nOZtCd9ohdLqv3E_vAi3pupC6CRxyvNddYDUWU96aiNBh-e8Q3V1cIDXJQP_MLHeB4YPHdW2KY5BtW6gT5GLDdcyX0Dfi-bRFKoMNU2wy-yUiZoMbzovKx2g',
+            }}
             style={styles.avatarImg}
           />
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        
         {/* Event Snippet */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>REPORTING CONTENT</Text>
           <View style={styles.eventCard}>
             <View style={styles.eventImgWrap}>
-              <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDZUbWAvdk4D1J5pA77pISmJEiJoKx_LR6_97e34q3Bb3luDktTv_50zxr8AUNdSgW8zLFfGDS0PiYcB0Fx-ej_JPb2R9AOStv2q3HxQU0SRyMtLNZAg21Jy34LsOLK0Oov6eHVv03BOJXcrfYya_Our45emxtAq7IB7vhrfgKJQti6loSU1chEEFhmd8KmbgFaF48MPN4AWD_aaueT02Q-RV3ytLmWcORTEevveOSciExGUuPCg6NkaQ' }}
+              <Image
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDZUbWAvdk4D1J5pA77pISmJEiJoKx_LR6_97e34q3Bb3luDktTv_50zxr8AUNdSgW8zLFfGDS0PiYcB0Fx-ej_JPb2R9AOStv2q3HxQU0SRyMtLNZAg21Jy34LsOLK0Oov6eHVv03BOJXcrfYya_Our45emxtAq7IB7vhrfgKJQti6loSU1chEEFhmd8KmbgFaF48MPN4AWD_aaueT02Q-RV3ytLmWcORTEevveOSciExGUuPCg6NkaQ',
+                }}
                 style={styles.eventImg}
               />
             </View>
@@ -58,11 +71,11 @@ export default function ReportEventScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>SELECT REASON</Text>
           <View style={styles.reasonsList}>
-            {reasons.map(reason => {
+            {reasons.map((reason) => {
               const isSelected = selectedReason === reason.id;
               return (
-                <TouchableOpacity 
-                  key={reason.id} 
+                <TouchableOpacity
+                  key={reason.id}
                   style={[styles.reasonItem, isSelected && styles.reasonItemSelected]}
                   onPress={() => setSelectedReason(reason.id)}
                   activeOpacity={0.8}
@@ -82,7 +95,7 @@ export default function ReportEventScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ADDITIONAL DETAILS</Text>
           <View style={styles.textAreaWrap}>
-            <TextInput 
+            <TextInput
               style={styles.textArea}
               placeholder="Please describe the issue in detail..."
               placeholderTextColor="#75777e"
@@ -97,7 +110,8 @@ export default function ReportEventScreen() {
             </Text>
           </View>
           <Text style={styles.helperText}>
-            Our moderation team reviews all reports within 24 hours. Your privacy is paramount; the host will not be notified of who filed this report.
+            Our moderation team reviews all reports within 24 hours. Your privacy is paramount; the host will
+            not be notified of who filed this report.
           </Text>
         </View>
 
@@ -110,7 +124,6 @@ export default function ReportEventScreen() {
             <Text style={styles.cancelBtnText}>CANCEL</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -309,5 +322,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#775a19',
     letterSpacing: 2,
-  }
+  },
 });

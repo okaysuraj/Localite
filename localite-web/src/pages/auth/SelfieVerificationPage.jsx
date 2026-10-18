@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Camera,
-  Eye,
-  Sun,
-  ShieldCheck,
-  Check,
-  ArrowLeft,
-  ArrowRight,
-} from '@phosphor-icons/react';
+import { Camera, Eye, Sun, ShieldCheck, Check, ArrowLeft } from '@phosphor-icons/react';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
 

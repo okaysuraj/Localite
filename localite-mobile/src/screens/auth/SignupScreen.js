@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TextInput, 
-  TouchableOpacity, 
-  SafeAreaView, 
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Switch
+  Switch,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../context/AuthContext';
 
@@ -34,18 +34,16 @@ export default function SignupScreen({ navigation }) {
       Alert.alert('Error', 'Please agree to the Terms of Service and Privacy Policy');
       return;
     }
-    
+
     setLoading(true);
     try {
       const result = await register(username, email, password);
-      
+
       if (result.success) {
         await AsyncStorage.setItem('username', username);
-        Alert.alert(
-          'Verification Required',
-          result.message,
-          [{ text: 'OK', onPress: () => navigation.replace('Login') }]
-        );
+        Alert.alert('Verification Required', result.message, [
+          { text: 'OK', onPress: () => navigation.replace('Login') },
+        ]);
       }
     } catch (error) {
       Alert.alert('Error', error.message || 'Network error. Could not reach the server.');
@@ -57,13 +55,13 @@ export default function SignupScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {/* App Bar */}
         <View style={styles.appBar}>
-          <TouchableOpacity onPress={() => navigation.canGoBack() ? navigation.goBack() : null} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={() => (navigation.canGoBack() ? navigation.goBack() : null)}
+            style={styles.backButton}
+          >
             <Ionicons name="arrow-back" size={24} color="#1b1c1c" />
           </TouchableOpacity>
           <Text style={styles.appBarTitle}>LOCALITE</Text>
@@ -71,7 +69,6 @@ export default function SignupScreen({ navigation }) {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-          
           <View style={styles.headerSection}>
             <Text style={styles.title}>Modern Nobility</Text>
             <Text style={styles.subtitle}>Join an exclusive community of local explorers.</Text>
@@ -82,7 +79,7 @@ export default function SignupScreen({ navigation }) {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>FULL NAME</Text>
               <View style={styles.inputContainer}>
-                <TextInput 
+                <TextInput
                   style={styles.input}
                   placeholder="E.g. Alexander Sterling"
                   placeholderTextColor="rgba(68, 71, 77, 0.4)"
@@ -97,7 +94,7 @@ export default function SignupScreen({ navigation }) {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>EMAIL ADDRESS</Text>
               <View style={styles.inputContainer}>
-                <TextInput 
+                <TextInput
                   style={styles.input}
                   placeholder="alexander@domain.com"
                   placeholderTextColor="rgba(68, 71, 77, 0.4)"
@@ -113,7 +110,7 @@ export default function SignupScreen({ navigation }) {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>PASSWORD</Text>
               <View style={styles.inputContainer}>
-                <TextInput 
+                <TextInput
                   style={[styles.input, { paddingRight: 40 }]}
                   placeholder="••••••••"
                   placeholderTextColor="rgba(68, 71, 77, 0.4)"
@@ -121,36 +118,34 @@ export default function SignupScreen({ navigation }) {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                 />
-                <TouchableOpacity 
-                  style={styles.eyeIcon} 
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color="rgba(68, 71, 77, 0.6)" />
+                <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
+                  <Ionicons
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color="rgba(68, 71, 77, 0.6)"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Terms & Conditions */}
             <View style={styles.termsContainer}>
-              <Switch 
+              <Switch
                 value={agreeTerms}
                 onValueChange={setAgreeTerms}
-                trackColor={{ false: "#eae8e7", true: "#775a19" }}
-                thumbColor={"#ffffff"}
+                trackColor={{ false: '#eae8e7', true: '#775a19' }}
+                thumbColor={'#ffffff'}
                 ios_backgroundColor="#eae8e7"
                 style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
               />
               <Text style={styles.termsText}>
-                I agree to the <Text style={styles.termsLink}>Terms of Service</Text> and <Text style={styles.termsLink}>Privacy Policy</Text>.
+                I agree to the <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
+                <Text style={styles.termsLink}>Privacy Policy</Text>.
               </Text>
             </View>
 
             {/* Create Account Button */}
-            <TouchableOpacity 
-              style={styles.signupBtn} 
-              onPress={handleSignup}
-              disabled={loading}
-            >
+            <TouchableOpacity style={styles.signupBtn} onPress={handleSignup} disabled={loading}>
               <Text style={styles.signupBtnText}>{loading ? 'CREATING...' : 'CREATE ACCOUNT'}</Text>
               <Ionicons name="chevron-forward" size={18} color="#ffffff" style={{ marginLeft: 8 }} />
             </TouchableOpacity>
@@ -177,16 +172,13 @@ export default function SignupScreen({ navigation }) {
 
           {/* Login Link */}
           <View style={styles.loginPrompt}>
-            <Text style={styles.loginText}>
-              Already have an account?{' '}
-            </Text>
+            <Text style={styles.loginText}>Already have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text style={styles.loginLink}>Login</Text>
             </TouchableOpacity>
           </View>
-
         </ScrollView>
-        
+
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>© 2024 LOCALITE. ALL RIGHTS RESERVED.</Text>
@@ -196,7 +188,6 @@ export default function SignupScreen({ navigation }) {
             <Text style={styles.footerLinkItem}>CONTACT</Text>
           </View>
         </View>
-
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

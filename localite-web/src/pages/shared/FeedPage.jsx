@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getFeed } from '../../services/api';
-import { 
-  Users, 
-  Calendar, 
-  MapPin, 
-  Sparkle, 
-  CircleNotch,
-  ArrowRight
-} from '@phosphor-icons/react';
+import { Users, Calendar, MapPin, CircleNotch } from '@phosphor-icons/react';
 
 export default function FeedPage() {
   const [feedItems, setFeedItems] = useState([]);
@@ -21,7 +14,7 @@ export default function FeedPage() {
         const data = await getFeed();
         setFeedItems(data || []);
       } catch (error) {
-        console.error("Failed to fetch feed", error);
+        console.error('Failed to fetch feed', error);
       } finally {
         setLoading(false);
       }
@@ -31,7 +24,6 @@ export default function FeedPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-24 min-h-screen font-sans text-[var(--fg)] animate-fade-in">
-      
       {/* Header */}
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
         <div>
@@ -56,30 +48,35 @@ export default function FeedPage() {
         <div className="py-24 text-center bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] p-8">
           <Users size={32} className="mx-auto text-[var(--fg-muted)] mb-3" />
           <p className="text-sm font-semibold text-[var(--fg)]">No Network Activity Recorded Yet</p>
-          <p className="text-xs text-[var(--fg-muted)] mt-1">Connect with local members or RSVP to upcoming events to populate your feed.</p>
+          <p className="text-xs text-[var(--fg-muted)] mt-1">
+            Connect with local members or RSVP to upcoming events to populate your feed.
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
           {feedItems.map((item, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="bg-[var(--bg)] rounded-card border border-[var(--border)] p-6 hover:border-[var(--fg-muted)] transition-all space-y-4"
             >
               <div className="flex items-center gap-2 text-xs text-[var(--fg-muted)]">
-                <Link to={`/profile/${item.actor?.id}`} className="font-semibold text-[var(--fg)] hover:text-[var(--accent)] transition-colors">
+                <Link
+                  to={`/profile/${item.actor?.id}`}
+                  className="font-semibold text-[var(--fg)] hover:text-[var(--accent)] transition-colors"
+                >
                   {item.actor?.username || 'A member'}
                 </Link>
                 <span>{item.action?.toLowerCase() || 'published'} an event</span>
               </div>
-              
-              <div 
+
+              <div
                 onClick={() => navigate(`/event/${item.event?.id}`)}
                 className="flex flex-col sm:flex-row gap-5 p-4 rounded-card bg-[var(--bg-subtle)] border border-[var(--border)] cursor-pointer hover:border-[var(--accent)] transition-all"
               >
                 {item.event?.imageUrl && (
                   <div className="w-full sm:w-36 h-24 rounded-card overflow-hidden shrink-0 bg-neutral-200">
-                    <img 
-                      src={item.event.imageUrl} 
+                    <img
+                      src={item.event.imageUrl}
                       alt={item.event.title}
                       className="w-full h-full object-cover"
                     />

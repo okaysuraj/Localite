@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Animated, Dimensions, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,9 +29,7 @@ const SkeletonBase = ({ style }) => {
     outputRange: [0.3, 0.7],
   });
 
-  return (
-    <Animated.View style={[{ backgroundColor: '#efeded', opacity }, style]} />
-  );
+  return <Animated.View style={[{ backgroundColor: '#efeded', opacity }, style]} />;
 };
 
 export default function LoadingStateScreen() {
@@ -93,8 +91,8 @@ export default function LoadingStateScreen() {
           <View style={styles.sectionHeader}>
             <SkeletonBase style={styles.sectionTitle} />
           </View>
-          
-          {[1, 2, 3].map(i => (
+
+          {[1, 2, 3].map((i) => (
             <View key={i} style={styles.card}>
               <SkeletonBase style={styles.cardImg} />
               <View style={styles.cardContent}>
@@ -114,7 +112,7 @@ export default function LoadingStateScreen() {
             <View style={[styles.crestRing, { transform: [{ rotate: '45deg' }, { scale: 1.1 }] }]} />
             <View style={[styles.crestRing, { transform: [{ rotate: '-45deg' }, { scale: 1.1 }] }]} />
           </Animated.View>
-          
+
           <Animated.View style={[styles.loaderContent, { opacity: pulseOpacity }]}>
             <MaterialIcons name="auto-awesome" size={40} color="#775a19" />
             <Text style={styles.loaderText}>LOCALITE</Text>
@@ -124,7 +122,7 @@ export default function LoadingStateScreen() {
 
       {/* Bottom Nav Skeleton */}
       <View style={styles.bottomNav}>
-        {[1, 2, 3, 4].map(i => (
+        {[1, 2, 3, 4].map((i) => (
           <View key={i} style={styles.navItem}>
             <SkeletonBase style={styles.navIcon} />
             <SkeletonBase style={styles.navLabel} />

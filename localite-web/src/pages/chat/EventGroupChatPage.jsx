@@ -1,16 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getEventMessages, sendEventMessage, getEventById } from '../../services/api';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  ArrowLeft, 
-  PaperPlaneTilt, 
-  Users, 
-  CheckCircle,
-  Clock,
-  Sparkle
-} from '@phosphor-icons/react';
+import { ArrowLeft, PaperPlaneTilt, Users } from '@phosphor-icons/react';
 
 export default function EventGroupChatPage() {
   const { id } = useParams();
@@ -47,7 +40,7 @@ export default function EventGroupChatPage() {
       subscription = stompClient.subscribe(`/topic/events/${id}`, (msgFrame) => {
         const newMsg = JSON.parse(msgFrame.body);
         setMessages((prev) => {
-          if (prev.find(m => m.id === newMsg.id)) return prev;
+          if (prev.find((m) => m.id === newMsg.id)) return prev;
           return [...prev, newMsg];
         });
         setTimeout(scrollToBottom, 100);
@@ -66,7 +59,7 @@ export default function EventGroupChatPage() {
     try {
       const sentMsg = await sendEventMessage(id, content);
       setMessages((prev) => {
-        if (prev.find(m => m.id === sentMsg.id)) return prev;
+        if (prev.find((m) => m.id === sentMsg.id)) return prev;
         return [...prev, sentMsg];
       });
       setTimeout(scrollToBottom, 100);
@@ -82,11 +75,10 @@ export default function EventGroupChatPage() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-[calc(100vh-80px)] bg-[var(--bg)] text-[var(--fg)] max-w-7xl mx-auto border-x border-[var(--border)] font-sans">
-      
       {/* Left Sidebar (Desktop) */}
       <aside className="hidden lg:flex flex-col w-80 border-r border-[var(--border)] bg-[var(--bg-subtle)] p-6 justify-between">
         <div className="space-y-6">
-          <button 
+          <button
             onClick={() => navigate(`/event/${id}`)}
             className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
           >
@@ -107,7 +99,9 @@ export default function EventGroupChatPage() {
             <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs">
               <span className="text-[var(--fg-muted)]">Room Status</span>
               <span className="flex items-center gap-1.5 font-medium text-emerald-600">
-                <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-neutral-400'}`}></span>
+                <span
+                  className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-neutral-400'}`}
+                ></span>
                 {isConnected ? 'Connected' : 'Connecting'}
               </span>
             </div>
@@ -127,16 +121,14 @@ export default function EventGroupChatPage() {
         {/* Top Chat Bar */}
         <header className="px-6 py-4 flex items-center justify-between border-b border-[var(--border)] bg-[var(--bg)]/90 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center gap-3">
-            <button 
-              className="lg:hidden p-1.5 -ml-2 text-[var(--fg-muted)] hover:text-[var(--fg)]" 
+            <button
+              className="lg:hidden p-1.5 -ml-2 text-[var(--fg-muted)] hover:text-[var(--fg)]"
               onClick={() => navigate(`/event/${id}`)}
             >
               <ArrowLeft size={18} />
             </button>
             <div>
-              <h1 className="text-sm font-semibold text-[var(--fg)]">
-                {event?.title || 'Gathering Chat'}
-              </h1>
+              <h1 className="text-sm font-semibold text-[var(--fg)]">{event?.title || 'Gathering Chat'}</h1>
               <span className="text-[11px] text-[var(--fg-muted)]">
                 {isConnected ? 'Real-time WebSocket Active' : 'Connecting to channel...'}
               </span>
@@ -159,17 +151,17 @@ export default function EventGroupChatPage() {
             messages.map((msg, idx) => {
               const isMe = msg.sender === currentUser?.username || msg.sender === currentUser?.email;
               return (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className={`flex flex-col max-w-[80%] ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'}`}
                 >
                   <span className="text-[10px] font-mono text-[var(--fg-muted)] mb-1 px-1">
                     {isMe ? 'You' : msg.sender} • {formatTime(msg.sentAt)}
                   </span>
-                  <div 
+                  <div
                     className={`p-3.5 rounded-card text-xs leading-relaxed ${
-                      isMe 
-                        ? 'bg-[var(--accent)] text-white' 
+                      isMe
+                        ? 'bg-[var(--accent)] text-white'
                         : 'bg-[var(--bg-subtle)] text-[var(--fg)] border border-[var(--border)]'
                     }`}
                   >
@@ -185,14 +177,14 @@ export default function EventGroupChatPage() {
         {/* Input Bar */}
         <footer className="p-4 border-t border-[var(--border)] bg-[var(--bg)]">
           <form onSubmit={handleSendMessage} className="flex items-center gap-3 max-w-4xl mx-auto">
-            <input 
+            <input
               type="text"
               placeholder="Send message to attendees..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="flex-1 px-4 py-3 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card text-xs text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
             />
-            <button 
+            <button
               type="submit"
               disabled={!message.trim()}
               className="px-5 py-3 bg-[var(--accent)] hover:bg-[var(--accent)]/90 disabled:opacity-40 text-white rounded-card text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
@@ -203,7 +195,6 @@ export default function EventGroupChatPage() {
           </form>
         </footer>
       </section>
-
     </div>
   );
 }

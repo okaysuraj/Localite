@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function MatchHistoryScreen({ navigation }) {
   const [activeFilter, setActiveFilter] = useState('ALL MATCHES');
@@ -30,7 +30,7 @@ export default function MatchHistoryScreen({ navigation }) {
       opponent: 'TEAM OAKLEY',
       notes: '"Challenging terrain affected the final chukker speed."',
       image: 'https://via.placeholder.com/400x200',
-    }
+    },
   ];
 
   return (
@@ -54,7 +54,7 @@ export default function MatchHistoryScreen({ navigation }) {
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statLabel}>WIN RATE</Text>
-            <Text style={[styles.statValue, {color: '#775a19'}]}>68%</Text>
+            <Text style={[styles.statValue, { color: '#775a19' }]}>68%</Text>
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statLabel}>MVP TITLES</Text>
@@ -62,20 +62,22 @@ export default function MatchHistoryScreen({ navigation }) {
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statLabel}>ACTIVE STREAK</Text>
-            <Text style={[styles.statValue, {color: '#775a19'}]}>4 Wins</Text>
+            <Text style={[styles.statValue, { color: '#775a19' }]}>4 Wins</Text>
           </View>
         </View>
 
         {/* Filters */}
         <View style={styles.filtersContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {filters.map(filter => (
-              <TouchableOpacity 
-                key={filter} 
+            {filters.map((filter) => (
+              <TouchableOpacity
+                key={filter}
                 style={[styles.filterBtn, activeFilter === filter && styles.filterBtnActive]}
                 onPress={() => setActiveFilter(filter)}
               >
-                <Text style={[styles.filterBtnText, activeFilter === filter && styles.filterBtnTextActive]}>{filter}</Text>
+                <Text style={[styles.filterBtnText, activeFilter === filter && styles.filterBtnTextActive]}>
+                  {filter}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -87,18 +89,22 @@ export default function MatchHistoryScreen({ navigation }) {
             <TouchableOpacity key={match.id} style={styles.matchCard}>
               <View style={styles.imageContainer}>
                 <Image source={{ uri: match.image }} style={styles.cardImage} />
-                <View style={[styles.resultBadge, match.result === 'LOSS' && {backgroundColor: '#44474d'}]}>
-                  <Text style={[styles.resultText, match.result === 'LOSS' && {color: '#ffffff'}]}>{match.result}</Text>
+                <View style={[styles.resultBadge, match.result === 'LOSS' && { backgroundColor: '#44474d' }]}>
+                  <Text style={[styles.resultText, match.result === 'LOSS' && { color: '#ffffff' }]}>
+                    {match.result}
+                  </Text>
                 </View>
               </View>
 
               <View style={styles.cardContent}>
                 <View style={styles.cardHeader}>
-                  <View style={{flex: 1}}>
-                    <Text style={styles.matchDate}>{match.date} • {match.location}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.matchDate}>
+                      {match.date} • {match.location}
+                    </Text>
                     <Text style={styles.matchTitle}>{match.title}</Text>
                   </View>
-                  <View style={{alignItems: 'flex-end'}}>
+                  <View style={{ alignItems: 'flex-end' }}>
                     <Text style={styles.scoreLabel}>FINAL SCORE</Text>
                     <Text style={styles.matchScore}>{match.score}</Text>
                   </View>

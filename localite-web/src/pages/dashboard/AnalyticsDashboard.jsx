@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import {
-  CalendarBlank,
-  Users,
-  Star,
-  TrendUp,
-  ChartLineUp,
-} from '@phosphor-icons/react';
-import {
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-} from 'recharts';
+import { useState, useEffect } from 'react';
+import { CalendarBlank, Users, Star, TrendUp } from '@phosphor-icons/react';
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { getUserAnalytics } from '../../services/api';
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white border border-border p-2.5 rounded-card shadow-md">
+        <p className="text-fg-muted font-mono text-[10px] uppercase tracking-wider mb-1">{label}</p>
+        <p className="text-fg font-display font-semibold text-base">
+          {payload[0].value} <span className="text-fg-muted text-xs font-normal">Attendees</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const AnalyticsDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const res = await getUserAnalytics();
+        if (res) {
+          setData(res);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchAnalytics();
   }, []);
-
-  const fetchAnalytics = async () => {
-    try {
-      const res = await getUserAnalytics();
-      if (res) {
-        setData(res);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -56,23 +56,6 @@ const AnalyticsDashboard = () => {
       </div>
     );
   }
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white border border-border p-2.5 rounded-card shadow-md">
-          <p className="text-fg-muted font-mono text-[10px] uppercase tracking-wider mb-1">
-            {label}
-          </p>
-          <p className="text-fg font-display font-semibold text-base">
-            {payload[0].value}{' '}
-            <span className="text-fg-muted text-xs font-normal">Attendees</span>
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="min-h-screen bg-bg py-10 px-6">
@@ -94,9 +77,7 @@ const AnalyticsDashboard = () => {
               <span>Total Hosted</span>
               <CalendarBlank size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              {data.totalEventsHosted}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">{data.totalEventsHosted}</p>
           </div>
 
           <div className="bg-white border border-border rounded-card p-5 space-y-2">
@@ -104,9 +85,7 @@ const AnalyticsDashboard = () => {
               <span>Total Attendees</span>
               <Users size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              {data.totalAttendees}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">{data.totalAttendees}</p>
           </div>
 
           <div className="bg-white border border-border rounded-card p-5 space-y-2">
@@ -124,9 +103,7 @@ const AnalyticsDashboard = () => {
               <span>Upcoming</span>
               <TrendUp size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              {data.upcomingEventsCount}
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">{data.upcomingEventsCount}</p>
           </div>
         </div>
 
@@ -139,9 +116,7 @@ const AnalyticsDashboard = () => {
                 <h3 className="font-display font-semibold text-base text-fg tracking-tight">
                   Attendee Growth Trajectory
                 </h3>
-                <p className="text-xs text-fg-muted mt-0.5">
-                  Monthly attendance across your events
-                </p>
+                <p className="text-xs text-fg-muted mt-0.5">Monthly attendance across your events</p>
               </div>
               <span className="text-xs font-mono text-accent bg-accent-subtle px-2.5 py-1 rounded-full border border-accent/20">
                 Live Data
@@ -156,23 +131,9 @@ const AnalyticsDashboard = () => {
                     margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
                   >
                     <defs>
-                      <linearGradient
-                        id="colorAttendees"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#1A6B4A"
-                          stopOpacity={0.2}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#1A6B4A"
-                          stopOpacity={0}
-                        />
+                      <linearGradient id="colorAttendees" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#1A6B4A" stopOpacity={0.2} />
+                        <stop offset="95%" stopColor="#1A6B4A" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <XAxis
@@ -188,11 +149,7 @@ const AnalyticsDashboard = () => {
                       tickLine={false}
                       axisLine={false}
                     />
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="#f3f4f6"
-                      vertical={false}
-                    />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
                     <Tooltip content={<CustomTooltip />} />
                     <Area
                       type="monotone"
@@ -214,20 +171,14 @@ const AnalyticsDashboard = () => {
 
           {/* Side Column: Recent Events (4 cols) */}
           <div className="lg:col-span-4 bg-white border border-border rounded-card p-6 space-y-4">
-            <h3 className="font-display font-semibold text-base text-fg tracking-tight">
-              Recent Gatherings
-            </h3>
+            <h3 className="font-display font-semibold text-base text-fg tracking-tight">Recent Gatherings</h3>
 
             <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 divide-y divide-border/60">
               {data.recentEvents && data.recentEvents.length > 0 ? (
                 data.recentEvents.map((event, idx) => (
                   <div key={idx} className="pt-3 first:pt-0 space-y-1">
-                    <p className="font-display font-medium text-sm text-fg truncate">
-                      {event.title}
-                    </p>
-                    <p className="font-mono text-[10px] text-fg-muted uppercase">
-                      {event.date}
-                    </p>
+                    <p className="font-display font-medium text-sm text-fg truncate">{event.title}</p>
+                    <p className="font-mono text-[10px] text-fg-muted uppercase">{event.date}</p>
 
                     <div className="flex justify-between items-center text-xs font-mono text-fg-muted pt-1">
                       <span className="inline-flex items-center gap-1">

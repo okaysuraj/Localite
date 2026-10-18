@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform, ActivityIndicator } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { API_URL } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -17,7 +26,7 @@ export default function FindPlayersScreen({ navigation }) {
       setLoading(true);
       const token = await AsyncStorage.getItem('userToken');
       const response = await fetch(`${API_URL}/matches/users`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         const data = await response.json();
@@ -41,16 +50,19 @@ export default function FindPlayersScreen({ navigation }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.subtitle}>Curating the elite sports community. Connect with players who match your precision, schedule, and reputation.</Text>
-        
+        <Text style={styles.subtitle}>
+          Curating the elite sports community. Connect with players who match your precision, schedule, and
+          reputation.
+        </Text>
+
         {loading ? (
-          <ActivityIndicator size="large" color="#775a19" style={{marginTop: 40}} />
+          <ActivityIndicator size="large" color="#775a19" style={{ marginTop: 40 }} />
         ) : (
           <View style={styles.grid}>
             {players.map((player) => (
               <View key={player.id} style={styles.card}>
                 <View style={styles.imageContainer}>
-                  <Image 
+                  <Image
                     source={{ uri: player.profilePhotoUrl || 'https://via.placeholder.com/150' }}
                     style={styles.cardImage}
                   />
@@ -63,7 +75,7 @@ export default function FindPlayersScreen({ navigation }) {
                 <View style={styles.cardContent}>
                   <View style={styles.cardHeader}>
                     <View style={styles.avatarContainer}>
-                      <Image 
+                      <Image
                         source={{ uri: player.profilePhotoUrl || 'https://via.placeholder.com/50' }}
                         style={styles.avatarImage}
                       />
@@ -73,7 +85,7 @@ export default function FindPlayersScreen({ navigation }) {
                       <Text style={styles.playerTier}>{player.sportsInterests || 'Elite Member'}</Text>
                     </View>
                   </View>
-                  
+
                   <View style={styles.tagsContainer}>
                     <View style={styles.tag}>
                       <MaterialIcons name="verified-user" size={14} color="#775a19" />
@@ -90,7 +102,7 @@ export default function FindPlayersScreen({ navigation }) {
                       <Text style={styles.statLabel}>MATCH SCORE</Text>
                       <Text style={styles.statValue}>{player.matchScore}%</Text>
                     </View>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.requestBtn}
                       onPress={() => navigation.navigate('PublicProfile', { userId: player.id })}
                     >

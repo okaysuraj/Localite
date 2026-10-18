@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TextInput, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  Image,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
 
@@ -9,9 +19,33 @@ export default function CreateEventLocationPickerScreen() {
   const [selectedVenue, setSelectedVenue] = useState(null);
 
   const venues = [
-    { id: 1, name: 'The Gilded Library', match: '94% MATCH', desc: 'Quiet • Coworking • Mayfair', img: 'https://via.placeholder.com/300', lat: 51.5115, lng: -0.1472 },
-    { id: 2, name: 'Atlas Botanica', match: 'TOP RATED', desc: 'Lively • Coffee • Soho', img: 'https://via.placeholder.com/300', lat: 51.5137, lng: -0.1353 },
-    { id: 3, name: 'Vault No. 7', match: 'PRIVATE', desc: 'Mood • Jazz • Chelsea', img: 'https://via.placeholder.com/300', lat: 51.4877, lng: -0.1685 }
+    {
+      id: 1,
+      name: 'The Gilded Library',
+      match: '94% MATCH',
+      desc: 'Quiet • Coworking • Mayfair',
+      img: 'https://via.placeholder.com/300',
+      lat: 51.5115,
+      lng: -0.1472,
+    },
+    {
+      id: 2,
+      name: 'Atlas Botanica',
+      match: 'TOP RATED',
+      desc: 'Lively • Coffee • Soho',
+      img: 'https://via.placeholder.com/300',
+      lat: 51.5137,
+      lng: -0.1353,
+    },
+    {
+      id: 3,
+      name: 'Vault No. 7',
+      match: 'PRIVATE',
+      desc: 'Mood • Jazz • Chelsea',
+      img: 'https://via.placeholder.com/300',
+      lat: 51.4877,
+      lng: -0.1685,
+    },
   ];
 
   return (
@@ -22,9 +56,7 @@ export default function CreateEventLocationPickerScreen() {
           <MaterialIcons name="close" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Localite</Text>
-        <View style={styles.avatarWrap}>
-          {/* Avatar placeholder */}
-        </View>
+        <View style={styles.avatarWrap}>{/* Avatar placeholder */}</View>
       </View>
 
       {/* Progress Indicator */}
@@ -49,7 +81,7 @@ export default function CreateEventLocationPickerScreen() {
           }}
           userInterfaceStyle="light"
         >
-          {venues.map(v => (
+          {venues.map((v) => (
             <Marker
               key={v.id}
               coordinate={{ latitude: v.lat, longitude: v.lng }}
@@ -65,9 +97,9 @@ export default function CreateEventLocationPickerScreen() {
         <View style={styles.searchWrap}>
           <View style={styles.searchInputWrap}>
             <MaterialIcons name="search" size={20} color="#75777e" style={styles.searchIcon} />
-            <TextInput 
-              style={styles.searchInput} 
-              placeholder="Search Third Places" 
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search Third Places"
               placeholderTextColor="#75777e"
             />
             <MaterialIcons name="my-location" size={20} color="#775a19" style={styles.locationIcon} />
@@ -86,10 +118,14 @@ export default function CreateEventLocationPickerScreen() {
         {/* Bottom Bento: Suggested Venues */}
         <View style={styles.bottomSheet}>
           <Text style={styles.suggestedTitle}>SUGGESTED VENUES</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.venueList}>
-            {venues.map(v => (
-              <TouchableOpacity 
-                key={v.id} 
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.venueList}
+          >
+            {venues.map((v) => (
+              <TouchableOpacity
+                key={v.id}
                 style={[styles.venueCard, selectedVenue?.id === v.id && styles.venueCardActive]}
                 onPress={() => setSelectedVenue(v)}
               >
@@ -111,14 +147,15 @@ export default function CreateEventLocationPickerScreen() {
             <TouchableOpacity style={styles.manualBtn}>
               <Text style={styles.manualText}>ENTER ADDRESS MANUALLY</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.confirmBtn} onPress={() => navigation.navigate('CreateEventRichDescription')}>
+            <TouchableOpacity
+              style={styles.confirmBtn}
+              onPress={() => navigation.navigate('CreateEventRichDescription')}
+            >
               <Text style={styles.confirmText}>CONFIRM LOCATION</Text>
             </TouchableOpacity>
           </View>
         </View>
-
       </View>
-
     </SafeAreaView>
   );
 }
@@ -379,5 +416,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     letterSpacing: 1,
     textAlign: 'center',
-  }
+  },
 });

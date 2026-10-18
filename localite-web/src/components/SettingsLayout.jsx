@@ -1,14 +1,7 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import {
-  CalendarBlank,
-  Trophy,
-  Users,
-  GearSix,
-  Question,
-  SignOut,
-} from '@phosphor-icons/react';
+import { CalendarBlank, Trophy, Users, GearSix, Question, SignOut } from '@phosphor-icons/react';
 
 export default function SettingsLayout({ children }) {
   const { logout } = useContext(AuthContext);
@@ -32,19 +25,13 @@ export default function SettingsLayout({ children }) {
       {/* SideNavBar (Hidden on Mobile) */}
       <aside className="w-60 py-6 flex flex-col z-20 bg-white border-r border-border hidden md:flex min-h-full shrink-0">
         <div className="mb-6 px-6">
-          <h2 className="text-base font-display font-semibold text-fg tracking-tight">
-            Account & Settings
-          </h2>
-          <p className="text-[11px] font-mono text-fg-muted mt-0.5">
-            Preferences & safety
-          </p>
+          <h2 className="text-base font-display font-semibold text-fg tracking-tight">Account & Settings</h2>
+          <p className="text-[11px] font-mono text-fg-muted mt-0.5">Preferences & safety</p>
         </div>
 
         <nav className="flex flex-col gap-1 px-3">
           {navItems.map((item) => {
-            const isSettings =
-              item.name === 'Settings' &&
-              location.pathname.startsWith('/settings');
+            const isSettings = item.name === 'Settings' && location.pathname.startsWith('/settings');
             const isActive = item.exact
               ? location.pathname === item.path
               : location.pathname.startsWith(item.path) || isSettings;
@@ -61,10 +48,7 @@ export default function SettingsLayout({ children }) {
                     : 'text-fg-muted hover:text-fg hover:bg-bg-subtle'
                 }`}
               >
-                <IconComponent
-                  size={16}
-                  weight={isActive ? 'bold' : 'regular'}
-                />
+                <IconComponent size={16} weight={isActive ? 'bold' : 'regular'} />
                 <span>{item.name}</span>
               </NavLink>
             );

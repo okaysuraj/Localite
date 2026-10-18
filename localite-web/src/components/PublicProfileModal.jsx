@@ -1,14 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import {
-  User,
-  X,
-  Star,
-  Lightning,
-  Trophy,
-  Warning,
-  ShieldCheck,
-} from '@phosphor-icons/react';
-import { API_BASE_URL } from '../services/api';
+import { useState, useEffect } from 'react';
+import { User, X, Star, Lightning, Trophy, Warning, ShieldCheck } from '@phosphor-icons/react';
+import { API_URL as API_BASE_URL } from '../config';
 
 const PublicProfileModal = ({ userId, onClose }) => {
   const [profile, setProfile] = useState(null);
@@ -16,45 +8,39 @@ const PublicProfileModal = ({ userId, onClose }) => {
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_BASE_URL}/users/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          setProfile(await res.json());
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const checkFollowing = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_BASE_URL}/users/${userId}/is-following`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          setIsFollowing(await res.json());
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     fetchProfile();
     checkFollowing();
   }, [userId]);
-
-  const fetchProfile = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(
-        `${API_BASE_URL}/users/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (res.ok) {
-        setProfile(await res.json());
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const checkFollowing = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(
-        `${API_BASE_URL}/users/${userId}/is-following`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (res.ok) {
-        setIsFollowing(await res.json());
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleFollowToggle = async () => {
     try {
@@ -62,13 +48,10 @@ const PublicProfileModal = ({ userId, onClose }) => {
       const method = isFollowing ? 'DELETE' : 'POST';
       const endpoint = isFollowing ? 'unfollow' : 'follow';
 
-      const res = await fetch(
-        `${API_BASE_URL}/users/${userId}/${endpoint}`,
-        {
-          method,
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/users/${userId}/${endpoint}`, {
+        method,
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (res.ok) {
         setIsFollowing(!isFollowing);
       }
@@ -81,22 +64,19 @@ const PublicProfileModal = ({ userId, onClose }) => {
     if (window.confirm('Are you sure you want to report this user?')) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch(
-          `${API_BASE_URL}/safety/report`,
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              targetType: 'USER',
-              targetId: profile.id,
-              reason: 'Inappropriate behavior',
-              details: '',
-            }),
-          }
-        );
+        const res = await fetch(`${API_BASE_URL}/safety/report`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            targetType: 'USER',
+            targetId: profile.id,
+            reason: 'Inappropriate behavior',
+            details: '',
+          }),
+        });
         if (res.ok) {
           alert('Report submitted successfully.');
           onClose();
@@ -134,15 +114,9 @@ const PublicProfileModal = ({ userId, onClose }) => {
           </div>
 
           <div className="flex items-center gap-1.5">
-            <h2 className="text-xl font-display font-semibold text-fg tracking-tight">
-              {profile.username}
-            </h2>
+            <h2 className="text-xl font-display font-semibold text-fg tracking-tight">{profile.username}</h2>
             {profile.isVerified && (
-              <ShieldCheck
-                size={16}
-                className="text-accent shrink-0"
-                title="Verified Member"
-              />
+              <ShieldCheck size={16} className="text-accent shrink-0" title="Verified Member" />
             )}
           </div>
 
@@ -175,9 +149,7 @@ const PublicProfileModal = ({ userId, onClose }) => {
               <span className="text-accent font-medium inline-flex items-center gap-1">
                 <Lightning size={11} /> XP LEVEL
               </span>
-              <span className="text-fg-muted">
-                {profile.xp || 0} / 1000
-              </span>
+              <span className="text-fg-muted">{profile.xp || 0} / 1000</span>
             </div>
             <div className="w-full bg-white border border-border rounded-full h-1.5 overflow-hidden">
               <div
@@ -219,37 +191,23 @@ const PublicProfileModal = ({ userId, onClose }) => {
         {/* Stats 2x2 grid */}
         <div className="grid grid-cols-2 gap-2.5 mt-5 pt-4 border-t border-border">
           <div className="bg-bg-subtle p-3 rounded-card text-center border border-border/60">
-            <p className="text-lg font-display font-semibold text-fg">
-              {profile.trustScore}
-            </p>
-            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">
-              Trust Score
-            </p>
+            <p className="text-lg font-display font-semibold text-fg">{profile.trustScore}</p>
+            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">Trust Score</p>
           </div>
           <div className="bg-bg-subtle p-3 rounded-card text-center border border-border/60">
             <div className="flex items-center justify-center gap-1 text-lg font-display font-semibold text-fg">
               {(profile.averageRating || 0).toFixed(1)}
               <Star size={13} className="text-accent fill-accent" />
             </div>
-            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">
-              Rating
-            </p>
+            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">Rating</p>
           </div>
           <div className="bg-bg-subtle p-3 rounded-card text-center border border-border/60">
-            <p className="text-lg font-display font-semibold text-fg">
-              {profile.eventsHosted}
-            </p>
-            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">
-              Hosted
-            </p>
+            <p className="text-lg font-display font-semibold text-fg">{profile.eventsHosted}</p>
+            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">Hosted</p>
           </div>
           <div className="bg-bg-subtle p-3 rounded-card text-center border border-border/60">
-            <p className="text-lg font-display font-semibold text-fg">
-              {profile.eventsAttended}
-            </p>
-            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">
-              Attended
-            </p>
+            <p className="text-lg font-display font-semibold text-fg">{profile.eventsAttended}</p>
+            <p className="text-[10px] font-mono text-fg-muted uppercase tracking-wider mt-0.5">Attended</p>
           </div>
         </div>
 

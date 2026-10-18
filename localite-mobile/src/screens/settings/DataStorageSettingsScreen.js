@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Switch, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Switch,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function DataStorageSettingsScreen() {
@@ -22,22 +32,24 @@ export default function DataStorageSettingsScreen() {
         </View>
         <View style={styles.headerRight}>
           <View style={styles.avatarWrap}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAD4a3xBWQUMSK7YdwGTDfcwDK7Op-DHxyj1qpWG7W0hL2WMILFRYD-lcoBOA24ieKaLRNK7toJ93cHbN_IziaC24xswRpdg-lnLUKUqd0OmFsgr64i9eatzG5L8wygcSRkgyFp4XzTBTPd3y1qzjc4UOwYDVIHTpdFJyeElcp-wgd6dJWK_Yo7c2_doWHzjwmvb8dpFfot2nxJo0yBVf8ZQa449UD6P8Om3fulNLIgMnPGWhx5S-f5Ww' }} 
-              style={styles.avatarImg} 
+            <Image
+              source={{
+                uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAD4a3xBWQUMSK7YdwGTDfcwDK7Op-DHxyj1qpWG7W0hL2WMILFRYD-lcoBOA24ieKaLRNK7toJ93cHbN_IziaC24xswRpdg-lnLUKUqd0OmFsgr64i9eatzG5L8wygcSRkgyFp4XzTBTPd3y1qzjc4UOwYDVIHTpdFJyeElcp-wgd6dJWK_Yo7c2_doWHzjwmvb8dpFfot2nxJo0yBVf8ZQa449UD6P8Om3fulNLIgMnPGWhx5S-f5Ww',
+              }}
+              style={styles.avatarImg}
             />
           </View>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        
         {/* Page Header */}
         <View style={styles.pageHeader}>
           <Text style={styles.preTitle}>SYSTEM PREFERENCES</Text>
           <Text style={styles.pageTitle}>Technical Management</Text>
           <Text style={styles.pageDesc}>
-            Configure your application's data footprint, manage local storage, and optimize performance for a seamless experience.
+            Configure your application's data footprint, manage local storage, and optimize performance for a
+            seamless experience.
           </Text>
         </View>
 
@@ -50,7 +62,7 @@ export default function DataStorageSettingsScreen() {
             </View>
             <Text style={styles.storageAmount}>1.2 GB / 5.0 GB</Text>
           </View>
-          
+
           <View style={styles.progressBlock}>
             <View style={styles.progressRow}>
               <Text style={styles.progressLabel}>Application Media</Text>
@@ -60,7 +72,7 @@ export default function DataStorageSettingsScreen() {
               <View style={[styles.progressBarFill, { width: '24%' }]} />
             </View>
           </View>
-          
+
           <View style={styles.progressBlock}>
             <View style={styles.progressRow}>
               <Text style={styles.progressLabel}>Offline Databases</Text>
@@ -70,7 +82,7 @@ export default function DataStorageSettingsScreen() {
               <View style={[styles.progressBarFill, { width: '9%' }]} />
             </View>
           </View>
-          
+
           <View style={styles.progressBlock}>
             <View style={styles.progressRow}>
               <Text style={styles.progressLabel}>Cache & Temporary Files</Text>
@@ -109,7 +121,8 @@ export default function DataStorageSettingsScreen() {
               <Text style={styles.cardBadge}>FULL DATA EXPORT</Text>
             </View>
             <Text style={styles.cardDescLeft}>
-              Generate a secure archive of your entire profile, including local events, social interactions, and media uploads.
+              Generate a secure archive of your entire profile, including local events, social interactions,
+              and media uploads.
             </Text>
           </View>
           <TouchableOpacity style={styles.secondaryBtn}>
@@ -120,7 +133,7 @@ export default function DataStorageSettingsScreen() {
         {/* Media Preferences */}
         <View style={styles.card}>
           <Text style={[styles.cardBadge, { color: '#44474d', marginBottom: 16 }]}>MEDIA PREFERENCES</Text>
-          
+
           <View style={styles.toggleRow}>
             <View style={styles.toggleInfo}>
               <Text style={styles.toggleTitle}>Auto-download Media</Text>
@@ -134,7 +147,7 @@ export default function DataStorageSettingsScreen() {
               value={autoDownload}
             />
           </View>
-          
+
           <View style={[styles.toggleRow, { borderBottomWidth: 0, paddingBottom: 0 }]}>
             <View style={styles.toggleInfo}>
               <Text style={styles.toggleTitle}>Optimize Image Quality</Text>
@@ -153,7 +166,7 @@ export default function DataStorageSettingsScreen() {
         {/* Asset Breakdown */}
         <View style={styles.card}>
           <Text style={[styles.cardBadge, { color: '#44474d', marginBottom: 16 }]}>ASSET BREAKDOWN</Text>
-          
+
           <View style={styles.assetRow}>
             <View style={styles.assetLabelRow}>
               <MaterialIcons name="image" size={16} color="#75777e" />
@@ -161,7 +174,7 @@ export default function DataStorageSettingsScreen() {
             </View>
             <Text style={styles.assetValue}>512 MB</Text>
           </View>
-          
+
           <View style={styles.assetRow}>
             <View style={styles.assetLabelRow}>
               <MaterialIcons name="videocam" size={16} color="#75777e" />
@@ -192,7 +205,6 @@ export default function DataStorageSettingsScreen() {
           <Text style={styles.footerText}>Application Version 2.4.1 (Stable Build)</Text>
           <Text style={styles.footerTextItalic}>Localite Technical Console © 2024</Text>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -505,5 +517,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#75777e',
     fontStyle: 'italic',
-  }
+  },
 });

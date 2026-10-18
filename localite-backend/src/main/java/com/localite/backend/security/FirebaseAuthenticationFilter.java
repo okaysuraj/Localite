@@ -14,10 +14,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
+    private static final Logger logger = LoggerFactory.getLogger(FirebaseAuthenticationFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -33,10 +36,9 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
                 FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
                 String firebaseUid = decodedToken.getUid();
 
-                // Create Authentication object
-                // We use firebaseUid as the principal. We can also fetch user from DB if needed here.
+                // Controllers resolve the Firebase UID to a database user when needed.
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        firebaseUid, null, new ArrayList<>());
+                        firebaseUid, null, List.of());
                 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -49,10 +51,8 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
                 response.getWriter().write("Invalid or expired Firebase ID token");
                 return;
             } catch (Exception e) {
-                // Fallback for when Firebase isn't initialized yet in dev environment without credentials
-                System.out.println("Firebase auth error (or not initialized): " + e.getMessage());
-                // For development when Firebase isn't fully set up, we might skip throwing if we want 
-                // But in production, this should fail. We let it pass down the chain to be rejected by Spring Security.
+                // Leave the request unauthenticated so Spring Security can reject protected routes.
+                logger.error("Firebase token verification is unavailable", e);
             }
         }
 

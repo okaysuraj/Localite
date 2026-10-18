@@ -1,6 +1,5 @@
-import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function CreateEventAnalyticsScreen() {
@@ -14,9 +13,7 @@ export default function CreateEventAnalyticsScreen() {
           <MaterialIcons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Localite</Text>
-        <View style={styles.avatarWrap}>
-          {/* Avatar placeholder */}
-        </View>
+        <View style={styles.avatarWrap}>{/* Avatar placeholder */}</View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -58,13 +55,9 @@ export default function CreateEventAnalyticsScreen() {
           {/* Simple Mock Chart */}
           <View style={styles.chartArea}>
             {[40, 55, 45, 70, 95, 80, 60].map((h, i) => (
-              <View 
-                key={i} 
-                style={[
-                  styles.chartBar, 
-                  { height: `${h}%` },
-                  h === 95 && styles.chartBarActive
-                ]} 
+              <View
+                key={i}
+                style={[styles.chartBar, { height: `${h}%` }, h === 95 && styles.chartBarActive]}
               />
             ))}
           </View>
@@ -88,7 +81,9 @@ export default function CreateEventAnalyticsScreen() {
             <Text style={styles.darkCardValue}>$145</Text>
             <Text style={styles.darkCardValueSub}>Per Guest</Text>
           </View>
-          <Text style={styles.darkCardDesc}>Optimized for Elite Tier saturation in the Chelsea District.</Text>
+          <Text style={styles.darkCardDesc}>
+            Optimized for Elite Tier saturation in the Chelsea District.
+          </Text>
           <TouchableOpacity style={styles.actionBtn}>
             <Text style={styles.actionBtnText}>ADJUST PRICING</Text>
           </TouchableOpacity>
@@ -112,7 +107,9 @@ export default function CreateEventAnalyticsScreen() {
             <Text style={styles.demoValue}>30%</Text>
           </View>
           <View style={styles.quoteWrap}>
-            <Text style={styles.quoteText}>“Your audience values exclusive access and artisanal food pairings.”</Text>
+            <Text style={styles.quoteText}>
+              “Your audience values exclusive access and artisanal food pairings.”
+            </Text>
           </View>
         </View>
 
@@ -123,7 +120,8 @@ export default function CreateEventAnalyticsScreen() {
             <Text style={styles.recTitle}>Strategic Recommendation</Text>
           </View>
           <Text style={styles.recDesc}>
-            Based on current pre-event momentum, we suggest launching a Limited Early-Access tier for Elite Members. This will likely secure 60% of your revenue goals within the first 48 hours.
+            Based on current pre-event momentum, we suggest launching a Limited Early-Access tier for Elite
+            Members. This will likely secure 60% of your revenue goals within the first 48 hours.
           </Text>
         </View>
       </ScrollView>
@@ -489,5 +487,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#775a19',
     marginTop: 4,
-  }
+  },
 });

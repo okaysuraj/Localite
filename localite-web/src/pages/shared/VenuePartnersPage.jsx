@@ -1,13 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Buildings,
-  Tree,
-  Barbell,
-  Coffee,
-  ArrowRight,
-  Handshake,
-} from '@phosphor-icons/react';
+import { Buildings, Tree, Barbell, Coffee, ArrowRight, Handshake } from '@phosphor-icons/react';
 
 const VenuePartnersPage = () => {
   const navigate = useNavigate();
@@ -15,25 +7,29 @@ const VenuePartnersPage = () => {
   const venues = [
     {
       title: 'Sports Complexes & Turfs',
-      description: 'Dedicated badminton courts, FIFA-certified football turfs, and floodlit cricket nets available for member matches.',
+      description:
+        'Dedicated badminton courts, FIFA-certified football turfs, and floodlit cricket nets available for member matches.',
       location: 'Over 45 locations active',
       Icon: Buildings,
     },
     {
       title: 'Public Parks & Trails',
-      description: 'Curated morning meetups and evening running circuits in well-maintained civic and botanical spaces.',
+      description:
+        'Curated morning meetups and evening running circuits in well-maintained civic and botanical spaces.',
       location: 'Community organized',
       Icon: Tree,
     },
     {
       title: 'Studios & Fitness Centers',
-      description: 'Partner wellness facilities offering reserved group slots for yoga, functional fitness, and recovery.',
+      description:
+        'Partner wellness facilities offering reserved group slots for yoga, functional fitness, and recovery.',
       location: 'Member discounts',
       Icon: Barbell,
     },
     {
       title: 'Social Spaces & Cafés',
-      description: 'Independent local spots hosting post-match refreshments, strategy sessions, and social discussions.',
+      description:
+        'Independent local spots hosting post-match refreshments, strategy sessions, and social discussions.',
       location: 'Community vetted',
       Icon: Coffee,
     },
@@ -51,7 +47,8 @@ const VenuePartnersPage = () => {
             Our Venue Partners
           </h1>
           <p className="text-sm text-fg-muted leading-relaxed">
-            Localite partners with local grounds, community facilities, and sports complexes to provide reliable, accessible spaces for all gatherings.
+            Localite partners with local grounds, community facilities, and sports complexes to provide
+            reliable, accessible spaces for all gatherings.
           </p>
         </div>
 
@@ -67,16 +64,10 @@ const VenuePartnersPage = () => {
                 <div className="w-10 h-10 rounded-full bg-accent-subtle text-accent flex items-center justify-center">
                   <Icon size={20} />
                 </div>
-                <h3 className="font-display font-semibold text-base text-fg tracking-tight">
-                  {venue.title}
-                </h3>
-                <p className="text-xs text-fg-muted leading-relaxed">
-                  {venue.description}
-                </p>
+                <h3 className="font-display font-semibold text-base text-fg tracking-tight">{venue.title}</h3>
+                <p className="text-xs text-fg-muted leading-relaxed">{venue.description}</p>
                 <div className="pt-2 border-t border-border/60">
-                  <span className="text-[11px] font-mono text-accent">
-                    {venue.location}
-                  </span>
+                  <span className="text-[11px] font-mono text-accent">{venue.location}</span>
                 </div>
               </div>
             );
@@ -93,7 +84,8 @@ const VenuePartnersPage = () => {
               Manage a sports court or community space?
             </h2>
             <p className="text-xs text-fg-muted leading-relaxed max-w-md mx-auto">
-              Partner with Localite to fill off-peak hours, host recurring leagues, and connect with hundreds of active local participants.
+              Partner with Localite to fill off-peak hours, host recurring leagues, and connect with hundreds
+              of active local participants.
             </p>
           </div>
           <button

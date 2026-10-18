@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, Alert, ActivityIndicator } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { blockUser } from '../../services/api';
 
 export default function BlockUserScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const targetUser = route.params?.user || { id: route.params?.userId || 1, username: route.params?.username || 'Member' };
+  const targetUser = route.params?.user || {
+    id: route.params?.userId || 1,
+    username: route.params?.username || 'Member',
+  };
   const [blocking, setBlocking] = useState(false);
 
   const handleBlock = async () => {
@@ -15,12 +29,12 @@ export default function BlockUserScreen() {
     try {
       await blockUser(targetUser.id);
       Alert.alert('User Blocked', `${targetUser.username} has been blocked and removed.`, [
-        { text: 'OK', onPress: () => navigation.goBack() }
+        { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (err) {
       console.error('Failed to block user:', err);
       Alert.alert('Notice', 'User blocked or already restricted.', [
-        { text: 'OK', onPress: () => navigation.goBack() }
+        { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } finally {
       setBlocking(false);
@@ -42,21 +56,26 @@ export default function BlockUserScreen() {
         <View style={styles.modalCard}>
           {/* Top Border Detail */}
           <View style={styles.topGradient} />
-          
+
           <View style={styles.iconWrap}>
             <MaterialIcons name="block" size={48} color="#ba1a1a" />
           </View>
 
           <Text style={styles.title}>Are you sure you want to block {targetUser.username}?</Text>
           <Text style={styles.desc}>
-            By confirming this action, {targetUser.username} will be restricted from viewing your profile, attending your gatherings, or initiating messages.
+            By confirming this action, {targetUser.username} will be restricted from viewing your profile,
+            attending your gatherings, or initiating messages.
           </Text>
 
           {/* User Context Card */}
           <View style={styles.userCard}>
             <View style={styles.userImgWrap}>
-              <Image 
-                source={{ uri: targetUser.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }}
+              <Image
+                source={{
+                  uri:
+                    targetUser.profilePhotoUrl ||
+                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+                }}
                 style={styles.userImg}
               />
             </View>
@@ -69,8 +88,8 @@ export default function BlockUserScreen() {
 
           {/* Actions */}
           <View style={styles.actionsWrap}>
-            <TouchableOpacity 
-              style={[styles.blockBtn, blocking && { opacity: 0.7 }]} 
+            <TouchableOpacity
+              style={[styles.blockBtn, blocking && { opacity: 0.7 }]}
               onPress={handleBlock}
               disabled={blocking}
             >
@@ -304,5 +323,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Regular',
     fontSize: 12,
     color: '#75777e',
-  }
+  },
 });

@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Play, 
-  Pause, 
-  Microphone, 
-  ArrowLeft, 
-  Quotes,
-  CheckCircle
-} from '@phosphor-icons/react';
+import { Play, Pause, Microphone, ArrowLeft, Quotes } from '@phosphor-icons/react';
 
 export default function VoiceNotesPage() {
   const navigate = useNavigate();
@@ -18,7 +11,7 @@ export default function VoiceNotesPage() {
   useEffect(() => {
     let interval = null;
     if (isRecording) {
-      interval = setInterval(() => setSeconds(s => s + 1), 1000);
+      interval = setInterval(() => setSeconds((s) => s + 1), 1000);
     }
     return () => clearInterval(interval);
   }, [isRecording]);
@@ -31,11 +24,10 @@ export default function VoiceNotesPage() {
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] text-[var(--fg)] max-w-5xl mx-auto px-6 py-24 font-sans animate-fade-in">
-      
       {/* Header */}
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
         <div>
-          <button 
+          <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] mb-3 transition-colors"
           >
@@ -69,18 +61,25 @@ export default function VoiceNotesPage() {
 
           {/* Waveform Bar Player */}
           <div className="p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] flex items-center gap-4">
-            <button 
+            <button
               onClick={() => setIsPlaying(!isPlaying)}
               className="w-10 h-10 rounded-full bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white flex items-center justify-center transition-all shadow-sm active:scale-95 shrink-0"
             >
-              {isPlaying ? <Pause size={18} weight="fill" /> : <Play size={18} weight="fill" className="ml-0.5" />}
+              {isPlaying ? (
+                <Pause size={18} weight="fill" />
+              ) : (
+                <Play size={18} weight="fill" className="ml-0.5" />
+              )}
             </button>
 
             {/* Visualizer bars */}
             <div className="flex-1 h-8 flex items-center gap-1 overflow-hidden">
-              {[40, 65, 30, 85, 90, 50, 75, 40, 60, 80, 95, 45, 30, 70, 85, 40, 55, 60, 90, 35, 75, 50, 85, 60, 40, 70, 80, 95, 50, 30, 65, 80, 45, 60, 75].map((height, i) => (
-                <div 
-                  key={i} 
+              {[
+                40, 65, 30, 85, 90, 50, 75, 40, 60, 80, 95, 45, 30, 70, 85, 40, 55, 60, 90, 35, 75, 50, 85,
+                60, 40, 70, 80, 95, 50, 30, 65, 80, 45, 60, 75,
+              ].map((height, i) => (
+                <div
+                  key={i}
                   className={`w-1 rounded-full transition-all duration-300 ${
                     isPlaying && i < 15 ? 'bg-[var(--accent)]' : 'bg-neutral-300'
                   }`}
@@ -101,7 +100,8 @@ export default function VoiceNotesPage() {
               <span>Automated Transcription</span>
             </div>
             <p className="text-xs text-[var(--fg)] leading-relaxed italic">
-              "The gallery session is confirmed for 7:00 PM tonight. I've reserved our corner table for the post-gathering discussion. Looking forward to catching up with the team."
+              "The gallery session is confirmed for 7:00 PM tonight. I've reserved our corner table for the
+              post-gathering discussion. Looking forward to catching up with the team."
             </p>
           </div>
         </div>
@@ -109,9 +109,13 @@ export default function VoiceNotesPage() {
         {/* Quick Record Dock */}
         <div className="bg-[var(--bg-subtle)] p-6 rounded-card border border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              isRecording ? 'bg-rose-500 text-white animate-pulse' : 'bg-[var(--bg)] border border-[var(--border)] text-[var(--fg)]'
-            }`}>
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+                isRecording
+                  ? 'bg-rose-500 text-white animate-pulse'
+                  : 'bg-[var(--bg)] border border-[var(--border)] text-[var(--fg)]'
+              }`}
+            >
               <Microphone size={20} weight={isRecording ? 'fill' : 'regular'} />
             </div>
             <div>
@@ -124,19 +128,19 @@ export default function VoiceNotesPage() {
             </div>
           </div>
 
-          <button 
+          <button
             onClick={() => {
               if (isRecording) {
                 setIsRecording(false);
                 setSeconds(0);
-                alert("Voice note dispatched!");
+                alert('Voice note dispatched!');
               } else {
                 setIsRecording(true);
               }
             }}
             className={`px-5 py-2.5 rounded-card text-xs font-semibold uppercase tracking-wider transition-all active:scale-95 shadow-sm ${
-              isRecording 
-                ? 'bg-rose-600 hover:bg-rose-700 text-white' 
+              isRecording
+                ? 'bg-rose-600 hover:bg-rose-700 text-white'
                 : 'bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white'
             }`}
           >
@@ -144,7 +148,6 @@ export default function VoiceNotesPage() {
           </button>
         </div>
       </div>
-
     </div>
   );
 }

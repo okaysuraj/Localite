@@ -1,11 +1,18 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ImageBackground, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  ImageBackground,
+  Platform,
+} from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function TicketQRCodeScreen({ route }) {
   const navigation = useNavigation();
-  const { event = { name: "The Winter Masquerade" } } = route.params || {};
+  const { event = { name: 'The Winter Masquerade' } } = route.params || {};
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -23,10 +30,7 @@ export default function TicketQRCodeScreen({ route }) {
       <View style={styles.content}>
         <View style={styles.ticketCard}>
           {/* Hero Image */}
-          <ImageBackground 
-            source={{ uri: 'https://via.placeholder.com/800x400' }} 
-            style={styles.heroImage}
-          >
+          <ImageBackground source={{ uri: 'https://via.placeholder.com/800x400' }} style={styles.heroImage}>
             <View style={styles.heroOverlay}>
               <Text style={styles.heroLabel}>VIP ACCESS</Text>
               <Text style={styles.heroTitle}>{event.name}</Text>
@@ -82,7 +86,7 @@ export default function TicketQRCodeScreen({ route }) {
           <MaterialIcons name="account-balance-wallet" size={20} color="#fff" />
           <Text style={styles.primaryButtonText}>ADD TO APPLE WALLET</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.secondaryButton}>
           <MaterialIcons name="download" size={20} color="#775a19" />
           <Text style={styles.secondaryButtonText}>SAVE AS PDF</Text>

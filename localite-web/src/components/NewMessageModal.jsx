@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, MagnifyingGlass, PaperPlaneTilt, Users } from '@phosphor-icons/react';
+import { X, MagnifyingGlass, PaperPlaneTilt } from '@phosphor-icons/react';
 
 const SUGGESTED_CONTACTS = [
   {
@@ -37,9 +37,10 @@ export default function NewMessageModal({ onClose }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
-  const filteredContacts = SUGGESTED_CONTACTS.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.hub.toLowerCase().includes(search.toLowerCase())
+  const filteredContacts = SUGGESTED_CONTACTS.filter(
+    (c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.hub.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -48,12 +49,8 @@ export default function NewMessageModal({ onClose }) {
         {/* Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
-              New Message
-            </h2>
-            <p className="text-xs text-fg-muted mt-0.5">
-              Select a member to start a direct conversation.
-            </p>
+            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">New Message</h2>
+            <p className="text-xs text-fg-muted mt-0.5">Select a member to start a direct conversation.</p>
           </div>
           <button
             onClick={onClose}
@@ -66,10 +63,7 @@ export default function NewMessageModal({ onClose }) {
         {/* Search Input */}
         <div className="p-4 border-b border-border">
           <div className="relative">
-            <MagnifyingGlass
-              size={15}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted"
-            />
+            <MagnifyingGlass size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted" />
             <input
               className="w-full pl-9 pr-4 py-2 bg-bg-subtle border border-border rounded-btn text-xs font-mono text-fg placeholder:text-fg-faint focus:outline-none focus:border-accent transition-colors"
               placeholder="Search by name or interests..."
@@ -110,9 +104,7 @@ export default function NewMessageModal({ onClose }) {
                   <h3 className="text-sm font-display font-medium text-fg truncate group-hover:text-accent transition-colors">
                     {contact.name}
                   </h3>
-                  <span className="text-[11px] font-mono text-fg-muted truncate block">
-                    {contact.hub}
-                  </span>
+                  <span className="text-[11px] font-mono text-fg-muted truncate block">{contact.hub}</span>
                 </div>
               </div>
 

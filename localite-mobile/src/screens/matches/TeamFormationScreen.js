@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function TeamFormationScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('RESERVE');
@@ -25,13 +25,15 @@ export default function TeamFormationScreen({ navigation }) {
 
         {/* Tab Switcher */}
         <View style={styles.tabContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.tab, activeTab === 'RESERVE' && styles.activeTab]}
             onPress={() => setActiveTab('RESERVE')}
           >
-            <Text style={[styles.tabText, activeTab === 'RESERVE' && styles.activeTabText]}>RESERVE ROSTER</Text>
+            <Text style={[styles.tabText, activeTab === 'RESERVE' && styles.activeTabText]}>
+              RESERVE ROSTER
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.tab, activeTab === 'TEAMS' && styles.activeTab]}
             onPress={() => setActiveTab('TEAMS')}
           >
@@ -44,7 +46,7 @@ export default function TeamFormationScreen({ navigation }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>RESERVE ROSTER (12)</Text>
             </View>
-            
+
             <View style={styles.playerList}>
               {/* Player Item */}
               <TouchableOpacity style={styles.playerCard}>
@@ -59,7 +61,7 @@ export default function TeamFormationScreen({ navigation }) {
                 </View>
                 <MaterialIcons name="drag-indicator" size={24} color="#75777e" />
               </TouchableOpacity>
-              
+
               <TouchableOpacity style={styles.playerCard}>
                 <View style={styles.playerInfo}>
                   <View style={styles.avatarPlaceholder}>
@@ -72,7 +74,7 @@ export default function TeamFormationScreen({ navigation }) {
                 </View>
                 <MaterialIcons name="drag-indicator" size={24} color="#75777e" />
               </TouchableOpacity>
-              
+
               <TouchableOpacity style={styles.playerCard}>
                 <View style={styles.playerInfo}>
                   <View style={styles.avatarPlaceholder}>
@@ -90,31 +92,35 @@ export default function TeamFormationScreen({ navigation }) {
         ) : (
           <View style={styles.teamsSection}>
             {/* Team Crest */}
-            <View style={[styles.teamContainer, {borderTopColor: '#000000'}]}>
+            <View style={[styles.teamContainer, { borderTopColor: '#000000' }]}>
               <View style={styles.teamHeader}>
                 <View>
                   <Text style={styles.teamName}>Team Crest</Text>
-                  <Text style={styles.teamStats}>EST. SCORE: <Text style={{color: '#000000', fontWeight: 'bold'}}>442</Text></Text>
+                  <Text style={styles.teamStats}>
+                    EST. SCORE: <Text style={{ color: '#000000', fontWeight: 'bold' }}>442</Text>
+                  </Text>
                 </View>
-                <View style={{alignItems: 'flex-end'}}>
+                <View style={{ alignItems: 'flex-end' }}>
                   <Text style={styles.captainLabel}>CAPTAIN</Text>
                   <Text style={styles.captainName}>Pending...</Text>
                 </View>
               </View>
-              
+
               <View style={styles.slotsContainer}>
                 <View style={styles.emptySlot}>
                   <Text style={styles.emptySlotText}>DRAG PLAYER HERE</Text>
                 </View>
-                
-                <View style={[styles.filledSlot, {backgroundColor: '#000000'}]}>
+
+                <View style={[styles.filledSlot, { backgroundColor: '#000000' }]}>
                   <View style={styles.playerInfo}>
-                    <View style={[styles.avatarPlaceholder, {backgroundColor: 'rgba(255,255,255,0.2)'}]}>
-                      <Text style={[styles.avatarText, {color: '#ffffff'}]}>DB</Text>
+                    <View style={[styles.avatarPlaceholder, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
+                      <Text style={[styles.avatarText, { color: '#ffffff' }]}>DB</Text>
                     </View>
                     <View>
-                      <Text style={[styles.playerName, {color: '#ffffff'}]}>D. Beckham</Text>
-                      <Text style={[styles.playerStats, {color: 'rgba(255,255,255,0.7)'}]}>CAPTAIN • MD</Text>
+                      <Text style={[styles.playerName, { color: '#ffffff' }]}>D. Beckham</Text>
+                      <Text style={[styles.playerStats, { color: 'rgba(255,255,255,0.7)' }]}>
+                        CAPTAIN • MD
+                      </Text>
                     </View>
                   </View>
                   <MaterialIcons name="star" size={20} color="#775a19" />
@@ -123,32 +129,36 @@ export default function TeamFormationScreen({ navigation }) {
             </View>
 
             {/* Team Sovereign */}
-            <View style={[styles.teamContainer, {borderTopColor: '#775a19'}]}>
+            <View style={[styles.teamContainer, { borderTopColor: '#775a19' }]}>
               <View style={styles.teamHeader}>
                 <View>
-                  <Text style={[styles.teamName, {color: '#775a19'}]}>Team Sovereign</Text>
-                  <Text style={styles.teamStats}>EST. SCORE: <Text style={{color: '#775a19', fontWeight: 'bold'}}>418</Text></Text>
+                  <Text style={[styles.teamName, { color: '#775a19' }]}>Team Sovereign</Text>
+                  <Text style={styles.teamStats}>
+                    EST. SCORE: <Text style={{ color: '#775a19', fontWeight: 'bold' }}>418</Text>
+                  </Text>
                 </View>
-                <View style={{alignItems: 'flex-end'}}>
+                <View style={{ alignItems: 'flex-end' }}>
                   <Text style={styles.captainLabel}>CAPTAIN</Text>
                   <Text style={styles.captainName}>L. Hamilton</Text>
                 </View>
               </View>
-              
+
               <View style={styles.slotsContainer}>
-                <View style={[styles.filledSlot, {backgroundColor: '#775a19'}]}>
+                <View style={[styles.filledSlot, { backgroundColor: '#775a19' }]}>
                   <View style={styles.playerInfo}>
-                    <View style={[styles.avatarPlaceholder, {backgroundColor: 'rgba(255,255,255,0.2)'}]}>
-                      <Text style={[styles.avatarText, {color: '#ffffff'}]}>LH</Text>
+                    <View style={[styles.avatarPlaceholder, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
+                      <Text style={[styles.avatarText, { color: '#ffffff' }]}>LH</Text>
                     </View>
                     <View>
-                      <Text style={[styles.playerName, {color: '#ffffff'}]}>L. Hamilton</Text>
-                      <Text style={[styles.playerStats, {color: 'rgba(255,255,255,0.7)'}]}>CAPTAIN • MD</Text>
+                      <Text style={[styles.playerName, { color: '#ffffff' }]}>L. Hamilton</Text>
+                      <Text style={[styles.playerStats, { color: 'rgba(255,255,255,0.7)' }]}>
+                        CAPTAIN • MD
+                      </Text>
                     </View>
                   </View>
                   <MaterialIcons name="star" size={20} color="#000000" />
                 </View>
-                
+
                 <View style={styles.emptySlot}>
                   <Text style={styles.emptySlotText}>DRAG PLAYER HERE</Text>
                 </View>
@@ -160,16 +170,18 @@ export default function TeamFormationScreen({ navigation }) {
         {/* Balance Indicator */}
         <View style={styles.balanceContainer}>
           <View style={styles.balanceHeader}>
-            <Text style={[styles.balanceLabel, {color: '#000000'}]}>CREST (52%)</Text>
-            <Text style={[styles.balanceLabel, {color: '#775a19'}]}>SOVEREIGN (48%)</Text>
+            <Text style={[styles.balanceLabel, { color: '#000000' }]}>CREST (52%)</Text>
+            <Text style={[styles.balanceLabel, { color: '#775a19' }]}>SOVEREIGN (48%)</Text>
           </View>
           <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, {width: '52%', backgroundColor: '#000000'}]} />
-            <View style={[styles.progressBarFill, {width: '48%', backgroundColor: '#775a19'}]} />
+            <View style={[styles.progressBarFill, { width: '52%', backgroundColor: '#000000' }]} />
+            <View style={[styles.progressBarFill, { width: '48%', backgroundColor: '#775a19' }]} />
           </View>
-          <Text style={styles.balanceText}>Analysis: Teams are well-matched. Advantage slightly favors Team Crest due to mid-field reputation density.</Text>
+          <Text style={styles.balanceText}>
+            Analysis: Teams are well-matched. Advantage slightly favors Team Crest due to mid-field reputation
+            density.
+          </Text>
         </View>
-
       </ScrollView>
 
       <View style={styles.footer}>

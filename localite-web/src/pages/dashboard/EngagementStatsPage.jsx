@@ -1,13 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Users,
-  Star,
-  Lightning,
-  TrendUp,
-  CalendarBlank,
-  ArrowRight,
-} from '@phosphor-icons/react';
+import { Users, Star, Lightning, CalendarBlank } from '@phosphor-icons/react';
 
 export default function EngagementStatsPage() {
   const navigate = useNavigate();
@@ -41,9 +33,7 @@ export default function EngagementStatsPage() {
               <span>Trust Index</span>
               <Star size={16} className="text-accent fill-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              98 / 100
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">98 / 100</p>
             <span className="text-[11px] font-mono text-accent">Top 5% of community</span>
           </div>
 
@@ -52,9 +42,7 @@ export default function EngagementStatsPage() {
               <span>Attendance Rate</span>
               <CalendarBlank size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              94%
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">94%</p>
             <span className="text-[11px] font-mono text-fg-muted">16 out of 17 RSVP'd</span>
           </div>
 
@@ -63,9 +51,7 @@ export default function EngagementStatsPage() {
               <span>Local Connections</span>
               <Users size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              42
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">42</p>
             <span className="text-[11px] font-mono text-accent">+8 this quarter</span>
           </div>
 
@@ -74,9 +60,7 @@ export default function EngagementStatsPage() {
               <span>Engagement Tier</span>
               <Lightning size={16} className="text-accent" />
             </div>
-            <p className="text-3xl font-display font-semibold text-fg">
-              Active Peer
-            </p>
+            <p className="text-3xl font-display font-semibold text-fg">Active Peer</p>
             <span className="text-[11px] font-mono text-fg-muted">Tier 2 contributor</span>
           </div>
         </div>
