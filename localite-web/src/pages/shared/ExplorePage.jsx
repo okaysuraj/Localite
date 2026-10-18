@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getEvents, getSuggestedPartners } from '../../services/api';
+import { MapPin, Users, User } from '@phosphor-icons/react';
 
 const ExplorePage = () => {
   const [events, setEvents] = useState([]);
@@ -10,11 +11,14 @@ const ExplorePage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const [data, partnersData] = await Promise.all([getEvents(), getSuggestedPartners()]);
+        const [data, partnersData] = await Promise.all([
+          getEvents(),
+          getSuggestedPartners(),
+        ]);
         setEvents(data);
         setSuggestedPartners(partnersData);
       } catch (error) {
-        console.error("Failed to fetch events", error);
+        console.error('Failed to fetch events', error);
       } finally {
         setLoading(false);
       }
@@ -22,242 +26,167 @@ const ExplorePage = () => {
     fetchEvents();
   }, []);
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      const cards = document.querySelectorAll('.hover-parallax');
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const moveX = (x - centerX) / 50;
-        const moveY = (y - centerY) / 50;
-        
-        const img = card.querySelector('img, .bg-image-layer');
-        if (img) {
-          img.style.transform = `scale(1.05) translate(${moveX}px, ${moveY}px)`;
-        }
-      });
-    };
-
-    const handleMouseLeave = (e) => {
-      const cards = document.querySelectorAll('.hover-parallax');
-      cards.forEach(card => {
-        const img = card.querySelector('img, .bg-image-layer');
-        if (img) {
-          img.style.transform = `scale(1) translate(0, 0)`;
-        }
-      });
-    };
-
-    const container = document.querySelector('.parallax-container');
-    if (container) {
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mouseleave', handleMouseLeave);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('mouseleave', handleMouseLeave);
-      }
-    };
-  }, []);
-
   return (
-    <div className="max-w-7xl mx-auto px-container-margin py-stack-lg parallax-container">
-      {/* Hero Section: Recommended For You */}
-      <section className="mb-stack-lg">
-        {events.length > 0 && (
-          <div className="relative w-full h-[600px] overflow-hidden rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] group cursor-pointer hover-parallax">
-            <div 
-              className="bg-image-layer absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
-              style={{ backgroundImage: `url('${events[0].imageUrl || events[0].image}')` }}
+    <div className="max-w-content mx-auto px-6 py-12">
+      {/* Hero: Featured event */}
+      {events.length > 0 && (
+        <section className="mb-12">
+          <Link
+            to={`/events/${events[0].id}`}
+            className="block relative w-full aspect-[21/9] overflow-hidden rounded-md bg-bg-subtle group"
+          >
+            <img
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              alt={events[0].title}
+              src={events[0].imageUrl || events[0].image}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 opacity-60"></div>
-            <div className="absolute bottom-0 left-0 p-12 w-full md:w-3/4">
-              <span className="inline-block px-4 py-1 bg-secondary text-on-secondary font-label-caps text-label-caps mb-4">
-                RECOMMENDED FOR YOU
-              </span>
-              <h1 className="font-display-lg text-display-lg text-white mb-4">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 p-8 md:p-10 w-full">
+              <span className="tag mb-3 inline-block">Featured</span>
+              <h1 className="text-display-sm md:text-display text-white mb-2">
                 {events[0].title}
               </h1>
-              <p className="text-white/90 font-body-lg text-body-lg mb-8 max-w-2xl">
+              <p className="text-body text-white/80 max-w-xl line-clamp-2">
                 {events[0].description}
               </p>
-              <div className="flex gap-4 flex-wrap">
-                <button className="bg-white text-primary font-label-caps text-label-caps px-8 py-4 hover:bg-surface-container transition-colors rounded">
-                  Request Invitation
-                </button>
-                <button className="border border-white text-white font-label-caps text-label-caps px-8 py-4 hover:bg-white/10 transition-colors rounded">
-                  View Details
-                </button>
-              </div>
             </div>
-          </div>
-        )}
-      </section>
+          </Link>
+        </section>
+      )}
 
-      {/* Content Grid: Trending & Community Pulse */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-stack-md">
-        
-        {/* Left: Trending Events (8 cols) */}
-        <div className="lg:col-span-8 space-y-stack-md">
-          <div className="flex justify-between items-end border-b border-surface-container pb-4">
-            <h2 className="font-display-lg text-display-lg-mobile md:text-headline-md">Trending Events</h2>
-            <Link to="/map" className="font-label-caps text-label-caps text-secondary hover:underline transition-all">
-              VIEW ALL CALENDAR
+      {/* Grid layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left: Events grid */}
+        <div className="lg:col-span-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-title-sm text-fg">Upcoming events</h2>
+            <Link
+              to="/events"
+              className="text-body-sm text-accent font-medium hover:underline"
+            >
+              View all
             </Link>
           </div>
-          
-          {/* Bento Grid Layout for Events */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-            {loading ? (
-              <p className="text-on-surface-variant font-body-md py-4">Curating experiences...</p>
-            ) : (
-              events.slice(1).map((event, index) => (
-                <div key={event.id || index} className={`${index === 2 ? 'md:col-span-2 flex-col md:flex-row' : 'flex-col'} bg-surface-container-lowest rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] overflow-hidden flex group transition-all duration-300 hover:-translate-y-1 hover-parallax`}>
-                  <div className={`${index === 2 ? 'md:w-1/2 h-64 md:h-auto' : 'h-48'} relative overflow-hidden`}>
-                    <img 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 bg-image-layer" 
-                      alt={event.title} 
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="card animate-pulse"
+                >
+                  <div className="aspect-[16/10] bg-bg-subtle" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-3 w-16 bg-bg-subtle rounded" />
+                    <div className="h-5 w-3/4 bg-bg-subtle rounded" />
+                    <div className="h-3 w-1/2 bg-bg-subtle rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {events.slice(1).map((event, index) => (
+                <Link
+                  key={event.id || index}
+                  to={`/events/${event.id}`}
+                  className="card card-hover group"
+                >
+                  {/* Image */}
+                  <div className="aspect-[16/10] overflow-hidden bg-bg-subtle">
+                    <img
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                      alt={event.title}
                       src={event.imageUrl || event.image}
                     />
-                    {index !== 2 && (
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-sm shadow-sm">
-                        <p className="font-label-caps text-[10px] text-primary">{event.date}</p>
-                      </div>
-                    )}
                   </div>
-                  <div className={`${index === 2 ? 'md:w-1/2 p-8 flex flex-col justify-center' : 'p-6 flex-grow flex flex-col'}`}>
-                    <p className="font-label-caps text-label-caps text-secondary mb-2">{event.category || event.eventType}</p>
-                    <h3 className={`${index === 2 ? 'font-display-lg text-headline-md mb-4' : 'font-headline-sm text-headline-sm mb-3'}`}>{event.title}</h3>
-                    
-                    {index === 2 ? (
-                      <p className="text-on-surface-variant mb-6 font-body-md">{event.description}</p>
-                    ) : (
-                      <div className="flex items-center gap-4 text-on-surface-variant mb-6">
-                        <div className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[18px]">location_on</span>
-                          <span className="text-xs font-label-caps">{event.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[18px]">group</span>
-                          <span className="text-xs font-label-caps">{event.attendees} Members attending</span>
-                        </div>
-                      </div>
-                    )}
 
-                    <div className={index === 2 ? "flex items-center justify-between mt-auto" : "mt-auto"}>
-                      {index === 2 && (
-                        <div className="flex -space-x-3 overflow-hidden">
-                          <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-surface-container ring-2 ring-white z-10">
-                            <span className="text-[10px] font-bold">+{event.attendees || 0}</span>
-                          </div>
-                        </div>
-                      )}
-                      <button className={index === 2 ? "bg-primary text-on-primary font-label-caps text-label-caps px-6 py-2 rounded" : "w-full py-3 border border-secondary text-secondary font-label-caps text-label-caps hover:bg-secondary hover:text-white transition-all rounded"}>
-                        {index === 2 ? "Attend" : "Join Interest List"}
-                      </button>
+                  {/* Content */}
+                  <div className="p-5">
+                    <span className="tag text-micro mb-3 inline-block">
+                      {event.category || event.eventType || 'Event'}
+                    </span>
+                    <h3 className="text-body font-semibold text-fg mb-2 line-clamp-1 group-hover:text-accent transition-colors duration-200">
+                      {event.title}
+                    </h3>
+
+                    <div className="flex items-center gap-4 text-caption text-fg-muted">
+                      <span className="flex items-center gap-1">
+                        <MapPin size={14} weight="bold" />
+                        {event.location || 'Location TBD'}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users size={14} weight="bold" />
+                        {event.attendees || 0}
+                      </span>
                     </div>
+
+                    {event.date && (
+                      <p className="text-caption text-fg-faint font-mono mt-3">
+                        {event.date}
+                      </p>
+                    )}
                   </div>
-                </div>
-              ))
-            )}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Right: Community Pulse (4 cols) */}
-        <aside className="lg:col-span-4 space-y-stack-md">
-          <div className="bg-surface-container-low p-8 rounded-xl border border-surface-container-high h-full">
-            <h2 className="font-headline-sm text-headline-sm mb-6 pb-4 border-b border-outline-variant/30">
-              Community Pulse
-            </h2>
-            <div className="space-y-6">
-              
-              {/* Activity 1 */}
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden">
-                  <img className="w-full h-full object-cover" alt="Julian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBv7jugfqW78ewZuJSqxP2Syy2PvZVnUdd4wxwyDfy1iKfK9CcVCGA0yHBpL_RLVdK18hGnGSXy_YniHD-GbXSKbzSQDhvcSb9JIF9LOT5bycqHbg7j8qN8xIUD1gNl2FhI1EL-iQnvcS_DZBPC6IDW76JJO8NjMoR53nXOYmPnPIde9CQ7LKs5EFr0dDIS3PmjaidPg_M-ItA3GzmZWMvpQBItEt0c8cy0A9iRbrtxa6u1lek8KIjHug"/>
-                </div>
-                <div>
-                  <p className="text-sm font-body-md leading-relaxed">
-                    <span className="font-bold">Julian Vane</span> is attending <span className="text-secondary font-medium italic">Equestrian Polo Cup</span> next weekend.
-                  </p>
-                  <span className="text-[10px] font-label-caps text-outline uppercase mt-1 block">2 hours ago</span>
-                </div>
-              </div>
+        {/* Right: Sidebar */}
+        <aside className="lg:col-span-4">
+          <div className="card p-6 sticky top-20">
+            <h3 className="text-body font-semibold text-fg mb-5">
+              People you may know
+            </h3>
 
-              {/* Activity 2 */}
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden">
-                  <img className="w-full h-full object-cover" alt="Eleanor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdr2d3Qxa_CT4Hp4u-b8gQS8_sn8a1ZMDRVSSrNcISA6cF_qBGOMyqhoNbLcoOzyLe4-KFbXLAlF0rUoX9sAqausGmIFPPBI6HT-o0_NE4DrSOmWRSB_1INPRSUzmWJiskihxs4Ko1IkzUXCZCzqdrxzy_MaQF3HGv6JxcapHuqrqI1ibXkVUZ1lnhg3-xd4rVj3xYbZLNzmfgnwtDMqjE7dMTAu9PAXPN4djl6Lbc3cuVSRQ5a8Q6wA"/>
-                </div>
-                <div>
-                  <p className="text-sm font-body-md leading-relaxed">
-                    <span className="font-bold">Eleanor Rigby</span> shared 4 new photos from the <span className="text-secondary font-medium italic">Opera Night</span>.
-                  </p>
-                  <span className="text-[10px] font-label-caps text-outline uppercase mt-1 block">5 hours ago</span>
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div className="h-20 rounded-lg overflow-hidden bg-surface-container-highest">
-                      <img className="w-full h-full object-cover" alt="Opera detail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzpjyiKc7jShQefmVe4sff8LWHndc7GSorDbzati-TpQuQVNGxD93lWEQaM5VWxyAfVEI3VvcFK8DFIHyYflaevs7QIFm5-pA9U_6pqiTqPqfdEC9MHZTZkoBL77C7IVrpEy4nQAlMdGzfyFMu7fS7i3Oi2wYKuFe7W4F8lu5hQY-UfxdWyay0BxonZWMOUD3VNSn-CCYJtxhzKXUk4PtlRRS1NFLye6Dze_Y9SgIbCtf6Gs-dcZfUJw"/>
-                    </div>
-                    <div className="h-20 rounded-lg overflow-hidden bg-surface-container-highest">
-                      <img className="w-full h-full object-cover" alt="Opera chandelier" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpM6ACClF22zakbwyO50-BFno9LeQhuJ-8T3vgmAwSwHh9hIm5K8avnUjmFJfp2sVpaSoVMQnrQQzGA8DQOqHkjo2LyngYEYsdllueD-RzUrQNWSciFotDXn84Et6xfsRIdCbkb3zgZ-cCwFg7fojqR2W7swdoCA2xAt2ZAhHeBTY5RDafFrRQOxluPiKuiFPzFwe2Fc7m1VR6ORLRg_AqUVt8Vqiqa_f2GnvBtQgToShWWebr6OqZSQ"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Activity 3 */}
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden">
-                  <img className="w-full h-full object-cover" alt="Marcus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADL1r6qRIc9DH-c8zDZh1MjIlyI7srSsIr4wjzZisxQJLUxb8KiUeMRul1bntErXPOY-5JtTTxQm9kkNtWx2K2vnhJL3K8byGkrU6Wan6hDRyZD3D0RQf1J4JnXGWZPUn9Ux_7nOwkF73H3-iZTnaCNZ1bRse4OSjtKmym74wIgt6ryX9ZlRxjdyW7KmbBHC6V0lHxelQrS5dfYs9Ac9SLTjR8snzyeCCJGWmxTHib5voO7noky19kZg"/>
-                </div>
-                <div>
-                  <p className="text-sm font-body-md leading-relaxed">
-                    <span className="font-bold">Marcus Sterling</span> started a new thread in <span className="text-secondary font-medium italic">Private Dining Circles</span>.
-                  </p>
-                  <span className="text-[10px] font-label-caps text-outline uppercase mt-1 block">Yesterday</span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Discovery Suggestions */}
-            <div className="mt-12 pt-8 border-t border-outline-variant/30">
-              <h4 className="font-label-caps text-label-caps text-outline mb-4">MEMBERS YOU MAY KNOW</h4>
-              <div className="space-y-4">
-                {suggestedPartners.length === 0 ? (
-                  <p className="text-sm text-on-surface-variant italic">No suggestions at this time.</p>
-                ) : (
-                  suggestedPartners.map(partner => (
-                    <div key={partner.id} className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden flex items-center justify-center">
-                          {partner.profilePhotoUrl ? (
-                            <img className="w-full h-full object-cover" alt={partner.username} src={partner.profilePhotoUrl}/>
-                          ) : (
-                            <span className="material-symbols-outlined text-outline text-sm">person</span>
-                          )}
-                        </div>
-                        <span className="text-sm font-medium">{partner.username}</span>
+            <div className="space-y-4">
+              {suggestedPartners.length === 0 ? (
+                <p className="text-body-sm text-fg-muted">
+                  No suggestions right now.
+                </p>
+              ) : (
+                suggestedPartners.map((partner) => (
+                  <div
+                    key={partner.id}
+                    className="flex justify-between items-center"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-bg-subtle overflow-hidden flex items-center justify-center flex-shrink-0">
+                        {partner.profilePhotoUrl ? (
+                          <img
+                            className="w-full h-full object-cover"
+                            alt={partner.username}
+                            src={partner.profilePhotoUrl}
+                          />
+                        ) : (
+                          <User
+                            size={16}
+                            weight="bold"
+                            className="text-fg-faint"
+                          />
+                        )}
                       </div>
-                      <button className="text-secondary text-xs font-bold hover:underline transition-all">FOLLOW</button>
+                      <span className="text-body-sm font-medium text-fg">
+                        {partner.username}
+                      </span>
                     </div>
-                  ))
-                )}
-              </div>
-              <button className="w-full mt-6 py-2 bg-surface-container-highest text-primary font-label-caps text-label-caps text-[10px] hover:bg-surface-container transition-colors rounded">
-                SEE MORE CIRCLES
-              </button>
+                    <button className="text-caption text-accent font-medium hover:underline">
+                      Follow
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
+
+            <Link
+              to="/network"
+              className="btn-ghost w-full text-center mt-6 text-sm py-2"
+            >
+              See more
+            </Link>
           </div>
         </aside>
-
       </div>
     </div>
   );

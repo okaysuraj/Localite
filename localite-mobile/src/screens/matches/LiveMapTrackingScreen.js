@@ -3,11 +3,12 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Pla
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker } from 'react-native-maps';
+import { colors } from '../../theme';
 
 export default function LiveMapTrackingScreen() {
   const navigation = useNavigation();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [sheetAnim] = useState(new Animated.Value(0)); // 0 = closed, 1 = open
+  const [sheetAnim] = useState(new Animated.Value(0));
 
   const toggleSheet = () => {
     const toValue = sheetOpen ? 0 : 1;
@@ -21,18 +22,46 @@ export default function LiveMapTrackingScreen() {
 
   const translateY = sheetAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [300, 0], // adjust based on sheet height
+    outputRange: [220, 0],
   });
+
+  const membersInTransit = [
+    {
+      id: 1,
+      name: 'Sophia Valente',
+      tier: 'Active Player',
+      destination: 'Heritage Sports Complex, Court 4',
+      eta: '4 MINS AWAY',
+      status: 'In Transit',
+      lat: 51.5050,
+      lng: -0.1320,
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
+    },
+    {
+      id: 2,
+      name: 'Julian Thorne',
+      tier: 'Verified Member',
+      destination: 'Courtside Bench North',
+      eta: 'ARRIVED',
+      status: 'On Site',
+      lat: 51.5074,
+      lng: -0.1278,
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120'
+    }
+  ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <MaterialIcons name="menu" size={24} color="#000" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <MaterialIcons name="arrow-back" size={24} color="#1A1A1A" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Live Event Map</Text>
-        <View style={styles.avatar}>
-          <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.avatarImg} />
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>Live Member Transit Map</Text>
+          <Text style={styles.headerSub}>Real-time coordination for Event #1</Text>
+        </View>
+        <View style={styles.liveIndicator}>
+          <View style={styles.liveDot} />
         </View>
       </View>
 
@@ -42,34 +71,34 @@ export default function LiveMapTrackingScreen() {
           initialRegion={{
             latitude: 51.5074,
             longitude: -0.1278,
-            latitudeDelta: 0.02,
-            longitudeDelta: 0.02,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.015,
           }}
           userInterfaceStyle="light"
         >
           {/* Destination Marker */}
           <Marker
             coordinate={{ latitude: 51.5074, longitude: -0.1278 }}
-            title="The Willows Estate"
-            description="Event venue"
-            pinColor="#775a19"
+            title="Heritage Sports Complex"
+            description="Event Venue"
+            pinColor={colors.accent}
           />
-          {/* Member Marker */}
-          <Marker
-            coordinate={{ latitude: 51.5050, longitude: -0.1320 }}
-            title="Lady Elena Rossi"
-            description="4 mins away"
-            pinColor="#10b981"
-          />
+          {/* Member Markers */}
+          {membersInTransit.map((member) => (
+            <Marker
+              key={member.id}
+              coordinate={{ latitude: member.lat, longitude: member.lng }}
+              title={member.name}
+              description={`${member.status} • ${member.eta}`}
+              pinColor={member.status === 'On Site' ? colors.accent : '#E67E22'}
+            />
+          ))}
         </MapView>
 
         {/* Map Controls */}
         <View style={styles.mapControls}>
           <TouchableOpacity style={styles.controlBtn}>
-            <MaterialIcons name="my-location" size={24} color="#000" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.controlBtn}>
-            <MaterialIcons name="layers" size={24} color="#000" />
+            <MaterialIcons name="my-location" size={20} color="#1A1A1A" />
           </TouchableOpacity>
         </View>
 
@@ -81,44 +110,30 @@ export default function LiveMapTrackingScreen() {
           
           <View style={styles.sheetContent}>
             <View style={styles.sheetHeader}>
-              <Text style={styles.sheetTitle}>In Transit</Text>
-              <Text style={styles.sheetSub}>4 Members Arriving</Text>
+              <Text style={styles.sheetTitle}>Members in Transit</Text>
+              <Text style={styles.sheetSub}>2 Members Registered</Text>
             </View>
 
-            <ScrollView style={styles.transitList}>
-              <TouchableOpacity style={styles.transitCard}>
-                <View style={styles.transitAvatarWrap}>
-                  <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.transitAvatar} />
-                  <View style={styles.statusDot} />
-                </View>
-                <View style={styles.transitInfo}>
-                  <View style={styles.transitRow}>
-                    <Text style={styles.transitName}>Lady Elena Rossi</Text>
-                    <View style={styles.etaChip}>
-                      <Text style={styles.etaChipText}>4 MINS AWAY</Text>
-                    </View>
+            <ScrollView style={styles.transitList} showsVerticalScrollIndicator={false}>
+              {membersInTransit.map((m) => (
+                <View key={m.id} style={styles.transitCard}>
+                  <View style={styles.transitAvatarWrap}>
+                    <Image source={{ uri: m.avatar }} style={styles.transitAvatar} />
+                    <View style={[styles.statusDot, m.status === 'On Site' ? { backgroundColor: colors.accent } : { backgroundColor: '#E67E22' }]} />
                   </View>
-                  <Text style={styles.transitDesc}>Via Mayfair Luxury Car</Text>
-                </View>
-                <MaterialIcons name="chevron-right" size={24} color="#75777e" />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.transitCard}>
-                <View style={styles.transitAvatarWrap}>
-                  <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.transitAvatar} />
-                  <View style={styles.statusDot} />
-                </View>
-                <View style={styles.transitInfo}>
-                  <View style={styles.transitRow}>
-                    <Text style={styles.transitName}>Sir Arthur Sterling</Text>
-                    <View style={styles.etaChip}>
-                      <Text style={styles.etaChipText}>12 MINS AWAY</Text>
+                  <View style={styles.transitInfo}>
+                    <View style={styles.transitRow}>
+                      <Text style={styles.transitName}>{m.name}</Text>
+                      <View style={[styles.etaChip, m.status === 'On Site' ? { backgroundColor: '#EDF5F0' } : { backgroundColor: '#FEF3C7' }]}>
+                        <Text style={[styles.etaChipText, m.status === 'On Site' ? { color: colors.accent } : { color: '#B45309' }]}>
+                          {m.eta}
+                        </Text>
+                      </View>
                     </View>
+                    <Text style={styles.transitDesc}>{m.destination}</Text>
                   </View>
-                  <Text style={styles.transitDesc}>Via Private Chauffeur</Text>
                 </View>
-                <MaterialIcons name="chevron-right" size={24} color="#75777e" />
-              </TouchableOpacity>
+              ))}
             </ScrollView>
           </View>
         </Animated.View>
@@ -130,210 +145,143 @@ export default function LiveMapTrackingScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fbf9f8',
+    backgroundColor: '#FFFFFF',
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    paddingTop: Platform.OS === 'android' ? 40 : 12,
-    backgroundColor: '#fbf9f8',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
-    zIndex: 10,
+    borderBottomColor: '#E8E8E8',
+    backgroundColor: '#FFFFFF',
+  },
+  backButton: {
+    padding: 6,
+  },
+  headerCenter: {
+    alignItems: 'center',
   },
   headerTitle: {
-    fontFamily: 'PlayfairDisplay-Bold',
-    fontSize: 20,
-    color: '#000',
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#eae8e7',
+  headerSub: {
+    fontSize: 10,
+    color: '#6B6B6B',
+    marginTop: 2,
   },
-  avatarImg: {
-    width: '100%',
-    height: '100%',
+  liveIndicator: {
+    padding: 6,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.accent,
   },
   mapContainer: {
     flex: 1,
     position: 'relative',
-    overflow: 'hidden',
   },
   map: {
-    width: '100%',
-    height: '100%',
-  },
-  pinContainer: {
-    position: 'absolute',
-    alignItems: 'center',
-    transform: [{ translateX: -50 }, { translateY: -50 }],
-  },
-  destBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#000',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#775a19',
-    gap: 6,
-    marginBottom: 8,
-  },
-  destText: {
-    color: '#fff',
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 10,
-  },
-  destDot: {
-    width: 12,
-    height: 12,
-    backgroundColor: '#000',
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#775a19',
-  },
-  memberPin: {
-    backgroundColor: '#fff',
-    padding: 2,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#ffdea5',
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  memberImg: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: '#775a19',
-  },
-  etaBadge: {
-    position: 'absolute',
-    bottom: -4,
-    right: -4,
-    backgroundColor: '#775a19',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  etaText: {
-    color: '#fff',
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 8,
-  },
-  pulseDot: {
-    width: 10,
-    height: 10,
-    backgroundColor: '#775a19',
-    borderRadius: 5,
+    ...StyleSheet.absoluteFillObject,
   },
   mapControls: {
     position: 'absolute',
-    right: 24,
-    top: 24,
-    gap: 12,
+    top: 16,
+    right: 16,
+    gap: 8,
   },
   controlBtn: {
-    width: 48,
-    height: 48,
-    backgroundColor: '#fff',
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowRadius: 4,
   },
   bottomSheet: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E8E8E8',
+    paddingBottom: Platform.OS === 'ios' ? 24 : 12,
+    elevation: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -8 },
     shadowOpacity: 0.1,
-    shadowRadius: 24,
-    elevation: 16,
-    height: 400,
+    shadowRadius: 10,
   },
   sheetHandleArea: {
-    paddingVertical: 16,
     alignItems: 'center',
+    paddingVertical: 10,
   },
   sheetHandle: {
-    width: 48,
-    height: 6,
-    backgroundColor: '#eae8e7',
-    borderRadius: 3,
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#D1D5DB',
   },
   sheetContent: {
-    paddingHorizontal: 24,
-    flex: 1,
+    paddingHorizontal: 16,
   },
   sheetHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 12,
   },
   sheetTitle: {
-    fontFamily: 'PlayfairDisplay-Bold',
-    fontSize: 24,
-    color: '#000',
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
   sheetSub: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 12,
-    color: '#44474d',
+    fontSize: 11,
+    color: '#6B6B6B',
   },
   transitList: {
-    flex: 1,
+    maxHeight: 180,
   },
   transitCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f3f3',
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 12,
-    gap: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F7F6F3',
+    gap: 12,
   },
   transitAvatarWrap: {
     position: 'relative',
   },
   transitAvatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F7F6F3',
   },
   statusDot: {
     position: 'absolute',
-    top: 0,
+    bottom: 0,
     right: 0,
-    width: 16,
-    height: 16,
-    backgroundColor: '#10b981',
-    borderRadius: 8,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     borderWidth: 2,
-    borderColor: '#f5f3f3',
+    borderColor: '#FFFFFF',
   },
   transitInfo: {
     flex: 1,
@@ -341,28 +289,26 @@ const styles = StyleSheet.create({
   transitRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 4,
+    alignItems: 'center',
   },
   transitName: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 14,
-    color: '#000',
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1A1A1A',
   },
   etaChip: {
-    backgroundColor: '#fed488',
     paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
   etaChipText: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 8,
-    color: '#785a1a',
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   transitDesc: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 10,
-    color: '#75777e',
+    fontSize: 11,
+    color: '#6B6B6B',
+    marginTop: 2,
   },
 });

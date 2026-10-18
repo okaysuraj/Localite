@@ -5,12 +5,15 @@ import com.localite.backend.model.Event;
 import com.localite.backend.model.User;
 import com.localite.backend.repository.EventRepository;
 import com.localite.backend.repository.ReviewRepository;
+import com.localite.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,13 +33,18 @@ public class AnalyticsController {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping
     public ResponseEntity<AnalyticsResponse> getAnalytics(Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null) {
+        if (authentication == null || authentication.getName() == null) {
             return ResponseEntity.status(401).build();
         }
 
-        User currentUser = (User) authentication.getPrincipal();
+        String firebaseUid = authentication.getName();
+        User currentUser = userRepository.findByFirebaseUid(firebaseUid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Long hostId = currentUser.getId();
 
         List<Event> hostedEvents = eventRepository.findByHostId(hostId);

@@ -1,26 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function MomentumOfGraceStreaksScreen() {
   const navigation = useNavigation();
+  const { user } = useContext(AuthContext);
+
+  const streak = user?.currentStreak || 0;
+  const level = Math.floor((user?.xp || 0) / 250) + 1;
+  const nextMilestone = streak < 7 ? 7 : streak < 14 ? 14 : streak < 30 ? 30 : streak + 10;
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingRight: 8 }}>
+            <MaterialIcons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
           <View style={styles.avatarWrap}>
             <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD80ZZCOcKkXuWeDEGnBhLILL_DRpTe9ifasygUG1vzo6Y6Geirq-V_q1mIdP5xESZ94B0FtXlnHfeXSiyIaX_NJJoTOpthwkp3Z5qrb1Wijj3fItxut62XVU8-yUROy9q7r4VD2JGMH2bxoLmAcU6xIj_Ev-ms6u2pCfkRu7zaMCw-EDTrBNgsLMTL0x1lHBjcEgbtlL7jigrlbBrFcFrrgIjWZ__d4ImQ5RjxXe1lhZUfl1enIyKKsw' }} 
+              source={{ uri: user?.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }} 
               style={styles.avatarImg} 
             />
           </View>
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
         <View style={styles.levelBadge}>
-          <Text style={styles.levelBadgeText}>LVL 24</Text>
+          <Text style={styles.levelBadgeText}>LVL {level}</Text>
         </View>
       </View>
 
@@ -36,10 +45,10 @@ export default function MomentumOfGraceStreaksScreen() {
         <View style={styles.streakCard}>
           <View style={styles.streakHeader}>
             <View>
-              <Text style={styles.streakTitle}>12 Day Streak</Text>
-              <Text style={styles.streakNext}>Next Milestone: 14 Days</Text>
+              <Text style={styles.streakTitle}>{streak} Day Active Streak</Text>
+              <Text style={styles.streakNext}>Next Milestone: {nextMilestone} Days</Text>
             </View>
-            <Text style={styles.streakNumber}>12</Text>
+            <Text style={styles.streakNumber}>{streak}</Text>
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.calendarScroll}>

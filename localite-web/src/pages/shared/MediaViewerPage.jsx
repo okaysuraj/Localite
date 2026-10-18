@@ -1,123 +1,119 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  X, 
+  ShareNetwork, 
+  DownloadSimple, 
+  CaretLeft, 
+  CaretRight 
+} from '@phosphor-icons/react';
 
 export default function MediaViewerPage() {
   const navigate = useNavigate();
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const images = [
+    'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1542314831-c6a4d14272de?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&q=80&w=1200'
+  ];
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   return (
-    <div className="bg-[#0a0a0a] text-[#fbf9f8] min-h-screen overflow-hidden flex flex-col font-body-md">
+    <div className="bg-[#111315] text-[#EDECE8] min-h-screen flex flex-col font-sans select-none relative">
       
-      {/* Cinematic Backdrop (Full Bleed) */}
-      <div className="fixed inset-0 z-0">
-        <div 
-          className="w-full h-full bg-cover bg-center brightness-[0.4] scale-105 blur-sm transition-all duration-1000" 
-          style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuA_5Mnpll2b0BB_cu6RqDkjTRsjDce8befJTWIVSDjUh_HhSbadRsfHII3mX4CxxeIlGB1CGYrZFulcU8TfuJfz2CrZxvJ1MM72s-_okzNoiBHh697AmKAcfXO9J_sL5NKsO9SkEZcoIMNCASlS2F3QHpxqTEuxaXcHK-3Cg1G5V_qF1hTy7CYRnOWJIZPdc3RyWunG2dMJ5r7DjZmO9tjKune8vuzg6ZiMQL4e0h4RMgERiWL3wwJqgg')" }}
-        ></div>
-      </div>
-
-      {/* Main Navigation / Top Bar */}
-      <header className="relative z-50 flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
-        <div className="flex items-center gap-4">
-          <span className="font-headline-sm text-2xl font-bold text-white tracking-tight">Gather</span>
-          <div className="h-6 w-[1px] bg-white opacity-30 mx-2"></div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#e9c176]">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtSdUdKIKS4Yc1SzkNBfM3RAD1-AT0x592gjYra6MkxZqLWmMbOPeaZiZI7icwXVePTjxWPuQ-kbkDYgenUaGOWowNXSV_MdVn8gcuCvjZkm9HhPCYYH8Cyb1WhTw1eLDGGysaHXsVZFuUEJM8P3Q3lyqAktNFia7Ize-dcOgR8aYuup9IkJa-OSpWM_50zQsVf4QWgRsONsLKZeh52oIwPvyaOv7Ei3J0K46V8h0ZDvpRybeRyGAWKA" alt="Curator" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-label-caps text-[10px] text-[#e9c176] uppercase tracking-widest">Curated By</span>
-              <span className="font-body-md text-sm font-medium text-white">Julian Thorne</span>
-            </div>
-          </div>
+      {/* Top Header */}
+      <header className="relative z-30 flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <span className="text-base font-semibold tracking-tight text-white">Event Gallery</span>
+          <span className="text-white/30">•</span>
+          <span className="text-xs text-white/60 font-mono">
+            {activeIndex + 1} of {images.length}
+          </span>
         </div>
         
-        <div className="flex items-center gap-4">
-          <button className="bg-white/5 backdrop-blur-md border border-white/10 w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all active:scale-90" title="Share">
-            <span className="material-symbols-outlined text-white">share</span>
-          </button>
-          <button className="bg-white/5 backdrop-blur-md border border-white/10 w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all active:scale-90" title="Download">
-            <span className="material-symbols-outlined text-white">download</span>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => alert("Image link copied to clipboard.")}
+            className="p-2 rounded-card border border-white/15 hover:bg-white/10 text-white transition-colors" 
+            title="Share"
+          >
+            <ShareNetwork size={16} />
           </button>
           <button 
-            className="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-black/50 ml-4" 
-            title="Close"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => alert("Downloading original media file...")}
+            className="p-2 rounded-card border border-white/15 hover:bg-white/10 text-white transition-colors" 
+            title="Download"
           >
-            <span className="material-symbols-outlined">close</span>
+            <DownloadSimple size={16} />
+          </button>
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-card bg-white text-[#111315] hover:bg-white/90 transition-colors ml-2" 
+            title="Close viewer"
+          >
+            <X size={16} />
           </button>
         </div>
       </header>
 
-      {/* Content Canvas */}
-      <main className="relative z-10 flex-grow flex flex-col items-center justify-center px-6 py-6">
-        
-        {/* Large Scale Focal Image */}
-        <div className="relative w-full max-w-5xl aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] group">
+      {/* Main Canvas Viewport */}
+      <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10 max-w-6xl mx-auto w-full">
+        <div className="relative w-full aspect-[16/9] max-h-[65vh] rounded-card overflow-hidden bg-black/50 border border-white/10 flex items-center justify-center group shadow-2xl">
           <img 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[20s] ease-linear" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkg6vtipihD6rUYzRxKKoAopmoD2jRzUw5uuMX1iwAb7MBUvcTGvxhLLbTJ6KHK33aTigISsWhtonscA9vg4ftnbxy-f9JqREfZsMUqUu7VLXGEsSE53lYDe8Q-ZcgVdDKFpWCrZx5nCUBCGfAfHuX1Ztsz_s0aRUZuVSHoiQYXLWvI5tvFZIyotMBrnCTELx8QOoxSd7AdoX8Am2-LLxvswlpCiRv9-ftpqOZ-VkiTcSj58YcEQDCUw" 
-            alt="Main Photo"
+            src={images[activeIndex]} 
+            alt="Event view" 
+            className="w-full h-full object-contain"
           />
-          {/* Contextual Overlay */}
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-between px-8">
-            <button className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/20">
-              <span className="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/20">
-              <span className="material-symbols-outlined">chevron_right</span>
-            </button>
-          </div>
+
+          {/* Navigation arrows */}
+          <button 
+            onClick={handlePrev}
+            className="absolute left-4 p-3 rounded-full bg-black/60 text-white hover:bg-black/90 transition-all border border-white/10"
+          >
+            <CaretLeft size={20} />
+          </button>
+          <button 
+            onClick={handleNext}
+            className="absolute right-4 p-3 rounded-full bg-black/60 text-white hover:bg-black/90 transition-all border border-white/10"
+          >
+            <CaretRight size={20} />
+          </button>
         </div>
-        
-        {/* Typography Branding */}
-        <div className="mt-6 text-center max-w-2xl">
-          <h1 className="font-display-lg text-5xl font-bold text-white mb-2">Moments from the Soiree</h1>
-          <p className="font-body-md text-[#c5c6cd] italic opacity-80">An evening of shared stories, rare vintages, and the quiet elegance of midnight.</p>
+
+        <div className="mt-4 text-center">
+          <h2 className="text-sm font-semibold text-white">Autumn Soirée & Tennis Exhibition</h2>
+          <p className="text-xs text-white/50 mt-0.5">Royal Court Gardens • Verified Member Gallery</p>
         </div>
-        
       </main>
 
-      {/* Filmstrip & Footer Controls */}
-      <footer className="relative z-20 w-full bg-gradient-to-t from-black via-black/80 to-transparent pt-12 pb-8">
-        <div className="max-w-7xl mx-auto px-6">
-          
-          {/* Horizontal Filmstrip */}
-          <div className="flex items-end gap-4 overflow-x-auto pb-6 [&::-webkit-scrollbar]:hidden">
-            <div className="flex-shrink-0 cursor-pointer w-48 h-32 rounded-lg border-2 border-[#e9c176] overflow-hidden shadow-xl transition-transform hover:-translate-y-2">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0ITx8Bx04GLxU-vgKhfX4zSuKWjkgoZUxVpD5vXdWch0UBnLW8hDFWryo6J0DuLmOPH1WoMiX1_Y75skS1jNbNI5K7FvDCXzzKkLxFYTNrhgofnALa01NVXWuGf38kyEPc4xPBOLn_YIqqXbvCWogfluw-UuQ48crXZcFOKFx8ASIE1QGgJjrhFyT_R1aEYUH1ZB5bX7fhkwY0xWNaXxx5iw5f3U41fKxL5QyrocEggWCw2dPrGr-iA" alt="Thumbnail" />
+      {/* Filmstrip Bar */}
+      <footer className="relative z-20 border-t border-white/10 p-4 bg-[#111315]/80 backdrop-blur-md">
+        <div className="max-w-xl mx-auto flex items-center justify-center gap-3 overflow-x-auto">
+          {images.map((img, idx) => (
+            <div 
+              key={idx}
+              onClick={() => setActiveIndex(idx)}
+              className={`w-20 h-14 rounded-card overflow-hidden cursor-pointer border-2 transition-all shrink-0 ${
+                activeIndex === idx 
+                  ? 'border-emerald-500 scale-105 shadow-md' 
+                  : 'border-white/20 opacity-50 hover:opacity-100'
+              }`}
+            >
+              <img src={img} alt="thumb" className="w-full h-full object-cover" />
             </div>
-            <div className="flex-shrink-0 cursor-pointer w-40 h-28 rounded-lg border border-white/10 overflow-hidden opacity-60 hover:opacity-100 transition-all hover:-translate-y-2">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbB8b-LmWxsTd0RAaTJsW13OcT3J2pZLg1nirTpqolh1yuU2K5pmH_LwGWZ4s_ycstOf3QReew5M_4hAsYI4Wq3hAIwXfrnWPp1s5snXaE9rGCzKVofm7UUqmT0qC0CKbzClcVa7pFFSYcqyCmpOh2AkDkC7F582ztA2q_0DTl1AjSvDMa7tLkdrtvYgtsYXNd3JB3yI1OJ7GU9NAFTbwY5-jM7xpDsjokvgZ1_GQ9yYC67zqLH3yMDw" alt="Thumbnail" />
-            </div>
-            <div className="flex-shrink-0 cursor-pointer w-40 h-28 rounded-lg border border-white/10 overflow-hidden opacity-60 hover:opacity-100 transition-all hover:-translate-y-2">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVTsGYzQvgDdBdclKcLDmyAFofSwpvhqaQO_EeClE-muw-kD6MR-kyVAcdpEzB60cCN_NLrOdWhFG75BLnbdnWsapfbN-ujYjzOICSj_1BGo1Kz_lNxAOQTfKNBD1oGgIfk8_3DIPS99kSD_eI-aQ66dqSW6pm9XsVYXpMA8k5xACPTHlE4mlWusPdteDi24_-PBM7fBgLSsQgm10NL6i2amaDAhNlPmaSbuRd2ND8FG7RvqRPZlQeJQ" alt="Thumbnail" />
-            </div>
-            <div className="flex-shrink-0 cursor-pointer w-40 h-28 rounded-lg border border-white/10 overflow-hidden opacity-60 hover:opacity-100 transition-all hover:-translate-y-2">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYUdoTjNDVUrZAnOJJAAYOdfsKjwvUT-blQG8YS2nSYlJELK2lCgoYYRtKj7Z_tKGuibkJjgAywZfIBX3ds-QFTMdb42nd3QKk8fGU_uk8WNlrvOj2VnxWUZxH01kPgujWRlZv1sM5xCZFOoTT3AtiVhC4J9mKcYdsDerdfzAf0zJycphLVp2x-aGv3WFlr_qTCqSAlR69EjDYfVldMjNtOoeP1bW02OH1YtOlwymbwF2ZMqIjt6SGow" alt="Thumbnail" />
-            </div>
-            <div className="flex-shrink-0 cursor-pointer w-40 h-28 rounded-lg border border-white/10 overflow-hidden opacity-60 hover:opacity-100 transition-all hover:-translate-y-2">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYOyF9TN2EIP2y7wKPnpgc2VioLibo8hRSG5kXt-wV1rrv3apex5dFB_LgAIABEsiKTgbUaEjTpsI5Lvn6rH4fZKR-v8JL1SErraQCH20I9QGta_2T8_Bnh04Ct8HHeSK7EXwc2HLUKUdM_tFW9_4ZqF_viiCvb0XwaGBsb4KmtTHoIpYKRLUy7phBjHUdfNln8hbzRjV-pDzFxKeadp62QVAbO9vSesNwlJPlircCTBPYe5Bo6byUnQ" alt="Thumbnail" />
-            </div>
-          </div>
-
-          {/* Meta Information */}
-          <div className="flex justify-between items-center mt-6 border-t border-white/10 pt-6">
-            <div className="flex gap-6">
-              <div className="flex flex-col">
-                <span className="font-label-caps text-[10px] text-[#c5c6cd]">LOCATION</span>
-                <span className="text-sm font-medium">The Glass House, Kensington</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-label-caps text-[10px] text-[#c5c6cd]">DATE</span>
-                <span className="text-sm font-medium">October 14, 2024</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 text-[#c5c6cd] font-label-caps text-[10px]">
-              <span>© 2024 GATHER MODERN NOBILITY</span>
-            </div>
-          </div>
+          ))}
         </div>
       </footer>
+
     </div>
   );
 }

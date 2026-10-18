@@ -1,17 +1,64 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Platform, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, Platform, Image, ActivityIndicator, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-
-const attendees = [
-  { id: 1, name: 'Eleanor Sterling', status: 'ARRIVED', tier: 'Diamond Elite', dietary: 'Vegan, No Gluten', statusColor: '#10b981', statusBg: '#d1fae5', avatar: 'https://via.placeholder.com/100' },
-  { id: 2, name: 'Julian Vane', status: 'EN ROUTE', tier: 'Platinum Member', dietary: 'Shellfish Allergy', statusColor: '#d97706', statusBg: '#fef3c7', avatar: 'https://via.placeholder.com/100' },
-  { id: 3, name: 'Serafina Black', status: 'PENDING', tier: 'Waitlist', dietary: '—', statusColor: '#64748b', statusBg: '#f1f5f9', avatar: 'https://via.placeholder.com/100' },
-  { id: 4, name: 'Marcus Finch', status: 'ARRIVED', tier: 'Gold Member', dietary: 'Nut Allergy', statusColor: '#10b981', statusBg: '#d1fae5', avatar: 'https://via.placeholder.com/100' },
-];
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { getEventById, getEventRsvps, getMyEvents, checkInAttendee } from '../../services/api';
 
 export default function AttendeeManagementScreen() {
   const navigation = useNavigation();
+  const route = useRoute();
+  
+  const [eventId, setEventId] = useState(route.params?.eventId || null);
+  const [event, setEvent] = useState(null);
+  const [attendees, setAttendees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    async function loadEventData() {
+      try {
+        let currentId = eventId;
+        if (!currentId) {
+          const myEvents = await getMyEvents();
+          if (Array.isArray(myEvents) && myEvents.length > 0) {
+            currentId = myEvents[0].id;
+            setEventId(currentId);
+          }
+        }
+        if (currentId) {
+          const [eventData, rsvps] = await Promise.all([
+            getEventById(currentId).catch(() => null),
+            getEventRsvps(currentId).catch(() => [])
+          ]);
+          setEvent(eventData);
+          setAttendees(Array.isArray(rsvps) ? rsvps : []);
+        }
+      } catch (err) {
+        console.error('Failed to load attendees:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadEventData();
+  }, [eventId]);
+
+  const handleCheckIn = async (ticketId, username) => {
+    if (!eventId || !ticketId) return;
+    try {
+      await checkInAttendee(eventId, ticketId);
+      Alert.alert('Checked In', `${username || 'Attendee'} successfully checked in!`);
+      // Refresh attendees
+      const rsvps = await getEventRsvps(eventId);
+      setAttendees(Array.isArray(rsvps) ? rsvps : []);
+    } catch (err) {
+      Alert.alert('Check In Status', err.message || 'Could not verify ticket');
+    }
+  };
+
+  const filtered = attendees.filter(a => {
+    const name = a.user?.username || a.username || '';
+    return name.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -20,83 +67,93 @@ export default function AttendeeManagementScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.menuButton}>
           <MaterialIcons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Localite</Text>
-        <View style={styles.avatar}>
-          <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.avatarImg} />
-        </View>
+        <Text style={styles.headerTitle}>Attendee Roster</Text>
+        <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         {/* Event Header */}
         <View style={styles.eventHeader}>
-          <Text style={styles.eventLabel}>EXCLUSIVE EVENT MANAGEMENT</Text>
-          <Text style={styles.eventTitle}>The Winter Masquerade</Text>
-          <Text style={styles.eventSubtitle}>Grand Ballroom • Dec 22, 2023</Text>
+          <Text style={styles.eventLabel}>CONFIRMED EVENT ROSTER</Text>
+          <Text style={styles.eventTitle}>{event?.title || 'Community Gathering'}</Text>
+          <Text style={styles.eventSubtitle}>
+            {event?.location || 'Designated Venue'} • {event?.date ? `${event.date}` : 'Scheduled'}
+          </Text>
         </View>
 
         {/* Search & Filters */}
         <View style={styles.filtersSection}>
-          <View style={styles.filterChips}>
-            <TouchableOpacity style={styles.chip}>
-              <MaterialIcons name="restaurant" size={16} color="#775a19" />
-              <Text style={styles.chipText}>DIETARY REQ</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.chip}>
-              <MaterialIcons name="star" size={16} color="#775a19" />
-              <Text style={styles.chipText}>ELITE STATUS</Text>
-            </TouchableOpacity>
-          </View>
           <View style={styles.searchBar}>
             <MaterialIcons name="search" size={20} color="#75777e" style={styles.searchIcon} />
             <TextInput 
               style={styles.searchInput}
               placeholder="Search guests..."
               placeholderTextColor="#75777e"
+              value={search}
+              onChangeText={setSearch}
             />
           </View>
         </View>
 
-        {/* Attendee List */}
-        <View style={styles.listContainer}>
-          {attendees.map(guest => (
-            <View key={guest.id} style={styles.card}>
-              <View style={styles.cardTop}>
-                <View style={styles.userInfo}>
-                  <Image source={{ uri: guest.avatar }} style={styles.userAvatar} />
-                  <View>
-                    <Text style={styles.userName}>{guest.name}</Text>
-                    <Text style={styles.userSub}>{guest.tier} • {guest.dietary}</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.cardBottom}>
-                <View style={styles.statusContainer}>
-                  <Text style={styles.statusLabel}>STATUS</Text>
-                  <View style={[styles.statusBadge, { backgroundColor: guest.statusBg }]}>
-                    <Text style={[styles.statusText, { color: guest.statusColor }]}>{guest.status}</Text>
-                  </View>
-                </View>
-                <View style={styles.cardActions}>
-                  <TouchableOpacity style={styles.iconButton}>
-                    <MaterialIcons name="chat-bubble-outline" size={20} color="#000" />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.primaryButton}>
-                    <Text style={styles.primaryButtonText}>VIEW</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          ))}
-        </View>
+        {loading ? (
+          <ActivityIndicator size="large" color="#775a19" style={{ marginVertical: 32 }} />
+        ) : filtered.length === 0 ? (
+          <View style={{ padding: 32, alignItems: 'center' }}>
+            <Text style={{ fontSize: 14, color: '#75777e', textAlign: 'center' }}>
+              No attendees registered for this gathering yet.
+            </Text>
+          </View>
+        ) : (
+          /* Attendee List */
+          <View style={styles.listContainer}>
+            {filtered.map(rsvp => {
+              const name = rsvp.user?.username || rsvp.username || 'Member';
+              const isCheckedIn = rsvp.checkedIn || rsvp.status === 'ATTENDED';
+              const statusText = isCheckedIn ? 'CHECKED IN' : rsvp.status || 'GOING';
+              const statusBg = isCheckedIn ? '#d1fae5' : '#fef3c7';
+              const statusColor = isCheckedIn ? '#10b981' : '#d97706';
 
-        <TouchableOpacity style={styles.loadMoreButton}>
-          <Text style={styles.loadMoreText}>LOAD MORE GUESTS</Text>
-          <MaterialIcons name="expand-more" size={20} color="#775a19" />
-        </TouchableOpacity>
+              return (
+                <View key={rsvp.id} style={styles.card}>
+                  <View style={styles.cardTop}>
+                    <View style={styles.userInfo}>
+                      <Image 
+                        source={{ uri: rsvp.user?.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }} 
+                        style={styles.userAvatar} 
+                      />
+                      <View>
+                        <Text style={styles.userName}>{name}</Text>
+                        <Text style={styles.userSub}>Ticket: {rsvp.ticketId ? `#${rsvp.ticketId.slice(0, 8)}` : 'Standard Pass'}</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={styles.cardBottom}>
+                    <View style={styles.statusContainer}>
+                      <Text style={styles.statusLabel}>STATUS</Text>
+                      <View style={[styles.statusBadge, { backgroundColor: statusBg }]}>
+                        <Text style={[styles.statusText, { color: statusColor }]}>{statusText}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.cardActions}>
+                      {!isCheckedIn && rsvp.ticketId && (
+                        <TouchableOpacity 
+                          style={styles.primaryButton}
+                          onPress={() => handleCheckIn(rsvp.ticketId, name)}
+                        >
+                          <Text style={styles.primaryButtonText}>CHECK IN</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
       </ScrollView>
 
       {/* FAB */}
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('TicketQRCode')}>
+      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('TicketQRCode', { eventId })}>
         <MaterialIcons name="qr-code-scanner" size={24} color="#fff" />
       </TouchableOpacity>
     </SafeAreaView>

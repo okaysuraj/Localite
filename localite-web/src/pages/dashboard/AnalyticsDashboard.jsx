@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Users, Star, Calendar, TrendingUp } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import gsap from 'gsap';
-import { getAuthHeaders } from '../../services/api';
+import {
+  CalendarBlank,
+  Users,
+  Star,
+  TrendUp,
+  ChartLineUp,
+} from '@phosphor-icons/react';
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from 'recharts';
+import { getUserAnalytics } from '../../services/api';
 
 const AnalyticsDashboard = () => {
   const [data, setData] = useState(null);
@@ -12,23 +25,11 @@ const AnalyticsDashboard = () => {
     fetchAnalytics();
   }, []);
 
-  useEffect(() => {
-    if (!loading && data) {
-      gsap.fromTo('.analytics-anim', 
-        { opacity: 0, y: 20 }, 
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }
-      );
-    }
-  }, [loading, data]);
-
   const fetchAnalytics = async () => {
     try {
-      const headers = await getAuthHeaders();
-      const res = await fetch(import.meta.env.VITE_API_URL + '/users/me/analytics', {
-        headers
-      });
-      if (res.ok) {
-        setData(await res.json());
+      const res = await getUserAnalytics();
+      if (res) {
+        setData(res);
       }
     } catch (err) {
       console.error(err);
@@ -38,19 +39,35 @@ const AnalyticsDashboard = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center text-lime-vibe font-label-mono uppercase tracking-widest">Compiling Analytics...</div>;
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2 text-xs font-mono text-fg-muted uppercase tracking-wider">
+          <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          Loading analytics...
+        </div>
+      </div>
+    );
   }
 
   if (!data) {
-    return <div className="min-h-screen bg-background flex items-center justify-center text-text-muted font-label-mono uppercase tracking-widest">No data available</div>;
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center text-fg-muted font-mono text-xs uppercase tracking-wider">
+        No analytics data available yet.
+      </div>
+    );
   }
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-surface-dark border border-lime-vibe/30 p-3 rounded-lg shadow-lg">
-          <p className="text-lime-vibe font-label-mono text-xs mb-1">{label}</p>
-          <p className="text-white font-headline-md">{payload[0].value} <span className="text-text-muted text-sm font-normal">Attendees</span></p>
+        <div className="bg-white border border-border p-2.5 rounded-card shadow-md">
+          <p className="text-fg-muted font-mono text-[10px] uppercase tracking-wider mb-1">
+            {label}
+          </p>
+          <p className="text-fg font-display font-semibold text-base">
+            {payload[0].value}{' '}
+            <span className="text-fg-muted text-xs font-normal">Attendees</span>
+          </p>
         </div>
       );
     }
@@ -58,112 +75,178 @@ const AnalyticsDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-      <div className="analytics-anim mb-12">
-        <h2 className="font-display-md text-display-md text-on-surface uppercase tracking-tight mb-2 flex items-center gap-3">
-          <Activity className="text-lime-vibe" size={40} />
-          Host <span className="text-lime-vibe">Analytics</span>
-        </h2>
-        <p className="font-body-lg text-body-lg text-text-muted">
-          Track your operational impact and community engagement.
-        </p>
-      </div>
-
-      {/* Top Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <div className="analytics-anim bg-surface-container-low border border-surface-variant/20 rounded-2xl p-6 relative overflow-hidden group hover:border-lime-vibe/50 transition-colors">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Calendar size={64} className="text-lime-vibe" />
-          </div>
-          <p className="font-label-mono text-text-muted uppercase tracking-widest text-xs mb-2">Total Events</p>
-          <p className="font-display-md text-white text-5xl">{data.totalEventsHosted}</p>
-        </div>
-        
-        <div className="analytics-anim bg-surface-container-low border border-surface-variant/20 rounded-2xl p-6 relative overflow-hidden group hover:border-lime-vibe/50 transition-colors">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Users size={64} className="text-lime-vibe" />
-          </div>
-          <p className="font-label-mono text-text-muted uppercase tracking-widest text-xs mb-2">Total Attendees</p>
-          <p className="font-display-md text-white text-5xl">{data.totalAttendees}</p>
+    <div className="min-h-screen bg-bg py-10 px-6">
+      <div className="max-w-content mx-auto space-y-8">
+        {/* Header */}
+        <div className="pb-6 border-b border-border">
+          <h1 className="text-3xl font-display font-semibold text-fg tracking-tight">
+            Performance Analytics
+          </h1>
+          <p className="text-sm text-fg-muted mt-1">
+            Track your attendee engagement, gathering ratings, and historical performance.
+          </p>
         </div>
 
-        <div className="analytics-anim bg-surface-container-low border border-surface-variant/20 rounded-2xl p-6 relative overflow-hidden group hover:border-lime-vibe/50 transition-colors">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Star size={64} className="text-lime-vibe" />
+        {/* Top Metrics Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white border border-border rounded-card p-5 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono text-fg-muted">
+              <span>Total Hosted</span>
+              <CalendarBlank size={16} className="text-accent" />
+            </div>
+            <p className="text-3xl font-display font-semibold text-fg">
+              {data.totalEventsHosted}
+            </p>
           </div>
-          <p className="font-label-mono text-text-muted uppercase tracking-widest text-xs mb-2">Avg Rating</p>
-          <p className="font-display-md text-white text-5xl">{data.averageRating.toFixed(1)}</p>
+
+          <div className="bg-white border border-border rounded-card p-5 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono text-fg-muted">
+              <span>Total Attendees</span>
+              <Users size={16} className="text-accent" />
+            </div>
+            <p className="text-3xl font-display font-semibold text-fg">
+              {data.totalAttendees}
+            </p>
+          </div>
+
+          <div className="bg-white border border-border rounded-card p-5 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono text-fg-muted">
+              <span>Avg Rating</span>
+              <Star size={16} className="text-accent fill-accent" />
+            </div>
+            <p className="text-3xl font-display font-semibold text-fg">
+              {data.averageRating ? data.averageRating.toFixed(1) : '0.0'}
+            </p>
+          </div>
+
+          <div className="bg-white border border-border rounded-card p-5 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono text-fg-muted">
+              <span>Upcoming</span>
+              <TrendUp size={16} className="text-accent" />
+            </div>
+            <p className="text-3xl font-display font-semibold text-fg">
+              {data.upcomingEventsCount}
+            </p>
+          </div>
         </div>
 
-        <div className="analytics-anim bg-surface-container-low border border-surface-variant/20 rounded-2xl p-6 relative overflow-hidden group hover:border-lime-vibe/50 transition-colors">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <TrendingUp size={64} className="text-lime-vibe" />
-          </div>
-          <p className="font-label-mono text-text-muted uppercase tracking-widest text-xs mb-2">Upcoming</p>
-          <p className="font-display-md text-white text-5xl">{data.upcomingEventsCount}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Chart Section */}
-        <div className="analytics-anim lg:col-span-2 bg-surface-container-low border border-surface-variant/20 rounded-2xl p-8">
-          <h3 className="font-label-mono text-lime-vibe uppercase tracking-widest text-sm mb-8 flex items-center gap-2">
-            <TrendingUp size={16} /> Engagement Trajectory
-          </h3>
-          
-          <div className="h-[300px] w-full">
-            {data.performanceData && data.performanceData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data.performanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorAttendees" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ccff00" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#ccff00" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <XAxis dataKey="label" stroke="#475569" tick={{fill: '#94a3b8', fontSize: 12, fontFamily: 'monospace'}} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#475569" tick={{fill: '#94a3b8', fontSize: 12, fontFamily: 'monospace'}} tickLine={false} axisLine={false} />
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area type="monotone" dataKey="attendees" stroke="#ccff00" strokeWidth={3} fillOpacity={1} fill="url(#colorAttendees)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center text-text-muted font-label-mono uppercase tracking-widest text-xs">
-                Not enough data to visualize
+        {/* Charts & Breakdown */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Chart Column (8 cols) */}
+          <div className="lg:col-span-8 bg-white border border-border rounded-card p-6 sm:p-8 space-y-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="font-display font-semibold text-base text-fg tracking-tight">
+                  Attendee Growth Trajectory
+                </h3>
+                <p className="text-xs text-fg-muted mt-0.5">
+                  Monthly attendance across your events
+                </p>
               </div>
-            )}
-          </div>
-        </div>
+              <span className="text-xs font-mono text-accent bg-accent-subtle px-2.5 py-1 rounded-full border border-accent/20">
+                Live Data
+              </span>
+            </div>
 
-        {/* Recent Events Section */}
-        <div className="analytics-anim bg-surface-container-low border border-surface-variant/20 rounded-2xl p-8">
-          <h3 className="font-label-mono text-lime-vibe uppercase tracking-widest text-sm mb-6 flex items-center gap-2">
-            <Calendar size={16} /> Recent Operations
-          </h3>
-          
-          <div className="space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
-            {data.recentEvents && data.recentEvents.length > 0 ? (
-              data.recentEvents.map((event, idx) => (
-                <div key={idx} className="bg-surface-dark border border-surface-variant/30 rounded-xl p-4 hover:border-lime-vibe/30 transition-colors">
-                  <p className="font-headline-sm text-white line-clamp-1">{event.title}</p>
-                  <p className="font-label-mono text-text-muted text-[10px] uppercase tracking-widest mb-3 mt-1">{event.date}</p>
-                  
-                  <div className="flex justify-between items-center border-t border-surface-variant/20 pt-3 mt-2">
-                    <div className="flex items-center gap-1">
-                      <Users size={12} className="text-lime-vibe" />
-                      <span className="font-label-mono text-white text-xs">{event.attendees}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Star size={12} className="text-lime-vibe fill-lime-vibe" />
-                      <span className="font-label-mono text-white text-xs">{event.rating.toFixed(1)}</span>
+            <div className="h-[280px] w-full pt-2">
+              {data.performanceData && data.performanceData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={data.performanceData}
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id="colorAttendees"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#1A6B4A"
+                          stopOpacity={0.2}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#1A6B4A"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      dataKey="label"
+                      stroke="#9ca3af"
+                      tick={{ fill: '#6b7280', fontSize: 11, fontFamily: 'monospace' }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      stroke="#9ca3af"
+                      tick={{ fill: '#6b7280', fontSize: 11, fontFamily: 'monospace' }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="#f3f4f6"
+                      vertical={false}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Area
+                      type="monotone"
+                      dataKey="attendees"
+                      stroke="#1A6B4A"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorAttendees)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-fg-muted font-mono text-xs">
+                  Not enough historical data to chart yet.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Side Column: Recent Events (4 cols) */}
+          <div className="lg:col-span-4 bg-white border border-border rounded-card p-6 space-y-4">
+            <h3 className="font-display font-semibold text-base text-fg tracking-tight">
+              Recent Gatherings
+            </h3>
+
+            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 divide-y divide-border/60">
+              {data.recentEvents && data.recentEvents.length > 0 ? (
+                data.recentEvents.map((event, idx) => (
+                  <div key={idx} className="pt-3 first:pt-0 space-y-1">
+                    <p className="font-display font-medium text-sm text-fg truncate">
+                      {event.title}
+                    </p>
+                    <p className="font-mono text-[10px] text-fg-muted uppercase">
+                      {event.date}
+                    </p>
+
+                    <div className="flex justify-between items-center text-xs font-mono text-fg-muted pt-1">
+                      <span className="inline-flex items-center gap-1">
+                        <Users size={12} className="text-accent" />
+                        {event.attendees} attendees
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <Star size={12} className="text-accent fill-accent" />
+                        {event.rating ? event.rating.toFixed(1) : '5.0'}
+                      </span>
                     </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-text-muted font-label-mono uppercase tracking-widest text-xs text-center py-10">No past events found</p>
-            )}
+                ))
+              ) : (
+                <p className="text-fg-muted font-mono text-xs text-center py-8">
+                  No past gatherings recorded.
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>

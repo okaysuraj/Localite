@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  CurrencyDollar, 
+  Gift, 
+  Star, 
+  CreditCard, 
+  ArrowLeft, 
+  ArrowRight, 
+  Info,
+  Check 
+} from '@phosphor-icons/react';
 
 export default function CreateEventPaymentSetupPage() {
   const navigate = useNavigate();
@@ -8,177 +18,187 @@ export default function CreateEventPaymentSetupPage() {
 
   const parsedPrice = parseFloat(price) || 0;
   const platformFee = parsedPrice > 0 ? (parsedPrice * 0.05).toFixed(2) : '0.00';
-  const processingFee = parsedPrice > 0 ? (parsedPrice * 0.03).toFixed(2) : '0.00'; // mockup
+  const processingFee = parsedPrice > 0 ? (parsedPrice * 0.03).toFixed(2) : '0.00';
   const netPerTicket = parsedPrice > 0 ? (parsedPrice - parseFloat(platformFee) - parseFloat(processingFee)).toFixed(2) : '0.00';
-  const total = parsedPrice > 0 ? (netPerTicket * 50).toFixed(2) : '0.00';
+  const total = parsedPrice > 0 ? (parseFloat(netPerTicket) * 50).toFixed(2) : '0.00';
 
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-[calc(100vh-73px)]">
-      <main className="max-w-7xl mx-auto py-12 px-6 md:px-12">
-        {/* Header Section */}
-        <div className="mb-12 text-center md:text-left">
-          <p className="font-label-caps text-label-caps text-secondary mb-2 tracking-widest">EVENT CREATION JOURNEY</p>
-          <h1 className="font-headline-md text-headline-md text-primary">Payment & Ticket Setup</h1>
-          <p className="font-body-md text-on-surface-variant max-w-2xl mt-2">Define how your guests will access the gathering. Choose between complimentary entry or curated ticketed experiences.</p>
-        </div>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
+      <main className="max-w-5xl mx-auto space-y-8">
+        <header className="space-y-2">
+          <div className="flex items-center gap-2 text-[var(--fg-muted)] mb-1">
+            <span className="font-mono text-xs uppercase tracking-wider">Step 05 / 06</span>
+            <div className="h-[1px] w-10 bg-[var(--border)]"></div>
+          </div>
+          <h1 className="text-3xl font-serif text-[var(--fg)]">Access & Ticketing</h1>
+          <p className="text-sm text-[var(--fg-muted)] max-w-2xl">
+            Define whether your gathering is complimentary or requires ticket purchase and payout logistics.
+          </p>
+        </header>
 
-        {/* Split Pane Layout */}
-        <div className="flex flex-col lg:flex-row gap-12 items-start">
-          {/* Left Side: Selection Form */}
-          <div className="flex-grow w-full lg:w-3/5 space-y-6">
-            <div className="space-y-4">
-              <h3 className="font-label-caps text-label-caps text-on-surface-variant">SELECT ACCESS TYPE</h3>
-              
-              {/* Free Event Card */}
-              <label className={`group relative flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm border-2 cursor-pointer transition-all ${accessType === 'free' ? 'border-secondary-fixed-dim' : 'border-transparent hover:border-secondary-fixed-dim'}`}>
-                <input 
-                  type="radio" 
-                  name="access_type" 
-                  value="free" 
-                  className="mt-1 text-primary focus:ring-secondary-fixed-dim cursor-pointer"
-                  checked={accessType === 'free'}
-                  onChange={() => setAccessType('free')}
-                />
-                <div className="flex-grow">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-headline-sm text-headline-sm text-primary">Free Event</span>
-                    <span className="material-symbols-outlined text-secondary">redeem</span>
-                  </div>
-                  <p className="text-on-surface-variant text-body-md">Open to the public at no cost. Ideal for community gatherings or promotional events.</p>
-                </div>
-              </label>
-
-              {/* Paid Ticket Card */}
-              <label className={`group relative flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm border-2 cursor-pointer transition-all ${accessType === 'paid' ? 'border-secondary-fixed-dim' : 'border-transparent hover:border-secondary-fixed-dim'}`}>
-                <input 
-                  type="radio" 
-                  name="access_type" 
-                  value="paid" 
-                  className="mt-1 text-primary focus:ring-secondary-fixed-dim cursor-pointer"
-                  checked={accessType === 'paid'}
-                  onChange={() => setAccessType('paid')}
-                />
-                <div className="flex-grow">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-headline-sm text-headline-sm text-primary">Paid Ticket</span>
-                    <span className="material-symbols-outlined text-secondary">payments</span>
-                  </div>
-                  <p className="text-on-surface-variant text-body-md">Generate revenue with standard ticket pricing. Secure and streamlined checkout for guests.</p>
-                  
-                  {/* Nested Input for Price */}
-                  {accessType === 'paid' && (
-                    <div className="mt-6 p-4 bg-surface-container-low rounded-lg">
-                      <label className="block font-label-caps text-label-caps text-on-surface-variant mb-2">SET UNIT PRICE</label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">$</span>
-                        <input 
-                          type="number" 
-                          className="w-full bg-white border-none rounded-lg pl-8 pr-4 py-3 focus:ring-1.5 focus:ring-secondary-fixed-dim font-body-md outline-none" 
-                          placeholder="0.00" 
-                          value={price}
-                          onChange={(e) => setPrice(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </label>
-
-              {/* Member Exclusive Card */}
-              <label className={`group relative flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm border-2 cursor-pointer transition-all ${accessType === 'member' ? 'border-secondary-fixed-dim' : 'border-transparent hover:border-secondary-fixed-dim'}`}>
-                <input 
-                  type="radio" 
-                  name="access_type" 
-                  value="member" 
-                  className="mt-1 text-primary focus:ring-secondary-fixed-dim cursor-pointer"
-                  checked={accessType === 'member'}
-                  onChange={() => setAccessType('member')}
-                />
-                <div className="flex-grow">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-headline-sm text-headline-sm text-primary">Member Exclusive</span>
-                    <span className="material-symbols-outlined text-secondary">star</span>
-                  </div>
-                  <p className="text-on-surface-variant text-body-md">Restricted access for your Localite Inner Circle. Perfect for VIP previews and private salons.</p>
-                </div>
-              </label>
-            </div>
-
-            {/* PayPal Linking Section */}
-            <div className="pt-6 border-t border-outline-variant/20">
-              <h3 className="font-label-caps text-label-caps text-on-surface-variant mb-4">PAYOUT RECIPIENT</h3>
-              <div className="p-6 bg-white rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 border border-outline-variant/10">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[#003087] rounded-lg flex items-center justify-center">
-                    <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance_wallet</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Options Column */}
+          <div className="lg:col-span-7 space-y-4">
+            {/* Free Option */}
+            <div 
+              onClick={() => setAccessType('free')}
+              className={`p-5 rounded-card border transition-all cursor-pointer bg-white ${
+                accessType === 'free' ? 'border-[var(--accent)] bg-[var(--accent)]/[0.02]' : 'border-[var(--border)] hover:border-[var(--fg-muted)]'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-card border shrink-0 ${accessType === 'free' ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--border)] text-[var(--fg-muted)]'}`}>
+                    <Gift size={18} />
                   </div>
                   <div>
-                    <h4 className="font-body-lg text-body-lg font-bold text-primary">PayPal Account</h4>
-                    <p className="text-on-surface-variant text-body-md">Linked: alex.vanderbilt@design.com</p>
+                    <h4 className="text-sm font-medium text-[var(--fg)]">Complimentary Access</h4>
+                    <p className="text-xs text-[var(--fg-muted)] mt-0.5">Open to your community members at no charge. Great for social meetups.</p>
                   </div>
                 </div>
-                <button className="px-6 py-2 border border-secondary text-secondary font-label-caps rounded-full hover:bg-secondary-container transition-colors">
-                  CHANGE ACCOUNT
-                </button>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-1 ${
+                  accessType === 'free' ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
+                }`}>
+                  {accessType === 'free' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                </div>
               </div>
+            </div>
+
+            {/* Paid Option */}
+            <div 
+              onClick={() => setAccessType('paid')}
+              className={`p-5 rounded-card border transition-all cursor-pointer bg-white ${
+                accessType === 'paid' ? 'border-[var(--accent)] bg-[var(--accent)]/[0.02]' : 'border-[var(--border)] hover:border-[var(--fg-muted)]'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-card border shrink-0 ${accessType === 'paid' ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--border)] text-[var(--fg-muted)]'}`}>
+                    <CurrencyDollar size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-[var(--fg)]">Paid Admission</h4>
+                    <p className="text-xs text-[var(--fg-muted)] mt-0.5">Standard ticket pricing processed securely via Stripe or PayPal.</p>
+                  </div>
+                </div>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-1 ${
+                  accessType === 'paid' ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
+                }`}>
+                  {accessType === 'paid' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                </div>
+              </div>
+
+              {accessType === 'paid' && (
+                <div className="mt-4 pt-4 border-t border-[var(--border)] space-y-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Set Ticket Price (USD)</label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-[var(--fg-muted)]">$</span>
+                    <input 
+                      type="number"
+                      step="1"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      placeholder="45.00"
+                      className="w-full bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card pl-8 pr-4 py-2.5 text-sm font-mono text-[var(--fg)] focus:outline-none focus:border-[var(--fg)] transition-colors"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Member Exclusive Option */}
+            <div 
+              onClick={() => setAccessType('member')}
+              className={`p-5 rounded-card border transition-all cursor-pointer bg-white ${
+                accessType === 'member' ? 'border-[var(--accent)] bg-[var(--accent)]/[0.02]' : 'border-[var(--border)] hover:border-[var(--fg-muted)]'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-card border shrink-0 ${accessType === 'member' ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--border)] text-[var(--fg-muted)]'}`}>
+                    <Star size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-[var(--fg)]">Prestige Members Only</h4>
+                    <p className="text-xs text-[var(--fg-muted)] mt-0.5">Complimentary for verified prestige patrons; guests require direct invitation.</p>
+                  </div>
+                </div>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-1 ${
+                  accessType === 'member' ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
+                }`}>
+                  {accessType === 'member' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                </div>
+              </div>
+            </div>
+
+            {/* Payout Recipient Card */}
+            <div className="p-5 rounded-card border border-[var(--border)] bg-white flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-card border border-[var(--border)] text-[var(--fg-muted)]">
+                  <CreditCard size={18} />
+                </div>
+                <div>
+                  <p className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Payout Recipient</p>
+                  <p className="text-sm text-[var(--fg)] font-medium">Bank Account ending in •••• 4019</p>
+                </div>
+              </div>
+              <button type="button" className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] hover:underline">
+                Manage
+              </button>
             </div>
           </div>
 
-          {/* Right Side: Financial Summary */}
-          <aside className="w-full lg:w-2/5 sticky top-28">
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-outline-variant/20">
-              <div className="p-8 border-b border-outline-variant bg-primary text-white">
-                <h3 className="font-headline-sm text-headline-sm">Financial Summary</h3>
-                <p className="font-body-md opacity-80">Estimated revenue based on capacity</p>
-              </div>
-              <div className="p-8 space-y-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="font-label-caps text-label-caps text-on-surface-variant">BASE TICKET PRICE</span>
-                    <span className="font-body-md text-primary font-bold">${accessType === 'paid' ? parsedPrice.toFixed(2) : '0.00'}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-label-caps text-label-caps text-on-surface-variant">PLATFORM FEE (5%)</span>
-                    <span className="font-body-md text-on-surface-variant">-${accessType === 'paid' ? platformFee : '0.00'}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-label-caps text-label-caps text-on-surface-variant">PROCESSING FEE</span>
-                    <span className="font-body-md text-on-surface-variant">-${accessType === 'paid' ? processingFee : '0.00'}</span>
-                  </div>
-                </div>
-                
-                <div className="pt-6 border-t border-dashed border-outline-variant/40">
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <span className="font-label-caps text-label-caps text-secondary">NET PER TICKET</span>
-                      <h2 className="font-headline-md text-headline-md text-primary">${accessType === 'paid' ? netPerTicket : '0.00'}</h2>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-label-caps text-label-caps text-on-surface-variant">EST. TOTAL (50 CAP.)</span>
-                      <h4 className="font-headline-sm text-headline-sm text-secondary">${accessType === 'paid' ? total : '0.00'}</h4>
-                    </div>
-                  </div>
-                </div>
+          {/* Financial Breakdown Card */}
+          <aside className="lg:col-span-5 bg-white rounded-card border border-[var(--border)] p-6 space-y-6">
+            <div>
+              <p className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Summary</p>
+              <h3 className="text-lg font-serif text-[var(--fg)] mt-0.5">Estimated Revenue</h3>
+            </div>
 
-                <div className="p-4 bg-surface-container-low rounded-lg flex gap-3 items-start">
-                  <span className="material-symbols-outlined text-secondary text-sm">info</span>
-                  <p className="text-[13px] leading-relaxed text-on-surface-variant">
-                    Fees are calculated per transaction. Payouts are initiated 48 hours after the event successfully concludes.
-                  </p>
-                </div>
-
-                <div className="pt-4 space-y-4">
-                  <button 
-                    onClick={() => navigate('/events/create/review')}
-                    className="w-full py-4 bg-primary text-white font-label-caps text-label-caps rounded-xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
-                  >
-                    CONTINUE TO REVIEW
-                  </button>
-                  <button className="w-full py-4 bg-transparent border border-outline text-on-surface-variant font-label-caps text-label-caps rounded-xl hover:bg-surface-container transition-all">
-                    SAVE AS DRAFT
-                  </button>
-                </div>
+            <div className="space-y-3 text-xs font-mono">
+              <div className="flex justify-between text-[var(--fg-muted)]">
+                <span>Base Ticket Price</span>
+                <span className="text-[var(--fg)]">${accessType === 'paid' ? parsedPrice.toFixed(2) : '0.00'}</span>
               </div>
+              <div className="flex justify-between text-[var(--fg-muted)]">
+                <span>Platform Fee (5%)</span>
+                <span>-${accessType === 'paid' ? platformFee : '0.00'}</span>
+              </div>
+              <div className="flex justify-between text-[var(--fg-muted)]">
+                <span>Processing Fee (3%)</span>
+                <span>-${accessType === 'paid' ? processingFee : '0.00'}</span>
+              </div>
+              <div className="pt-3 border-t border-[var(--border)] flex justify-between items-baseline">
+                <span className="text-[var(--fg)] font-medium">Net / Attendee</span>
+                <span className="text-base text-[var(--accent)] font-serif font-bold">${accessType === 'paid' ? netPerTicket : '0.00'}</span>
+              </div>
+              <div className="flex justify-between items-baseline text-[var(--fg-muted)]">
+                <span>Est. Net (50 Cap)</span>
+                <span className="text-sm text-[var(--fg)] font-medium">${accessType === 'paid' ? total : '0.00'}</span>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] flex gap-2 text-xs text-[var(--fg-muted)]">
+              <Info size={14} className="shrink-0 mt-0.5 text-[var(--accent)]" />
+              <span>Payouts initiate automatically 48 hours after your gathering concludes.</span>
+            </div>
+
+            <div className="pt-2 flex flex-col gap-2">
+              <button 
+                type="button" 
+                onClick={() => navigate('/events/create')}
+                className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"
+              >
+                Continue to Review
+                <ArrowRight size={16} />
+              </button>
+              <button 
+                type="button" 
+                onClick={() => navigate('/events/create')}
+                className="w-full py-2.5 rounded-card border border-[var(--border)] text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
+              >
+                Save Draft
+              </button>
             </div>
           </aside>
         </div>

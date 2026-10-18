@@ -32,13 +32,15 @@ public class AdminController {
     private boolean checkAdmin(Principal principal) {
         if (principal == null) return false;
         Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
-        return userOpt.isPresent() && userOpt.get().isAdmin();
+        if (userOpt.isEmpty()) return false;
+        return userOpt.get().isAdmin();
     }
 
     @GetMapping("/analytics")
     public ResponseEntity<?> getAnalytics(Principal principal) {
-        // Mock authentication check for demo - we allow anyone for demo purposes, 
-        // but in reality we'd do: if (!checkAdmin(principal)) return ResponseEntity.status(403).build();
+        if (!checkAdmin(principal)) {
+            return ResponseEntity.status(403).body("Access denied. Administrator privileges required.");
+        }
         
         long totalUsers = userRepository.count();
         long totalEvents = eventRepository.count();
@@ -54,12 +56,18 @@ public class AdminController {
 
     @GetMapping("/reports")
     public ResponseEntity<?> getReports(Principal principal) {
+        if (!checkAdmin(principal)) {
+            return ResponseEntity.status(403).body("Access denied. Administrator privileges required.");
+        }
         List<Report> reports = reportRepository.findByStatus("PENDING");
         return ResponseEntity.ok(reports);
     }
 
     @PostMapping("/users/{id}/ban")
     public ResponseEntity<?> banUser(@PathVariable Long id, Principal principal) {
+        if (!checkAdmin(principal)) {
+            return ResponseEntity.status(403).body("Access denied. Administrator privileges required.");
+        }
         Optional<User> targetOpt = userRepository.findById(id);
         if (targetOpt.isPresent()) {
             User target = targetOpt.get();

@@ -21,6 +21,7 @@ public class Rsvp {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Event event;
 
     @ManyToOne
@@ -57,6 +58,8 @@ public class Rsvp {
 
     public Event getEvent() { return event; }
     public void setEvent(Event event) { this.event = event; }
+
+    public Long getEventId() { return event != null ? event.getId() : null; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }

@@ -8,64 +8,27 @@ import {
   Image,
   ImageBackground,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getUsers } from '../../services/api';
+import { getUsers, sendConnectionRequest } from '../../services/api';
 
-const FILTERS = ['Nearby (2km)', 'Tennis', 'Architecture', 'Jazz', 'Culinary Arts'];
-
-const PEOPLE = [
-  {
-    id: '1',
-    name: 'Julian Vance',
-    distance: '0.8km Away',
-    role: 'Principal Architect',
-    description: 'Exploring the intersection of brutalism and organic living.',
-    tags: ['Architecture', 'Photography'],
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBPF9FjuUN6TpNKekR3VD6siD-fdeYXOAkWqkB91YxSDYbi_wFvBwO6wPRvKbDzyfgbvbhAy91RujqArfXH6JVL4uCQe_DTiyp1uCX7K4Ta1LyRMQyL6rrAr4kszD8L_LInCszU3TlnRYP7Ty1-JdRNP2t7W67Wh6Rf5MdWQRrqh9lCKUGTjGkCJ-hDhQ9EXG90_P-XrMEjrFDk4eFLndqRy2P0By1SFnwHnFsiY0ZNZ5fl6He4qDSHLA'
-  },
-  {
-    id: '2',
-    name: 'Elena Rossi',
-    distance: '1.2km Away',
-    role: 'Sommelier',
-    description: 'Advocating for sustainable vineyards and rare vintage stories.',
-    tags: ['Wine', 'Tennis'],
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCFiyyXIiFU311G-R5hWK95C9zrN_2hXxMX-x2DDiSNzFy9HpoE8OOIbhp64xq7UP1WNS1o6TwtkLKWgWWuoRTIH7QvNQhb4At6hSt0OSoFWTTIx26N7GTbtTq_2NnzGrfx5qLz8PobhWNtIUdOlQ2ztlsn_2D9NW5_Oq2pPhcm5pETmSBgerMsGXi8JoSnYczY1dyTNjhLGXMRR_fpOwGnLg5Y8oxhipS28uG_lbe-rW_XtpMcIgxqvg'
-  },
-  {
-    id: '3',
-    name: 'Marcus Thorne',
-    distance: '2.4km Away',
-    role: 'Creative Director',
-    description: 'Curating vinyl collections and mid-century modern spaces.',
-    tags: ['Jazz', 'Design'],
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCVeu8rnmEDGcsI1MnvBqP7X-HMukWu8kW5pt0SwcoyG1ejR4-Ck_8tAz0X_qJ-aomH7cdHBMP1GfOPfwVWDntfIEYuQY3t4N6abHfjDlJSGhf3_Zj35pvdZHLaL1PiKuBekFA9mmMJY9tVVXE5pzL-7Tw3U-lYpJQNMqSPWs40RJxnKuBDM4IN8hFqbOLYduUNHBMXMclpZ0bQnvdCnqAZfMV7SwoPwx_U9xZm_xylVorC-HTReNc1iw'
-  },
-  {
-    id: '4',
-    name: 'Sasha Moretti',
-    distance: '0.3km Away',
-    role: 'Visual Artist',
-    description: 'Capturing the soul of urban landscapes through oil and light.',
-    tags: ['Fine Art', 'Coffee'],
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCcz_Chwwb_QfSxseeW-NOWdpsWNiUpNfKdhdjunJzgEnzojbGSUfuew1aOOnKEJEDz7vAncAotTnOriQU9rDKYZwm58SWmRwQE9cCgZM2zrahXSUvLg_RHe5HoGP6hhfC_75OUb9wvYjDXC0m1Q1Qh4VaV9iQDyoCTxKT5r22JTsojymwTW5HI_NV4XTNPlYZVTkcauJoGNNI1kK_k9u6Wc2JTvMGTymjyakw0LxcBZRAAKhQ7Z3MPGw'
-  }
-];
+const FILTERS = ['All', 'Tennis', 'Architecture', 'Running', 'Design'];
 
 export default function PeopleDiscoveryScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'swipe'
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [connectedIds, setConnectedIds] = useState(new Set());
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const data = await getUsers();
-        setUsers(data);
+        setUsers(data || []);
       } catch (error) {
         console.error("Failed to fetch users", error);
       } finally {
@@ -74,6 +37,17 @@ export default function PeopleDiscoveryScreen({ navigation }) {
     };
     fetchUsers();
   }, []);
+
+  const handleConnect = async (userId) => {
+    try {
+      await sendConnectionRequest(userId);
+      setConnectedIds(prev => new Set(prev).add(userId));
+      Alert.alert('Request Sent', 'Connection request sent successfully!');
+    } catch (err) {
+      setConnectedIds(prev => new Set(prev).add(userId));
+      Alert.alert('Notice', err.message || 'Request already pending or connected');
+    }
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -163,6 +137,15 @@ export default function PeopleDiscoveryScreen({ navigation }) {
                       </View>
                     ))}
                   </View>
+                  <TouchableOpacity 
+                    style={{ marginTop: 8, paddingVertical: 6, paddingHorizontal: 12, backgroundColor: connectedIds.has(person.id) ? '#eae8e7' : '#775a19', borderRadius: 8, alignItems: 'center' }}
+                    onPress={() => handleConnect(person.id)}
+                    disabled={connectedIds.has(person.id)}
+                  >
+                    <Text style={{ fontSize: 11, fontWeight: '600', color: connectedIds.has(person.id) ? '#75777e' : '#fff' }}>
+                      {connectedIds.has(person.id) ? 'REQUESTED' : 'CONNECT'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             ))}
@@ -196,11 +179,17 @@ export default function PeopleDiscoveryScreen({ navigation }) {
                   <TouchableOpacity style={[styles.actionBtn, styles.actionBtnSkip]}>
                     <Ionicons name="close" size={28} color="#ba1a1a" />
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.actionBtn, styles.actionBtnMessage]}>
+                  <TouchableOpacity 
+                    style={[styles.actionBtn, styles.actionBtnMessage]}
+                    onPress={() => navigation.navigate('MessagesTab')}
+                  >
                     <Ionicons name="chatbubble" size={24} color="#ffffff" />
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.actionBtn, styles.actionBtnLike]}>
-                    <Ionicons name="heart" size={28} color="#775a19" />
+                  <TouchableOpacity 
+                    style={[styles.actionBtn, styles.actionBtnLike]}
+                    onPress={() => handleConnect(users[0].id)}
+                  >
+                    <Ionicons name="person-add" size={24} color="#775a19" />
                   </TouchableOpacity>
                 </View>
               </View>

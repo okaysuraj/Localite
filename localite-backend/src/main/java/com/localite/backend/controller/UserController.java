@@ -24,11 +24,13 @@ public class UserController {
     private final UserRepository userRepository;
     private final ConnectionRepository connectionRepository;
     private final NotificationRepository notificationRepository;
+    private final com.localite.backend.repository.UserBlockRepository userBlockRepository;
 
-    public UserController(UserRepository userRepository, ConnectionRepository connectionRepository, NotificationRepository notificationRepository) {
+    public UserController(UserRepository userRepository, ConnectionRepository connectionRepository, NotificationRepository notificationRepository, com.localite.backend.repository.UserBlockRepository userBlockRepository) {
         this.userRepository = userRepository;
         this.connectionRepository = connectionRepository;
         this.notificationRepository = notificationRepository;
+        this.userBlockRepository = userBlockRepository;
     }
 
     @GetMapping("/me")
@@ -80,6 +82,7 @@ public class UserController {
             if (updatedUser.getAvailability() != null) user.setAvailability(updatedUser.getAvailability());
             if (updatedUser.getInstagramHandle() != null) user.setInstagramHandle(updatedUser.getInstagramHandle());
             if (updatedUser.getTwitterHandle() != null) user.setTwitterHandle(updatedUser.getTwitterHandle());
+            if (updatedUser.getLinkedinHandle() != null) user.setLinkedinHandle(updatedUser.getLinkedinHandle());
             
             // Settings update
             user.setPublicProfile(updatedUser.isPublicProfile());
@@ -246,5 +249,72 @@ public class UserController {
             }
         }
         return ResponseEntity.badRequest().body("Invalid request");
+    }
+
+    @PostMapping("/{id}/block")
+    public ResponseEntity<?> blockUser(@PathVariable Long id, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<User> blockerOpt = userRepository.findByFirebaseUid(principal.getName());
+        Optional<User> blockedOpt = userRepository.findById(id);
+
+        if (blockerOpt.isPresent() && blockedOpt.isPresent()) {
+            User blocker = blockerOpt.get();
+            User blocked = blockedOpt.get();
+
+            if (blocker.getId().equals(blocked.getId())) {
+                return ResponseEntity.badRequest().body("You cannot block yourself");
+            }
+
+            if (!userBlockRepository.existsByBlockerIdAndBlockedId(blocker.getId(), blocked.getId())) {
+                userBlockRepository.save(new com.localite.backend.model.UserBlock(blocker, blocked));
+            }
+            return ResponseEntity.ok(Map.of("message", "User blocked successfully"));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}/unblock")
+    public ResponseEntity<?> unblockUser(@PathVariable Long id, Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<User> blockerOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (blockerOpt.isPresent()) {
+            Optional<com.localite.backend.model.UserBlock> blockOpt = userBlockRepository.findByBlockerIdAndBlockedId(blockerOpt.get().getId(), id);
+            if (blockOpt.isPresent()) {
+                userBlockRepository.delete(blockOpt.get());
+                return ResponseEntity.ok(Map.of("message", "User unblocked successfully"));
+            }
+        }
+        return ResponseEntity.badRequest().body("Block record not found");
+    }
+
+    @GetMapping("/blocked")
+    public ResponseEntity<?> getBlockedUsers(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<User> blockerOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (blockerOpt.isPresent()) {
+            List<com.localite.backend.model.UserBlock> blocks = userBlockRepository.findByBlockerId(blockerOpt.get().getId());
+            List<Map<String, Object>> response = blocks.stream().map(b -> Map.<String, Object>of(
+                "id", b.getBlocked().getId(),
+                "username", b.getBlocked().getUsername(),
+                "blockedAt", b.getCreatedAt().toString()
+            )).collect(Collectors.toList());
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteMyAccount(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (userOpt.isPresent()) {
+            userRepository.delete(userOpt.get());
+            return ResponseEntity.ok(Map.of("message", "Account deleted successfully"));
+        }
+        return ResponseEntity.notFound().build();
     }
 }

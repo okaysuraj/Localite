@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAuth } from 'firebase/auth';
+import { auth } from '../firebase';
 import { API_URL } from '../config';
 
 const apiClient = axios.create({
@@ -12,7 +12,6 @@ const apiClient = axios.create({
 // Interceptor to attach Firebase ID token
 apiClient.interceptors.request.use(async (config) => {
   try {
-    const auth = getAuth();
     const user = auth.currentUser;
     if (user) {
       const token = await user.getIdToken();

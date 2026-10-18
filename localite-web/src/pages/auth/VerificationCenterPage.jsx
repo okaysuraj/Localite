@@ -1,152 +1,204 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  ShieldCheck,
+  Check,
+  IdentificationCard,
+  User,
+  ShareNetwork,
+  LockKey,
+  Trophy,
+} from '@phosphor-icons/react';
 
 const VerificationCenterPage = () => {
-  const circleRef = useRef(null);
-
-  useEffect(() => {
-    if (circleRef.current) {
-      const radius = 88;
-      const circumference = radius * 2 * Math.PI;
-      circleRef.current.style.strokeDasharray = `${circumference} ${circumference}`;
-      const offset = circumference - (66 / 100) * circumference;
-      circleRef.current.style.strokeDashoffset = offset;
-    }
-  }, []);
+  const navigate = useNavigate();
 
   return (
-    <div className="font-body-md overflow-x-hidden min-h-screen flex flex-col bg-surface text-on-surface">
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-container-margin py-stack-lg flex-grow">
-        {/* Header Section with Progress */}
-        <section className="flex flex-col md:flex-row items-center justify-between gap-stack-lg mb-stack-lg">
-          <div className="max-w-2xl">
-            <span className="font-label-caps text-label-caps text-secondary tracking-widest block mb-2">MEMBER TRUST & SAFETY</span>
-            <h1 className="font-display-lg text-display-lg text-primary mb-4 leading-tight">Elevate your presence.</h1>
-            <p className="font-body-lg text-body-lg text-on-surface-variant">
-              Verification ensures a community of integrity. Complete your profile to unlock exclusive hubs and concierge services reserved for our verified circle.
+    <div className="bg-bg min-h-screen py-10 px-6">
+      <div className="max-w-content mx-auto space-y-10">
+        {/* Header with circular progress */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-border">
+          <div className="max-w-xl space-y-2">
+            <span className="text-xs font-mono text-accent uppercase tracking-wider block">
+              Trust & Community Safety
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-display font-semibold text-fg tracking-tight">
+              Member Verification
+            </h1>
+            <p className="text-sm text-fg-muted leading-relaxed">
+              Verification ensures authentic local connections. Complete your verification to earn the verified badge and host gatherings with confidence.
             </p>
           </div>
-          <div className="relative flex items-center justify-center p-8 bg-surface-container-lowest rounded-full ethereal-shadow border border-outline-variant/10">
-            <svg className="w-48 h-48">
-              <circle className="text-surface-container-high" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" strokeWidth="4"></circle>
-              <circle 
-                ref={circleRef}
-                className="text-secondary" 
-                cx="96" cy="96" fill="transparent" r="88" 
-                stroke="currentColor" strokeWidth="4" strokeLinecap="round"
-                style={{ transition: 'stroke-dashoffset 0.6s ease-in-out', transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
-              ></circle>
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display-lg text-display-lg text-primary">66%</span>
-              <span className="font-label-caps text-label-caps text-on-surface-variant">COMPLETE</span>
-            </div>
-          </div>
-        </section>
 
-        {/* Verification Steps Bento Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-stack-lg">
-          {/* Step 1: ID (Completed) */}
-          <div className="bg-surface-container-lowest p-8 rounded-xl ethereal-shadow flex flex-col border border-secondary/20 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4">
-              <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+          <div className="flex items-center gap-4 bg-white border border-border rounded-card p-4 sm:p-5 shrink-0 self-start md:self-auto">
+            <div className="relative w-14 h-14 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90">
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="23"
+                  fill="transparent"
+                  stroke="#E8E8E8"
+                  strokeWidth="3.5"
+                />
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="23"
+                  fill="transparent"
+                  stroke="#1A6B4A"
+                  strokeWidth="3.5"
+                  strokeDasharray="144"
+                  strokeDashoffset="48"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="absolute font-display font-semibold text-xs text-fg">
+                66%
+              </span>
             </div>
-            <div className="w-12 h-12 bg-secondary-container/30 rounded-lg flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-secondary">badge</span>
+            <div>
+              <p className="text-xs font-display font-semibold text-fg">
+                2 of 3 Completed
+              </p>
+              <p className="text-[11px] font-mono text-accent mt-0.5">
+                Nearly verified
+              </p>
             </div>
-            <h3 className="font-headline-sm text-headline-sm mb-2">Identity Verification</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant mb-auto">Your government-issued identification has been successfully processed and verified.</p>
-            <div className="mt-8 flex items-center gap-2 text-secondary font-label-caps text-label-caps">
-              VERIFIED
-            </div>
-          </div>
-
-          {/* Step 2: Selfie (Completed) */}
-          <div className="bg-surface-container-lowest p-8 rounded-xl ethereal-shadow flex flex-col border border-secondary/20 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4">
-              <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-            </div>
-            <div className="w-12 h-12 bg-secondary-container/30 rounded-lg flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-secondary">face</span>
-            </div>
-            <h3 className="font-headline-sm text-headline-sm mb-2">Biometric Match</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant mb-auto">Live portrait match completed against your identification documents.</p>
-            <div className="mt-8 flex items-center gap-2 text-secondary font-label-caps text-label-caps">
-              VERIFIED
-            </div>
-          </div>
-
-          {/* Step 3: Social (Pending) */}
-          <div className="bg-primary text-on-primary p-8 rounded-xl ethereal-shadow flex flex-col relative overflow-hidden group transform hover:-translate-y-1 transition-transform duration-300">
-            <div className="w-12 h-12 bg-surface-container-highest/20 rounded-lg flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-secondary-fixed">share</span>
-            </div>
-            <h3 className="font-headline-sm text-headline-sm mb-2">Social Connection</h3>
-            <p className="font-body-md text-body-md text-on-primary-container mb-auto opacity-80">
-              Link your professional or social profile to establish your place in the local community.
-            </p>
-            <button className="mt-8 w-full bg-secondary text-white font-label-caps text-label-caps py-4 rounded-none tracking-[0.2em] hover:bg-secondary/90 transition-all active:scale-95">
-              CONNECT NOW
-            </button>
-          </div>
-        </section>
-
-        {/* Why Verify? Editorial Section */}
-        <section className="bg-white rounded-xl ethereal-shadow overflow-hidden flex flex-col lg:flex-row">
-          <div className="lg:w-1/2 relative h-96 lg:h-auto">
-            <img 
-              className="w-full h-full object-cover" 
-              alt="Evening garden gathering"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmcgfphxLdvUcOj9kbdKFaF3hm_SCc6vnfWUdIt3RlPv8TwSGOgI9NPryjZzKev9_CiRqeLa4Y-4cf_8xzVuJjAX9HPxZYmvuybblG-z0_Xyb7XqxX2a7ShCTmy_FhJkvVDpgYUbCrwpoZWit604DAvgGqE26RvzoYdgoHT4o3C1u-ee1hfs2H0aj0BvLPbeX8tKvqYWljF0NaJFCp2kgyys2gB5gvY5ZshMGd5gfSik7VPBPCRRaRlg"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent"></div>
-          </div>
-          <div className="lg:w-1/2 p-stack-lg flex flex-col justify-center">
-            <span className="font-label-caps text-label-caps text-secondary mb-4">THE VALUE OF TRUST</span>
-            <h2 className="font-headline-md text-headline-md mb-6 leading-snug">Curated access for a distinguished community.</h2>
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined text-secondary">verified_user</span>
-                <div>
-                  <h4 className="font-label-caps text-label-caps text-primary mb-1">UNCOMPROMISED SAFETY</h4>
-                  <p className="font-body-md text-body-md text-on-surface-variant">Our verification protocols ensure every member you meet is who they say they are.</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined text-secondary">stars</span>
-                <div>
-                  <h4 className="font-label-caps text-label-caps text-primary mb-1">EXCLUSIVE HUBS</h4>
-                  <p className="font-body-md text-body-md text-on-surface-variant">Gain entry to private local hubs and invitation-only events in your neighborhood.</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined text-secondary">support_agent</span>
-                <div>
-                  <h4 className="font-label-caps text-label-caps text-primary mb-1">PREMIUM CONCIERGE</h4>
-                  <p className="font-body-md text-body-md text-on-surface-variant">Verified members enjoy priority booking and bespoke assistance for any gathering.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full mt-stack-lg bg-surface-container-highest border-t border-outline-variant/20">
-        <div className="flex flex-col md:flex-row justify-between items-center px-container-margin py-stack-md max-w-7xl mx-auto">
-          <div className="flex flex-col items-center md:items-start gap-2 mb-6 md:mb-0">
-            <span className="font-headline-sm text-headline-sm text-primary">Localite</span>
-            <p className="font-body-md text-body-md text-on-surface-variant opacity-70">© 2024 Localite. All rights reserved.</p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            <Link to="/privacy" className="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary underline transition-all">Privacy Policy</Link>
-            <Link to="/terms" className="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary underline transition-all">Terms of Service</Link>
-            <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary underline transition-all" href="#">Community Guidelines</a>
-            <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-secondary underline transition-all" href="#">Cookie Policy</a>
           </div>
         </div>
-      </footer>
+
+        {/* Verification Steps Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Step 1: ID Verified */}
+          <div className="bg-white border border-border rounded-card p-6 flex flex-col justify-between space-y-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-full bg-accent-subtle text-accent flex items-center justify-center">
+                  <IdentificationCard size={20} />
+                </div>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-accent-subtle text-accent border border-accent/20">
+                  <Check size={11} weight="bold" /> Verified
+                </span>
+              </div>
+              <div>
+                <h3 className="text-base font-display font-semibold text-fg tracking-tight">
+                  Government ID
+                </h3>
+                <p className="text-xs text-fg-muted mt-1 leading-relaxed">
+                  Your identity documents have been verified against official records.
+                </p>
+              </div>
+            </div>
+            <p className="text-[10px] font-mono text-fg-muted">
+              Completed on Sep 10, 2026
+            </p>
+          </div>
+
+          {/* Step 2: Photo Match Verified */}
+          <div className="bg-white border border-border rounded-card p-6 flex flex-col justify-between space-y-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-full bg-accent-subtle text-accent flex items-center justify-center">
+                  <User size={20} />
+                </div>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-accent-subtle text-accent border border-accent/20">
+                  <Check size={11} weight="bold" /> Verified
+                </span>
+              </div>
+              <div>
+                <h3 className="text-base font-display font-semibold text-fg tracking-tight">
+                  Photo Verification
+                </h3>
+                <p className="text-xs text-fg-muted mt-1 leading-relaxed">
+                  Live selfie matched with your identification photo.
+                </p>
+              </div>
+            </div>
+            <p className="text-[10px] font-mono text-fg-muted">
+              Completed on Sep 10, 2026
+            </p>
+          </div>
+
+          {/* Step 3: Social / Phone */}
+          <div className="bg-white border border-accent/40 rounded-card p-6 flex flex-col justify-between space-y-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-full bg-bg-subtle text-fg flex items-center justify-center">
+                  <ShareNetwork size={20} />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-bg-subtle text-fg-muted border border-border">
+                  Pending
+                </span>
+              </div>
+              <div>
+                <h3 className="text-base font-display font-semibold text-fg tracking-tight">
+                  Social or Phone Link
+                </h3>
+                <p className="text-xs text-fg-muted mt-1 leading-relaxed">
+                  Link an Instagram, X, or verified phone number to establish cross-network presence.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/profile')}
+              className="w-full py-2 bg-accent text-white rounded-btn text-xs font-mono tracking-wide hover:opacity-90 transition-opacity"
+            >
+              Connect Profile
+            </button>
+          </div>
+        </div>
+
+        {/* Why Verify Educational Bento */}
+        <div className="bg-white border border-border rounded-card p-6 sm:p-8 space-y-6">
+          <div className="space-y-1">
+            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
+              Why Verification Matters
+            </h2>
+            <p className="text-xs text-fg-muted">
+              Built on transparency, respect, and accountable community participation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+            <div className="space-y-2">
+              <div className="w-8 h-8 rounded-full bg-bg-subtle flex items-center justify-center text-accent">
+                <LockKey size={16} />
+              </div>
+              <h3 className="font-display font-semibold text-sm text-fg">
+                Accountability First
+              </h3>
+              <p className="text-xs text-fg-muted leading-relaxed">
+                Knowing everyone is verified drastically reduces no-shows and ensures dependable gatherings.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="w-8 h-8 rounded-full bg-bg-subtle flex items-center justify-center text-accent">
+                <ShieldCheck size={16} />
+              </div>
+              <h3 className="font-display font-semibold text-sm text-fg">
+                Verified Badge
+              </h3>
+              <p className="text-xs text-fg-muted leading-relaxed">
+                Display the verified badge next to your name when joining teams, matches, and local events.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="w-8 h-8 rounded-full bg-bg-subtle flex items-center justify-center text-accent">
+                <Trophy size={16} />
+              </div>
+              <h3 className="font-display font-semibold text-sm text-fg">
+                Hosting Privileges
+              </h3>
+              <p className="text-xs text-fg-muted leading-relaxed">
+                Verified organizers can create ticketed gatherings, private leagues, and high-capacity events.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

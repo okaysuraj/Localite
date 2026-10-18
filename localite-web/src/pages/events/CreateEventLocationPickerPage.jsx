@@ -1,131 +1,178 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  ArrowLeft, 
+  ArrowRight, 
+  MagnifyingGlass, 
+  MapPin, 
+  Users, 
+  BookmarkSimple, 
+  CheckCircle,
+  Plus, 
+  Minus, 
+  NavigationArrow 
+} from '@phosphor-icons/react';
 
 export default function CreateEventLocationPickerPage() {
   const navigate = useNavigate();
   const [selectedVenue, setSelectedVenue] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const venues = [
-    { id: 1, name: 'The Archive Atelier', match: '98% MATCH', desc: 'Chelsea, New York — Quiet Social Club', img: 'https://via.placeholder.com/300' },
-    { id: 2, name: 'Lumière Rooftop', match: '92% MATCH', desc: 'Tribeca, New York — Artisan Cafe', img: 'https://via.placeholder.com/300' },
-    { id: 3, name: 'The Loft Collective', match: '85% MATCH', desc: 'SoHo, New York — Industrial Studio', img: 'https://via.placeholder.com/300' }
+    { 
+      id: 1, 
+      name: 'The Archive Atelier', 
+      match: '98% MATCH', 
+      desc: 'Chelsea, New York — Quiet Social Club & Library', 
+      capacity: '12-40 Guests',
+      img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600' 
+    },
+    { 
+      id: 2, 
+      name: 'Lumière Courtyard & Cafe', 
+      match: '92% MATCH', 
+      desc: 'Tribeca, New York — Artisan Bakery & Garden', 
+      capacity: '20-60 Guests',
+      img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=600' 
+    },
+    { 
+      id: 3, 
+      name: 'The Loft Collective', 
+      match: '85% MATCH', 
+      desc: 'SoHo, New York — Natural Light Industrial Studio', 
+      capacity: '15-50 Guests',
+      img: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&q=80&w=600' 
+    }
   ];
 
   return (
-    <div className="bg-surface font-body-md text-on-surface h-[calc(100vh-73px)] flex flex-col md:flex-row overflow-hidden">
-      {/* Side Panel: Search & Results */}
-      <aside className="w-full md:w-[450px] bg-white border-r border-outline-variant/20 flex flex-col z-20">
-        <div className="p-6 space-y-6">
-          <div className="space-y-2">
-            <p className="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Step 03 — Venue</p>
-            <h1 className="font-headline-md text-headline-md text-primary">Where shall we gather?</h1>
-            <p className="font-body-md text-on-surface-variant">Find the perfect 'Third Place' for your community event.</p>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-[calc(100vh-64px)] flex flex-col md:flex-row overflow-hidden">
+      {/* Side Panel */}
+      <aside className="w-full md:w-[460px] bg-white border-r border-[var(--border)] flex flex-col z-20 shrink-0">
+        <div className="p-6 border-b border-[var(--border)] space-y-4">
+          <div>
+            <span className="font-mono text-xs uppercase tracking-wider text-[var(--fg-muted)]">Step 03 / 06 — Location</span>
+            <h1 className="text-2xl font-serif text-[var(--fg)] mt-1">Select Gathering Space</h1>
+            <p className="text-xs text-[var(--fg-muted)] mt-0.5">Find a curated third-place partner or specify your custom venue.</p>
           </div>
-          {/* Search Input Group */}
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <span className="material-symbols-outlined text-outline">search</span>
-            </div>
+
+          {/* Search Box */}
+          <div className="relative">
+            <MagnifyingGlass size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--fg-muted)]" />
             <input 
-              className="w-full pl-12 pr-4 py-4 bg-surface-container border-none rounded-xl focus:ring-1.5 focus:ring-secondary placeholder:text-outline-variant font-body-md transition-all outline-none" 
-              placeholder="Search curated venues, cafes, studios..." 
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search partner studios, lofts, venues..." 
+              className="w-full pl-10 pr-4 py-2.5 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card text-xs text-[var(--fg)] placeholder:text-[var(--fg-muted)]/60 focus:outline-none focus:border-[var(--fg)] transition-colors"
             />
           </div>
-          <div className="flex items-center justify-between border-b border-outline-variant/10 pb-2">
-            <h2 className="font-label-caps text-label-caps text-on-surface-variant">Recommended for you</h2>
-            <button className="text-secondary font-label-caps text-[10px] uppercase hover:underline">Manual Entry</button>
+
+          <div className="flex items-center justify-between text-xs font-mono text-[var(--fg-muted)] pt-1">
+            <span>Curated Partner Venues</span>
+            <button 
+              type="button" 
+              onClick={() => navigate('/events/create')} 
+              className="text-[var(--accent)] hover:underline uppercase tracking-wider"
+            >
+              Manual Address
+            </button>
           </div>
         </div>
 
-        {/* Scrollable Results */}
-        <div className="flex-1 overflow-y-auto px-6 pb-12 space-y-6">
-          {venues.map(venue => (
-            <div 
-              key={venue.id} 
-              onClick={() => setSelectedVenue(venue)}
-              className={`bg-surface rounded-xl shadow-sm hover:shadow-lg transition-all cursor-pointer border overflow-hidden ${selectedVenue?.id === venue.id ? 'border-2 border-secondary/50' : 'border-outline-variant/10'}`}
-            >
-              <div className="h-48 overflow-hidden relative">
-                <img src={venue.img} alt={venue.name} className="w-full h-full object-cover" />
-                <div className="absolute top-4 right-4 bg-secondary-container/90 backdrop-blur-sm text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-[10px]">
-                  {venue.match}
-                </div>
-                {selectedVenue?.id === venue.id && (
-                  <div className="absolute bottom-4 left-4 bg-primary/80 backdrop-blur-md text-white px-3 py-1 rounded-lg font-label-caps text-[10px] flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[14px]">check_circle</span> SELECTED
+        {/* Venue List */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {venues.map((venue) => {
+            const isSelected = selectedVenue?.id === venue.id;
+            return (
+              <div 
+                key={venue.id} 
+                onClick={() => setSelectedVenue(venue)}
+                className={`rounded-card border transition-all cursor-pointer overflow-hidden ${
+                  isSelected 
+                    ? 'border-[var(--accent)] bg-[var(--accent)]/[0.02] shadow-sm' 
+                    : 'border-[var(--border)] hover:border-[var(--fg-muted)] bg-white'
+                }`}
+              >
+                <div className="h-36 w-full relative overflow-hidden bg-[var(--bg-subtle)]">
+                  <img src={venue.img} alt={venue.name} className="w-full h-full object-cover" />
+                  <div className="absolute top-2.5 right-2.5 bg-white/95 backdrop-blur-sm px-2 py-0.5 rounded-card text-[10px] font-mono text-[var(--fg)] border border-[var(--border)]">
+                    {venue.match}
                   </div>
-                )}
-              </div>
-              <div className="p-4 space-y-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-headline-sm text-headline-sm text-primary">{venue.name}</h3>
-                  <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: selectedVenue?.id === venue.id ? "'FILL' 1" : "'FILL' 0" }}>bookmark</span>
+                  {isSelected && (
+                    <div className="absolute bottom-2.5 left-2.5 bg-[var(--accent)] text-white px-2.5 py-1 rounded-card text-[10px] font-mono flex items-center gap-1.5 shadow-sm">
+                      <CheckCircle size={12} weight="fill" />
+                      SELECTED
+                    </div>
+                  )}
                 </div>
-                <p className="font-body-md text-on-surface-variant text-sm">{venue.desc}</p>
-                <div className="flex items-center gap-4 pt-2">
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[16px] text-outline">group</span>
-                    <span className="font-label-caps text-[10px] text-on-surface-variant">12-40 GUESTS</span>
+
+                <div className="p-4 space-y-1.5">
+                  <div className="flex items-start justify-between">
+                    <h3 className="text-sm font-medium text-[var(--fg)]">{venue.name}</h3>
+                    <BookmarkSimple size={16} className={isSelected ? 'text-[var(--accent)]' : 'text-[var(--fg-muted)]'} weight={isSelected ? 'fill' : 'regular'} />
+                  </div>
+                  <p className="text-xs text-[var(--fg-muted)]">{venue.desc}</p>
+                  <div className="flex items-center gap-3 pt-1 text-[11px] font-mono text-[var(--fg-muted)]">
+                    <span className="flex items-center gap-1">
+                      <Users size={12} />
+                      {venue.capacity}
+                    </span>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Sticky Bottom Actions for Sidebar */}
-        <div className="p-6 bg-white border-t border-outline-variant/10 shadow-sm flex gap-3">
+        {/* Footer Navigation */}
+        <div className="p-4 bg-white border-t border-[var(--border)] flex items-center gap-3">
           <button 
-            onClick={() => navigate('/events/create/datetime')}
-            className="px-6 bg-surface-container text-primary font-label-caps py-4 rounded-xl flex items-center justify-center hover:bg-surface-container-high transition-colors"
+            type="button"
+            onClick={() => navigate('/events/create')}
+            className="p-2.5 rounded-card border border-[var(--border)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--bg-subtle)] transition-colors"
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <ArrowLeft size={16} />
           </button>
           <button 
-            onClick={() => navigate('/events/create/description')}
-            className="flex-1 bg-primary text-white font-label-caps text-label-caps py-4 rounded-xl shadow-lg active:scale-[0.98] transition-all uppercase"
+            type="button"
+            onClick={() => navigate('/events/create')}
+            className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"
           >
-            Confirm Selection
+            Confirm Location
+            <ArrowRight size={16} />
           </button>
         </div>
       </aside>
 
-      {/* Main Map Area */}
-      <section className="flex-1 relative bg-surface-container overflow-hidden hidden md:block">
-        {/* Map Placeholder */}
-        <div className="absolute inset-0 w-full h-full bg-surface-container-low flex items-center justify-center">
-           <img className="w-full h-full object-cover grayscale opacity-80" src="https://via.placeholder.com/1200x800" alt="Map" />
+      {/* Map Preview Area */}
+      <section className="flex-1 relative bg-[var(--bg-subtle)] hidden md:block">
+        <div className="absolute inset-0 flex items-center justify-center text-[var(--fg-muted)]">
+          <div className="text-center space-y-2 max-w-sm p-6 bg-white rounded-card border border-[var(--border)] shadow-sm">
+            <MapPin size={32} className="mx-auto text-[var(--accent)]" />
+            <h4 className="text-sm font-serif text-[var(--fg)]">Interactive Venue Map</h4>
+            <p className="text-xs text-[var(--fg-muted)]">
+              {selectedVenue 
+                ? `Pin centered on: ${selectedVenue.name} (${selectedVenue.desc})` 
+                : 'Select a venue on the left panel or input coordinates directly.'}
+            </p>
+          </div>
         </div>
 
-        {/* Custom Map Controls */}
-        <div className="absolute top-8 right-8 flex flex-col gap-3">
-          <div className="bg-white rounded-full shadow-sm p-2 flex flex-col gap-2 border border-outline-variant/20">
-            <button className="w-10 h-10 flex items-center justify-center hover:bg-surface-container transition-colors rounded-full text-primary">
-              <span className="material-symbols-outlined">add</span>
+        {/* Map Controls */}
+        <div className="absolute top-6 right-6 flex flex-col gap-2">
+          <div className="bg-white rounded-card border border-[var(--border)] p-1 flex flex-col gap-1 shadow-sm">
+            <button type="button" className="p-2 hover:bg-[var(--bg-subtle)] rounded text-[var(--fg)] transition-colors">
+              <Plus size={16} />
             </button>
-            <div className="h-px bg-outline-variant/30 mx-2"></div>
-            <button className="w-10 h-10 flex items-center justify-center hover:bg-surface-container transition-colors rounded-full text-primary">
-              <span className="material-symbols-outlined">remove</span>
+            <div className="h-px bg-[var(--border)]" />
+            <button type="button" className="p-2 hover:bg-[var(--bg-subtle)] rounded text-[var(--fg)] transition-colors">
+              <Minus size={16} />
             </button>
           </div>
-          <button className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center text-primary border border-outline-variant/20 hover:text-secondary transition-all">
-            <span className="material-symbols-outlined">my_location</span>
+          <button type="button" className="p-2.5 bg-white rounded-card border border-[var(--border)] shadow-sm hover:bg-[var(--bg-subtle)] text-[var(--fg)] transition-colors">
+            <NavigationArrow size={16} />
           </button>
-        </div>
-
-        {/* Floating Manual Address Entry Action */}
-        <div className="absolute bottom-8 left-8 right-8 md:right-auto md:w-96">
-          <div className="bg-white/80 backdrop-blur-xl p-4 rounded-2xl border border-outline-variant/30 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 bg-secondary-container/50 rounded-xl flex items-center justify-center text-secondary">
-              <span className="material-symbols-outlined">edit_location_alt</span>
-            </div>
-            <div className="flex-1">
-              <p className="font-label-caps text-[10px] text-on-surface-variant">NOT ON THE LIST?</p>
-              <p className="font-body-md text-primary font-semibold">Enter Address Manually</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </div>
         </div>
       </section>
     </div>

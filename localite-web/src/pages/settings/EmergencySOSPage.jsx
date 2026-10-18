@@ -1,5 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { triggerPanic } from '../../services/api';
+import { 
+  X, 
+  MapPin, 
+  Warning, 
+  PhoneCall, 
+  ChatTeardropText, 
+  FirstAid, 
+  ShieldCheck, 
+  BatteryHigh,
+  Info
+} from '@phosphor-icons/react';
 
 export default function EmergencySOSPage() {
   const navigate = useNavigate();
@@ -44,7 +56,19 @@ export default function EmergencySOSPage() {
     if (navigator.vibrate) {
       navigator.vibrate([200, 100, 200, 100, 500]);
     }
-    console.log("SOS TRIGGERED: Location sent to emergency services and trusted contacts.");
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          triggerPanic(pos.coords.latitude, pos.coords.longitude).catch(console.error);
+        },
+        () => {
+          triggerPanic(null, null).catch(console.error);
+        }
+      );
+    } else {
+      triggerPanic(null, null).catch(console.error);
+    }
   };
 
   useEffect(() => {
@@ -55,203 +79,207 @@ export default function EmergencySOSPage() {
   }, []);
 
   return (
-    <div className="bg-primary-container text-on-primary overflow-hidden h-screen font-body-md text-body-md relative flex flex-col">
-      {/* Top Navigation */}
-      <header className="flex justify-between items-center px-8 py-6 w-full fixed top-0 z-50 bg-transparent">
-        <div className="flex items-center gap-4">
-          <span className="font-display-lg text-[24px] md:text-display-lg text-primary-fixed tracking-tighter">Localite</span>
-          <div className="h-6 w-[1px] bg-outline-variant/30 hidden md:block"></div>
-          <span className="font-label-caps text-label-caps text-secondary-fixed uppercase hidden md:block">Safety Center</span>
+    <div className="bg-[#111315] text-[#EDECE8] min-h-screen relative flex flex-col font-sans select-none overflow-x-hidden">
+      {/* Top Header */}
+      <header className="flex justify-between items-center px-6 md:px-12 py-5 w-full border-b border-white/10 z-40 bg-[#111315]/80 backdrop-blur-md sticky top-0">
+        <div className="flex items-center gap-3">
+          <span className="text-lg font-semibold tracking-tight text-white">Localite</span>
+          <span className="text-white/30">/</span>
+          <span className="text-xs font-semibold uppercase tracking-widest text-rose-400">Emergency Portal</span>
         </div>
         <button 
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-6 py-2 rounded-full border border-outline-variant/30 hover:bg-surface-variant/10 transition-all text-on-primary"
+          className="flex items-center gap-2 px-4 py-2 rounded-card border border-white/15 hover:bg-white/5 transition-all text-xs font-medium text-white/80"
         >
-          <span className="material-symbols-outlined text-[20px]">close</span>
-          <span className="font-label-caps text-label-caps hidden sm:block">Exit Emergency Mode</span>
+          <X size={14} />
+          <span>Exit Emergency Mode</span>
         </button>
       </header>
 
-      {/* Main SOS Portal Canvas */}
-      <main className="relative h-screen w-full flex flex-col md:flex-row items-center justify-center pt-20 px-8 gap-8 overflow-hidden z-10">
+      {/* Main Grid Canvas */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10">
         
         {/* Left Column: Precise Location & Details */}
-        <div className="hidden md:flex flex-col w-1/3 z-10 gap-8">
-          <div className="bg-[rgba(27,28,28,0.8)] backdrop-blur-md border border-white/10 p-8 rounded-xl shadow-[16px_0_32px_-12px_rgba(10,25,47,0.2)]">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="material-symbols-outlined text-secondary-fixed" style={{fontVariationSettings: "'FILL' 1"}}>location_on</span>
-              <h2 className="font-label-caps text-label-caps text-on-primary-fixed-variant">Current Precise Location</h2>
+        <div className="hidden lg:flex flex-col lg:col-span-4 gap-6">
+          <div className="bg-[#181A1D] border border-white/10 p-6 rounded-card shadow-sm">
+            <div className="flex items-center gap-2 mb-4 text-xs font-semibold uppercase tracking-wider text-rose-400">
+              <MapPin size={16} weight="fill" />
+              <span>Current GPS Location</span>
             </div>
             
-            <div className="relative w-full h-64 rounded-lg overflow-hidden mb-6 border border-outline-variant/20">
-              <div 
-                className="absolute inset-0 bg-cover bg-center" 
-                style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKZFPgOlurszs8YlzuqscQJbiKql2OI3TAf_-ppcK8b5EWracd9nKwpbVlekiIhrr42dh0S0GT9nHE40armH3kVrcPcg88ryhNDoCJwQpxKMDyUvVogWhA8adGX0qzGjTqHZY0Gc34XT1GKOURJQtneFZcLnNq_PsPy30v6V0qImIljkWUHhV-BzWhVIaU_PLpPpHmUQjY6BUjx2AjuHhJ-vnaqUDKS78j3vrREhMThWd1SvyLf4mNLg')"}}
-              ></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-primary-container/80 to-transparent"></div>
-              <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-primary-container/90 px-3 py-1 rounded-full border border-secondary-fixed/50">
-                <div className="w-2 h-2 rounded-full bg-error animate-pulse"></div>
-                <span className="text-[10px] font-label-caps text-on-primary tracking-widest uppercase">Live Signal</span>
+            <div className="relative w-full h-44 rounded-card overflow-hidden mb-5 border border-white/10 bg-[#22262B] flex items-center justify-center">
+              <div className="absolute inset-0 opacity-25 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+              <div className="relative z-10 w-10 h-10 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg animate-pulse">
+                <MapPin size={20} weight="fill" />
+              </div>
+              <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-[#111315]/90 px-2.5 py-1 rounded-full border border-white/10 text-[10px] font-medium text-emerald-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                Live Triangulated
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 text-xs">
               <div>
-                <p className="font-label-caps text-label-caps text-on-primary-fixed-variant text-[10px] mb-1">STREET ADDRESS</p>
-                <p className="font-headline-sm text-[20px] text-on-primary">12 Grosvenor Square, London</p>
+                <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">Approximate Street</p>
+                <p className="text-sm font-medium text-white">Connaught Place, Inner Circle</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5">
                 <div>
-                  <p className="font-label-caps text-label-caps text-on-primary-fixed-variant text-[10px] mb-1">LATITUDE</p>
-                  <p className="font-body-md text-on-primary opacity-80">51.5113° N</p>
+                  <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">Latitude</p>
+                  <p className="font-mono text-white/80 text-xs">28.6315° N</p>
                 </div>
                 <div>
-                  <p className="font-label-caps text-label-caps text-on-primary-fixed-variant text-[10px] mb-1">LONGITUDE</p>
-                  <p className="font-body-md text-on-primary opacity-80">0.1511° W</p>
+                  <p className="text-[10px] uppercase font-semibold text-white/40 tracking-wider mb-0.5">Longitude</p>
+                  <p className="font-mono text-white/80 text-xs">77.2167° E</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-[rgba(27,28,28,0.8)] backdrop-blur-md border border-white/10 p-6 rounded-xl border-l-4 !border-l-secondary-fixed">
-            <p className="font-label-caps text-label-caps text-secondary-fixed mb-4">EMERGENCY CONTACTS NOTIFIED</p>
-            <div className="flex -space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-full border-2 border-primary-container bg-surface-container-high flex items-center justify-center text-[12px] font-bold text-primary">JT</div>
-              <div className="w-10 h-10 rounded-full border-2 border-primary-container bg-surface-container-highest flex items-center justify-center text-[12px] font-bold text-primary">EV</div>
-              <div className="w-10 h-10 rounded-full border-2 border-primary-container bg-surface-variant flex items-center justify-center text-[12px] font-bold text-primary">+2</div>
+          <div className="bg-[#181A1D] border border-white/10 p-5 rounded-card border-l-2 border-l-rose-500">
+            <p className="text-[11px] font-semibold text-white uppercase tracking-wider mb-3">Tethered Contacts Notified</p>
+            <div className="flex -space-x-2 mb-3">
+              {['JT', 'EV', 'AK', '+2'].map((init, i) => (
+                <div key={i} className="w-8 h-8 rounded-full border border-[#181A1D] bg-[#2B3037] text-white flex items-center justify-center text-[10px] font-bold">
+                  {init}
+                </div>
+              ))}
             </div>
-            <p className="text-[12px] text-on-primary/60 italic font-body-md">Contacts will receive your live location once SOS is triggered.</p>
+            <p className="text-[11px] text-white/60 leading-relaxed">
+              Contacts will instantly receive your coordinates and high-frequency live tracking link once triggered.
+            </p>
           </div>
         </div>
 
         {/* Center Column: SOS Interaction */}
-        <div className="flex flex-col items-center justify-center w-full md:w-1/3 z-20 text-center">
-          <div className="mb-12">
-            <h1 className="font-display-lg text-[32px] md:text-display-lg text-on-primary mb-4">Emergency Portal</h1>
-            <p className="font-body-lg text-body-lg text-on-primary/70 max-w-sm mx-auto">Hold the button for 3 seconds to alert local authorities and your concierge team.</p>
+        <div className="flex flex-col items-center justify-center lg:col-span-4 text-center py-6">
+          <div className="mb-8">
+            <h1 className="text-2xl md:text-3xl font-semibold text-white mb-2">Emergency SOS</h1>
+            <p className="text-xs md:text-sm text-white/70 max-w-xs mx-auto leading-relaxed">
+              Press and hold the button for 3 seconds to broadcast an urgent alert and summon on-site response.
+            </p>
           </div>
 
-          {/* The Big Button */}
+          {/* The Hold-to-SOS Button */}
           <div 
-            className="relative group cursor-pointer select-none"
+            className="relative cursor-pointer select-none group touch-none"
             onMouseDown={startHold}
             onMouseUp={cancelHold}
             onMouseLeave={cancelHold}
             onTouchStart={startHold}
             onTouchEnd={cancelHold}
           >
-            {/* Outer Pulse Rings */}
-            <div className={`absolute inset-0 rounded-full bg-error/20 ${isHolding ? 'animate-ping' : ''}`}></div>
-            <div className={`absolute inset-0 rounded-full bg-error/10 ${isHolding ? 'animate-ping' : ''}`} style={{animationDelay: '0.75s'}}></div>
+            {/* Pulsing ring */}
+            <div className={`absolute inset-0 rounded-full bg-rose-600/20 transition-all ${isHolding ? 'scale-125 animate-ping' : ''}`}></div>
             
-            {/* Main Button Circle */}
-            <div className={`relative w-64 h-64 rounded-full bg-error shadow-[0_0_60px_rgba(186,26,26,0.5)] flex flex-col items-center justify-center transition-all duration-300 ${isHolding ? 'scale-95 shadow-[0_0_80px_rgba(186,26,26,0.7)]' : ''}`}>
+            {/* Main Button */}
+            <div className={`relative w-56 h-56 rounded-full bg-rose-600 shadow-[0_0_50px_rgba(225,29,72,0.35)] flex flex-col items-center justify-center transition-all duration-300 ${isHolding ? 'scale-95 shadow-[0_0_80px_rgba(225,29,72,0.6)]' : 'hover:scale-105'}`}>
               <svg className="absolute inset-0 w-full h-full -rotate-90">
-                <circle cx="128" cy="128" fill="none" r="120" stroke="rgba(255,255,255,0.2)" strokeWidth="8"></circle>
+                <circle cx="112" cy="112" fill="none" r="102" stroke="rgba(255,255,255,0.2)" strokeWidth="6"></circle>
                 <circle 
-                  cx="128" cy="128" fill="none" r="120" stroke="white" strokeWidth="8"
-                  strokeDasharray="754" 
-                  strokeDashoffset={isHolding ? 0 : 754}
+                  cx="112" cy="112" fill="none" r="102" stroke="white" strokeWidth="6"
+                  strokeDasharray="640" 
+                  strokeDashoffset={isHolding ? 0 : 640}
                   style={{transition: isHolding ? 'stroke-dashoffset 3s linear' : 'stroke-dashoffset 0.3s ease-out'}}
                 ></circle>
               </svg>
-              <span className="material-symbols-outlined text-[64px] mb-2 text-white" style={{fontVariationSettings: "'FILL' 1"}}>emergency</span>
-              <span className="font-label-caps text-[20px] tracking-[0.2em] text-white">HOLD TO SOS</span>
-              <span className={`absolute bottom-12 font-label-caps text-label-caps text-white transition-opacity duration-300 ${isHolding ? 'opacity-100' : 'opacity-0'}`}>
-                TRIGGERING IN {timeLeft}s
+              <Warning size={48} weight="fill" className="text-white mb-1" />
+              <span className="text-sm font-semibold tracking-widest text-white uppercase">Hold to SOS</span>
+              <span className={`absolute bottom-10 text-[11px] font-mono tracking-wider text-white transition-opacity duration-200 ${isHolding ? 'opacity-100' : 'opacity-0'}`}>
+                Triggering in {timeLeft}s
               </span>
             </div>
           </div>
 
           {/* Quick Action Secondary Buttons */}
-          <div className="mt-16 flex flex-col sm:flex-row gap-4 w-full px-8 sm:px-0 justify-center">
-            <button className="px-8 py-4 bg-on-primary text-primary-container rounded-xl font-label-caps text-label-caps flex justify-center items-center gap-3 hover:bg-secondary-fixed transition-colors active:scale-95">
-              <span className="material-symbols-outlined text-[20px]">call</span>
-              CALL 999
+          <div className="mt-10 flex gap-3 w-full max-w-xs justify-center">
+            <button 
+              onClick={() => window.open('tel:112')}
+              className="flex-1 py-3 px-4 bg-white text-[#111315] rounded-card text-xs font-semibold uppercase tracking-wider flex justify-center items-center gap-2 hover:bg-white/90 transition-all active:scale-95"
+            >
+              <PhoneCall size={16} weight="bold" />
+              Call 112
             </button>
-            <button className="px-8 py-4 border border-outline-variant/40 text-on-primary rounded-xl font-label-caps text-label-caps flex justify-center items-center gap-3 hover:bg-on-primary/10 transition-colors active:scale-95">
-              <span className="material-symbols-outlined text-[20px]">chat</span>
-              SILENT CHAT
+            <button 
+              onClick={() => navigate('/chat')}
+              className="flex-1 py-3 px-4 border border-white/20 text-white rounded-card text-xs font-semibold uppercase tracking-wider flex justify-center items-center gap-2 hover:bg-white/5 transition-all active:scale-95"
+            >
+              <ChatTeardropText size={16} weight="bold" />
+              Silent Chat
             </button>
           </div>
         </div>
 
         {/* Right Column: Safety Status & Resources */}
-        <div className="hidden md:flex flex-col w-1/3 z-10 gap-8">
-          <div className="bg-[rgba(27,28,28,0.8)] backdrop-blur-md border border-white/10 p-8 rounded-xl">
-            <h3 className="font-label-caps text-label-caps text-secondary-fixed mb-6 uppercase tracking-widest">Safety Resources</h3>
-            <div className="space-y-6">
-              <div className="flex gap-4 group cursor-pointer">
-                <div className="w-12 h-12 rounded-lg bg-surface-variant/10 flex items-center justify-center text-secondary-fixed group-hover:bg-secondary-fixed group-hover:text-primary-container transition-all">
-                  <span className="material-symbols-outlined">medical_services</span>
+        <div className="hidden lg:flex flex-col lg:col-span-4 gap-6">
+          <div className="bg-[#181A1D] border border-white/10 p-6 rounded-card">
+            <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-5">
+              Nearby Emergency Services
+            </h3>
+            <div className="space-y-4">
+              <div className="flex gap-3 items-center p-3 rounded-card bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+                <div className="w-9 h-9 rounded-card bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0">
+                  <FirstAid size={18} />
                 </div>
                 <div>
-                  <h4 className="font-label-caps text-label-caps text-on-primary">Nearest Hospital</h4>
-                  <p className="text-[12px] text-on-primary/60">St. Mary’s Emergency (0.4 miles)</p>
+                  <h4 className="text-xs font-semibold text-white">Nearest Emergency Hospital</h4>
+                  <p className="text-[11px] text-white/50">Dr. RML Hospital • 0.8 mi</p>
                 </div>
               </div>
-              <div className="flex gap-4 group cursor-pointer">
-                <div className="w-12 h-12 rounded-lg bg-surface-variant/10 flex items-center justify-center text-secondary-fixed group-hover:bg-secondary-fixed group-hover:text-primary-container transition-all">
-                  <span className="material-symbols-outlined">local_police</span>
+
+              <div className="flex gap-3 items-center p-3 rounded-card bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+                <div className="w-9 h-9 rounded-card bg-sky-500/10 text-sky-400 flex items-center justify-center shrink-0">
+                  <ShieldCheck size={18} />
                 </div>
                 <div>
-                  <h4 className="font-label-caps text-label-caps text-on-primary">Police Station</h4>
-                  <p className="text-[12px] text-on-primary/60">Savile Row Station (1.2 miles)</p>
-                </div>
-              </div>
-              <div className="flex gap-4 group cursor-pointer">
-                <div className="w-12 h-12 rounded-lg bg-surface-variant/10 flex items-center justify-center text-secondary-fixed group-hover:bg-secondary-fixed group-hover:text-primary-container transition-all">
-                  <span className="material-symbols-outlined">shield_person</span>
-                </div>
-                <div>
-                  <h4 className="font-label-caps text-label-caps text-on-primary">Concierge Security</h4>
-                  <p className="text-[12px] text-on-primary/60">On-site response (2 mins away)</p>
+                  <h4 className="text-xs font-semibold text-white">Nearest Police Station</h4>
+                  <p className="text-[11px] text-white/50">Barakhamba Road Post • 0.5 mi</p>
                 </div>
               </div>
             </div>
             
-            <div className="mt-8 pt-8 border-t border-outline-variant/10">
-              <div className="bg-primary/30 p-4 rounded-lg flex items-start gap-3">
-                <span className="material-symbols-outlined text-secondary-fixed text-[20px]">info</span>
-                <p className="text-[12px] text-on-primary/80 leading-relaxed italic">
-                  Your audio and front camera will begin recording immediately upon activation for evidence collection and situational awareness.
-                </p>
+            <div className="mt-6 pt-5 border-t border-white/10">
+              <div className="flex items-start gap-2.5 text-[11px] text-white/70 leading-relaxed">
+                <Info size={16} className="text-white/40 shrink-0 mt-0.5" />
+                <span>Microphone and location telemetry are queued for automated upload when SOS is confirmed.</span>
               </div>
             </div>
           </div>
           
-          <div className="bg-[rgba(27,28,28,0.8)] backdrop-blur-md border border-white/10 p-6 rounded-xl flex items-center justify-between">
-            <div>
-              <p className="font-label-caps text-[10px] text-on-primary-fixed-variant">BATTERY STATUS</p>
-              <p className="font-headline-sm text-[20px] text-on-primary">84%</p>
+          <div className="bg-[#181A1D] border border-white/10 p-4 rounded-card flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <BatteryHigh size={18} className="text-emerald-400" />
+              <span className="text-white/60">Device Battery Status</span>
             </div>
-            <div className="w-16 h-8 bg-surface-variant/20 rounded-md p-1">
-              <div className="bg-secondary-fixed h-full w-[84%] rounded-sm"></div>
-            </div>
+            <span className="font-mono font-semibold text-white">84%</span>
           </div>
         </div>
       </main>
 
       {/* Post-Activation Overlay */}
-      <div 
-        className={`fixed inset-0 z-[100] bg-primary-container flex flex-col items-center justify-center text-center transition-opacity duration-700 ${isTriggered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-      >
-        <h2 className="font-display-lg text-[40px] md:text-display-lg text-on-primary mb-2">SOS Dispatched</h2>
-        <p className="font-body-lg text-body-lg text-secondary-fixed mb-12">Authorities and contacts have been alerted with your live location.</p>
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-1 bg-secondary-fixed rounded-full overflow-hidden">
-            <div className="h-full bg-on-primary animate-pulse w-full"></div>
+      {isTriggered && (
+        <div className="fixed inset-0 z-50 bg-[#111315]/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 animate-fade-in">
+          <div className="w-16 h-16 bg-rose-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl animate-pulse">
+            <Warning size={32} weight="fill" />
           </div>
-          <span className="font-label-caps text-label-caps text-on-primary/60">Establishing live audio link...</span>
+          <h2 className="text-2xl md:text-3xl font-semibold text-white mb-2">SOS Broadcast Triggered</h2>
+          <p className="text-xs md:text-sm text-white/70 max-w-sm mb-8 leading-relaxed">
+            Emergency dispatch and your trusted contacts have received your live location coordinates. Keep your device active.
+          </p>
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full bg-rose-500 animate-pulse w-full"></div>
+            </div>
+            <span className="text-xs font-medium text-white/50">Establishing live audio tether...</span>
+          </div>
+          <button 
+            onClick={() => { setIsTriggered(false); setTimeLeft(3); }} 
+            className="mt-8 px-6 py-2.5 border border-white/20 text-white/70 rounded-card text-xs font-semibold hover:bg-white/10 transition-colors"
+          >
+            Dismiss Alert (Simulation)
+          </button>
         </div>
-        <button 
-          onClick={() => { setIsTriggered(false); setTimeLeft(3); }} 
-          className="mt-12 px-6 py-2 border border-outline-variant/30 text-on-primary/60 rounded-full hover:bg-white/10"
-        >
-          Dismiss (Demo Only)
-        </button>
-      </div>
-
+      )}
     </div>
   );
 }

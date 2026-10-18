@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onIdTokenChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
+import { API_BASE_URL } from '../services/api';
 
 export const AuthContext = createContext();
 
@@ -67,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       const token = await userCredential.user.getIdToken();
       
       // Sync user with backend
-      const res = await fetch(import.meta.env.VITE_API_URL + '/auth/sync-user', {
+      const res = await fetch(`${API_BASE_URL}/auth/sync-user`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,6 +1,8 @@
 import { auth } from '../firebase';
 import { API_URL as BASE_URL } from '../config';
 
+export { BASE_URL };
+
 const getAuthHeaders = async () => {
   const user = auth.currentUser;
   if (!user) return { 'Content-Type': 'application/json' };
@@ -355,39 +357,234 @@ export const getUserById = async (id) => {
 };
 
 export const getCategories = async () => {
-  // Categories can either be hardcoded or fetched from backend if we have an endpoint
-  return [
-    {
-      id: "c1",
-      name: "Tennis",
-      type: "TRADITION",
-      activeMatches: 24,
-      venues: 12,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDUg8QrDPQJk75uhkvDQh_5r_1od6bLcWWDl2xGwc-NovzRMlETtljT3uiGuZaqFCWM3HIK4vQdjeY6IHdcGbbr1PhlVlk5EHIXS-hc4pRqlLAh2s0fQiHa7BFOgeTV--Z8FwytAMmSQVlyQFunstpp57vXpRXQKaN8JlKDh7BTtglO7zEuXBIOZQEDA-cBKNQP1BzFkw-NHQhnpi3lkiyR1SOiQHR4jKNjvNQVJNSgfoepPvHly6RHNw"
-    },
-    {
-      id: "c2",
-      name: "Polo",
-      type: "MAJESTY",
-      activeMatches: 8,
-      venues: 4,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC6-QYCloEn4YPVifuHqvUSVPSOnrE8JgjvRMp11MZIqsLHkaaUQ4-0qm6yGlNjO8avzbXaogcMHrNk6h0-8YMNWx2_18FDXa-ptZKjlLpQzGR4WirbnxNKqsWKDMimzQkstS-LV_fLFYrCq47TUx2RD2m98U4J_DkGkWYx6BKedTBNl-OSFMrSVN8SGL44pT11TqhZ0D0HKD5zrNcvq336VBoW-q6Pb7yS5S6sxDu001sXTGp5_q_9oQ"
-    },
-    {
-      id: "c3",
-      name: "Golf",
-      type: "PRECISION",
-      activeMatches: 11,
-      venues: 15,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCgQspEnJ36dCN3YJVDXpOM3-aqisOi65bF5flfSdAQuQA3Dx5BkbD8Y4dK-icVIPnigBpJ_OAOjOlAODJwM0-1UmepuVGCvlS2Lc75NahAVUv-KwRmKBgIVpihw2YTdIdPYQzeo6xz9zD2M4UMLn5WP-S3RIyvrRewjrh0hzDMPpjeDwzD2PWT5Mr6mgvLHKurZ7_OQaQztCCr6mKQnPtuQujxB3poiky9iW1Bwbxz4ohMT4Z0RCPIog"
-    },
-    {
-      id: "c4",
-      name: "Cricket",
-      type: "HERITAGE",
-      activeMatches: 5,
-      venues: 3,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCzUC_MM3iIfr1bRDeWexWi9u1Wxvj9sPgOUK8kMnoLnVD7_7_1dYNbr4VpcAd-m8eTDBDy7PXE97pvP_fVMTF51tZXhY2aC0Lumn8_7pJAUlx6BltTBlzLrUmgvhPsYKbJcsuauZB2MU3_EWyxus1Q6QUKfsL7yR2l9bgpyERBnfkVfnGAv0f0t9TG4HrK8ixWKQvVvUeIMN1puiVP46oXfYsrgR6iZ0hilhIIhX4ImGKPb22uO9StUQ"
+  try {
+    const response = await fetch(`${BASE_URL}/categories`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.map((cat, index) => ({
+        id: `c_${index}`,
+        name: cat,
+        type: "PREMIER",
+        activeMatches: 12 + index * 3,
+        venues: 4 + index * 2
+      }));
     }
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+  }
+  return [
+    { id: "c1", name: "Tennis", type: "TRADITION", activeMatches: 24, venues: 12 },
+    { id: "c2", name: "Polo", type: "MAJESTY", activeMatches: 8, venues: 4 },
+    { id: "c3", name: "Golf", type: "PRECISION", activeMatches: 11, venues: 15 },
+    { id: "c4", name: "Cricket", type: "HERITAGE", activeMatches: 5, venues: 3 }
   ];
 };
+
+export const updateProfile = async (profileData) => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/users/me`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(profileData)
+  });
+  if (!response.ok) throw new Error('Failed to update profile');
+  return await response.json();
+};
+
+export const blockUser = async (userId) => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/users/${userId}/block`, {
+    method: 'POST',
+    headers
+  });
+  if (!response.ok) throw new Error('Failed to block user');
+  return await response.json();
+};
+
+export const unblockUser = async (userId) => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/users/${userId}/unblock`, {
+    method: 'DELETE',
+    headers
+  });
+  if (!response.ok) throw new Error('Failed to unblock user');
+  return await response.json();
+};
+
+export const triggerPanic = async (lat, lng) => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/safety/panic`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ lat, lng })
+  });
+  if (!response.ok) throw new Error('Failed to send SOS');
+  return await response.json();
+};
+
+export const checkInAttendee = async (eventId, ticketId) => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/events/${eventId}/checkin/${ticketId}`, {
+    method: 'POST',
+    headers
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || 'Check-in failed');
+  }
+  return await response.text();
+};
+
+export const deleteAccount = async () => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/users/me`, {
+    method: 'DELETE',
+    headers
+  });
+  if (!response.ok) throw new Error('Failed to delete account');
+  return await response.json();
+};
+
+export const getMyEvents = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/events/my-events`, { headers });
+    if (!response.ok) return [];
+    return await response.json();
+  } catch (err) {
+    console.error('Error fetching my events:', err);
+    return [];
+  }
+};
+
+export const getUserAnalytics = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/users/me/analytics`, { headers });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (err) {
+    console.error('Error fetching user analytics:', err);
+    return null;
+  }
+};
+
+export const getAdminAnalytics = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/admin/analytics`, { headers });
+    if (!response.ok) return { totalUsers: 0, totalEvents: 0, pendingReports: 0 };
+    return await response.json();
+  } catch (err) {
+    console.error('Error fetching admin analytics:', err);
+    return { totalUsers: 0, totalEvents: 0, pendingReports: 0 };
+  }
+};
+
+export const getAdminReports = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/admin/reports`, { headers });
+    if (!response.ok) return [];
+    return await response.json();
+  } catch (err) {
+    console.error('Error fetching admin reports:', err);
+    return [];
+  }
+};
+
+export const banUser = async (userId) => {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${BASE_URL}/admin/users/${userId}/ban`, {
+    method: 'POST',
+    headers
+  });
+  if (!response.ok) throw new Error('Failed to suspend user');
+  return await response.text();
+};
+
+export const awardXp = async (action) => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/gamification/award`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(typeof action === 'object' ? action : { action }),
+    });
+    if (!response.ok) throw new Error('Failed to award XP');
+    return await response.json();
+  } catch (error) {
+    console.error('Error awarding XP:', error);
+    return null;
+  }
+};
+
+export const getFeed = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/feed`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch feed');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching feed:', error);
+    return [];
+  }
+};
+
+export const getRecommendedEvents = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/matches/events`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch recommended events');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching recommended events:', error);
+    return [];
+  }
+};
+
+export const getSuggestedPartners = async () => {
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BASE_URL}/matches/users`, { headers });
+    if (!response.ok) throw new Error('Failed to fetch suggested partners');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching suggested partners:', error);
+    return [];
+  }
+};
+
+const api = {
+  get: async (endpoint) => {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${BASE_URL}${endpoint}`, { headers });
+    return { ok: res.ok, status: res.status, data: await res.json().catch(() => null) };
+  },
+  post: async (endpoint, body) => {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+      method: 'POST',
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    return { ok: res.ok, status: res.status, data: await res.json().catch(() => null) };
+  },
+  put: async (endpoint, body) => {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+      method: 'PUT',
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    return { ok: res.ok, status: res.status, data: await res.json().catch(() => null) };
+  },
+  delete: async (endpoint) => {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${BASE_URL}${endpoint}`, { method: 'DELETE', headers });
+    return { ok: res.ok, status: res.status, data: await res.json().catch(() => null) };
+  }
+};
+
+export default api;
+

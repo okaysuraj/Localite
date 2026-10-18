@@ -1,13 +1,17 @@
 package com.localite.backend.controller;
 
+import com.localite.backend.model.EmergencyAlert;
 import com.localite.backend.model.Report;
 import com.localite.backend.model.User;
+import com.localite.backend.repository.EmergencyAlertRepository;
 import com.localite.backend.repository.ReportRepository;
 import com.localite.backend.repository.UserRepository;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,10 +22,17 @@ public class SafetyController {
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
+    private final EmergencyAlertRepository emergencyAlertRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public SafetyController(ReportRepository reportRepository, UserRepository userRepository) {
+    public SafetyController(ReportRepository reportRepository, 
+                            UserRepository userRepository, 
+                            EmergencyAlertRepository emergencyAlertRepository,
+                            SimpMessagingTemplate messagingTemplate) {
         this.reportRepository = reportRepository;
         this.userRepository = userRepository;
+        this.emergencyAlertRepository = emergencyAlertRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping("/report")
@@ -50,13 +61,50 @@ public class SafetyController {
         Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
         if (!currentUserOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
         
-        // In a real app, this would integrate with SMS/Twilio API to alert emergency contacts
-        // For MVP, we just log it and return success
-        Double lat = payload.containsKey("lat") ? Double.valueOf(payload.get("lat").toString()) : null;
-        Double lng = payload.containsKey("lng") ? Double.valueOf(payload.get("lng").toString()) : null;
+        Double lat = payload.containsKey("lat") && payload.get("lat") != null ? Double.valueOf(payload.get("lat").toString()) : null;
+        Double lng = payload.containsKey("lng") && payload.get("lng") != null ? Double.valueOf(payload.get("lng").toString()) : null;
         
-        System.out.println("🚨 PANIC BUTTON TRIGGERED BY USER: " + currentUserOpt.get().getUsername() + " AT LOCATION: " + lat + ", " + lng);
+        User user = currentUserOpt.get();
+        EmergencyAlert alert = new EmergencyAlert(user, lat, lng);
+        emergencyAlertRepository.save(alert);
         
-        return ResponseEntity.ok(Map.of("message", "Emergency contacts notified. Help is on the way."));
+        System.out.println("🚨 PANIC BUTTON TRIGGERED BY USER: " + user.getUsername() + " AT LOCATION: " + lat + ", " + lng);
+        
+        // Broadcast in real-time to safety and emergency listeners
+        try {
+            Map<String, Object> alertPayload = Map.of(
+                "alertId", alert.getId(),
+                "username", user.getUsername() != null ? user.getUsername() : "Anonymous",
+                "lat", lat != null ? lat : 0.0,
+                "lng", lng != null ? lng : 0.0,
+                "timestamp", System.currentTimeMillis()
+            );
+            messagingTemplate.convertAndSend("/topic/safety/alerts", (Object) alertPayload);
+        } catch (Exception e) {
+            System.err.println("Failed to broadcast safety alert: " + e.getMessage());
+        }
+        
+        return ResponseEntity.ok(Map.of(
+            "message", "Emergency contacts and responders notified. Help is on the way.",
+            "alertId", alert.getId(),
+            "status", alert.getStatus()
+        ));
+    }
+
+    @GetMapping("/alerts")
+    public ResponseEntity<?> getEmergencyAlerts(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        Optional<User> currentUserOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (currentUserOpt.isEmpty()) return ResponseEntity.status(401).build();
+        User user = currentUserOpt.get();
+        
+        if (user.isAdmin()) {
+            return ResponseEntity.ok(emergencyAlertRepository.findAllByOrderByCreatedAtDesc());
+        }
+        
+        return ResponseEntity.ok(emergencyAlertRepository.findAllByOrderByCreatedAtDesc().stream()
+                .filter(a -> a.getUser() != null && a.getUser().getId().equals(user.getId()))
+                .toList());
     }
 }
+

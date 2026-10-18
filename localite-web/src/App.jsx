@@ -1,96 +1,96 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import ExplorePage from './pages/shared/ExplorePage';
-import FeedPage from './pages/shared/FeedPage';
-import NotificationsPage from './pages/shared/NotificationsPage';
-import MapPage from './pages/shared/MapPage';
-import SearchPage from './pages/shared/SearchPage';
-import CategoriesPage from './pages/shared/CategoriesPage';
-import PeopleDiscoveryPage from './pages/network/PeopleDiscoveryPage';
-import EmptyStatePage from './pages/shared/EmptyStatePage';
-import ProfilePage from './pages/profile/ProfilePage';
-import NetworkPage from './pages/network/NetworkPage';
-import SplashPage from './pages/auth/SplashPage';
-import WelcomeCarouselPage from './pages/auth/WelcomeCarouselPage';
-import LoginPage from './pages/auth/LoginPage';
-import SignupPage from './pages/auth/SignupPage';
-import EmailVerificationPage from './pages/auth/EmailVerificationPage';
-import AnalyticsDashboard from './pages/dashboard/AnalyticsDashboard';
-import LeaderboardPage from './pages/network/LeaderboardPage';
-import AdminDashboard from './pages/dashboard/AdminDashboard';
-import MessagesPage from './pages/chat/MessagesPage';
-import EventDetailPage from './pages/events/EventDetailPage';
-import CreateEventWizard from './pages/events/CreateEventWizard';
-import EventParticipantsPage from './pages/events/EventParticipantsPage';
-import EventGroupChatPage from './pages/chat/EventGroupChatPage';
-import SettingsHomePage from './pages/settings/SettingsHomePage';
-import EditProfilePage from './pages/profile/EditProfilePage';
-import AccountSettingsPage from './pages/profile/AccountSettingsPage';
-import NotificationSettingsPage from './pages/settings/NotificationSettingsPage';
-import PrivacySettingsPage from './pages/settings/PrivacySettingsPage';
+const ExplorePage = React.lazy(() => import('./pages/shared/ExplorePage'));
+const FeedPage = React.lazy(() => import('./pages/shared/FeedPage'));
+const NotificationsPage = React.lazy(() => import('./pages/shared/NotificationsPage'));
+const MapPage = React.lazy(() => import('./pages/shared/MapPage'));
+const SearchPage = React.lazy(() => import('./pages/shared/SearchPage'));
+const CategoriesPage = React.lazy(() => import('./pages/shared/CategoriesPage'));
+const PeopleDiscoveryPage = React.lazy(() => import('./pages/network/PeopleDiscoveryPage'));
+const EmptyStatePage = React.lazy(() => import('./pages/shared/EmptyStatePage'));
+const ProfilePage = React.lazy(() => import('./pages/profile/ProfilePage'));
+const NetworkPage = React.lazy(() => import('./pages/network/NetworkPage'));
+const SplashPage = React.lazy(() => import('./pages/auth/SplashPage'));
+const WelcomeCarouselPage = React.lazy(() => import('./pages/auth/WelcomeCarouselPage'));
+const LoginPage = React.lazy(() => import('./pages/auth/LoginPage'));
+const SignupPage = React.lazy(() => import('./pages/auth/SignupPage'));
+const EmailVerificationPage = React.lazy(() => import('./pages/auth/EmailVerificationPage'));
+const AnalyticsDashboard = React.lazy(() => import('./pages/dashboard/AnalyticsDashboard'));
+const LeaderboardPage = React.lazy(() => import('./pages/network/LeaderboardPage'));
+const AdminDashboard = React.lazy(() => import('./pages/dashboard/AdminDashboard'));
+const MessagesPage = React.lazy(() => import('./pages/chat/MessagesPage'));
+const EventDetailPage = React.lazy(() => import('./pages/events/EventDetailPage'));
+const CreateEventWizard = React.lazy(() => import('./pages/events/CreateEventWizard'));
+const EventParticipantsPage = React.lazy(() => import('./pages/events/EventParticipantsPage'));
+const EventGroupChatPage = React.lazy(() => import('./pages/chat/EventGroupChatPage'));
+const SettingsHomePage = React.lazy(() => import('./pages/settings/SettingsHomePage'));
+const EditProfilePage = React.lazy(() => import('./pages/profile/EditProfilePage'));
+const AccountSettingsPage = React.lazy(() => import('./pages/profile/AccountSettingsPage'));
+const NotificationSettingsPage = React.lazy(() => import('./pages/settings/NotificationSettingsPage'));
+const PrivacySettingsPage = React.lazy(() => import('./pages/settings/PrivacySettingsPage'));
 import Footer from './components/Footer';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { WebSocketProvider } from './context/WebSocketContext';
-import SafetyCenterPage from './pages/settings/SafetyCenterPage';
-import EmergencySOSPage from './pages/settings/EmergencySOSPage';
-import VerificationCenterPage from './pages/auth/VerificationCenterPage';
-import ReportMemberPage from './pages/profile/ReportMemberPage';
-import CreateMatchPage from './pages/events/CreateMatchPage';
-import FindPlayersPage from './pages/shared/FindPlayersPage';
-import JoinMatchPage from './pages/matches/JoinMatchPage';
-import MatchLobbyPage from './pages/matches/MatchLobbyPage';
-import LiveMatchPage from './pages/matches/LiveMatchPage';
-import MatchHistoryPage from './pages/matches/MatchHistoryPage';
-import TeamFormationPage from './pages/matches/TeamFormationPage';
-import CricketDetailPage from './pages/matches/CricketDetailPage';
-import SportsCategoriesPage from './pages/shared/SportsCategoriesPage';
-import AttendanceCheckInPage from './pages/events/AttendanceCheckInPage';
-import TicketQRCodePage from './pages/matches/TicketQRCodePage';
-import AttendeeManagementPage from './pages/events/AttendeeManagementPage';
-import LiveEventDashboardPage from './pages/events/LiveEventDashboardPage';
-import LiveEventPollPage from './pages/events/LiveEventPollPage';
-import LiveMapTrackingPage from './pages/matches/LiveMapTrackingPage';
-import ChatPage from './pages/chat/ChatPage';
-import MessageRequestsPage from './pages/chat/MessageRequestsPage';
-import VoiceNotesPage from './pages/chat/VoiceNotesPage';
-import EventPlanningAnalyticsPage from './pages/events/EventPlanningAnalyticsPage';
-import HostDashboardPage from './pages/dashboard/HostDashboardPage';
-import RevenueDashboardPage from './pages/dashboard/RevenueDashboardPage';
-import EventInsightsPage from './pages/events/EventInsightsPage';
-import EventsCatalogPage from './pages/events/EventsCatalogPage';
-import MyEventsPage from './pages/events/MyEventsPage';
-import AvailabilityCalendarPage from './pages/shared/AvailabilityCalendarPage';
-import EventTimelineUpdatesPage from './pages/events/EventTimelineUpdatesPage';
-import EventReminderDetailPage from './pages/events/EventReminderDetailPage';
-import NotificationPreferencesPage from './pages/settings/NotificationPreferencesPage';
-import LocationSettingsPage from './pages/settings/LocationSettingsPage';
-import DataStorageSettingsPage from './pages/settings/DataStorageSettingsPage';
-import PrestigeProgressPage from './pages/network/PrestigeProgressPage';
-import MomentumOfGracePage from './pages/network/MomentumOfGracePage';
-import TheHallOfHonorPage from './pages/network/TheHallOfHonorPage';
-import IDVerificationPage from './pages/auth/IDVerificationPage';
-import SelfieVerificationPage from './pages/auth/SelfieVerificationPage';
-import TrustedCirclesSetupPage from './pages/settings/TrustedCirclesSetupPage';
-import VerifiedBadgeInfoPage from './pages/profile/VerifiedBadgeInfoPage';
-import ReportEventPage from './pages/events/ReportEventPage';
-import BlockUserPage from './pages/profile/BlockUserPage';
-import SafetyEtiquetteGuidelinesPage from './pages/settings/SafetyEtiquetteGuidelinesPage';
-import ReputationReviewsPage from './pages/network/ReputationReviewsPage';
-import LocationServicesPromptPage from './pages/settings/LocationServicesPromptPage';
-import PushPermissionSetupPage from './pages/settings/PushPermissionSetupPage';
-import RestrictedAccessPage from './pages/shared/RestrictedAccessPage';
-import OfflineErrorPage from './pages/shared/OfflineErrorPage';
-import EmptyGatheringsPage from './pages/events/EmptyGatheringsPage';
-import LoadingStatePage from './pages/shared/LoadingStatePage';
-import MediaViewerPage from './pages/shared/MediaViewerPage';
-import SocialLinkingPage from './pages/profile/SocialLinkingPage';
-import ExtendInvitationPage from './pages/network/ExtendInvitationPage';
-import EngagementStatsPage from './pages/dashboard/EngagementStatsPage';
-import PrivacyPolicyPage from './pages/shared/PrivacyPolicyPage';
-import TermsOfServicePage from './pages/shared/TermsOfServicePage';
-import VenuePartnersPage from './pages/shared/VenuePartnersPage';
-import ContactPage from './pages/shared/ContactPage';
+const SafetyCenterPage = React.lazy(() => import('./pages/settings/SafetyCenterPage'));
+const EmergencySOSPage = React.lazy(() => import('./pages/settings/EmergencySOSPage'));
+const VerificationCenterPage = React.lazy(() => import('./pages/auth/VerificationCenterPage'));
+const ReportMemberPage = React.lazy(() => import('./pages/profile/ReportMemberPage'));
+const CreateMatchPage = React.lazy(() => import('./pages/events/CreateMatchPage'));
+const FindPlayersPage = React.lazy(() => import('./pages/shared/FindPlayersPage'));
+const JoinMatchPage = React.lazy(() => import('./pages/matches/JoinMatchPage'));
+const MatchLobbyPage = React.lazy(() => import('./pages/matches/MatchLobbyPage'));
+const LiveMatchPage = React.lazy(() => import('./pages/matches/LiveMatchPage'));
+const MatchHistoryPage = React.lazy(() => import('./pages/matches/MatchHistoryPage'));
+const TeamFormationPage = React.lazy(() => import('./pages/matches/TeamFormationPage'));
+const CricketDetailPage = React.lazy(() => import('./pages/matches/CricketDetailPage'));
+const SportsCategoriesPage = React.lazy(() => import('./pages/shared/SportsCategoriesPage'));
+const AttendanceCheckInPage = React.lazy(() => import('./pages/events/AttendanceCheckInPage'));
+const TicketQRCodePage = React.lazy(() => import('./pages/matches/TicketQRCodePage'));
+const AttendeeManagementPage = React.lazy(() => import('./pages/events/AttendeeManagementPage'));
+const LiveEventDashboardPage = React.lazy(() => import('./pages/events/LiveEventDashboardPage'));
+const LiveEventPollPage = React.lazy(() => import('./pages/events/LiveEventPollPage'));
+const LiveMapTrackingPage = React.lazy(() => import('./pages/matches/LiveMapTrackingPage'));
+const ChatPage = React.lazy(() => import('./pages/chat/ChatPage'));
+const MessageRequestsPage = React.lazy(() => import('./pages/chat/MessageRequestsPage'));
+const VoiceNotesPage = React.lazy(() => import('./pages/chat/VoiceNotesPage'));
+const EventPlanningAnalyticsPage = React.lazy(() => import('./pages/events/EventPlanningAnalyticsPage'));
+const HostDashboardPage = React.lazy(() => import('./pages/dashboard/HostDashboardPage'));
+const RevenueDashboardPage = React.lazy(() => import('./pages/dashboard/RevenueDashboardPage'));
+const EventInsightsPage = React.lazy(() => import('./pages/events/EventInsightsPage'));
+const EventsCatalogPage = React.lazy(() => import('./pages/events/EventsCatalogPage'));
+const MyEventsPage = React.lazy(() => import('./pages/events/MyEventsPage'));
+const AvailabilityCalendarPage = React.lazy(() => import('./pages/shared/AvailabilityCalendarPage'));
+const EventTimelineUpdatesPage = React.lazy(() => import('./pages/events/EventTimelineUpdatesPage'));
+const EventReminderDetailPage = React.lazy(() => import('./pages/events/EventReminderDetailPage'));
+const NotificationPreferencesPage = React.lazy(() => import('./pages/settings/NotificationPreferencesPage'));
+const LocationSettingsPage = React.lazy(() => import('./pages/settings/LocationSettingsPage'));
+const DataStorageSettingsPage = React.lazy(() => import('./pages/settings/DataStorageSettingsPage'));
+const PrestigeProgressPage = React.lazy(() => import('./pages/network/PrestigeProgressPage'));
+const MomentumOfGracePage = React.lazy(() => import('./pages/network/MomentumOfGracePage'));
+const TheHallOfHonorPage = React.lazy(() => import('./pages/network/TheHallOfHonorPage'));
+const IDVerificationPage = React.lazy(() => import('./pages/auth/IDVerificationPage'));
+const SelfieVerificationPage = React.lazy(() => import('./pages/auth/SelfieVerificationPage'));
+const TrustedCirclesSetupPage = React.lazy(() => import('./pages/settings/TrustedCirclesSetupPage'));
+const VerifiedBadgeInfoPage = React.lazy(() => import('./pages/profile/VerifiedBadgeInfoPage'));
+const ReportEventPage = React.lazy(() => import('./pages/events/ReportEventPage'));
+const BlockUserPage = React.lazy(() => import('./pages/profile/BlockUserPage'));
+const SafetyEtiquetteGuidelinesPage = React.lazy(() => import('./pages/settings/SafetyEtiquetteGuidelinesPage'));
+const ReputationReviewsPage = React.lazy(() => import('./pages/network/ReputationReviewsPage'));
+const LocationServicesPromptPage = React.lazy(() => import('./pages/settings/LocationServicesPromptPage'));
+const PushPermissionSetupPage = React.lazy(() => import('./pages/settings/PushPermissionSetupPage'));
+const RestrictedAccessPage = React.lazy(() => import('./pages/shared/RestrictedAccessPage'));
+const OfflineErrorPage = React.lazy(() => import('./pages/shared/OfflineErrorPage'));
+const EmptyGatheringsPage = React.lazy(() => import('./pages/events/EmptyGatheringsPage'));
+const LoadingStatePage = React.lazy(() => import('./pages/shared/LoadingStatePage'));
+const MediaViewerPage = React.lazy(() => import('./pages/shared/MediaViewerPage'));
+const SocialLinkingPage = React.lazy(() => import('./pages/profile/SocialLinkingPage'));
+const ExtendInvitationPage = React.lazy(() => import('./pages/network/ExtendInvitationPage'));
+const EngagementStatsPage = React.lazy(() => import('./pages/dashboard/EngagementStatsPage'));
+const PrivacyPolicyPage = React.lazy(() => import('./pages/shared/PrivacyPolicyPage'));
+const TermsOfServicePage = React.lazy(() => import('./pages/shared/TermsOfServicePage'));
+const VenuePartnersPage = React.lazy(() => import('./pages/shared/VenuePartnersPage'));
+const ContactPage = React.lazy(() => import('./pages/shared/ContactPage'));
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -102,16 +102,25 @@ const ProtectedRoute = ({ children }) => {
 const AppContent = () => {
   const location = useLocation();
   const isAuthPage = ['/', '/welcome', '/login', '/signup', '/verify-email'].includes(location.pathname);
-  const isNoFooterPage = ['/privacy', '/terms', '/partners', '/contact'].includes(location.pathname);
+  const isNoFooterPage = [
+    '/privacy', '/terms', '/partners', '/contact',
+    '/messages', '/loading', '/offline-error', '/media-viewer',
+  ].includes(location.pathname)
+    || location.pathname.startsWith('/messages/')
+    || location.pathname.includes('/live')
+    || location.pathname.includes('/chat');
 
   return (
-    <div className="app-container">
+    <div className="min-h-screen flex flex-col">
       {!isAuthPage && <Navbar />}
-      <main className="main-content">
+      <main className="flex-1">
+        <React.Suspense fallback={<div className="min-h-[60vh] flex flex-col items-center justify-center p-8"><div className="w-8 h-8 rounded-full border-2 border-border border-t-accent animate-spin" /><span className="mt-3 text-body-sm text-fg-muted font-mono text-xs">Loading...</span></div>}>
         <Routes>
           <Route path="/" element={<SplashPage />} />
           <Route path="/welcome" element={<WelcomeCarouselPage />} />
-          <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/events" element={<ExplorePage />} />
+          <Route path="/events/:id" element={<ProtectedRoute><EventDetailPage /></ProtectedRoute>} />
           <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
           <Route path="/feed" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
@@ -125,11 +134,13 @@ const AppContent = () => {
           <Route path="/matches/create" element={<ProtectedRoute><CreateMatchPage /></ProtectedRoute>} />
           <Route path="/matches/find-players" element={<ProtectedRoute><FindPlayersPage /></ProtectedRoute>} />
           <Route path="/matches/join" element={<ProtectedRoute><JoinMatchPage /></ProtectedRoute>} />
+          <Route path="/matches/lobby" element={<ProtectedRoute><MatchLobbyPage /></ProtectedRoute>} />
           <Route path="/matches/:id/lobby" element={<ProtectedRoute><MatchLobbyPage /></ProtectedRoute>} />
           <Route path="/matches/:id/live" element={<ProtectedRoute><LiveMatchPage /></ProtectedRoute>} />
           <Route path="/matches/history" element={<ProtectedRoute><MatchHistoryPage /></ProtectedRoute>} />
           <Route path="/matches/:id/teams" element={<ProtectedRoute><TeamFormationPage /></ProtectedRoute>} />
           <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
+          <Route path="/chat" element={<Navigate to="/messages" replace />} />
           <Route path="/messages/requests" element={<ProtectedRoute><MessageRequestsPage /></ProtectedRoute>} />
           <Route path="/messages/:id" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/messages/:id/voice" element={<ProtectedRoute><VoiceNotesPage /></ProtectedRoute>} />
@@ -146,12 +157,11 @@ const AppContent = () => {
           <Route path="/dashboard/host" element={<ProtectedRoute><HostDashboardPage /></ProtectedRoute>} />
           <Route path="/dashboard/revenue" element={<ProtectedRoute><RevenueDashboardPage /></ProtectedRoute>} />
           <Route path="/dashboard/insights" element={<ProtectedRoute><EventInsightsPage /></ProtectedRoute>} />
-          <Route path="/events" element={<EventsCatalogPage />} />
           <Route path="/my-events" element={<ProtectedRoute><MyEventsPage /></ProtectedRoute>} />
           <Route path="/availability" element={<ProtectedRoute><AvailabilityCalendarPage /></ProtectedRoute>} />
           <Route path="/dashboard/timeline" element={<ProtectedRoute><EventTimelineUpdatesPage /></ProtectedRoute>} />
           <Route path="/reminder" element={<ProtectedRoute><EventReminderDetailPage /></ProtectedRoute>} />
-          <Route path="/settings/notifications" element={<ProtectedRoute><NotificationPreferencesPage /></ProtectedRoute>} />
+          <Route path="/settings/preferences" element={<ProtectedRoute><NotificationPreferencesPage /></ProtectedRoute>} />
           <Route path="/settings/location" element={<ProtectedRoute><LocationSettingsPage /></ProtectedRoute>} />
           <Route path="/settings/storage" element={<ProtectedRoute><DataStorageSettingsPage /></ProtectedRoute>} />
           <Route path="/prestige" element={<ProtectedRoute><PrestigeProgressPage /></ProtectedRoute>} />
@@ -178,11 +188,6 @@ const AppContent = () => {
           <Route path="/engagement-stats" element={<ProtectedRoute><EngagementStatsPage /></ProtectedRoute>} />
           <Route path="/dashboard" element={<LiveEventDashboardPage />} />
           <Route path="/map" element={<MapPage />} />
-          <Route path="/search" element={
-            <ProtectedRoute>
-              <SearchPage />
-            </ProtectedRoute>
-          } />
           <Route path="/categories" element={
             <ProtectedRoute>
               <CategoriesPage />
@@ -214,17 +219,6 @@ const AppContent = () => {
               <AdminDashboard />
             </ProtectedRoute>
           } />
-          <Route path="/messages" element={
-            <ProtectedRoute>
-              <MessagesPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/events/:id" element={
-            <ProtectedRoute>
-              <EventDetailPage />
-            </ProtectedRoute>
-          } />
-
           <Route path="/events/:id/participants" element={
             <ProtectedRoute>
               <EventParticipantsPage />
@@ -271,6 +265,7 @@ const AppContent = () => {
               <VerificationCenterPage />
             </ProtectedRoute>
           } />
+          <Route path="/verification/center" element={<Navigate to="/settings/verification" replace />} />
           <Route path="/emergency" element={
             <ProtectedRoute>
               <EmergencySOSPage />
@@ -282,7 +277,9 @@ const AppContent = () => {
             </ProtectedRoute>
           } />
         </Routes>
+        </React.Suspense>
       </main>
+      {!isAuthPage && !isNoFooterPage && <Footer />}
     </div>
   );
 };

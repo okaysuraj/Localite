@@ -13,6 +13,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByCategory(String category);
     List<Event> findByHostId(Long hostId);
 
+    @Query("SELECT DISTINCT e.category FROM Event e WHERE e.category IS NOT NULL")
+    List<String> findDistinctCategories();
+
     @Query(value = "SELECT * FROM event e WHERE (6371 * acos(cos(radians(:lat)) * cos(radians(e.latitude)) * cos(radians(e.longitude) - radians(:lng)) + sin(radians(:lat)) * sin(radians(e.latitude)))) < :radius", nativeQuery = true)
     List<Event> findWithinRadius(@Param("lat") Double lat, @Param("lng") Double lng, @Param("radius") Double radius);
 }

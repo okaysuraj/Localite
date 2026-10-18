@@ -16,7 +16,7 @@ export default function CricketDetailScreen({ navigation }) {
               <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconButton}>
                 <MaterialIcons name="arrow-back" size={24} color="#ffffff" />
               </TouchableOpacity>
-              <Text style={styles.headerTitle}>Royal Sports</Text>
+              <Text style={styles.headerTitle}>Cricket Club</Text>
               <TouchableOpacity style={styles.iconButton}>
                 <MaterialIcons name="notifications" size={24} color="#ffffff" />
               </TouchableOpacity>
@@ -77,14 +77,14 @@ export default function CricketDetailScreen({ navigation }) {
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>FEATURED CLUB</Text>
               </View>
-              <Text style={styles.clubName}>The Royal Century Club</Text>
-              <Text style={styles.clubDesc}>Our most prestigious local collective, hosting weekly gala matches and private training sessions.</Text>
+              <Text style={styles.clubName}>The Localite Cricket Club</Text>
+              <Text style={styles.clubDesc}>Our most active community collective, hosting weekly friendly matches and practice sessions.</Text>
             </View>
           </ImageBackground>
 
           <View style={styles.quickPanels}>
             <View style={styles.quickPanelItem}>
-              <MaterialIcons name="stadium" size={24} color="#775a19" />
+              <MaterialIcons name="stadium" size={24} color="#1A6B4A" />
               <View>
                 <Text style={styles.panelTitle}>Local Venues</Text>
                 <Text style={styles.panelDesc}>Explore 12 certified grounds.</Text>

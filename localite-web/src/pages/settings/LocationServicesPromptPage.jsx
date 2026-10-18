@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  MapPin, 
+  NavigationArrow, 
+  Compass, 
+  ShieldCheck, 
+  ArrowRight
+} from '@phosphor-icons/react';
 
 export default function LocationServicesPromptPage() {
   const navigate = useNavigate();
@@ -10,115 +17,109 @@ export default function LocationServicesPromptPage() {
   };
 
   return (
-    <div className="bg-[#fbf9f8] text-[#1b1c1c] font-body-md min-h-screen overflow-x-hidden relative flex items-center justify-center">
-      
-      {/* Background Layer: Stylized Map */}
-      <div className="absolute inset-0 z-0">
-        <div 
-          className="w-full h-full bg-cover bg-center opacity-40 grayscale-[0.5] contrast-[0.8]" 
-          style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdXumDZS1GILmu-yuhZN4IFzKL5PqFEi3YcUrc3ooSCMBh90X9rsULX0-05M-xODYAX1MGeX6m2msFm6eF0GDIV1qSor6_cKjQGBprYLkMTyeHPtIjoTLKf4nxS9Wz56NmpxHWTRgpLybzUT08tlR18cdmG5RExeDJ-l5H4tFFGKDEjzDcsbS4VEU7mproKx_oxLd_SyHf8d8RqXHmGFdaDr4c1afEg8WoX9D9bB3RXqTj29YHtRKoDg')" }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#fbf9f8]/10 to-[#fbf9f8]"></div>
-      </div>
-      
-      {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#775a19] to-transparent opacity-30"></div>
-
-      {/* Content Canvas */}
-      <section className="relative z-10 container mx-auto px-6 max-w-5xl">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-          
-          {/* Left: Editorial Content */}
-          <div className="md:col-span-7 flex flex-col gap-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-12 h-px bg-[#775a19]"></span>
-              <span className="font-label-caps text-[12px] font-bold text-[#775a19] uppercase tracking-[0.2em]">The Localite Connection</span>
-            </div>
-            <h1 className="font-display-lg text-5xl font-bold text-primary leading-tight">
-              Find Your Place <br/>
-              <span className="italic text-[#775a19]">in the Circle</span>
-            </h1>
-            <p className="font-body-lg text-lg text-[#44474d] max-w-lg">
-              To curate your membership experience, we use refined proximity intelligence. This ensures every connection made within the guild is seamless, local, and intentional.
-            </p>
-            
-            {/* Feature Bento Grid (Mini) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-              <div className="bg-white p-6 rounded-xl shadow-[0_16px_32px_rgba(10,25,47,0.05)] border border-[#eae8e7] group cursor-default">
-                <div className="w-10 h-10 rounded-full bg-[#f5f3f3] flex items-center justify-center mb-2">
-                  <span className="material-symbols-outlined text-[#775a19]">touch_app</span>
-                </div>
-                <h3 className="font-label-caps text-[12px] font-bold text-primary mb-2 uppercase tracking-widest">Hands-Free Check-ins</h3>
-                <p className="text-[13px] leading-relaxed text-[#44474d]">Arrive at curated gatherings without the friction of digital credentials. Your presence is acknowledged with grace.</p>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-[0_16px_32px_rgba(10,25,47,0.05)] border border-[#eae8e7] group cursor-default">
-                <div className="w-10 h-10 rounded-full bg-[#f5f3f3] flex items-center justify-center mb-2">
-                  <span className="material-symbols-outlined text-[#775a19]">explore</span>
-                </div>
-                <h3 className="font-label-caps text-[12px] font-bold text-primary mb-2 uppercase tracking-widest">Local Hub Discovery</h3>
-                <p className="text-[13px] leading-relaxed text-[#44474d]">Uncover hidden sports clubs and community salons nearby, exclusively selected for their architectural and social caliber.</p>
-              </div>
-            </div>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen relative flex items-center justify-center p-6 font-sans">
+      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        
+        {/* Left Editorial Section */}
+        <div className="md:col-span-7 space-y-6">
+          <div className="inline-flex items-center gap-2">
+            <span className="w-6 h-px bg-[var(--accent)]"></span>
+            <span className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wider">
+              Proximity Intelligence
+            </span>
           </div>
+          
+          <h1 className="text-3xl md:text-5xl font-semibold tracking-tight text-[var(--fg)] leading-tight">
+            Discover Your Place <br />
+            <span className="text-[var(--accent)] font-normal italic">in the Community</span>
+          </h1>
+          
+          <p className="text-sm md:text-base text-[var(--fg-muted)] max-w-lg leading-relaxed">
+            Localite connects you with sports matches, private salons, and verified neighbors within your immediate area. Your exact coordinates are never broadcast publicly.
+          </p>
 
-          {/* Right: Interaction Card */}
-          <div className="md:col-span-5">
-            <div className="bg-white rounded-xl shadow-[0_16px_32px_rgba(10,25,47,0.05)] p-8 md:p-10 border border-[#c5c6cd]/30 flex flex-col gap-6">
-              <div className="text-center">
-                <span className="material-symbols-outlined text-primary text-5xl mb-2" style={{ fontVariationSettings: "'wght' 200" }}>location_on</span>
-                <h2 className="font-headline-sm text-2xl font-bold text-primary mb-2">Secure Access</h2>
-                <p className="font-body-md text-[#44474d]">Choose how you wish to navigate the guild's map.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div className="bg-[var(--bg)] p-5 rounded-card border border-[var(--border)]">
+              <div className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mb-3">
+                <NavigationArrow size={18} weight="fill" />
               </div>
-              <div className="flex flex-col gap-4 mt-2">
-                
-                {/* Primary CTA */}
-                <button 
-                  className="bg-primary text-white py-4 px-6 rounded-lg font-label-caps text-[12px] font-bold uppercase tracking-widest hover:bg-[#39475f] transition-all active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 group"
-                  onClick={handleContinue}
-                >
-                  <span className="material-symbols-outlined text-lg">near_me</span>
-                  Enable Location
-                  <span className="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity translate-x-2">chevron_right</span>
-                </button>
-                
-                <div className="relative py-4">
-                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#c5c6cd]/50"></div></div>
-                  <div className="relative flex justify-center text-xs uppercase tracking-widest text-[#75777e] bg-white px-2">or</div>
-                </div>
-                
-                {/* Manual Entry Section */}
-                <div className="space-y-4">
-                  <div className="relative">
-                    <input 
-                      className="w-full bg-[#f5f3f3] border-2 border-transparent focus:border-[#775a19] focus:outline-none py-4 px-5 rounded-lg text-primary placeholder:text-[#75777e]/70 transition-colors" 
-                      placeholder="Your current residence or hotel..." 
-                      type="text"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                    />
-                  </div>
-                  <button 
-                    className="w-full border border-[#775a19] text-[#775a19] py-4 px-6 rounded-lg font-label-caps text-[12px] font-bold uppercase tracking-widest hover:bg-[#775a19]/10 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                    onClick={handleContinue}
-                  >
-                    Enter Address Manually
-                  </button>
-                </div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--fg)] mb-1">
+                Frictionless Check-Ins
+              </h3>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                Step into verified gathering venues and club matches with effortless arrival confirmation.
+              </p>
+            </div>
+
+            <div className="bg-[var(--bg)] p-5 rounded-card border border-[var(--border)]">
+              <div className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mb-3">
+                <Compass size={18} weight="fill" />
               </div>
-              <p className="text-[11px] text-center text-[#75777e] leading-relaxed mt-4">
-                Your privacy is our priority. Location data is encrypted and never shared with third parties. Review our <a className="underline underline-offset-2 hover:text-primary transition-colors cursor-pointer">Privacy Charter</a>.
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--fg)] mb-1">
+                Curated Hub Radar
+              </h3>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                Discover private courts and social clubs selected specifically for their sporting and social caliber.
               </p>
             </div>
           </div>
-          
         </div>
-      </section>
 
-      {/* Signature Brand Element: Floating Logo */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:left-6 md:translate-x-0 opacity-20 pointer-events-none">
-        <span className="font-headline-md text-3xl font-bold text-primary italic tracking-tight">Localite</span>
+        {/* Right Interaction Card */}
+        <div className="md:col-span-5">
+          <div className="bg-[var(--bg)] rounded-card border border-[var(--border)] p-6 md:p-8 shadow-sm space-y-6">
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mx-auto mb-2">
+                <MapPin size={24} weight="fill" />
+              </div>
+              <h2 className="text-xl font-semibold text-[var(--fg)]">Enable Location</h2>
+              <p className="text-xs text-[var(--fg-muted)]">
+                Choose how you prefer to set your home base.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <button 
+                onClick={handleContinue}
+                className="w-full py-3.5 px-4 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white rounded-card text-xs font-semibold uppercase tracking-wider transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2"
+              >
+                <NavigationArrow size={16} weight="bold" />
+                <span>Enable Browser Location</span>
+                <ArrowRight size={14} />
+              </button>
+
+              <div className="relative flex items-center justify-center my-2">
+                <div className="w-full border-t border-[var(--border)]"></div>
+                <span className="absolute bg-[var(--bg)] px-3 text-[11px] text-[var(--fg-muted)] uppercase tracking-wider">
+                  or enter manually
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <input 
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="e.g. Bandra West, Mumbai"
+                  className="w-full px-4 py-3 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card text-xs text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+                />
+                <button 
+                  onClick={handleContinue}
+                  className="w-full py-3 px-4 border border-[var(--border)] hover:bg-[var(--bg-subtle)] text-[var(--fg)] rounded-card text-xs font-semibold uppercase tracking-wider transition-colors"
+                >
+                  Set Custom Area
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-[var(--border)] flex items-center justify-center gap-2 text-[11px] text-[var(--fg-muted)]">
+              <ShieldCheck size={16} className="text-emerald-600" />
+              <span>Encrypted coordinates • Never shared with third parties</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-      
     </div>
   );
 }

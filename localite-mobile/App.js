@@ -17,9 +17,6 @@ import {
 } from '@expo-google-fonts/plus-jakarta-sans';
 
 import AppNavigator from './src/navigation/AppNavigator';
-import WelcomeCarouselScreen from './src/screens/auth/WelcomeCarouselScreen';
-import SplashScreen from './src/screens/auth/SplashScreen';
-import CreateMatchScreen from './src/screens/events/CreateMatchScreen';
 import { AuthProvider } from './src/context/AuthContext';
 import { WebSocketProvider } from './src/context/WebSocketContext';
 
@@ -28,25 +25,41 @@ export default function App() {
 
   useEffect(() => {
     async function loadFonts() {
-      await Font.loadAsync({
-        PlayfairDisplay_400Regular,
-        PlayfairDisplay_600SemiBold,
-        PlayfairDisplay_700Bold,
-        PlusJakartaSans_300Light,
-        PlusJakartaSans_400Regular,
-        PlusJakartaSans_500Medium,
-        PlusJakartaSans_600SemiBold,
-        PlusJakartaSans_700Bold,
-      });
-      setFontsLoaded(true);
+      try {
+        await Font.loadAsync({
+          // Underscore naming (Expo Google Fonts standard)
+          PlayfairDisplay_400Regular,
+          PlayfairDisplay_600SemiBold,
+          PlayfairDisplay_700Bold,
+          PlusJakartaSans_300Light,
+          PlusJakartaSans_400Regular,
+          PlusJakartaSans_500Medium,
+          PlusJakartaSans_600SemiBold,
+          PlusJakartaSans_700Bold,
+
+          // Hyphenated aliases (matching React Native screen style references)
+          'PlayfairDisplay-Regular': PlayfairDisplay_400Regular,
+          'PlayfairDisplay-SemiBold': PlayfairDisplay_600SemiBold,
+          'PlayfairDisplay-Bold': PlayfairDisplay_700Bold,
+          'PlusJakartaSans-Light': PlusJakartaSans_300Light,
+          'PlusJakartaSans-Regular': PlusJakartaSans_400Regular,
+          'PlusJakartaSans-Medium': PlusJakartaSans_500Medium,
+          'PlusJakartaSans-SemiBold': PlusJakartaSans_600SemiBold,
+          'PlusJakartaSans-Bold': PlusJakartaSans_700Bold,
+        });
+      } catch (err) {
+        console.warn('Font loading error (continuing with system fonts):', err);
+      } finally {
+        setFontsLoaded(true);
+      }
     }
     loadFonts();
   }, []);
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fbf9f8' }}>
-        <ActivityIndicator size="large" color="#775a19" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
+        <ActivityIndicator size="large" color="#1A6B4A" />
       </View>
     );
   }
@@ -56,7 +69,7 @@ export default function App() {
       <AuthProvider>
         <WebSocketProvider>
           <AppNavigator />
-          <StatusBar style="auto" />
+          <StatusBar style="light" />
         </WebSocketProvider>
       </AuthProvider>
     </SafeAreaProvider>

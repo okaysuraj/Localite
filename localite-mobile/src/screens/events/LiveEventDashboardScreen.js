@@ -13,7 +13,7 @@ export default function LiveEventDashboardScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialIcons name="menu" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Royal Assemblage</Text>
+        <Text style={styles.headerTitle}>Host Dashboard</Text>
         <View style={styles.avatar}>
           <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.avatarImg} />
         </View>

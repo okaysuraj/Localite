@@ -13,7 +13,7 @@ export default function SafetyGuidelinesScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
           <MaterialIcons name="menu" size={28} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Royal Assemblage</Text>
+        <Text style={styles.headerTitle}>Safety Guidelines</Text>
         <View style={styles.avatarWrap}>
           <Image 
             source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBerB-u7VGnEL574wjiKMtuqz2QCvlmVrhyqM7GtRqO4w20fTxwKXNSJ0r2sYHLXUu-SJs-yZ0jNtkhxQoFB4yXO3qhtOrwIxwxl2gSJZelD8imuxmdYO7OjC70WSZwX1TAVeSQhyfNmWQd84egTDYDsw9XyM3g796fMtVEJ8-hpYQxkgwX6i3mWXKJlhhr71g_xu4NEX3JpCYqW1zRMcg3ynzqz1hhYsEEK5Iy1Uo0ADLoe0qpCazsmA' }}

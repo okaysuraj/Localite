@@ -63,7 +63,7 @@ export default function CategoriesScreen({ navigation }) {
             />
           </View>
         </View>
-        <Text style={styles.appBarTitle}>Royal Sports</Text>
+        <Text style={styles.appBarTitle}>Community Sports</Text>
         <TouchableOpacity style={styles.iconBtn}>
           <Ionicons name="notifications-outline" size={24} color="#000000" />
         </TouchableOpacity>
@@ -139,11 +139,11 @@ export default function CategoriesScreen({ navigation }) {
         {/* Lifestyle Quote */}
         <View style={styles.quoteSection}>
           <View style={styles.quoteContainer}>
-            <Ionicons name="chatbubble-outline" size={32} color="#775a19" style={styles.quoteIcon} />
+            <Ionicons name="chatbubble-outline" size={32} color="#1A6B4A" style={styles.quoteIcon} />
             <Text style={styles.quoteText}>
               "Sport is the poetry of the body, a refined conversation between discipline and grace."
             </Text>
-            <Text style={styles.quoteAuthor}>— The Royal Archive</Text>
+            <Text style={styles.quoteAuthor}>— Localite Sports</Text>
           </View>
         </View>
 

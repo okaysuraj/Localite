@@ -3,6 +3,7 @@ import { onIdTokenChanged, signOut, signInWithEmailAndPassword, createUserWithEm
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../firebase';
 import apiClient from '../api/apiClient';
+import { API_URL } from '../config';
 
 export const AuthContext = createContext();
 
@@ -13,30 +14,81 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        if (!currentUser.emailVerified) {
-          // If they aren't verified, sign them out silently
-          await signOut(auth);
-          setUser(null);
-          await AsyncStorage.removeItem('token');
+      try {
+        if (currentUser) {
+          if (!currentUser.emailVerified) {
+            // If they aren't verified, sign them out silently
+            await signOut(auth);
+            if (isMounted) setUser(null);
+            await AsyncStorage.multiRemove(['token', 'userToken', 'user', 'username']);
+          } else {
+            const token = await currentUser.getIdToken();
+            await AsyncStorage.setItem('token', token);
+            await AsyncStorage.setItem('userToken', token);
+            
+            // 1. Immediately hydrate cached user profile from AsyncStorage (fast, non-blocking)
+            let dbUser = {};
+            try {
+              const cached = await AsyncStorage.getItem('user');
+              if (cached) {
+                dbUser = JSON.parse(cached);
+              }
+            } catch (e) {
+              console.warn('Failed to parse cached user:', e);
+            }
+
+            if (isMounted) {
+              setUser({ 
+                uid: currentUser.uid, 
+                email: currentUser.email,
+                token: token,
+                ...dbUser
+              });
+            }
+
+            // 2. Fetch fresh user profile in background with an AbortController timeout so it never hangs
+            (async () => {
+              try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const res = await fetch(`${API_URL}/users/me`, {
+                  headers: { Authorization: `Bearer ${token}` },
+                  signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                if (res.ok) {
+                  const freshUser = await res.json();
+                  await AsyncStorage.setItem('user', JSON.stringify(freshUser));
+                  if (freshUser.username) {
+                    await AsyncStorage.setItem('username', freshUser.username);
+                  }
+                  if (isMounted) {
+                    setUser(prev => ({ ...prev, ...freshUser }));
+                  }
+                }
+              } catch (e) {
+                // Background refresh skipped (backend offline or unreachable)
+              }
+            })();
+          }
         } else {
-          const token = await currentUser.getIdToken();
-          await AsyncStorage.setItem('token', token);
-          setUser({ 
-            uid: currentUser.uid, 
-            email: currentUser.email,
-            token: token 
-          });
+          if (isMounted) setUser(null);
+          await AsyncStorage.multiRemove(['token', 'userToken', 'user', 'username']);
         }
-      } else {
-        setUser(null);
-        await AsyncStorage.removeItem('token');
+      } catch (err) {
+        console.error('Error in onIdTokenChanged:', err);
+      } finally {
+        if (isMounted) setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const login = async (email, password) => {
@@ -88,14 +140,16 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await signOut(auth);
+      await AsyncStorage.multiRemove(['token', 'userToken', 'user', 'username']);
+      setUser(null);
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, currentUser: user, login, register, logout, loading }}>
+      {children}
     </AuthContext.Provider>
   );
 };

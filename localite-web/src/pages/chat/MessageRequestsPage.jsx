@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getPendingRequests, acceptRequest, declineRequest } from '../../services/api';
+import { 
+  Tray, 
+  EnvelopeOpen, 
+  UserCheck, 
+  X, 
+  ShieldCheck, 
+  CheckCircle,
+  Clock
+} from '@phosphor-icons/react';
 
 export default function MessageRequestsPage() {
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchRequests();
@@ -13,18 +23,17 @@ export default function MessageRequestsPage() {
   const fetchRequests = async () => {
     try {
       const data = await getPendingRequests();
-      // Data returns: [{ connectionId, requesterId, requesterName }]
-      const formatted = data.map(req => ({
+      const formatted = (data || []).map(req => ({
         id: req.connectionId,
         name: req.requesterName,
-        title: 'Connection Request',
-        sharedCount: 0,
-        message: 'I would like to connect with you.',
-        image: `https://api.dicebear.com/7.x/notionists/svg?seed=${req.requesterName}&backgroundColor=b9c7e4`
+        message: 'Would like to connect with you on Localite.',
+        date: 'Recently'
       }));
       setRequests(formatted);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,101 +51,125 @@ export default function MessageRequestsPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-73px)] text-on-surface flex flex-col bg-background">
-      {/* Top Navigation Bar - Assuming layout handles it, but keeping internal structure clean */}
-      <main className="flex-grow max-w-7xl w-full mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 min-h-[716px]">
-          {/* Left Pane */}
-          <aside className="md:col-span-3 space-y-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-surface-variant/30">
-              <h2 className="font-label-caps text-label-caps text-on-surface-variant mb-6">Messages</h2>
-              <nav className="space-y-4">
-                <div onClick={() => navigate('/messages')} className="flex items-center justify-between text-on-surface-variant hover:text-primary transition-colors cursor-pointer p-2 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined">inbox</span>
-                    <span className="font-body-md text-body-md">Primary Inbox</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-primary bg-surface-container-high font-semibold p-2 rounded-lg cursor-default border-l-4 border-secondary">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>mark_as_unread</span>
-                    <span className="font-body-md text-body-md">Requests</span>
-                  </div>
-                  <span className="bg-secondary text-white text-[10px] px-2 py-0.5 rounded-full">{requests.length}</span>
-                </div>
-              </nav>
-            </div>
-            
-            <div className="bg-secondary-container/20 rounded-xl p-6 border border-secondary-container">
-              <h3 className="font-label-caps text-label-caps text-secondary mb-2">Concierge Tip</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">Message requests from non-connections are filtered based on shared interests and community standing.</p>
-            </div>
-          </aside>
+    <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] text-[var(--fg)] max-w-7xl mx-auto px-6 py-24 font-sans animate-fade-in">
+      
+      {/* Header */}
+      <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
+        <div>
+          <span className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wider mb-2 block">
+            Direct Messaging
+          </span>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[var(--fg)]">
+            Message Requests
+          </h1>
+          <p className="text-sm text-[var(--fg-muted)] mt-1 max-w-xl">
+            Incoming communications from prospective connections and event co-participants.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/messages')}
+            className="px-4 py-2 border border-[var(--border)] text-[var(--fg)] text-xs font-semibold uppercase tracking-wider rounded-card hover:bg-[var(--bg-subtle)] transition-colors flex items-center gap-2"
+          >
+            <Tray size={16} />
+            <span>Primary Inbox</span>
+          </button>
+        </div>
+      </header>
 
-          {/* Right Pane */}
-          <section className="md:col-span-9 space-y-6">
-            {/* Trust Banner */}
-            <div className="bg-surface-container-low rounded-xl p-6 flex items-start gap-4 shadow-sm border border-outline-variant/30">
-              <div className="bg-secondary-fixed-dim/20 p-2 rounded-full">
-                <span className="material-symbols-outlined text-secondary">verified_user</span>
-              </div>
-              <div>
-                <h4 className="font-headline-sm text-headline-sm text-primary mb-1">Trust-Based Filtering Active</h4>
-                <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl">To preserve the exclusivity of the Localite community, we prioritize requests from members with common acquaintances or verified professional standing. You are in control of who can reach you.</p>
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+        
+        {/* Left Status Column */}
+        <aside className="md:col-span-4 space-y-6">
+          <div className="bg-[var(--bg)] rounded-card border border-[var(--border)] p-6 space-y-4">
+            <h3 className="text-sm font-semibold text-[var(--fg)]">Navigation</h3>
+            <div className="space-y-1 text-xs">
+              <button 
+                onClick={() => navigate('/messages')}
+                className="w-full flex items-center justify-between p-2.5 rounded-card text-[var(--fg-muted)] hover:bg-[var(--bg-subtle)] transition-colors text-left"
+              >
+                <span className="flex items-center gap-2">
+                  <Tray size={16} /> Primary Inbox
+                </span>
+              </button>
+              <div className="w-full flex items-center justify-between p-2.5 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] font-semibold text-left">
+                <span className="flex items-center gap-2">
+                  <EnvelopeOpen size={16} weight="fill" /> Pending Requests
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--accent)] text-white">
+                  {requests.length}
+                </span>
               </div>
             </div>
+          </div>
 
-            {/* Requests List */}
-            <div className="space-y-6">
+          <div className="bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] p-6 space-y-2 text-xs">
+            <div className="flex items-center gap-2 text-[var(--fg)] font-semibold">
+              <ShieldCheck size={16} className="text-[var(--accent)]" />
+              <span>Trust-Filtered Inflow</span>
+            </div>
+            <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">
+              Message requests from unvetted accounts are held here. Accepting grants full direct messaging access.
+            </p>
+          </div>
+        </aside>
+
+        {/* Right Requests List */}
+        <section className="md:col-span-8">
+          {loading ? (
+            <div className="py-24 text-center text-xs font-semibold uppercase tracking-widest text-[var(--fg-muted)]">
+              Loading Requests...
+            </div>
+          ) : requests.length === 0 ? (
+            <div className="py-24 text-center bg-[var(--bg)] rounded-card border border-[var(--border)] p-8">
+              <EnvelopeOpen size={32} className="mx-auto text-[var(--fg-muted)] mb-3" />
+              <p className="text-sm font-semibold text-[var(--fg)]">No Pending Message Requests</p>
+              <p className="text-xs text-[var(--fg-muted)] mt-1">Your inbox is clear of unsolicited inquiries.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
               {requests.map(req => (
-                <div key={req.id} className="bg-white rounded-xl shadow-sm p-6 flex flex-col md:flex-row gap-6 hover:-translate-y-1 transition-transform duration-300 border border-surface-variant/30">
-                  <div className="flex-shrink-0">
-                    <div className="w-24 h-24 rounded-xl overflow-hidden shadow-md">
-                      <img src={req.image} alt={req.name} className="w-full h-full object-cover" />
+                <div 
+                  key={req.id} 
+                  className="p-6 bg-[var(--bg)] rounded-card border border-[var(--border)] hover:border-[var(--fg-muted)] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center text-sm font-semibold text-[var(--fg)] shrink-0">
+                      {(req.name || 'M').substring(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-[var(--fg)]">{req.name}</h3>
+                      <p className="text-xs text-[var(--fg-muted)] mt-1 leading-relaxed">"{req.message}"</p>
+                      <span className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-wider block mt-2">
+                        {req.date}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex-grow space-y-3">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h5 className="font-headline-sm text-headline-sm text-primary">{req.name}</h5>
-                        <p className="font-label-caps text-label-caps text-secondary uppercase tracking-widest mt-1">{req.title}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="px-3 py-1 bg-surface-container rounded-full font-label-caps text-[10px] text-on-surface-variant">Shared Circle: {req.sharedCount}</span>
-                      </div>
-                    </div>
-                    <div className="bg-background/50 p-4 rounded-lg border-l-2 border-secondary-fixed-dim">
-                      <p className="font-body-md text-body-md text-on-surface leading-relaxed">{req.message}</p>
-                    </div>
-                    <div className="flex justify-end gap-4 pt-2">
-                      <button 
-                        onClick={() => handleAction(req.id, 'decline')}
-                        className="px-6 py-2 border border-outline-variant font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container transition-colors rounded-full active:scale-95 duration-200"
-                      >
-                        Decline
-                      </button>
-                      <button 
-                        onClick={() => handleAction(req.id, 'connect')}
-                        className="px-8 py-2 bg-primary text-white font-label-caps text-label-caps rounded-full shadow-md hover:opacity-90 active:scale-95 duration-200"
-                      >
-                        Connect
-                      </button>
-                    </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button 
+                      onClick={() => handleAction(req.id, 'decline')}
+                      className="px-4 py-2 border border-[var(--border)] hover:bg-[var(--bg-subtle)] text-[var(--fg-muted)] hover:text-rose-600 rounded-card text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5"
+                    >
+                      <X size={14} />
+                      <span>Decline</span>
+                    </button>
+                    <button 
+                      onClick={() => handleAction(req.id, 'connect')}
+                      className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white rounded-card text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+                    >
+                      <UserCheck size={14} weight="bold" />
+                      <span>Accept</span>
+                    </button>
                   </div>
                 </div>
               ))}
-              
-              {requests.length === 0 && (
-                <div className="bg-white p-8 rounded-xl text-center shadow-sm border border-surface-variant/30">
-                  <span className="material-symbols-outlined text-[48px] text-outline-variant mb-4">drafts</span>
-                  <h3 className="font-headline-sm text-primary mb-2">No Pending Requests</h3>
-                  <p className="text-on-surface-variant">Your inbox is clear.</p>
-                </div>
-              )}
             </div>
-          </section>
-        </div>
-      </main>
+          )}
+        </section>
+
+      </div>
     </div>
   );
 }

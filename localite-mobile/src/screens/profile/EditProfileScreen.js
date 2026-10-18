@@ -1,19 +1,50 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform 
+  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, ScrollView, Platform, ActivityIndicator, Alert 
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthContext } from '../../context/AuthContext';
+import { updateProfile } from '../../services/api';
 
 export default function EditProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  const { user } = useContext(AuthContext);
+  const { user, login } = useContext(AuthContext);
 
-  const [fullName, setFullName] = useState(user?.username || 'Julian Thorne');
-  const [profession, setProfession] = useState('Investment Principal');
-  const [location, setLocation] = useState('Mayfair, London');
-  const [bio, setBio] = useState('Curating experiences at the intersection of venture capital and urban aesthetics.');
+  const [fullName, setFullName] = useState('');
+  const [neighborhood, setNeighborhood] = useState('');
+  const [bio, setBio] = useState('');
+  const [sportsInterests, setSportsInterests] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setFullName(user.username || '');
+      setNeighborhood(user.neighborhood || '');
+      setBio(user.bio || '');
+      setSportsInterests(user.sportsInterests || '');
+    }
+  }, [user]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const payload = {
+        neighborhood: neighborhood.trim(),
+        bio: bio.trim(),
+        sportsInterests: sportsInterests.trim()
+      };
+      await updateProfile(payload);
+      Alert.alert('Success', 'Profile updated successfully!', [
+        { text: 'OK', onPress: () => navigation.goBack() }
+      ]);
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      Alert.alert('Error', 'Failed to save profile changes. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -38,7 +69,7 @@ export default function EditProfileScreen({ navigation }) {
         <View style={styles.avatarSection}>
           <View style={styles.avatarWrapper}>
             <Image 
-              source={{ uri: user?.profileImageUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAkvYDpsT5_Ard-BX-mzAHAt6zYa5qXH_a1zcbBHe1YjzWrgwyYxMen7NuH-yTVEIWQurX7PswHbf122vQEYIDW6zD6FtfwkXbadbRqVZ82rfaC4CcLEM1sQR-4WHKm9rrzIAbfV10VYWZmRj-JxvX1FzPCo4hrXnsD6N012H5HfSrQoGXG4beDMEcFfH1m6Iuvjb_uTwM69tM3div17HaNZIFXYEZHs-NL93egEcpIo6HKnm4FwBe7VA' }} 
+              source={{ uri: user?.profilePhotoUrl || user?.profileImageUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400' }} 
               style={styles.avatar} 
             />
             <TouchableOpacity style={styles.cameraBtn}>
@@ -46,43 +77,43 @@ export default function EditProfileScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={styles.verifiedBadge}>
-            <Text style={styles.verifiedText}>Verified Localite</Text>
+            <Text style={styles.verifiedText}>{user?.verified ? 'Verified Localite' : 'Localite Member'}</Text>
           </View>
         </View>
 
         {/* Form Fields */}
         <View style={styles.formSection}>
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Full Name</Text>
+            <Text style={styles.label}>Username</Text>
             <TextInput 
-              style={styles.input} 
+              style={[styles.input, { opacity: 0.8 }]} 
               value={fullName}
-              onChangeText={setFullName}
-              placeholder="Your full name"
+              editable={false}
+              placeholder="Username"
               placeholderTextColor="#75777e"
             />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Profession</Text>
+            <Text style={styles.label}>Sports & Hobbies</Text>
             <TextInput 
               style={styles.input} 
-              value={profession}
-              onChangeText={setProfession}
-              placeholder="e.g. Design Architect"
+              value={sportsInterests}
+              onChangeText={setSportsInterests}
+              placeholder="e.g. Badminton, Running, Tennis"
               placeholderTextColor="#75777e"
             />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Primary Location</Text>
+            <Text style={styles.label}>Primary Location / Neighborhood</Text>
             <View style={styles.locationInputWrapper}>
               <MaterialIcons name="location-on" size={20} color="#75777e" style={styles.locationIcon} />
               <TextInput 
                 style={[styles.input, { paddingLeft: 40 }]} 
-                value={location}
-                onChangeText={setLocation}
-                placeholder="City or District"
+                value={neighborhood}
+                onChangeText={setNeighborhood}
+                placeholder="District or Neighborhood"
                 placeholderTextColor="#75777e"
               />
             </View>
@@ -105,8 +136,16 @@ export default function EditProfileScreen({ navigation }) {
         </View>
 
         {/* Save Button */}
-        <TouchableOpacity style={styles.saveBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.saveBtnText}>SAVE PROFILE</Text>
+        <TouchableOpacity 
+          style={[styles.saveBtn, saving && { opacity: 0.7 }]} 
+          onPress={handleSave}
+          disabled={saving}
+        >
+          {saving ? (
+            <ActivityIndicator color="#ffffff" size="small" />
+          ) : (
+            <Text style={styles.saveBtnText}>SAVE PROFILE</Text>
+          )}
         </TouchableOpacity>
 
         {/* Privacy Notice */}

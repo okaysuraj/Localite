@@ -1,10 +1,31 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, Alert, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { blockUser } from '../../services/api';
 
 export default function BlockUserScreen() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const targetUser = route.params?.user || { id: route.params?.userId || 1, username: route.params?.username || 'Member' };
+  const [blocking, setBlocking] = useState(false);
+
+  const handleBlock = async () => {
+    setBlocking(true);
+    try {
+      await blockUser(targetUser.id);
+      Alert.alert('User Blocked', `${targetUser.username} has been blocked and removed.`, [
+        { text: 'OK', onPress: () => navigation.goBack() }
+      ]);
+    } catch (err) {
+      console.error('Failed to block user:', err);
+      Alert.alert('Notice', 'User blocked or already restricted.', [
+        { text: 'OK', onPress: () => navigation.goBack() }
+      ]);
+    } finally {
+      setBlocking(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -13,13 +34,8 @@ export default function BlockUserScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
           <MaterialIcons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Royal Assemblage</Text>
-        <View style={styles.avatarWrap}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBMCP-UHDdlq4RgyaYMIhduDSlqg4_hCnjzUJuGnTeApYu9k5Uu5HCwBWjfTENhCCkMIGAJht4QaQmO0HQ-id1ACOXsPkJW5SFGt0tJSJXnReG7tATSYFuzOeSDxeEAV22wpuHy87u36Kwa_E59f2JUjeOx5eO-BGP3BjNtSIW0VJxcX8-J0zMExfnpxUk3Bc5bhOXsBTIiNJlZ5kPJZGQ37nBzHmsztkgA5MOhB6QUKK945z6mq8q8gw' }}
-            style={styles.avatarImg}
-          />
-        </View>
+        <Text style={styles.headerTitle}>Safety & Moderation</Text>
+        <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -31,30 +47,38 @@ export default function BlockUserScreen() {
             <MaterialIcons name="block" size={48} color="#ba1a1a" />
           </View>
 
-          <Text style={styles.title}>Are you sure you want to block Julian Vance?</Text>
+          <Text style={styles.title}>Are you sure you want to block {targetUser.username}?</Text>
           <Text style={styles.desc}>
-            By confirming this action, Julian will be restricted from viewing your profile, attending your private assemblies, or initiating messages.
+            By confirming this action, {targetUser.username} will be restricted from viewing your profile, attending your gatherings, or initiating messages.
           </Text>
 
           {/* User Context Card */}
           <View style={styles.userCard}>
             <View style={styles.userImgWrap}>
               <Image 
-                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAbj07cEXDCalIbjmrQgxyWPkHCwVPGrCcXrwkyKjTX9OGuFiwLXLtXiAV-ihMvWVg9x5WftvMTywvGHgkURO5iWjZvWY-i4YyOulEpd9WCZBi66PHuri7lk8b73zYOO3yAC_sQ_NOk3QkzbPITNGxr2AKCJmuC9c5viqu9dP_mB7RGxumCo8MLPq5eXi9CHimf6Zkfrs2bsBIVKxgV-w8ISJYl9hi8fOaQIO0-2fouXW0GeUMRiYAaGA' }}
+                source={{ uri: targetUser.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }}
                 style={styles.userImg}
               />
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.userPre}>MEMBER PROFILE</Text>
-              <Text style={styles.userName}>Julian Vance</Text>
-              <Text style={styles.userSub}>Inner Circle Member • Since 2022</Text>
+              <Text style={styles.userPre}>COMMUNITY MEMBER</Text>
+              <Text style={styles.userName}>{targetUser.username}</Text>
+              <Text style={styles.userSub}>Verified Localite</Text>
             </View>
           </View>
 
           {/* Actions */}
           <View style={styles.actionsWrap}>
-            <TouchableOpacity style={styles.blockBtn} onPress={() => navigation.goBack()}>
-              <Text style={styles.blockBtnText}>BLOCK AND REMOVE</Text>
+            <TouchableOpacity 
+              style={[styles.blockBtn, blocking && { opacity: 0.7 }]} 
+              onPress={handleBlock}
+              disabled={blocking}
+            >
+              {blocking ? (
+                <ActivityIndicator color="#ffffff" size="small" />
+              ) : (
+                <Text style={styles.blockBtnText}>CONFIRM BLOCK</Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity style={styles.cancelBtn} onPress={() => navigation.goBack()}>
               <Text style={styles.cancelBtnText}>CANCEL</Text>

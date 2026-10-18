@@ -7,91 +7,91 @@ export const SceneContent = ({ timeline }) => {
   const meshRef = useRef();
 
   useLayoutEffect(() => {
-    if (!timeline) return;
+    if (!timeline || !meshRef.current) return;
 
     // Reset initial camera
     camera.position.set(0, 0, 8);
-    
-    // Add labels matching the parent timeline if not already added, but the parent should manage labels.
-    // We will just add our animations to the timeline at the corresponding labels.
-    
-    // Camera Choreography (Phase 3)
+
+    // Camera Choreography
     timeline
-      // Hero to Value Prop (0% -> 33%)
+      // Hero to Value Prop
       .to(camera.position, {
         z: 4,
-        x: 1.5,
+        x: 1.2,
         ease: 'power2.inOut',
-        duration: 1
+        duration: 1,
       }, 'hero')
-      // Value Prop to Features (33% -> 66%)
+      // Value Prop to Features
       .to(camera.position, {
-        z: 6,
-        x: -1.5,
+        z: 5.5,
+        x: -1.2,
         ease: 'power2.inOut',
-        duration: 1
+        duration: 1,
       }, 'valueProp')
-      // Features to CTA (66% -> 100%)
+      // Features to CTA
       .to(camera.position, {
-        z: 10,
+        z: 7,
         x: 0,
-        ease: 'expo.out',
-        duration: 1
+        ease: 'power2.out',
+        duration: 1,
       }, 'features');
 
-    // Object Behavior (Phase 4) - Reacts slightly after camera
+    // Mesh Rotation Behavior
     timeline
       .to(meshRef.current.rotation, {
-        y: Math.PI,
-        ease: 'power3.out',
-        duration: 1
-      }, 'hero+=0.2')
+        y: Math.PI * 0.8,
+        ease: 'power2.out',
+        duration: 1,
+      }, 'hero+=0.1')
       .to(meshRef.current.rotation, {
-        x: Math.PI / 2,
-        ease: 'power3.out',
-        duration: 1
-      }, 'valueProp+=0.2')
+        x: Math.PI * 0.4,
+        ease: 'power2.out',
+        duration: 1,
+      }, 'valueProp+=0.1')
       .to(meshRef.current.rotation, {
-        y: Math.PI * 2,
-        x: 0,
-        ease: 'power3.out',
-        duration: 1
-      }, 'features+=0.2');
+        y: Math.PI * 1.6,
+        x: 0.2,
+        ease: 'power2.out',
+        duration: 1,
+      }, 'features+=0.1');
 
   }, [camera, timeline]);
 
   useFrame(() => {
-    // Phase 3: camera.lookAt controls focus
-    camera.lookAt(0, 0, 0);
-    // Keep mesh rotating slightly regardless of scroll
+    if (camera) {
+      camera.lookAt(0, 0, 0);
+    }
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.002;
+      meshRef.current.rotation.y += 0.0015;
     }
   });
 
   return (
     <>
-      <ambientLight intensity={0.2} />
-      <directionalLight position={[5, 5, 5]} intensity={2} color="#c6ff00" />
-      <directionalLight position={[-5, -5, -5]} intensity={0.5} color="#ffffff" />
-      
-      {/* 1 Hero Mesh */}
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[5, 6, 5]} intensity={1.2} color="#1A6B4A" />
+      <directionalLight position={[-4, -3, -2]} intensity={0.4} color="#E8E8E8" />
+
+      {/* Hero Architectural Geometric Mesh */}
       <mesh ref={meshRef}>
-        <icosahedronGeometry args={[1.5, 1]} />
-        <meshStandardMaterial 
-          color="#000000" 
-          emissive="#224400"
-          wireframe={true} 
+        <icosahedronGeometry args={[1.6, 2]} />
+        <meshStandardMaterial
+          color="#1A6B4A"
+          roughness={0.4}
+          metalness={0.1}
+          wireframe={true}
           transparent={true}
-          opacity={0.8}
+          opacity={0.35}
         />
       </mesh>
 
-      {/* 1 Background Plane */}
+      {/* Subtle Warm Canvas Plane */}
       <mesh position={[0, 0, -10]}>
         <planeGeometry args={[100, 100]} />
-        <meshBasicMaterial color="#0a0a0a" />
+        <meshBasicMaterial color="#F7F6F3" />
       </mesh>
     </>
   );
 };
+
+export default SceneContent;

@@ -1,171 +1,214 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
-const attendees = [
-  { id: 1, name: 'Eleanor Sterling', rsvp: 'RSVP-4012', status: 'Arrived', tier: 'Diamond Elite', dietary: 'Vegan, No Gluten', statusColor: 'text-emerald-700 bg-emerald-50' },
-  { id: 2, name: 'Julian Vane', rsvp: 'RSVP-4022', status: 'En Route', tier: 'Platinum Member', dietary: 'Shellfish Allergy', statusColor: 'text-amber-700 bg-amber-50' },
-  { id: 3, name: 'Beatrice Thorne', rsvp: 'RSVP-4035', status: 'Pending', tier: 'Diamond Elite', dietary: '—', statusColor: 'text-slate-500 bg-slate-100' },
-  { id: 4, name: 'Marcus Finch', rsvp: 'RSVP-4048', status: 'Arrived', tier: 'Gold Member', dietary: 'Nut Allergy (Severe)', statusColor: 'text-emerald-700 bg-emerald-50' },
-];
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getEventRsvps, checkInAttendee } from '../../services/api';
+import { 
+  MagnifyingGlass, 
+  QrCode, 
+  ChatCircleDots, 
+  Eye, 
+  ArrowLeft, 
+  Funnel, 
+  CheckCircle, 
+  Clock, 
+  Users, 
+  Sparkle,
+  ForkKnife,
+  CaretLeft,
+  CaretRight
+} from '@phosphor-icons/react';
 
 export default function AttendeeManagementPage() {
   const navigate = useNavigate();
+  const { eventId } = useParams();
+  const [attendees, setAttendees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState('all');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    fetchAttendees();
+  }, [eventId]);
+
+  const fetchAttendees = async () => {
+    if (!eventId) return;
+    setLoading(true);
+    try {
+      const data = await getEventRsvps(eventId);
+      if (Array.isArray(data)) {
+        const formatted = data.map((rsvp) => ({
+          id: rsvp.id,
+          name: rsvp.user?.username || 'Guest Member',
+          rsvp: rsvp.ticketId ? `TICKET-${rsvp.ticketId.slice(0, 8)}` : `RSVP-${rsvp.id}`,
+          ticketId: rsvp.ticketId,
+          status: rsvp.status === 'ATTENDED' ? 'Arrived' : rsvp.status === 'GOING' ? 'Confirmed' : rsvp.status,
+          tier: rsvp.user?.isVerified ? 'Verified Local' : 'Member',
+          dietary: 'Standard Guest',
+          avatar: rsvp.user?.profilePhotoUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${rsvp.user?.username || 'Member'}`
+        }));
+        setAttendees(formatted);
+      }
+    } catch (err) {
+      console.error('Failed to load attendees:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManualCheckIn = async (ticketId) => {
+    if (!ticketId) return;
+    try {
+      await checkInAttendee(eventId, ticketId);
+      alert('Attendee checked in successfully.');
+      fetchAttendees();
+    } catch (err) {
+      alert(err.message || 'Check-in failed');
+    }
+  };
 
   return (
-    <div className="bg-background min-h-screen text-on-surface font-body-md flex">
-      {/* Sidebar */}
-      <aside className="hidden md:flex h-screen w-64 fixed left-0 top-0 bg-surface-container-low flex-col p-6 gap-6 border-r border-outline-variant z-50">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-xl text-white">
-            <span className="material-symbols-outlined">local_fire_department</span>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-8 px-4 sm:px-6">
+      <main className="max-w-6xl mx-auto space-y-6">
+        {/* Navigation & Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <button 
+              type="button" 
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-2"
+            >
+              <ArrowLeft size={16} />
+              Back
+            </button>
+            <h1 className="text-2xl sm:text-3xl font-serif text-[var(--fg)]">Guest Management Console</h1>
+            <p className="text-xs sm:text-sm text-[var(--fg-muted)]">Oversee attendance, dietary logistics, and gate verification.</p>
           </div>
-          <div>
-            <h2 className="font-headline-sm text-lg leading-tight text-primary">The Registry</h2>
-            <p className="font-label-caps text-[10px] text-on-surface-variant">Elite Membership</p>
+
+          <div className="flex items-center gap-3">
+            <button 
+              type="button"
+              onClick={() => navigate(`/events/${eventId || '1'}/checkin`)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors"
+            >
+              <QrCode size={16} />
+              Open Scanner
+            </button>
           </div>
         </div>
-        <nav className="flex flex-col gap-2">
-          <a className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
-            <span className="material-symbols-outlined">dashboard</span>
-            <span className="font-label-caps">Dashboard</span>
-          </a>
-          <a className="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-surface-container-highest rounded-lg" href="#">
-            <span className="material-symbols-outlined text-secondary">event</span>
-            <span className="font-label-caps">Events</span>
-          </a>
-          <a className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
-            <span className="material-symbols-outlined">group</span>
-            <span className="font-label-caps">Guest List</span>
-          </a>
-        </nav>
-      </aside>
 
-      {/* Main Content */}
-      <main className="md:ml-64 flex-1 p-6 md:p-12 min-h-screen">
-        {/* Header */}
-        <header className="flex justify-between items-center mb-12">
-          <div className="relative w-full max-w-xl">
-            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-            <input 
-              type="text" 
-              placeholder="Search logistics, guests, or tiers..." 
-              className="w-full pl-12 pr-4 py-3 bg-surface-container-low border-transparent rounded-full focus:ring-1 focus:ring-secondary/50 outline-none"
-            />
+        {/* Bento Stat Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white p-5 rounded-card border border-[var(--border)]">
+            <p className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Confirmed Guests</p>
+            <p className="text-2xl font-serif text-[var(--fg)] mt-1">{attendees.length}</p>
+            <p className="text-[11px] font-mono text-[var(--accent)] mt-0.5">Live Database Roster</p>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="text-on-surface-variant hover:text-primary transition-colors">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-            <div className="w-10 h-10 rounded-full border border-outline-variant overflow-hidden">
-              <img src="https://via.placeholder.com/100" alt="Avatar" className="w-full h-full object-cover" />
-            </div>
+          <div className="bg-white p-5 rounded-card border border-[var(--border)]">
+            <p className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Checked In</p>
+            <p className="text-2xl font-serif text-[var(--fg)] mt-1">{attendees.filter(a => a.status === 'Arrived').length}</p>
+            <p className="text-[11px] font-mono text-[var(--fg-muted)] mt-0.5">Verified at Gate</p>
           </div>
-        </header>
+          <div className="bg-white p-5 rounded-card border border-[var(--border)]">
+            <p className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Pending Arrival</p>
+            <p className="text-2xl font-serif text-[var(--fg)] mt-1">{attendees.filter(a => a.status !== 'Arrived').length}</p>
+            <p className="text-[11px] font-mono text-amber-600 mt-0.5">Expected guests</p>
+          </div>
+          <div className="bg-white p-5 rounded-card border border-[var(--border)]">
+            <p className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Event ID</p>
+            <p className="text-2xl font-serif text-[var(--fg)] mt-1">#{eventId || 'N/A'}</p>
+            <p className="text-[11px] font-mono text-[var(--fg-muted)] mt-0.5">Active Session</p>
+          </div>
+        </div>
 
-        {/* Guest Summary */}
-        <section className="mb-12">
-          <div className="flex items-baseline gap-4 mb-6">
-            <h1 className="font-headline-md text-3xl text-primary">Guest Logistics Console</h1>
-            <span className="text-on-surface-variant font-label-caps tracking-widest uppercase">Summer Equinox Gala</span>
-          </div>
+        {/* Table & Controls Section */}
+        <div className="bg-white rounded-card border border-[var(--border)] overflow-hidden">
+          {/* Action Row */}
+          <div className="p-4 border-b border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-1 border border-[var(--border)] rounded-card p-1 bg-[var(--bg-subtle)] text-xs font-mono">
+              {['all', 'arrived', 'pending', 'waitlist'].map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTab(t)}
+                  className={`px-3 py-1.5 rounded-card uppercase tracking-wider transition-colors ${
+                    tab === t ? 'bg-white text-[var(--fg)] shadow-xs font-medium' : 'text-[var(--fg-muted)] hover:text-[var(--fg)]'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-high shadow-sm">
-              <p className="font-label-caps text-on-surface-variant mb-2 tracking-widest uppercase">Total Confirmed</p>
-              <div className="flex items-baseline gap-2">
-                <span className="font-headline-sm text-3xl text-primary">142</span>
-                <span className="text-secondary font-bold text-sm">+12 from yesterday</span>
-              </div>
-            </div>
-            <div className="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-high shadow-sm">
-              <p className="font-label-caps text-on-surface-variant mb-2 tracking-widest uppercase">Elite Tier Arrivals</p>
-              <div className="flex items-baseline gap-2">
-                <span className="font-headline-sm text-3xl text-primary">28</span>
-                <span className="text-on-surface-variant text-sm">of 35 invited</span>
-              </div>
-            </div>
-            <div className="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-high shadow-sm">
-              <p className="font-label-caps text-on-surface-variant mb-2 tracking-widest uppercase">Dietary Special</p>
-              <div className="flex items-baseline gap-2">
-                <span className="font-headline-sm text-3xl text-secondary">09</span>
-                <span className="text-on-surface-variant text-sm">Critical Actions</span>
-              </div>
-            </div>
-            <div className="bg-surface-container-lowest p-6 rounded-xl border-2 border-secondary/30 shadow-sm flex flex-col justify-center">
-              <div className="flex items-center gap-2 text-secondary mb-2">
-                <span className="material-symbols-outlined text-[18px]">star</span>
-                <p className="font-label-caps tracking-widest uppercase">VIP Highlight</p>
-              </div>
-              <p className="font-body-md font-bold text-primary">Governor Arrival: 19:45</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Logistics Table */}
-        <section className="bg-surface-container-lowest rounded-xl border border-surface-container-high shadow-sm overflow-hidden">
-          <div className="p-6 flex flex-col md:flex-row justify-between items-center border-b border-surface-container-high gap-4">
-            <div className="flex gap-6">
-              <button className="font-label-caps text-primary border-b-2 border-primary pb-1 uppercase tracking-widest">All Guests</button>
-              <button className="font-label-caps text-on-surface-variant hover:text-primary transition-colors pb-1 uppercase tracking-widest">Waitlist</button>
-              <button className="font-label-caps text-on-surface-variant hover:text-primary transition-colors pb-1 uppercase tracking-widest">Check-out</button>
-            </div>
-            <div className="flex gap-4">
-              <button className="px-4 py-2 border border-outline-variant rounded-lg font-label-caps uppercase tracking-widest hover:bg-surface-container-low transition-all text-xs">
-                Filter By Tier
-              </button>
-              <button 
-                onClick={() => navigate('/events/1/checkin')}
-                className="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-caps uppercase tracking-widest hover:opacity-90 transition-all text-xs flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined text-[16px]">qr_code_scanner</span>
-                Scan QR
-              </button>
+            <div className="relative w-full sm:w-64">
+              <MagnifyingGlass size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--fg-muted)]" />
+              <input 
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search guest or RSVP..."
+                className="w-full pl-9 pr-3 py-1.5 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card text-xs text-[var(--fg)] placeholder:text-[var(--fg-muted)]/50 focus:outline-none focus:border-[var(--fg)] transition-colors"
+              />
             </div>
           </div>
 
+          {/* Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[800px]">
-              <thead className="bg-surface-container-low border-b border-surface-container-high">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[var(--bg-subtle)] border-b border-[var(--border)] text-[11px] font-mono uppercase text-[var(--fg-muted)]">
                 <tr>
-                  <th className="p-4 font-label-caps text-[10px] text-on-surface-variant tracking-widest uppercase">Name</th>
-                  <th className="p-4 font-label-caps text-[10px] text-on-surface-variant tracking-widest uppercase">Status</th>
-                  <th className="p-4 font-label-caps text-[10px] text-on-surface-variant tracking-widest uppercase">Elite Tier</th>
-                  <th className="p-4 font-label-caps text-[10px] text-on-surface-variant tracking-widest uppercase">Dietary Requirements</th>
-                  <th className="p-4 font-label-caps text-[10px] text-on-surface-variant tracking-widest uppercase text-right">Actions</th>
+                  <th className="py-3 px-4 font-normal">Attendee</th>
+                  <th className="py-3 px-4 font-normal">Status</th>
+                  <th className="py-3 px-4 font-normal">Tier</th>
+                  <th className="py-3 px-4 font-normal">Dietary Note</th>
+                  <th className="py-3 px-4 font-normal text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-surface-container-high">
-                {attendees.map(guest => (
-                  <tr key={guest.id} className="hover:bg-surface-bright transition-colors group">
-                    <td className="p-4">
+              <tbody className="divide-y divide-[var(--border)]">
+                {attendees.map((guest) => (
+                  <tr key={guest.id} className="hover:bg-[var(--bg-subtle)]/50 transition-colors">
+                    <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <img src={`https://via.placeholder.com/40`} className="w-10 h-10 rounded-full" alt="avatar" />
+                        <img src={guest.avatar} alt={guest.name} className="w-8 h-8 rounded-full object-cover border border-[var(--border)]" />
                         <div>
-                          <p className="font-body-md font-bold text-primary">{guest.name}</p>
-                          <p className="text-xs text-on-surface-variant">{guest.rsvp}</p>
+                          <p className="font-medium text-[var(--fg)] text-sm">{guest.name}</p>
+                          <p className="font-mono text-[11px] text-[var(--fg-muted)]">{guest.rsvp}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold font-label-caps tracking-widest uppercase ${guest.statusColor}`}>
+                    <td className="py-3 px-4">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-card font-mono text-[10px] uppercase tracking-wider ${
+                        guest.status === 'Arrived' 
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                          : guest.status === 'En Route' 
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200' 
+                          : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      }`}>
                         {guest.status}
                       </span>
                     </td>
-                    <td className="p-4">
-                      <span className={`font-bold font-label-caps text-[10px] tracking-widest uppercase ${guest.tier.includes('Diamond') ? 'text-secondary' : 'text-on-surface-variant'}`}>
-                        {guest.tier}
-                      </span>
+                    <td className="py-3 px-4">
+                      <span className="font-mono text-[11px] text-[var(--fg)]">{guest.tier}</span>
                     </td>
-                    <td className="p-4">
-                      <p className="text-sm text-on-surface-variant italic">{guest.dietary}</p>
+                    <td className="py-3 px-4 text-[var(--fg-muted)]">
+                      {guest.dietary}
                     </td>
-                    <td className="p-4 text-right space-x-2">
-                      <button className="p-2 text-on-surface-variant hover:text-primary transition-colors bg-surface-container rounded-lg">
-                        <span className="material-symbols-outlined text-[18px]">chat</span>
-                      </button>
-                      <button className="p-2 text-on-surface-variant hover:text-primary transition-colors bg-surface-container rounded-lg">
-                        <span className="material-symbols-outlined text-[18px]">visibility</span>
-                      </button>
+                    <td className="py-3 px-4 text-right">
+                      <div className="inline-flex items-center gap-1.5">
+                        {guest.status !== 'Arrived' && guest.ticketId && (
+                          <button
+                            type="button"
+                            onClick={() => handleManualCheckIn(guest.ticketId)}
+                            className="px-2 py-1 rounded-card bg-[var(--accent)] text-white text-[10px] font-mono uppercase tracking-wider hover:opacity-90 transition-opacity"
+                          >
+                            Check In
+                          </button>
+                        )}
+                        <button type="button" className="p-1.5 rounded-card border border-[var(--border)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-white transition-colors" title="Message">
+                          <ChatCircleDots size={14} />
+                        </button>
+                        <button type="button" className="p-1.5 rounded-card border border-[var(--border)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-white transition-colors" title="View Profile">
+                          <Eye size={14} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -173,21 +216,20 @@ export default function AttendeeManagementPage() {
             </table>
           </div>
 
-          <div className="p-4 bg-surface-container-low flex justify-between items-center border-t border-surface-container-high">
-            <p className="text-[10px] text-on-surface-variant font-label-caps uppercase tracking-widest">Showing 1-4 of 142 guests</p>
-            <div className="flex gap-2">
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-high">
-                <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+          {/* Pagination Footer */}
+          <div className="p-3 border-t border-[var(--border)] bg-[var(--bg-subtle)] flex items-center justify-between text-xs font-mono text-[var(--fg-muted)]">
+            <span>Showing 1-4 of 142 guests</span>
+            <div className="flex items-center gap-1">
+              <button type="button" className="p-1 border border-[var(--border)] rounded-card hover:bg-white transition-colors">
+                <CaretLeft size={14} />
               </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold text-sm">1</button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-high text-sm">2</button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-high text-sm">3</button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-high">
-                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+              <span className="px-2">Page 1</span>
+              <button type="button" className="p-1 border border-[var(--border)] rounded-card hover:bg-white transition-colors">
+                <CaretRight size={14} />
               </button>
             </div>
           </div>
-        </section>
+        </div>
       </main>
     </div>
   );

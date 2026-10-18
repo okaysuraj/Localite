@@ -2,6 +2,19 @@ import React, { useState, useEffect } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
+import { 
+  Eye, 
+  Users, 
+  MapPin, 
+  Prohibit, 
+  ShieldCheck, 
+  CheckCircle,
+  CaretDown,
+  CaretUp,
+  LockKey,
+  FloppyDisk,
+  UserMinus
+} from '@phosphor-icons/react';
 
 export default function PrivacySettingsPage() {
   const [publicProfile, setPublicProfile] = useState(false);
@@ -9,6 +22,8 @@ export default function PrivacySettingsPage() {
   const [preciseLocation, setPreciseLocation] = useState(false);
   const [showBlocked, setShowBlocked] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -35,6 +50,8 @@ export default function PrivacySettingsPage() {
   };
 
   const handleSave = async () => {
+    setSaving(true);
+    setSavedSuccess(false);
     try {
       const token = await auth.currentUser?.getIdToken();
       if (!token) return;
@@ -54,174 +71,224 @@ export default function PrivacySettingsPage() {
       });
       
       if (res.ok) {
-        alert("Privacy settings saved successfully!");
+        setSavedSuccess(true);
+        setTimeout(() => setSavedSuccess(false), 3000);
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
     <SettingsLayout>
-      <div className="space-y-stack-lg animate-fade-in pb-12">
-        {/* Header Section */}
-        <section className="mb-8">
-          <p className="font-label-caps text-label-caps text-secondary mb-2 uppercase">Your Digital Sovereignty</p>
-          <h1 className="font-headline-md text-headline-md text-primary mb-4">Privacy Controls</h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
-            Manage your visibility and digital footprint within the Localite ecosystem. We prioritize your anonymity through zero-knowledge architecture.
-          </p>
+      <div className="space-y-8 animate-fade-in pb-12">
+        {/* Header */}
+        <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
+          <div>
+            <p className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wider mb-2">
+              Digital Sovereignty
+            </p>
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[var(--fg)]">
+              Privacy Controls
+            </h1>
+            <p className="text-sm text-[var(--fg-muted)] mt-1 max-w-xl">
+              Govern your personal discoverability, real-time presence broadcast, and telemetry sharing.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            {savedSuccess && (
+              <span className="text-xs font-medium text-emerald-600 flex items-center gap-1.5 animate-fade-in">
+                <CheckCircle size={16} weight="fill" /> Saved
+              </span>
+            )}
+            <button 
+              onClick={handleSave}
+              disabled={saving}
+              className="px-5 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white text-xs font-semibold uppercase tracking-wider rounded-card shadow-sm active:scale-95 transition-all flex items-center gap-2"
+            >
+              <FloppyDisk size={16} weight="bold" />
+              {saving ? 'Saving...' : 'Apply Privacy Settings'}
+            </button>
+          </div>
         </section>
 
-        {/* Bento Grid Layout for Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-stack-lg">
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Visibility & Status Card (Large) */}
-          <div className="md:col-span-2 bg-surface-container-lowest rounded-xl p-8 flex flex-col justify-between border-l-4 border-l-primary border-t border-r border-b border-surface-variant/50 shadow-sm">
+          {/* Profile & Presence Controls */}
+          <div className="md:col-span-2 bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)] flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-primary">visibility</span>
-                <h3 className="font-headline-sm text-headline-sm">Profile & Activity</h3>
+              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--border)]">
+                <span className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                  <Eye size={18} weight="fill" />
+                </span>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Discoverability & Visibility</h3>
               </div>
-              <div className="space-y-8">
+              <div className="space-y-6">
                 
-                {/* Toggle Item 1 */}
+                {/* Public Profile */}
                 <div className="flex items-center justify-between gap-4">
                   <div className="max-w-md">
-                    <h4 className="font-body-md font-bold text-primary mb-1">Public Profile Visibility</h4>
-                    <p className="text-sm text-on-surface-variant">Allow non-members to view your basic profile information and curated event history.</p>
+                    <h4 className="text-sm font-semibold text-[var(--fg)] mb-0.5">Public Profile Visibility</h4>
+                    <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                      Allow non-authenticated guests and prospective members to view your bio and attended public gatherings.
+                    </p>
                   </div>
                   <button 
-                    className={`w-12 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${publicProfile ? 'bg-primary' : 'bg-surface-variant'}`}
+                    className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${publicProfile ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                     onClick={() => setPublicProfile(!publicProfile)}
+                    aria-label="Toggle public profile"
                   >
-                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${publicProfile ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${publicProfile ? 'translate-x-5' : 'translate-x-0'}`}></div>
                   </button>
                 </div>
                 
-                {/* Toggle Item 2 */}
-                <div className="flex items-center justify-between gap-4">
+                {/* Live Activity */}
+                <div className="flex items-center justify-between gap-4 pt-4 border-t border-[var(--border)]">
                   <div className="max-w-md">
-                    <h4 className="font-body-md font-bold text-primary mb-1">Live Activity Status</h4>
-                    <p className="text-sm text-on-surface-variant">Show other members when you are currently active at a venue or gathering.</p>
+                    <h4 className="text-sm font-semibold text-[var(--fg)] mb-0.5">Live Presence Indicator</h4>
+                    <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                      Show other attendees when you are currently checked-in at a match, clubhouse, or gathering.
+                    </p>
                   </div>
                   <button 
-                    className={`w-12 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${liveActivity ? 'bg-primary' : 'bg-surface-variant'}`}
+                    className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${liveActivity ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                     onClick={() => setLiveActivity(!liveActivity)}
+                    aria-label="Toggle live activity"
                   >
-                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${liveActivity ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${liveActivity ? 'translate-x-5' : 'translate-x-0'}`}></div>
                   </button>
                 </div>
                 
-                {/* Toggle Item 3 */}
-                <div className="flex items-center justify-between gap-4">
+                {/* Precise Location */}
+                <div className="flex items-center justify-between gap-4 pt-4 border-t border-[var(--border)]">
                   <div className="max-w-md">
-                    <h4 className="font-body-md font-bold text-primary mb-1">Precise Location Sharing</h4>
-                    <p className="text-sm text-on-surface-variant">Share your exact GPS coordinates with attendees of confirmed gatherings only.</p>
+                    <h4 className="text-sm font-semibold text-[var(--fg)] mb-0.5">High-Precision GPS Broadcast</h4>
+                    <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                      Transmit meter-level coordinates to attendees of confirmed sports fixtures and private gatherings.
+                    </p>
                   </div>
                   <button 
-                    className={`w-12 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${preciseLocation ? 'bg-primary' : 'bg-surface-variant'}`}
+                    className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${preciseLocation ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                     onClick={() => setPreciseLocation(!preciseLocation)}
+                    aria-label="Toggle precise location"
                   >
-                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${preciseLocation ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${preciseLocation ? 'translate-x-5' : 'translate-x-0'}`}></div>
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Trusted Circle Management */}
-          <div className="md:col-span-1 bg-surface-container-lowest rounded-xl p-8 border-t-4 border-t-secondary border-l border-r border-b border-surface-variant/50 shadow-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="material-symbols-outlined text-secondary">verified_user</span>
-              <h3 className="font-headline-sm text-headline-sm">Trusted Circle</h3>
-            </div>
-            <p className="text-sm text-on-surface-variant mb-6">Members in this circle bypass global privacy restrictions to see your full schedule.</p>
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-sm">JV</div>
-                  <span className="font-body-md text-primary">Julian V.</span>
-                </div>
-                <span className="material-symbols-outlined text-error cursor-pointer text-sm">remove_circle</span>
+          {/* Trusted Circle Bypass Card */}
+          <div className="md:col-span-1 bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[var(--border)]">
+                <span className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                  <Users size={18} weight="fill" />
+                </span>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Trusted Circle</h3>
               </div>
-              <div className="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white font-bold text-sm">EM</div>
-                  <span className="font-body-md text-primary">Elena M.</span>
-                </div>
-                <span className="material-symbols-outlined text-error cursor-pointer text-sm">remove_circle</span>
+              <p className="text-xs text-[var(--fg-muted)] mb-5 leading-relaxed">
+                Members in your circle bypass restrictions to view your live attendance and coordinate directly.
+              </p>
+              <div className="space-y-2.5 mb-6">
+                {[
+                  { name: 'Julian Vance', role: 'Inner Circle', initials: 'JV' },
+                  { name: 'Elena Morse', role: 'Inner Circle', initials: 'EM' }
+                ].map((member, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-neutral-200 text-neutral-700 flex items-center justify-center text-[10px] font-bold">
+                        {member.initials}
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-[var(--fg)] leading-none mb-1">{member.name}</p>
+                        <p className="text-[10px] text-[var(--fg-muted)]">{member.role}</p>
+                      </div>
+                    </div>
+                    <button className="text-[var(--fg-muted)] hover:text-rose-600 transition-colors p-1" title="Remove member">
+                      <UserMinus size={15} />
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
-            <button className="w-full border border-secondary text-secondary font-label-caps py-3 rounded hover:bg-secondary/10 transition-colors uppercase tracking-widest">
-              Add Member
+            <button 
+              onClick={() => alert("Open Contact Picker...")}
+              className="w-full border border-[var(--border)] text-[var(--fg)] text-xs font-semibold uppercase tracking-wider py-2.5 rounded-card hover:bg-[var(--bg-subtle)] transition-colors"
+            >
+              Add Contact
             </button>
           </div>
         </div>
 
-        {/* Blocked Users Dropdown Section */}
-        <section className="bg-surface-container-lowest rounded-xl p-8 border border-surface-variant/50 shadow-sm mb-stack-lg">
-          <div className="flex items-center justify-between mb-2">
+        {/* Restricted & Blocked Members Section */}
+        <section className="bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)]">
+          <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowBlocked(!showBlocked)}>
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-on-surface-variant">block</span>
-              <h3 className="font-headline-sm text-headline-sm">Restricted Access</h3>
+              <span className="w-8 h-8 rounded-card bg-neutral-100 text-[var(--fg)] flex items-center justify-center">
+                <Prohibit size={18} />
+              </span>
+              <div>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Restricted & Blocked Members</h3>
+                <p className="text-xs text-[var(--fg-muted)]">Manage accounts restricted from finding you or viewing your gatherings.</p>
+              </div>
             </div>
-            <button 
-              className="p-2 hover:bg-surface-container-low rounded-full transition-colors" 
-              onClick={() => setShowBlocked(!showBlocked)}
-            >
-              <span className="material-symbols-outlined">{showBlocked ? 'expand_less' : 'expand_more'}</span>
+            <button className="p-2 text-[var(--fg-muted)] hover:text-[var(--fg)]">
+              {showBlocked ? <CaretUp size={16} /> : <CaretDown size={16} />}
             </button>
           </div>
           
           {showBlocked && (
-            <div className="mt-6 overflow-hidden transition-all duration-300 animate-fade-in">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center justify-between p-4 border border-outline-variant rounded-lg bg-surface-container-low">
+            <div className="mt-6 pt-6 border-t border-[var(--border)] animate-fade-in">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center justify-between p-3.5 border border-[var(--border)] rounded-card bg-[var(--bg-subtle)]">
                   <div>
-                    <p className="font-bold text-primary">Mark Sterling</p>
-                    <p className="text-xs text-on-surface-variant">Blocked on Mar 12, 2024</p>
+                    <p className="text-xs font-semibold text-[var(--fg)]">Mark Sterling</p>
+                    <p className="text-[11px] text-[var(--fg-muted)]">Restricted on Mar 12, 2024</p>
                   </div>
-                  <button className="text-sm font-label-caps text-secondary uppercase hover:underline">Unblock</button>
+                  <button 
+                    onClick={() => alert("User unblocked")}
+                    className="text-xs font-semibold text-[var(--accent)] hover:underline"
+                  >
+                    Unblock
+                  </button>
                 </div>
-                <div className="flex items-center justify-between p-4 border border-outline-variant rounded-lg bg-surface-container-low">
+                <div className="flex items-center justify-between p-3.5 border border-[var(--border)] rounded-card bg-[var(--bg-subtle)]">
                   <div>
-                    <p className="font-bold text-primary">Unknown Member #42</p>
-                    <p className="text-xs text-on-surface-variant">Blocked on Jan 05, 2024</p>
+                    <p className="text-xs font-semibold text-[var(--fg)]">Anonymous Attendee #42</p>
+                    <p className="text-[11px] text-[var(--fg-muted)]">Restricted on Jan 05, 2024</p>
                   </div>
-                  <button className="text-sm font-label-caps text-secondary uppercase hover:underline">Unblock</button>
+                  <button 
+                    onClick={() => alert("User unblocked")}
+                    className="text-xs font-semibold text-[var(--accent)] hover:underline"
+                  >
+                    Unblock
+                  </button>
                 </div>
               </div>
             </div>
           )}
         </section>
 
-        {/* Zero Knowledge Architecture Messaging */}
-        <footer className="bg-primary p-12 rounded-2xl text-white relative overflow-hidden shadow-lg">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-secondary opacity-20 rounded-full blur-3xl -mr-32 -mt-32"></div>
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="max-w-xl">
-              <div className="inline-block px-3 py-1 bg-white/10 rounded-full mb-6">
-                <p className="font-label-caps text-[10px] tracking-widest text-secondary-fixed uppercase">Encryption Standard: AES-256-GCM</p>
-              </div>
-              <h2 className="font-headline-md text-headline-md mb-4">Zero-Knowledge Architecture</h2>
-              <p className="font-body-md opacity-80 leading-relaxed">
-                Your private data is encrypted locally on your device before it ever reaches our servers. Even as the platform provider, Localite has zero technical ability to access your location history, private circles, or identification documents. You hold the only keys.
-              </p>
-            </div>
-            <div className="flex-shrink-0">
-              <div className="w-32 h-32 border-2 border-white/20 rounded-full flex items-center justify-center p-4">
-                <span className="material-symbols-outlined text-5xl" style={{fontVariationSettings: "'FILL' 1"}}>encrypted</span>
-              </div>
-            </div>
+        {/* Zero-Knowledge Security Notice */}
+        <footer className="bg-[var(--fg)] p-6 md:p-8 rounded-card text-white flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="max-w-xl">
+            <span className="text-[10px] font-mono tracking-widest text-emerald-400 uppercase block mb-1">
+              End-to-End Local Isolation
+            </span>
+            <h4 className="text-base font-semibold text-white mb-2">Private By Design</h4>
+            <p className="text-xs text-white/70 leading-relaxed">
+              Your sensitive coordinates and circle memberships are protected via zero-knowledge tokens. We do not monetize, aggregate, or distribute member geolocation profiles.
+            </p>
+          </div>
+          <div className="w-12 h-12 rounded-card bg-white/10 flex items-center justify-center text-white shrink-0">
+            <LockKey size={24} weight="fill" />
           </div>
         </footer>
-
-        {/* Save Changes Floating Anchor */}
-        <div className="mt-stack-md flex justify-end gap-4">
-          <button className="font-label-caps text-on-surface-variant px-8 py-3 uppercase hover:bg-surface-variant rounded transition-colors tracking-widest">Discard Changes</button>
-          <button className="bg-primary text-white font-label-caps px-10 py-4 uppercase shadow-sm hover:scale-[1.02] active:scale-95 transition-all tracking-widest rounded-lg" onClick={handleSave}>Apply Privacy Manifest</button>
-        </div>
       </div>
     </SettingsLayout>
   );

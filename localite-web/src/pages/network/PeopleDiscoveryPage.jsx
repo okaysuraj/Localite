@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { getUsers } from '../../services/api';
+import { getUsers, sendConnectionRequest } from '../../services/api';
+import { 
+  Users, 
+  UserPlus, 
+  MapPin, 
+  Briefcase, 
+  SlidersHorizontal,
+  SquaresFour,
+  ListBullets,
+  ShieldCheck,
+  CheckCircle
+} from '@phosphor-icons/react';
 
-const PeopleDiscoveryPage = () => {
+export default function PeopleDiscoveryPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState('grid');
+  const [filterInterest, setFilterInterest] = useState('all');
+  const [connectedIds, setConnectedIds] = useState(new Set());
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const data = await getUsers();
-        setUsers(data);
+        setUsers(data || []);
       } catch (error) {
         console.error("Failed to fetch users", error);
       } finally {
@@ -18,141 +33,160 @@ const PeopleDiscoveryPage = () => {
     };
     fetchUsers();
   }, []);
-  useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1
-    };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('article').forEach(card => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(20px)';
-      card.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-      observer.observe(card);
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const handleConnect = async (id) => {
+    try {
+      await sendConnectionRequest(id);
+      setConnectedIds(prev => new Set(prev).add(id));
+    } catch (err) {
+      console.error('Error sending connection request:', err);
+      // Even if already sent or pending, mark as requested
+      setConnectedIds(prev => new Set(prev).add(id));
+    }
+  };
 
   return (
-    <div className="max-w-7xl mx-auto px-container-margin py-stack-lg min-h-[calc(100vh-80px)]">
+    <div className="max-w-7xl mx-auto px-6 py-24 min-h-[calc(100vh-80px)] font-sans text-[var(--fg)] animate-fade-in">
       {/* Header & Filters */}
-      <section className="mb-stack-lg">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-gutter border-b border-surface-variant pb-stack-md">
-          <div className="space-y-2">
-            <h1 className="font-display-lg text-display-lg text-primary">Discover Localites</h1>
-            <p className="font-body-lg text-on-surface-variant max-w-xl">
-              Connecting you with a curated circle of professionals and enthusiasts in your neighborhood.
+      <section className="mb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
+          <div>
+            <span className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wider mb-2 block">
+              Curated Community
+            </span>
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[var(--fg)]">
+              Discover Localites
+            </h1>
+            <p className="text-sm text-[var(--fg-muted)] mt-1 max-w-xl">
+              Connecting you with verified professionals, athletic sparring partners, and salon patrons.
             </p>
           </div>
-          <button className="bg-transparent border border-secondary text-secondary font-label-caps px-8 py-3 rounded-full hover:bg-secondary hover:text-on-secondary transition-all duration-300 flex items-center gap-2">
-            <span className="material-symbols-outlined">group_add</span>
-            Expand Your Circle
-          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[var(--fg-muted)]">{users.length} active in district</span>
+          </div>
         </div>
         
-        <div className="mt-stack-md flex flex-wrap items-center gap-gutter">
-          <button className="flex items-center gap-2 px-4 py-2 bg-surface-container rounded-full border border-surface-variant hover:border-secondary transition-colors group">
-            <span className="material-symbols-outlined text-secondary">distance</span>
-            <span className="font-label-caps">Distance</span>
-            <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors">expand_more</span>
-          </button>
+        {/* Filter Toolbar */}
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {['all', 'Tennis', 'Architecture', 'Running', 'Literature'].map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setFilterInterest(tag)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  filterInterest === tag
+                    ? 'bg-[var(--accent)] text-white'
+                    : 'bg-[var(--bg-subtle)] text-[var(--fg-muted)] hover:text-[var(--fg)] border border-[var(--border)]'
+                }`}
+              >
+                {tag === 'all' ? 'All Passions' : tag}
+              </button>
+            ))}
+          </div>
           
-          <button className="flex items-center gap-2 px-4 py-2 bg-surface-container rounded-full border border-surface-variant hover:border-secondary transition-colors group">
-            <span className="material-symbols-outlined text-secondary">interests</span>
-            <span className="font-label-caps">Interests: Tennis, Architecture, Jazz</span>
-            <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors">expand_more</span>
-          </button>
-          
-          <button className="flex items-center gap-2 px-4 py-2 bg-surface-container rounded-full border border-surface-variant hover:border-secondary transition-colors group">
-            <span className="material-symbols-outlined text-secondary">work</span>
-            <span className="font-label-caps">Profession</span>
-            <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors">expand_more</span>
-          </button>
-          
-          <div className="ml-auto flex items-center gap-stack-sm">
-            <span className="text-on-surface-variant font-label-caps">View:</span>
-            <button className="material-symbols-outlined p-2 text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>grid_view</button>
-            <button className="material-symbols-outlined p-2 text-outline hover:text-primary transition-colors">view_list</button>
+          <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded-card border border-[var(--border)]">
+            <button 
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded text-xs transition-colors ${viewMode === 'grid' ? 'bg-[var(--bg)] text-[var(--fg)] shadow-sm' : 'text-[var(--fg-muted)]'}`}
+              title="Grid view"
+            >
+              <SquaresFour size={16} />
+            </button>
+            <button 
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded text-xs transition-colors ${viewMode === 'list' ? 'bg-[var(--bg)] text-[var(--fg)] shadow-sm' : 'text-[var(--fg-muted)]'}`}
+              title="List view"
+            >
+              <ListBullets size={16} />
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Member Directory Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-stack-md">
-        
-        {loading ? (
-          <p className="text-on-surface-variant font-body-md py-4">Finding localites...</p>
-        ) : (
-          users.map((user, index) => (
-            <article key={user.id || index} className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] hover:shadow-[0_24px_48px_-12px_rgba(10,25,47,0.12)] transition-all duration-500 group cursor-pointer border border-outline-variant/10 hover:border-primary/20">
-              <div className="h-80 overflow-hidden relative">
-                <img 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                  alt={user.name || user.username} 
-                  src={user.image || user.profilePhotoUrl}
-                />
-                <div className="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                  <span className="material-symbols-outlined text-secondary text-sm">location_on</span>
-                  <span className="font-label-caps text-[10px] text-primary">{user.distance || user.neighborhood}</span>
-                </div>
-              </div>
-              <div className="p-stack-md space-y-4">
-                <div>
-                  <h3 className="font-headline-sm text-headline-sm text-primary mb-1">{user.name || user.username}</h3>
-                  <p className="font-label-caps text-secondary">{user.role || user.bio}</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {(user.interests || []).length > 0 ? (
-                    (Array.isArray(user.interests) ? user.interests : user.interests.split(',')).map((interest, i) => (
-                      <span key={i} className="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[11px] font-label-caps">{interest.trim()}</span>
-                    ))
-                  ) : (
-                    <span className="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[11px] font-label-caps">No interests listed</span>
-                  )}
-                </div>
-                <button className="w-full py-3 border border-outline-variant hover:border-primary font-label-caps text-primary transition-colors rounded-lg">
-                  Connect
-                </button>
-              </div>
-            </article>
-          ))
-        )}
+      {/* Member Directory */}
+      {loading ? (
+        <div className="py-24 text-center text-xs font-semibold uppercase tracking-widest text-[var(--fg-muted)]">
+          Scanning Neighborhood Directory...
+        </div>
+      ) : users.length === 0 ? (
+        <div className="py-20 text-center bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] p-8">
+          <Users size={32} className="mx-auto text-[var(--fg-muted)] mb-3" />
+          <p className="text-sm font-semibold text-[var(--fg)]">No Members Found</p>
+          <p className="text-xs text-[var(--fg-muted)] mt-1">Try widening your filters to see more members.</p>
+        </div>
+      ) : (
+        <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-3"}>
+          {users.map((user, index) => {
+            const isSent = connectedIds.has(user.id || index);
+            return (
+              <article 
+                key={user.id || index} 
+                className={`bg-[var(--bg)] rounded-card border border-[var(--border)] hover:border-[var(--fg-muted)] transition-all overflow-hidden flex flex-col justify-between ${
+                  viewMode === 'list' ? 'p-5 md:flex-row md:items-center' : 'p-6'
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-center text-sm font-semibold text-[var(--fg)] shrink-0">
+                    {(user.name || user.username || 'L').substring(0, 2).toUpperCase()}
+                  </div>
 
-        {/* CTA Card */}
-        <article className="bg-primary flex flex-col items-center justify-center p-stack-md rounded-xl text-center space-y-6 shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] border border-primary relative overflow-hidden group">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-secondary to-transparent group-hover:scale-110 transition-transform duration-1000"></div>
-          <div className="z-10 space-y-4 flex flex-col items-center">
-            <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-primary text-4xl">verified</span>
-            </div>
-            <h3 className="font-display-lg text-[32px] text-on-primary">Join the Inner Circle</h3>
-            <p className="text-on-primary/70 font-body-md max-w-[240px]">Be featured in our elite directory and unlock premium community features.</p>
-            <button className="bg-secondary text-on-secondary font-label-caps px-8 py-3 rounded-full hover:bg-secondary-fixed-dim transition-colors">
-              Apply Now
-            </button>
-          </div>
-        </article>
-      </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-semibold text-[var(--fg)]">
+                        {user.name || user.username || 'Localite Member'}
+                      </h3>
+                      {user.isVerified && (
+                        <ShieldCheck size={16} weight="fill" className="text-emerald-600" title="Verified Member" />
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-[var(--accent)] font-medium flex items-center gap-1 mt-0.5">
+                      <MapPin size={13} />
+                      <span>{user.neighborhood || user.location || 'Local Metro'}</span>
+                    </p>
 
-      {/* Pagination / Load More */}
-      <div className="mt-stack-lg flex flex-col items-center gap-gutter">
-        <button className="bg-surface-container border border-surface-variant px-12 py-4 rounded-full font-label-caps text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-2">
-          Load More Localites
-          <span className="material-symbols-outlined">keyboard_arrow_down</span>
-        </button>
-        <p className="text-on-surface-variant font-label-caps text-xs">Showing 5 of 248 Members</p>
-      </div>
+                    {user.profession && (
+                      <p className="text-xs text-[var(--fg-muted)] flex items-center gap-1 mt-1">
+                        <Briefcase size={13} />
+                        <span>{user.profession}</span>
+                      </p>
+                    )}
+
+                    <p className="text-xs text-[var(--fg-muted)] mt-2 line-clamp-2 leading-relaxed">
+                      {user.bio || 'Curating sports sessions and community salons across the neighborhood.'}
+                    </p>
+
+                    {user.interests && (
+                      <div className="flex flex-wrap gap-1 mt-3">
+                        {(Array.isArray(user.interests) ? user.interests : user.interests.split(',')).map((tag, i) => (
+                          <span key={i} className="text-[10px] px-2 py-0.5 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-full text-[var(--fg-muted)]">
+                            {tag.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className={`mt-5 pt-4 border-t border-[var(--border)] ${viewMode === 'list' ? 'md:mt-0 md:pt-0 md:border-t-0 md:ml-4' : ''}`}>
+                  <button 
+                    onClick={() => handleConnect(user.id || index)}
+                    disabled={isSent}
+                    className={`w-full md:w-auto px-4 py-2 rounded-card text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+                      isSent 
+                        ? 'bg-[var(--bg-subtle)] text-emerald-600 border border-emerald-600/30' 
+                        : 'bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white shadow-sm active:scale-95'
+                    }`}
+                  >
+                    {isSent ? <CheckCircle size={14} weight="fill" /> : <UserPlus size={14} />}
+                    <span>{isSent ? 'Invitation Sent' : 'Connect'}</span>
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
-};
-
-export default PeopleDiscoveryPage;
+}

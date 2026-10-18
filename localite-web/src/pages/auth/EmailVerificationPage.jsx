@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft } from '@phosphor-icons/react';
 
 const EmailVerificationPage = () => {
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ const EmailVerificationPage = () => {
                   </button>
                 </p>
                 <Link to="/login" className="inline-flex items-center gap-2 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                  <ArrowLeft size={16} weight="bold" />
                   BACK TO SIGN IN
                 </Link>
               </div>

@@ -23,7 +23,7 @@ export default function EventTimelineUpdatesScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
           <MaterialIcons name="menu" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Royal Assemblage</Text>
+        <Text style={styles.headerTitle}>Event Timeline</Text>
         <View style={styles.avatarWrap}>
           <Image 
             source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbwD6J0sji-Yo1YJXcMVhppWAFQcskoDDivj7ejOPeVzud4El79o19zbO5pAJphlIZTxhG_l0xEgOBgpar90ImA4QQ-L8tMGsRoxrkwESxUCS6eJEynoPwTfMOnGORGPB5tw0502czjjRgTgbZryBlB_8wQMzrfFLKqMM6vzW_RU07JJFXVax4KkJue17CXNfRRPh2PLpE3At26ZhfzjvFY5KMfqRbhlhEF6lIH852-4w6bqY5HRkT9w' }} 

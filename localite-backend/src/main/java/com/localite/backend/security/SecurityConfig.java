@@ -39,8 +39,9 @@ public class SecurityConfig {
             }))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/events", "/api/users", "/api/categories").permitAll() // Allow viewing events/users/categories without login
-                .requestMatchers("/h2-console/**").permitAll() // Allow H2 console
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/events", "/api/events/**", "/api/categories", "/api/categories/**").permitAll()
+                .requestMatchers("/api/auth/**", "/ws/**", "/api/ws/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())) // Needed for H2 console

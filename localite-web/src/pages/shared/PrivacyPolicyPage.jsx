@@ -2,36 +2,71 @@ import React from 'react';
 
 const PrivacyPolicyPage = () => {
   return (
-    <div className="min-h-screen bg-surface w-full pt-10">
-      <div className="px-container-margin py-stack-xl max-w-4xl mx-auto">
-        <h1 className="font-display-lg text-display-lg text-primary mb-stack-md">Privacy Policy</h1>
-      <p className="font-body-lg text-on-surface-variant mb-stack-lg">Last updated: August 2026</p>
-      
-      <section className="mb-stack-xl">
-        <h2 className="font-headline-md text-headline-md text-secondary mb-stack-sm">1. Information We Collect</h2>
-        <p className="font-body-md text-on-surface mb-stack-sm">
-          Localite collects information to provide better services to our members. We collect information in the following ways:
-        </p>
-        <ul className="list-disc pl-6 font-body-md text-on-surface space-y-2">
-          <li>Information you give us (e.g., your profile details, verification ID).</li>
-          <li>Information we get from your use of our services (e.g., event attendance, location data if permitted).</li>
-        </ul>
-      </section>
+    <div className="bg-bg min-h-screen py-12 px-6">
+      <div className="max-w-3xl mx-auto space-y-10">
+        {/* Header */}
+        <div className="space-y-2 pb-6 border-b border-border">
+          <span className="text-xs font-mono text-accent uppercase tracking-wider block">
+            Privacy & Data Protection
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-display font-semibold text-fg tracking-tight">
+            Privacy Policy
+          </h1>
+          <p className="text-xs font-mono text-fg-muted">
+            Last Updated: September 2026
+          </p>
+        </div>
 
-      <section className="mb-stack-xl">
-        <h2 className="font-headline-md text-headline-md text-secondary mb-stack-sm">2. How We Use Information We Collect</h2>
-        <p className="font-body-md text-on-surface mb-stack-sm">
-          We use the information we collect from all of our services to provide, maintain, protect and improve them, to develop new ones, and to protect Localite and our users. We also use this information to offer you tailored content – like giving you more relevant event recommendations.
-        </p>
-      </section>
+        {/* Content */}
+        <div className="space-y-8 text-sm text-fg leading-relaxed">
+          <section className="space-y-2">
+            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
+              1. Information We Collect
+            </h2>
+            <p className="text-fg-muted">
+              We collect information to facilitate local connections and verify event participants:
+            </p>
+            <ul className="list-disc pl-5 space-y-1 text-fg-muted text-xs font-sans">
+              <li>
+                <strong className="text-fg font-medium">Account & Profile Information:</strong> name, email, phone number, bio, neighborhood, and athletic interests.
+              </li>
+              <li>
+                <strong className="text-fg font-medium">Identity Verification:</strong> government ID photos and selfie scans, processed strictly for identity verification and stored encrypted.
+              </li>
+              <li>
+                <strong className="text-fg font-medium">Activity Data:</strong> events attended, events hosted, ratings, direct messages, and team match records.
+              </li>
+            </ul>
+          </section>
 
-      <section className="mb-stack-xl">
-        <h2 className="font-headline-md text-headline-md text-secondary mb-stack-sm">3. Transparency and Choice</h2>
-        <p className="font-body-md text-on-surface mb-stack-sm">
-          People have different privacy concerns. Our goal is to be clear about what information we collect, so that you can make meaningful choices about how it is used. You can review and control certain types of information tied to your Localite Account by using our privacy settings page.
-        </p>
-      </section>
-    </div>
+          <section className="space-y-2">
+            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
+              2. How Your Information Is Used
+            </h2>
+            <p className="text-fg-muted">
+              Your information is used solely to provide platform services: displaying public gathering attendee lists, calculating trust scores, enabling direct communications between members, and matching sports partners based on proximity and skill level.
+            </p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
+              3. Data Security & Storage
+            </h2>
+            <p className="text-fg-muted">
+              We employ strict industry encryption standards for all stored files and database records. Verification documents are not accessible to other users or third-party advertisers.
+            </p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
+              4. Member Control & Choices
+            </h2>
+            <p className="text-fg-muted">
+              You maintain complete control over your visibility settings. You can edit your profile attributes, hide your phone number, or request account deletion at any time through Account Settings.
+            </p>
+          </section>
+        </div>
+      </div>
     </div>
   );
 };

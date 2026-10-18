@@ -15,7 +15,7 @@ export default function TrustedContactsSetupScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
           <MaterialIcons name="menu" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Royal Assemblage</Text>
+        <Text style={styles.headerTitle}>Trusted Circles</Text>
         <View style={styles.avatarWrap}>
           <Image 
             source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCFpdz0_5ObiTCv-HJ1nuC25PUy9jZKwSyEcSTx4UIwPqlyC7-o_amhjJIECWIhUCP7Mxn-sLJaoQSnnWBu6_nPyug75YoQB-V2fzermkdTG2GzNKS_4hOnZUoCAEAYCOlBwnUdAzRBroffOuK90kh66o9Hv0ZbTLLyfoVpBynZNuLeKbF_QEY6jmFVzvdd9k46YP9tBY1e_fPZtofs1pzv2Wwh4zbB7dxL9xkESvhbDfCndQEK_6UnyQ' }}

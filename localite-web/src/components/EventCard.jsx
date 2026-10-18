@@ -1,8 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, Users, MessageSquare, Ticket, X, Settings2, Star, Image as ImageIcon, AlertTriangle, Trophy } from 'lucide-react';
+import {
+  CalendarBlank,
+  MapPin,
+  Users,
+  ChatCircle,
+  Ticket,
+  X,
+  GearSix,
+  Star,
+  Image as ImageIcon,
+  Warning,
+  Trophy,
+  ArrowRight,
+} from '@phosphor-icons/react';
 import { QRCodeSVG } from 'qrcode.react';
+import { API_BASE_URL } from '../services/api';
 
-const EventCard = ({ id, title, category, date, rawDate, location, attendees, maxAttendees, imageUrl, isHost, host, onRsvp, onChat, onUserClick, cost, skillLevel, eventType, isHighlighted }) => {
+const EventCard = ({
+  id,
+  title,
+  category,
+  date,
+  rawDate,
+  location,
+  attendees,
+  maxAttendees,
+  imageUrl,
+  isHost,
+  host,
+  onRsvp,
+  onChat,
+  onUserClick,
+  cost,
+  skillLevel,
+  eventType,
+  isHighlighted,
+}) => {
   const [ticketData, setTicketData] = useState(null);
   const [showQr, setShowQr] = useState(false);
   const [showManage, setShowManage] = useState(false);
@@ -19,7 +52,7 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const [matchScore, setMatchScore] = useState('');
   const [attendeesList, setAttendeesList] = useState([]);
   const [waitlist, setWaitlist] = useState([]);
-  
+
   const isPastEvent = rawDate ? new Date(rawDate) < new Date() : false;
 
   useEffect(() => {
@@ -29,14 +62,17 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const fetchTicket = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/ticket`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/ticket`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.ok) {
         setTicketData(await res.json());
       }
     } catch (err) {
-      console.error("Failed to fetch ticket", err);
+      console.error('Failed to fetch ticket', err);
     }
   };
 
@@ -44,12 +80,15 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
     if (!ticketIdInput) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/checkin/${ticketIdInput}`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/checkin/${ticketIdInput}`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.ok) {
-        alert("Attendee checked in successfully!");
+        alert('Attendee checked in successfully!');
         setTicketIdInput('');
       } else {
         const errText = await res.text();
@@ -57,20 +96,22 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
       }
     } catch (err) {
       console.error(err);
-      console.error(err);
-      alert("Network error.");
+      alert('Network error.');
     }
   };
 
   const fetchWaitlist = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/rsvps`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/rsvps`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.ok) {
         const data = await res.json();
-        setWaitlist(data.filter(r => r.status === 'WAITLIST'));
+        setWaitlist(data.filter((r) => r.status === 'WAITLIST'));
       }
     } catch (err) {
       console.error(err);
@@ -80,10 +121,13 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const handleWaitlistAction = async (userId, action) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/rsvp/${userId}/${action}`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/rsvp/${userId}/${action}`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.ok) {
         alert(`User ${action}ed`);
         fetchWaitlist();
@@ -94,15 +138,18 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   };
 
   const handleDeleteEvent = async () => {
-    if(window.confirm("Are you sure you want to delete this event?")) {
+    if (window.confirm('Are you sure you want to delete this event?')) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const res = await fetch(
+          `${API_BASE_URL}/events/${id}`,
+          {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (res.ok) {
-          alert("Event deleted");
+          alert('Event deleted');
           window.location.reload();
         }
       } catch (err) {
@@ -114,16 +161,19 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   const handleReviewSubmit = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/reviews`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ rating, comment })
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/reviews`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ rating, comment }),
+        }
+      );
       if (res.ok) {
-        alert("Review submitted successfully!");
+        alert('Review submitted successfully!');
         setShowReview(false);
       } else {
         const errText = await res.text();
@@ -131,16 +181,19 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
       }
     } catch (err) {
       console.error(err);
-      alert("Network error.");
+      alert('Network error.');
     }
   };
 
   const fetchMedia = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/media`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/media`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.ok) {
         setMedia(await res.json());
       }
@@ -153,45 +206,48 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
     if (!newMediaUrl) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/media`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ mediaUrl: newMediaUrl })
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/media`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ mediaUrl: newMediaUrl }),
+        }
+      );
       if (res.ok) {
         setNewMediaUrl('');
-        fetchMedia(); // Refresh
+        fetchMedia();
       } else {
         const errText = await res.text();
         alert(`Failed: ${errText}`);
       }
     } catch (err) {
       console.error(err);
-      alert("Network error.");
+      alert('Network error.');
     }
   };
 
-  // Fetch media when opening the modal
   useEffect(() => {
     if (showMemories) {
       fetchMedia();
     }
   }, [showMemories]);
 
-  // Fetch attendees for match result submission
   const fetchAttendeesList = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}/rsvps`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/events/${id}/rsvps`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.ok) {
         const data = await res.json();
-        // Extract users from RSVPs
-        setAttendeesList(data.map(r => r.user));
+        setAttendeesList(data.map((r) => r.user));
       }
     } catch (err) {
       console.error(err);
@@ -202,16 +258,24 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
     if (!winnerId || !loserId || !matchScore) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/leaderboard/submit-result`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ eventId: id, winnerId, loserId, score: matchScore })
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/leaderboard/submit-result`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            eventId: id,
+            winnerId,
+            loserId,
+            score: matchScore,
+          }),
+        }
+      );
       if (res.ok) {
-        alert("Match result submitted!");
+        alert('Match result submitted!');
         setShowResult(false);
       } else {
         const errText = await res.text();
@@ -219,24 +283,32 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
       }
     } catch (err) {
       console.error(err);
-      alert("Network error.");
+      alert('Network error.');
     }
   };
 
   const handleReportEvent = async () => {
-    if (window.confirm("Are you sure you want to report this event?")) {
+    if (window.confirm('Are you sure you want to report this event?')) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/safety/report`, {
-          method: 'POST',
-          headers: { 
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ targetType: 'EVENT', targetId: id, reason: 'Inappropriate event', details: '' })
-        });
+        const res = await fetch(
+          `${API_BASE_URL}/safety/report`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              targetType: 'EVENT',
+              targetId: id,
+              reason: 'Inappropriate event',
+              details: '',
+            }),
+          }
+        );
         if (res.ok) {
-          alert("Report submitted successfully.");
+          alert('Report submitted successfully.');
         }
       } catch (err) {
         console.error(err);
@@ -245,15 +317,20 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
   };
 
   const handleHighlightEvent = async () => {
-    if (window.confirm("Pay $9.99 to highlight this event? (Mock Payment)")) {
+    if (
+      window.confirm('Pay $9.99 to highlight this event? (Mock Payment)')
+    ) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/monetization/highlight-event/${id}`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const res = await fetch(
+          `${API_BASE_URL}/monetization/highlight-event/${id}`,
+          {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (res.ok) {
-          alert("Event highlighted successfully!");
+          alert('Event highlighted successfully!');
           window.location.reload();
         }
       } catch (err) {
@@ -262,146 +339,198 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
     }
   };
 
+  /* ============================================================
+     Modal overlay — shared base
+     ============================================================ */
+  const ModalOverlay = ({ show, onClose, children, wide }) => {
+    if (!show) return null;
+    return (
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div
+          className={`bg-white border border-border rounded-md p-6 ${
+            wide ? 'max-w-2xl' : 'max-w-md'
+          } w-full relative animate-scale-in shadow-modal`}
+        >
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-fg-faint hover:text-fg transition-colors"
+          >
+            <X size={20} weight="bold" />
+          </button>
+          {children}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
-    <div className={`group relative rounded-xl border ${isHighlighted ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' : 'border-surface-variant/20'} bg-surface-container-low overflow-hidden hover:border-lime-vibe/50 transition-colors duration-500 flex flex-col h-[400px]`}>
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity duration-700 mix-blend-luminosity" 
-        style={{backgroundImage: `url('${imageUrl || "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000"}')`}}
-      ></div>
-      
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
-      
-      {/* Content */}
-      <div className="relative z-10 flex flex-col h-full p-6 justify-between">
-        <div className="flex justify-between items-start">
-          <div className="flex gap-2 flex-wrap">
-            <div className="bg-surface-dark/80 backdrop-blur-md px-3 py-1 rounded-full border border-surface-variant/30 font-label-mono text-xs text-lime-vibe uppercase tracking-widest">
-              {category}
-            </div>
-            {cost > 0 ? (
-              <div className="bg-surface-dark/80 backdrop-blur-md px-3 py-1 rounded-full border border-[#10b981] font-label-mono text-xs text-[#10b981] uppercase tracking-widest">
-                ${cost}
-              </div>
-            ) : cost === 0 ? (
-              <div className="bg-surface-dark/80 backdrop-blur-md px-3 py-1 rounded-full border border-[#10b981] font-label-mono text-xs text-[#10b981] uppercase tracking-widest">
-                FREE
-              </div>
-            ) : null}
-            {skillLevel && skillLevel !== 'All' && (
-              <div className="bg-surface-dark/80 backdrop-blur-md px-3 py-1 rounded-full border border-surface-variant/30 font-label-mono text-xs text-on-surface uppercase tracking-widest">
-                {skillLevel}
-              </div>
-            )}
-          </div>
-          <div className="bg-surface-dark/80 backdrop-blur-md px-3 py-1 rounded-full border border-surface-variant/30 flex items-center gap-2">
-             <Users size={14} className="text-text-muted" />
-             <span className="font-label-mono text-xs text-text-muted">{attendees}/{maxAttendees}</span>
-          </div>
+      {/* Card */}
+      <div
+        className={`card card-hover flex flex-col ${
+          isHighlighted ? 'ring-2 ring-accent' : ''
+        }`}
+      >
+        {/* Image */}
+        <div className="aspect-[16/10] overflow-hidden bg-bg-subtle relative group">
+          <img
+            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            alt={title}
+            src={
+              imageUrl ||
+              'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
+            }
+          />
         </div>
 
-        <div className="space-y-4">
-          <h3 className="font-headline-md text-headline-md text-on-surface uppercase tracking-tight leading-tight line-clamp-2">
-            {isHighlighted && <span className="text-purple-400 mr-2">★</span>}
+        {/* Content */}
+        <div className="p-5 flex flex-col flex-1">
+          {/* Tags row */}
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            <span className="tag text-micro">{category}</span>
+            {cost > 0 ? (
+              <span className="tag text-micro">${cost}</span>
+            ) : cost === 0 ? (
+              <span className="tag text-micro">Free</span>
+            ) : null}
+            {skillLevel && skillLevel !== 'All' && (
+              <span className="tag-neutral tag text-micro">{skillLevel}</span>
+            )}
+          </div>
+
+          {/* Title */}
+          <h3 className="text-body font-semibold text-fg mb-1 line-clamp-2 leading-snug">
+            {isHighlighted && (
+              <Star
+                size={14}
+                weight="fill"
+                className="text-accent inline mr-1 -mt-0.5"
+              />
+            )}
             {title}
           </h3>
+
+          {/* Host */}
           {host && (
-            <p className="font-label-mono text-[10px] text-text-muted uppercase tracking-widest mt-1">
-              HOSTED BY{' '}
-              <button 
+            <p className="text-caption text-fg-muted mb-3">
+              by{' '}
+              <button
                 onClick={() => onUserClick && onUserClick(host.id)}
-                className="text-lime-vibe hover:underline font-bold"
+                className="text-accent hover:underline font-medium"
               >
                 {host.username}
               </button>
             </p>
           )}
-          
-          <div className="space-y-2 font-label-mono text-xs uppercase tracking-widest text-text-muted">
+
+          {/* Meta */}
+          <div className="space-y-1.5 text-caption text-fg-muted mb-4">
             <div className="flex items-center gap-2">
-              <Calendar size={14} className="text-lime-vibe" />
+              <CalendarBlank size={14} weight="bold" className="text-accent" />
               <span>{date}</span>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin size={14} className="text-lime-vibe" />
+              <MapPin size={14} weight="bold" className="text-accent" />
               <span className="line-clamp-1">{location}</span>
             </div>
           </div>
-          
-          <div className="flex gap-2 mt-4">
+
+          {/* Attendees */}
+          <div className="flex items-center gap-2 text-caption text-fg-muted mb-4">
+            <Users size={14} weight="bold" />
+            <span>
+              {attendees}/{maxAttendees} attending
+            </span>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-2 mt-auto">
             {isPastEvent ? (
               <>
-                <button 
+                <button
                   onClick={() => setShowMemories(true)}
-                  className="flex-1 px-4 py-3 bg-surface-dark border border-lime-vibe/50 text-lime-vibe font-label-mono text-sm uppercase tracking-widest hover:bg-lime-vibe/10 transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                  className="btn-ghost flex-1 text-sm py-2 px-3"
                 >
-                  <ImageIcon size={16} /> MEMORIES
+                  <ImageIcon size={16} weight="bold" />
+                  Memories
                 </button>
                 {ticketData?.status === 'ATTENDED' && !isHost && (
-                  <button 
-                    onClick={() => setShowReview(true)} 
-                    className="flex-1 px-4 py-3 bg-lime-vibe border border-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest hover:bg-white transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                  <button
+                    onClick={() => setShowReview(true)}
+                    className="btn-primary flex-1 text-sm py-2 px-3"
                   >
-                    <Star size={16} className="fill-primary-container" /> RATE
+                    <Star size={16} weight="bold" />
+                    Rate
                   </button>
                 )}
                 {isHost && (
-                  <button 
+                  <button
                     onClick={() => {
                       fetchWaitlist();
                       setShowManage(true);
-                    }} 
-                    className="flex-1 px-4 py-3 bg-surface-dark border border-lime-vibe text-lime-vibe font-label-mono text-sm uppercase tracking-widest hover:bg-lime-vibe/10 transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                    }}
+                    className="btn-ghost flex-1 text-sm py-2 px-3"
                   >
-                    <Settings2 size={16} /> MANAGE
+                    <GearSix size={16} weight="bold" />
+                    Manage
                   </button>
                 )}
                 {isHost && category === 'Sports' && (
-                  <button 
+                  <button
                     onClick={() => {
                       fetchAttendeesList();
                       setShowResult(true);
-                    }} 
-                    className="flex-1 px-4 py-3 bg-lime-vibe border border-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest hover:bg-white transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                    }}
+                    className="btn-primary flex-1 text-sm py-2 px-3"
                   >
-                    <Trophy size={16} /> RESULT
+                    <Trophy size={16} weight="bold" />
+                    Result
                   </button>
                 )}
                 {isHost && !isHighlighted && (
-                  <button 
-                    onClick={handleHighlightEvent} 
-                    className="flex-1 px-4 py-3 bg-surface-dark border border-purple-500/50 text-purple-400 font-label-mono text-sm uppercase tracking-widest hover:bg-purple-500/10 transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                  <button
+                    onClick={handleHighlightEvent}
+                    className="btn-ghost flex-1 text-sm py-2 px-3"
                   >
-                    <Star size={16} /> HIGHLIGHT
+                    <Star size={16} weight="bold" />
+                    Highlight
                   </button>
                 )}
               </>
             ) : (
               <>
                 {isHost ? (
-                  <button 
+                  <button
                     onClick={() => {
                       fetchWaitlist();
                       setShowManage(true);
-                    }} 
-                    className="flex-1 px-4 py-3 bg-surface-dark border border-lime-vibe text-lime-vibe font-label-mono text-sm uppercase tracking-widest hover:bg-lime-vibe/10 transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                    }}
+                    className="btn-ghost flex-1 text-sm py-2 px-3"
                   >
-                    <Settings2 size={16} /> MANAGE
+                    <GearSix size={16} weight="bold" />
+                    Manage
                   </button>
                 ) : ticketData ? (
-                  <button 
-                    onClick={() => setShowQr(true)} 
-                    className="flex-1 px-4 py-3 bg-lime-vibe border border-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest hover:bg-white transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                  <button
+                    onClick={() => setShowQr(true)}
+                    className="btn-primary flex-1 text-sm py-2 px-3"
                   >
-                    <Ticket size={16} /> {ticketData.status === 'ATTENDED' ? 'ATTENDED' : ticketData.status === 'WAITLIST' ? 'ON WAITLIST' : 'VIEW TICKET'}
+                    <Ticket size={16} weight="bold" />
+                    {ticketData.status === 'ATTENDED'
+                      ? 'Attended'
+                      : ticketData.status === 'WAITLIST'
+                      ? 'Waitlisted'
+                      : 'View ticket'}
                   </button>
                 ) : (
-                  <button 
+                  <button
                     onClick={() => {
                       if (cost > 0) {
-                        if(window.confirm(`Pay $${cost} to buy a ticket? (Mock Payment)`)) {
+                        if (
+                          window.confirm(
+                            `Pay $${cost} to buy a ticket? (Mock Payment)`
+                          )
+                        ) {
                           if (onRsvp) {
                             onRsvp(id);
                             setTimeout(fetchTicket, 1000);
@@ -413,298 +542,281 @@ const EventCard = ({ id, title, category, date, rawDate, location, attendees, ma
                           setTimeout(fetchTicket, 1000);
                         }
                       }
-                    }} 
-                    className={`flex-1 px-4 py-3 font-label-mono text-sm uppercase tracking-widest transition-all rounded-DEFAULT flex items-center justify-center gap-2 ${attendees >= maxAttendees ? 'bg-[#f59e0b] border-[#f59e0b] text-primary-container hover:bg-[#d97706]' : 'bg-transparent border border-surface-variant/50 text-on-surface hover:border-lime-vibe hover:text-lime-vibe hover:bg-lime-vibe/10'}`}
+                    }}
+                    className={`flex-1 text-sm py-2 px-3 ${
+                      attendees >= maxAttendees
+                        ? 'btn-ghost border-live text-live'
+                        : 'btn-primary'
+                    }`}
                   >
-                    {attendees >= maxAttendees ? 'JOIN WAITLIST' : cost > 0 ? 'BUY TICKET' : 'JOIN'} <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    {attendees >= maxAttendees
+                      ? 'Join waitlist'
+                      : cost > 0
+                      ? 'Buy ticket'
+                      : 'Join'}
+                    <ArrowRight size={14} weight="bold" />
                   </button>
                 )}
                 {isHost && !isHighlighted && !isPastEvent && (
-                  <button 
-                    onClick={handleHighlightEvent} 
-                    className="flex-1 px-4 py-3 bg-surface-dark border border-purple-500/50 text-purple-400 font-label-mono text-sm uppercase tracking-widest hover:bg-purple-500/10 transition-all rounded-DEFAULT flex items-center justify-center gap-2"
+                  <button
+                    onClick={handleHighlightEvent}
+                    className="btn-ghost text-sm py-2 px-3"
                   >
-                    <Star size={16} /> HIGHLIGHT
+                    <Star size={16} weight="bold" />
                   </button>
                 )}
               </>
             )}
-            <button 
-              onClick={() => onChat && onChat(id, title)} 
-              className="px-4 py-3 bg-surface-dark border border-surface-variant/50 text-lime-vibe font-label-mono text-sm uppercase tracking-widest hover:border-lime-vibe transition-all rounded-DEFAULT flex items-center justify-center"
-              title="Locker Room (Comms)"
+            <button
+              onClick={() => onChat && onChat(id, title)}
+              className="btn-ghost text-sm py-2 px-3"
+              title="Group chat"
             >
-              <MessageSquare size={18} />
+              <ChatCircle size={16} weight="bold" />
             </button>
-            <button 
-              onClick={handleReportEvent} 
-              className="px-4 py-3 bg-surface-dark border border-surface-variant/50 text-text-muted font-label-mono text-sm uppercase tracking-widest hover:text-red-500 hover:border-red-500/50 transition-all rounded-DEFAULT flex items-center justify-center"
-              title="Report Event"
+            <button
+              onClick={handleReportEvent}
+              className="btn-ghost text-sm py-2 px-3 hover:text-error hover:border-error"
+              title="Report"
             >
-              <AlertTriangle size={18} />
+              <Warning size={16} weight="bold" />
             </button>
           </div>
         </div>
       </div>
-    </div>
 
-    {/* QR Code Modal */}
-    {showQr && ticketData && (
-      <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-surface-dark border border-lime-vibe/30 rounded-2xl p-8 max-w-sm w-full relative glow-neon flex flex-col items-center">
-          <button 
-            onClick={() => setShowQr(false)}
-            className="absolute top-4 right-4 text-text-muted hover:text-white"
-          >
-            <X size={24} />
-          </button>
-          
-          <h3 className="font-headline-md text-white uppercase tracking-tight mb-2 text-center">{title}</h3>
-          <p className="font-label-mono text-lime-vibe text-xs tracking-widest mb-8 text-center">{ticketData.status}</p>
-          
-          <div className="bg-white p-4 rounded-xl mb-6">
-            <QRCodeSVG value={ticketData.ticketId} size={200} />
+      {/* ============ QR Code Modal ============ */}
+      <ModalOverlay show={showQr && !!ticketData} onClose={() => setShowQr(false)}>
+        <div className="text-center">
+          <h3 className="text-title-sm text-fg mb-1">{title}</h3>
+          <span className="tag text-micro mb-6 inline-block">{ticketData?.status}</span>
+          <div className="bg-bg-subtle p-4 rounded-md inline-block mb-4">
+            <QRCodeSVG value={ticketData?.ticketId || ''} size={180} />
           </div>
-          
-          <p className="font-label-mono text-[10px] text-text-muted tracking-widest text-center mb-2">TICKET ID</p>
-          <p className="font-body-sm text-white bg-surface-container px-4 py-2 rounded-lg font-mono text-center w-full break-all">
-            {ticketData.ticketId}
+          <p className="text-caption text-fg-muted mb-1">Ticket ID</p>
+          <p className="text-caption font-mono text-fg bg-bg-subtle px-3 py-2 rounded-sm break-all">
+            {ticketData?.ticketId}
           </p>
         </div>
-      </div>
-    )}
+      </ModalOverlay>
 
-    {/* Manage Event Modal */}
-    {showManage && isHost && (
-      <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-surface-dark border border-surface-variant/30 rounded-2xl p-8 max-w-sm w-full relative">
-          <button 
-            onClick={() => setShowManage(false)}
-            className="absolute top-4 right-4 text-text-muted hover:text-white"
-          >
-            <X size={24} />
+      {/* ============ Manage Modal ============ */}
+      <ModalOverlay show={showManage && isHost} onClose={() => setShowManage(false)}>
+        <h3 className="text-title-sm text-fg mb-1">Manage event</h3>
+        <p className="text-caption text-fg-muted mb-6">Check in attendees and manage waitlist</p>
+
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-body-sm font-medium text-fg mb-2">
+              Attendee ticket ID
+            </label>
+            <input
+              type="text"
+              value={ticketIdInput}
+              onChange={(e) => setTicketIdInput(e.target.value)}
+              placeholder="Paste UUID..."
+              className="input-bordered font-mono text-sm"
+            />
+          </div>
+          <button onClick={handleCheckIn} className="btn-primary w-full">
+            Check in
           </button>
-          
-          <h3 className="font-headline-md text-white uppercase tracking-tight mb-2">Host Dashboard</h3>
-          <p className="font-label-mono text-lime-vibe text-xs tracking-widest mb-6">MANUAL CHECK-IN</p>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-text-muted font-label-mono text-xs uppercase tracking-widest mb-2">Attendee Ticket ID</label>
-              <input 
-                type="text"
-                value={ticketIdInput}
-                onChange={(e) => setTicketIdInput(e.target.value)}
-                placeholder="Paste UUID..."
-                className="w-full bg-surface-container border border-surface-variant/50 text-white p-3 rounded-lg font-mono text-sm focus:border-lime-vibe outline-none transition-colors"
-              />
-            </div>
-            
-            <button 
-              onClick={handleCheckIn}
-              className="w-full bg-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest p-3 rounded-DEFAULT hover:bg-white transition-all glow-neon"
-            >
-              Check In Attendee
-            </button>
-          </div>
-
-          <div className="mt-8 border-t border-surface-variant/30 pt-6">
-            <p className="font-label-mono text-lime-vibe text-xs tracking-widest mb-4">WAITLIST MANAGEMENT</p>
-            {waitlist.length === 0 ? (
-              <p className="text-text-muted font-body-sm">No users on waitlist.</p>
-            ) : (
-              <div className="space-y-3 max-h-40 overflow-y-auto custom-scrollbar">
-                {waitlist.map(rsvp => (
-                  <div key={rsvp.id} className="flex justify-between items-center bg-surface-container p-2 rounded border border-surface-variant/50">
-                    <span className="text-white text-sm">{rsvp.user.username}</span>
-                    <div className="flex gap-2">
-                      <button onClick={() => handleWaitlistAction(rsvp.user.id, 'approve')} className="bg-lime-vibe/20 text-lime-vibe px-2 py-1 rounded text-xs uppercase hover:bg-lime-vibe/40">Approve</button>
-                      <button onClick={() => handleWaitlistAction(rsvp.user.id, 'reject')} className="bg-red-500/20 text-red-500 px-2 py-1 rounded text-xs uppercase hover:bg-red-500/40">Reject</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="mt-8 border-t border-red-500/30 pt-6">
-            <button 
-              onClick={handleDeleteEvent}
-              className="w-full bg-red-500/10 border border-red-500/50 text-red-500 font-label-mono text-sm uppercase tracking-widest p-3 rounded-DEFAULT hover:bg-red-500/30 transition-all"
-            >
-              Delete Event
-            </button>
-          </div>
         </div>
-      </div>
-    )}
 
-    {/* Review Modal */}
-    {showReview && (
-      <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-surface-dark border border-surface-variant/30 rounded-2xl p-8 max-w-sm w-full relative">
-          <button 
-            onClick={() => setShowReview(false)}
-            className="absolute top-4 right-4 text-text-muted hover:text-white"
-          >
-            <X size={24} />
-          </button>
-          
-          <h3 className="font-headline-md text-white uppercase tracking-tight mb-2">Rate Host</h3>
-          <p className="font-label-mono text-lime-vibe text-xs tracking-widest mb-6">POST-EVENT REVIEW</p>
-          
-          <div className="space-y-6">
-            <div className="flex justify-center gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button key={star} onClick={() => setRating(star)}>
-                  <Star 
-                    size={32} 
-                    className={star <= rating ? "text-lime-vibe fill-lime-vibe" : "text-surface-variant"} 
-                  />
-                </button>
-              ))}
-            </div>
-            
-            <div>
-              <textarea 
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="How was the event? Leave a comment for the host..."
-                className="w-full bg-surface-container border border-surface-variant/50 text-white p-3 rounded-lg font-body-sm focus:border-lime-vibe outline-none transition-colors h-32 resize-none"
-              ></textarea>
-            </div>
-            
-            <button 
-              onClick={handleReviewSubmit}
-              className="w-full bg-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest p-3 rounded-DEFAULT hover:bg-white transition-all glow-neon"
-            >
-              Submit Review
-            </button>
-          </div>
-        </div>
-      </div>
-    )}
-
-    {/* Memories Modal */}
-    {showMemories && (
-      <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-surface-dark border border-surface-variant/30 rounded-2xl p-8 max-w-2xl w-full h-[80vh] flex flex-col relative">
-          <button 
-            onClick={() => setShowMemories(false)}
-            className="absolute top-4 right-4 text-text-muted hover:text-white"
-          >
-            <X size={24} />
-          </button>
-          
-          <h3 className="font-headline-md text-white uppercase tracking-tight mb-2 flex items-center gap-2"><ImageIcon size={24} className="text-lime-vibe"/> Event Memories</h3>
-          <p className="font-label-mono text-text-muted text-xs tracking-widest mb-6">SHARED GALLERY</p>
-          
-          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-            {media.length === 0 ? (
-              <div className="h-full flex items-center justify-center flex-col text-text-muted">
-                <ImageIcon size={48} className="mb-4 opacity-50" />
-                <p className="font-label-mono uppercase tracking-widest">No memories uploaded yet.</p>
-              </div>
-            ) : (
-              <div className="columns-2 md:columns-3 gap-4 space-y-4">
-                {media.map((m) => (
-                  <div key={m.id} className="break-inside-avoid relative group rounded-lg overflow-hidden border border-surface-variant/20">
-                    <img src={m.mediaUrl} alt="Memory" className="w-full h-auto object-cover" />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 translate-y-full group-hover:translate-y-0 transition-transform">
-                      <p className="text-[10px] text-white font-label-mono tracking-wider truncate">by {m.uploader?.username}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {(isHost || ticketData?.status === 'ATTENDED') && (
-            <div className="mt-6 border-t border-surface-variant/30 pt-6">
-              <div className="flex gap-2">
-                <input 
-                  type="text"
-                  value={newMediaUrl}
-                  onChange={(e) => setNewMediaUrl(e.target.value)}
-                  placeholder="Paste image URL here..."
-                  className="flex-1 bg-surface-container border border-surface-variant/50 text-white px-4 py-2 rounded-lg font-body-sm focus:border-lime-vibe outline-none transition-colors"
-                />
-                <button 
-                  onClick={handleMediaUpload}
-                  className="px-6 py-2 bg-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest hover:bg-white transition-all rounded-DEFAULT whitespace-nowrap"
+        <div className="border-t border-border pt-6">
+          <h4 className="text-body-sm font-semibold text-fg mb-3">Waitlist</h4>
+          {waitlist.length === 0 ? (
+            <p className="text-body-sm text-fg-muted">No users on waitlist.</p>
+          ) : (
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {waitlist.map((rsvp) => (
+                <div
+                  key={rsvp.id}
+                  className="flex justify-between items-center bg-bg-subtle px-3 py-2 rounded-sm"
                 >
-                  Upload
-                </button>
-              </div>
+                  <span className="text-body-sm text-fg">{rsvp.user.username}</span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleWaitlistAction(rsvp.user.id, 'approve')}
+                      className="text-caption text-accent font-medium hover:underline"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleWaitlistAction(rsvp.user.id, 'reject')}
+                      className="text-caption text-error font-medium hover:underline"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
-      </div>
-    )}
-    {/* Submit Match Result Modal */}
-    {showResult && isHost && category === 'Sports' && (
-      <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-surface-dark border border-surface-variant/30 rounded-2xl p-8 max-w-sm w-full relative">
-          <button 
-            onClick={() => setShowResult(false)}
-            className="absolute top-4 right-4 text-text-muted hover:text-white"
+
+        <div className="border-t border-border pt-6 mt-6">
+          <button
+            onClick={handleDeleteEvent}
+            className="btn-ghost w-full text-error border-error hover:bg-error-subtle"
           >
-            <X size={24} />
+            Delete event
           </button>
-          
-          <h3 className="font-headline-md text-white uppercase tracking-tight mb-2 flex items-center gap-2"><Trophy size={20} className="text-lime-vibe"/> Match Result</h3>
-          <p className="font-label-mono text-lime-vibe text-xs tracking-widest mb-6">UPDATE LEADERBOARD</p>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-text-muted font-label-mono text-xs uppercase tracking-widest mb-2">Winner</label>
-              <select 
-                value={winnerId}
-                onChange={(e) => setWinnerId(e.target.value)}
-                className="w-full bg-surface-container border border-surface-variant/50 text-white p-3 rounded-lg font-body-sm focus:border-lime-vibe outline-none transition-colors"
-              >
-                <option value="">Select Winner...</option>
-                {attendeesList.map(u => (
-                  <option key={u.id} value={u.id}>{u.username}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-text-muted font-label-mono text-xs uppercase tracking-widest mb-2">Loser</label>
-              <select 
-                value={loserId}
-                onChange={(e) => setLoserId(e.target.value)}
-                className="w-full bg-surface-container border border-surface-variant/50 text-white p-3 rounded-lg font-body-sm focus:border-lime-vibe outline-none transition-colors"
-              >
-                <option value="">Select Loser...</option>
-                {attendeesList.map(u => (
-                  <option key={u.id} value={u.id}>{u.username}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-text-muted font-label-mono text-xs uppercase tracking-widest mb-2">Score (e.g. 6-4, 6-2)</label>
-              <input 
-                type="text"
-                value={matchScore}
-                onChange={(e) => setMatchScore(e.target.value)}
-                placeholder="Final Score"
-                className="w-full bg-surface-container border border-surface-variant/50 text-white p-3 rounded-lg font-mono text-sm focus:border-lime-vibe outline-none transition-colors"
-              />
-            </div>
-            
-            <button 
-              onClick={handleSubmitResult}
-              className="w-full bg-lime-vibe text-primary-container font-label-mono text-sm uppercase tracking-widest p-3 rounded-DEFAULT hover:bg-white transition-all glow-neon mt-4"
-            >
-              Submit Result
-            </button>
-          </div>
         </div>
-      </div>
-    )}
+      </ModalOverlay>
+
+      {/* ============ Review Modal ============ */}
+      <ModalOverlay show={showReview} onClose={() => setShowReview(false)}>
+        <h3 className="text-title-sm text-fg mb-1">Rate this event</h3>
+        <p className="text-caption text-fg-muted mb-6">Share your experience</p>
+
+        <div className="space-y-6">
+          <div className="flex justify-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                className="transition-transform duration-150 hover:scale-110 active:scale-95"
+              >
+                <Star
+                  size={28}
+                  weight={star <= rating ? 'fill' : 'regular'}
+                  className={star <= rating ? 'text-accent' : 'text-border'}
+                />
+              </button>
+            ))}
+          </div>
+
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="How was the event?"
+            className="input-bordered h-28 resize-none"
+          />
+
+          <button onClick={handleReviewSubmit} className="btn-primary w-full">
+            Submit review
+          </button>
+        </div>
+      </ModalOverlay>
+
+      {/* ============ Memories Modal ============ */}
+      <ModalOverlay
+        show={showMemories}
+        onClose={() => setShowMemories(false)}
+        wide
+      >
+        <h3 className="text-title-sm text-fg mb-1">Event memories</h3>
+        <p className="text-caption text-fg-muted mb-6">Photos from this event</p>
+
+        <div className="max-h-[50vh] overflow-y-auto">
+          {media.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-fg-faint">
+              <ImageIcon size={40} weight="bold" className="mb-3" />
+              <p className="text-body-sm">No photos uploaded yet.</p>
+            </div>
+          ) : (
+            <div className="columns-2 md:columns-3 gap-3 space-y-3">
+              {media.map((m) => (
+                <div
+                  key={m.id}
+                  className="break-inside-avoid rounded-sm overflow-hidden border border-border"
+                >
+                  <img
+                    src={m.mediaUrl}
+                    alt="Memory"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {(isHost || ticketData?.status === 'ATTENDED') && (
+          <div className="border-t border-border pt-4 mt-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newMediaUrl}
+                onChange={(e) => setNewMediaUrl(e.target.value)}
+                placeholder="Paste image URL..."
+                className="input-bordered flex-1 text-sm"
+              />
+              <button onClick={handleMediaUpload} className="btn-primary text-sm">
+                Upload
+              </button>
+            </div>
+          </div>
+        )}
+      </ModalOverlay>
+
+      {/* ============ Match Result Modal ============ */}
+      <ModalOverlay
+        show={showResult && isHost && category === 'Sports'}
+        onClose={() => setShowResult(false)}
+      >
+        <h3 className="text-title-sm text-fg mb-1 flex items-center gap-2">
+          <Trophy size={18} weight="bold" className="text-accent" />
+          Match result
+        </h3>
+        <p className="text-caption text-fg-muted mb-6">Update the leaderboard</p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-body-sm font-medium text-fg mb-2">
+              Winner
+            </label>
+            <select
+              value={winnerId}
+              onChange={(e) => setWinnerId(e.target.value)}
+              className="input-bordered"
+            >
+              <option value="">Select winner...</option>
+              {attendeesList.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.username}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-body-sm font-medium text-fg mb-2">
+              Loser
+            </label>
+            <select
+              value={loserId}
+              onChange={(e) => setLoserId(e.target.value)}
+              className="input-bordered"
+            >
+              <option value="">Select loser...</option>
+              {attendeesList.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.username}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-body-sm font-medium text-fg mb-2">
+              Score
+            </label>
+            <input
+              type="text"
+              value={matchScore}
+              onChange={(e) => setMatchScore(e.target.value)}
+              placeholder="e.g. 6-4, 6-2"
+              className="input-bordered font-mono text-sm"
+            />
+          </div>
+
+          <button onClick={handleSubmitResult} className="btn-primary w-full mt-2">
+            Submit result
+          </button>
+        </div>
+      </ModalOverlay>
     </>
   );
 };

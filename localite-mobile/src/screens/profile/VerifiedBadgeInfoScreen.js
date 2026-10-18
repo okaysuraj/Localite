@@ -31,7 +31,7 @@ export default function VerifiedBadgeInfoScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
           <MaterialIcons name="close" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Royal Assemblage</Text>
+        <Text style={styles.headerTitle}>Verified Member</Text>
         <View style={styles.avatarWrap}>
           <Image 
             source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfmT29yfFr1H3JrLB8nKFa9bjkxLCF3KcdpsLcCVcXzSLdbxGPsNhm_ljsLWKHY_qx_KSnNJ5AmcckqI2l2-4gAnWdTdzQLNyxdkXEhbSQhB9axwsQ35xruJSznjJG8nEuPEgvrepMQGBl08bFciJm37ec-jl3uBe01bMAlPqULMsue44SsQKBPN1eCT_FdjjOVkmGjM9IXvEDxyt1pizv_KNaunwzSrevVaGXR1JO7BM48mh19T0Dsg' }}
@@ -52,7 +52,7 @@ export default function VerifiedBadgeInfoScreen() {
           </View>
           <Text style={styles.heroTitle}>The Mark of Distinction</Text>
           <Text style={styles.heroDesc}>
-            Elevate your presence within the Royal Assemblage. Our verification process ensures that every member of our curated circle is authentic and esteemed.
+            Elevate your presence within the Localite community. Our verification process ensures that every member of our curated circle is authentic and esteemed.
           </Text>
         </View>
 
@@ -61,7 +61,7 @@ export default function VerifiedBadgeInfoScreen() {
           {/* Verified Status */}
           <View style={styles.statusCard}>
             <View style={styles.statusHeaderRow}>
-              <MaterialIcons name="check-circle" size={16} color="#775a19" />
+              <MaterialIcons name="check-circle" size={16} color="#1A6B4A" />
               <Text style={styles.statusLabel}>VERIFIED STATUS</Text>
             </View>
             <Text style={styles.statusTitle}>Authenticity Confirmed</Text>

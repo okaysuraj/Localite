@@ -3,6 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getEventMessages, sendEventMessage, getEventById } from '../../services/api';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useAuth } from '../../context/AuthContext';
+import { 
+  ArrowLeft, 
+  PaperPlaneTilt, 
+  Users, 
+  CheckCircle,
+  Clock,
+  Sparkle
+} from '@phosphor-icons/react';
 
 export default function EventGroupChatPage() {
   const { id } = useParams();
@@ -24,7 +32,7 @@ export default function EventGroupChatPage() {
         const ev = await getEventById(id);
         setEvent(ev);
         const msgs = await getEventMessages(id);
-        setMessages(msgs);
+        setMessages(msgs || []);
         setTimeout(scrollToBottom, 100);
       } catch (err) {
         console.error('Error fetching chat data:', err);
@@ -50,12 +58,12 @@ export default function EventGroupChatPage() {
     };
   }, [isConnected, stompClient, id]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (e) => {
+    e?.preventDefault();
     if (!message.trim()) return;
     const content = message;
     setMessage('');
     try {
-      // Optimistic or rely on STOMP? We rely on STOMP for broadcast, but handle response just in case STOMP is slow
       const sentMsg = await sendEventMessage(id, content);
       setMessages((prev) => {
         if (prev.find(m => m.id === sentMsg.id)) return prev;
@@ -73,136 +81,129 @@ export default function EventGroupChatPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-[calc(100vh-80px)] bg-background max-w-7xl mx-auto border-x border-surface-variant/30">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-80px)] bg-[var(--bg)] text-[var(--fg)] max-w-7xl mx-auto border-x border-[var(--border)] font-sans">
       
-      {/* Left Pane (Hidden on Mobile) */}
-      <aside className="hidden lg:flex flex-col w-[380px] border-r border-surface-variant/30 bg-surface-container-lowest">
-        <div className="p-6 border-b border-surface-variant/30">
-          <div className="flex items-center gap-4 cursor-pointer hover:opacity-80" onClick={() => navigate(`/event/${id}`)}>
-            <span className="material-symbols-outlined text-secondary">arrow_back</span>
-            <h2 className="font-headline-sm text-headline-sm text-primary">Back to Event</h2>
+      {/* Left Sidebar (Desktop) */}
+      <aside className="hidden lg:flex flex-col w-80 border-r border-[var(--border)] bg-[var(--bg-subtle)] p-6 justify-between">
+        <div className="space-y-6">
+          <button 
+            onClick={() => navigate(`/event/${id}`)}
+            className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Gathering</span>
+          </button>
+
+          <div className="bg-[var(--bg)] p-5 rounded-card border border-[var(--border)] space-y-3">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--accent)]">
+              Event Discussion Room
+            </span>
+            <h2 className="text-base font-semibold text-[var(--fg)] leading-snug">
+              {event?.title || 'Gathering Chat'}
+            </h2>
+            <p className="text-xs text-[var(--fg-muted)]">
+              {event?.category || 'Social Gathering'} • {event?.city || 'Local Metro'}
+            </p>
+            <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs">
+              <span className="text-[var(--fg-muted)]">Room Status</span>
+              <span className="flex items-center gap-1.5 font-medium text-emerald-600">
+                <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-neutral-400'}`}></span>
+                {isConnected ? 'Connected' : 'Connecting'}
+              </span>
+            </div>
           </div>
         </div>
-        
-        <div className="p-6 flex-grow">
-          <h3 className="font-label-caps text-on-surface-variant mb-4">EVENT GROUP</h3>
-          <div className="flex items-center gap-4 p-4 rounded-xl bg-white shadow-sm border border-secondary transition-all">
-            <div className="relative w-12 h-12 flex-shrink-0">
-              <div className="absolute inset-0 rounded-full border border-surface-container-highest overflow-hidden z-10 bg-secondary">
-                <img className="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBblH0PKPWYe2PNKmkQUOqIh5s13e3V38zt__lJwihjx0wHcYapGsjYJbgF5_wiW6VfK4rukyBFnA7eOvuJhtFTmaJ-Trcdp7QGg1GJNbhXxUJgTj02ma2XG0GPGVMAuQLv5sEcYhAOZW0xXbfHOJkId5IG94rKgVxSUBvB3q4JCfhCvHkhIxRDoMMqChjYMEAxWjFTDOFE1R6qNPm2-joSQgFZ2N6pYn710M8F7CkyYPG-_8rrk1NAsg" alt="Group" />
-              </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-start">
-                <h3 className="font-body-md font-bold text-primary truncate">{event?.title || 'Loading...'}</h3>
-              </div>
-              <p className="text-body-md text-secondary truncate font-medium">{event?.category}</p>
-            </div>
-          </div>
+
+        <div className="p-4 bg-[var(--bg)] rounded-card border border-[var(--border)] text-xs text-[var(--fg-muted)] space-y-1">
+          <span className="font-semibold text-[var(--fg)] block">Room Etiquette</span>
+          <p className="text-[11px] leading-relaxed">
+            Coordinate arrivals, carpooling, and gear requirements. Private contact numbers are protected.
+          </p>
         </div>
       </aside>
 
-      {/* Right Pane: Chat Interface */}
-      <section className="flex flex-col flex-1 relative bg-white">
-        <header className="px-container-margin py-4 flex items-center justify-between border-b border-surface-container/50 bg-white/90 backdrop-blur-md z-10">
-          <div className="flex items-center gap-4">
-            <button className="lg:hidden p-2 -ml-2" onClick={() => navigate(`/event/${id}`)}>
-              <span className="material-symbols-outlined text-primary">arrow_back</span>
+      {/* Main Chat Stream */}
+      <section className="flex flex-col flex-1 relative bg-[var(--bg)]">
+        {/* Top Chat Bar */}
+        <header className="px-6 py-4 flex items-center justify-between border-b border-[var(--border)] bg-[var(--bg)]/90 backdrop-blur-md sticky top-0 z-20">
+          <div className="flex items-center gap-3">
+            <button 
+              className="lg:hidden p-1.5 -ml-2 text-[var(--fg-muted)] hover:text-[var(--fg)]" 
+              onClick={() => navigate(`/event/${id}`)}
+            >
+              <ArrowLeft size={18} />
             </button>
-            <div className="flex -space-x-3 items-center">
-              <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-surface-container z-20">
-                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6YM4gYgEQOeArG7LRZUu9H8YqE8q6AHLTvek7WwHUySITQ7buzF6qOUizIB_QDiJW77F_RA6hLHA-vF1YvMWCbOm-wq3zJKdLzzrYJiH_L7BvkVWE2iAPhdXTaJtEtL8lwRouWeFIEVSyvX9S-9AR5X9IhRAhybqFA_uNfenUqghwkrpexnMbAX1PtZpjTQoSkkZtw3TVjrZHJ862L4aaz_EPOXuEHLykwkIK7BCNDkT9OZft0Spovw" alt="Participant" />
-              </div>
-              <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-surface-container z-10">
-                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-wUWWPiUJFbdWTbfAKzwJsZJeo0ZfNIgSV6cKtLweWcEFqegsmE6B4Gubqho_xAPSc-CBYnGgYYMbt3Jnumg5Gwz47XxMXn53WyOvrrWoPCjU6y5jlahMm7YsxQffdl6JW8U2PSfc1GZ_V4yWriZzjj2yUPctpLZyt7rNM7U-S8ME3yMo1C84mEeqgvkTAY1ovKsQ92xuConSR4153ng5e5ZfyjJV2Vq6jEu1oU0PyNGUDqlqau0hNQ" alt="Participant" />
-              </div>
-              <div className="w-10 h-10 rounded-full border-2 border-white bg-secondary flex items-center justify-center text-[10px] text-white font-bold z-0">
-                +22
-              </div>
-            </div>
             <div>
-              <h1 className="font-headline-sm text-headline-sm text-primary leading-tight">{event?.title || 'Loading...'}</h1>
-              <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                <span className="font-label-caps text-[10px] text-on-surface-variant">
-                  {isConnected ? 'LIVE' : 'DISCONNECTED'} • {event?.attendees || 0} MEMBERS
-                </span>
-              </div>
+              <h1 className="text-sm font-semibold text-[var(--fg)]">
+                {event?.title || 'Gathering Chat'}
+              </h1>
+              <span className="text-[11px] text-[var(--fg-muted)]">
+                {isConnected ? 'Real-time WebSocket Active' : 'Connecting to channel...'}
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors text-on-surface-variant">
-              <span className="material-symbols-outlined">search</span>
-            </button>
-            <button className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors text-on-surface-variant">
-              <span className="material-symbols-outlined">more_vert</span>
-            </button>
+
+          <div className="flex items-center gap-2 text-xs text-[var(--fg-muted)] font-mono">
+            <Users size={16} />
+            <span>{event?.attendees || 0} Attending</span>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar" style={{backgroundImage: "url('https://www.transparenttextures.com/patterns/natural-paper.png')"}}>
-          {messages.map((msg, idx) => {
-            const isMe = msg.sender === currentUser?.username || msg.sender === currentUser?.email;
-            
-            if (isMe) {
+        {/* Messages Feed */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {messages.length === 0 ? (
+            <div className="py-24 text-center text-xs text-[var(--fg-muted)]">
+              No messages posted yet. Start the conversation with your fellow attendees!
+            </div>
+          ) : (
+            messages.map((msg, idx) => {
+              const isMe = msg.sender === currentUser?.username || msg.sender === currentUser?.email;
               return (
-                <div key={idx} className="flex items-end gap-3 max-w-[80%] ml-auto flex-row-reverse">
-                  <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-secondary">
-                    <img className="w-full h-full object-cover" src={`https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4`} alt="Me" />
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <span className="font-label-caps text-[10px] text-on-surface-variant mr-2 mb-1 block uppercase">YOU • {formatTime(msg.sentAt)}</span>
-                    <div className="bg-primary text-white p-4 rounded-2xl rounded-br-none shadow-sm">
-                      <p className="text-body-md">{msg.content}</p>
-                    </div>
+                <div 
+                  key={idx} 
+                  className={`flex flex-col max-w-[80%] ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'}`}
+                >
+                  <span className="text-[10px] font-mono text-[var(--fg-muted)] mb-1 px-1">
+                    {isMe ? 'You' : msg.sender} • {formatTime(msg.sentAt)}
+                  </span>
+                  <div 
+                    className={`p-3.5 rounded-card text-xs leading-relaxed ${
+                      isMe 
+                        ? 'bg-[var(--accent)] text-white' 
+                        : 'bg-[var(--bg-subtle)] text-[var(--fg)] border border-[var(--border)]'
+                    }`}
+                  >
+                    {msg.content}
                   </div>
                 </div>
               );
-            }
-
-            return (
-              <div key={idx} className="flex items-end gap-3 max-w-[80%]">
-                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-surface-container">
-                  <img className="w-full h-full object-cover" src={`https://api.dicebear.com/7.x/notionists/svg?seed=${msg.sender}&backgroundColor=b9c7e4`} alt={msg.sender} />
-                </div>
-                <div className="space-y-2">
-                  <span className="font-label-caps text-[10px] text-on-surface-variant ml-2 mb-1 block uppercase">{msg.sender} • {formatTime(msg.sentAt)}</span>
-                  <div className={`bg-surface-container-low text-on-surface p-4 rounded-2xl rounded-bl-none shadow-sm`}>
-                    <p className={`text-body-md`}>{msg.content}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+            })
+          )}
           <div ref={messagesEndRef} />
         </div>
 
-        <footer className="p-6 bg-white border-t border-surface-container/50">
-          <div className="flex items-center gap-4 max-w-5xl mx-auto">
-            <button className="w-12 h-12 flex-shrink-0 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
-              <span className="material-symbols-outlined">add</span>
-            </button>
-            <div className="flex-1 relative">
-              <textarea 
-                className="w-full bg-surface-container-low border-none rounded-2xl px-6 py-3.5 text-body-md focus:ring-1 focus:ring-secondary-fixed-dim resize-none transition-all pr-12 outline-none" 
-                placeholder="Craft a message..." 
-                rows="1"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              ></textarea>
-              <button className="absolute right-3 top-3 material-symbols-outlined text-on-surface-variant hover:text-secondary transition-colors">
-                sentiment_satisfied
-              </button>
-            </div>
+        {/* Input Bar */}
+        <footer className="p-4 border-t border-[var(--border)] bg-[var(--bg)]">
+          <form onSubmit={handleSendMessage} className="flex items-center gap-3 max-w-4xl mx-auto">
+            <input 
+              type="text"
+              placeholder="Send message to attendees..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="flex-1 px-4 py-3 bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card text-xs text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:border-[var(--accent)] transition-colors"
+            />
             <button 
-              onClick={handleSendMessage}
-              className="w-12 h-12 flex-shrink-0 rounded-full bg-primary text-white flex items-center justify-center hover:opacity-90 active:scale-95 transition-all shadow-md"
+              type="submit"
+              disabled={!message.trim()}
+              className="px-5 py-3 bg-[var(--accent)] hover:bg-[var(--accent)]/90 disabled:opacity-40 text-white rounded-card text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
             >
-              <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>send</span>
+              <PaperPlaneTilt size={15} weight="bold" />
+              <span>Send</span>
             </button>
-          </div>
+          </form>
         </footer>
       </section>
+
     </div>
   );
 }

@@ -14,8 +14,9 @@ export const WebSocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    const rawBase = API_BASE_URL.replace(/\/api\/?$/, '');
     const client = new Client({
-      webSocketFactory: () => new SockJS(`${API_BASE_URL}/ws`),
+      webSocketFactory: () => new SockJS(`${rawBase}/ws`),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -24,8 +25,10 @@ export const WebSocketProvider = ({ children }) => {
         setIsConnected(true);
       },
       onStompError: (frame) => {
-        console.error('Broker reported error: ' + frame.headers['message']);
-        console.error('Additional details: ' + frame.body);
+        console.warn('Broker reported error: ' + frame?.headers?.['message']);
+      },
+      onWebSocketError: () => {
+        console.log('WebSocket handshake error (backend offline or connecting)');
       },
       onDisconnect: () => {
         console.log('Disconnected from WebSocket');

@@ -1,19 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Animated, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Animated, Platform, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { getMyEvents } from '../../services/api';
 
 export default function RevenueDashboardScreen() {
   const navigation = useNavigation();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [animValue] = useState(new Animated.Value(0));
 
   useEffect(() => {
+    async function loadData() {
+      try {
+        const myEvents = await getMyEvents();
+        setEvents(Array.isArray(myEvents) ? myEvents : []);
+      } catch (err) {
+        console.error('Failed to load revenue events:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+
     Animated.timing(animValue, {
       toValue: 1,
       duration: 1000,
       useNativeDriver: false,
     }).start();
   }, []);
+
+  const totalEarnings = events.reduce((acc, ev) => acc + ((ev.price || 0) * (ev.attendeeCount || 0)), 0);
+  const totalTickets = events.reduce((acc, ev) => acc + (ev.attendeeCount || 0), 0);
 
   const getBarHeight = (percentage) => {
     return animValue.interpolate({
@@ -32,7 +50,7 @@ export default function RevenueDashboardScreen() {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('ProfileSetupFinalSteps')} style={styles.avatarWrap}>
+        <TouchableOpacity onPress={() => navigation.navigate('OrganizerDashboard')} style={styles.avatarWrap}>
           <MaterialIcons name="person" size={24} color="#775a19" />
         </TouchableOpacity>
       </View>
@@ -43,11 +61,11 @@ export default function RevenueDashboardScreen() {
         <View style={styles.earningsSection}>
           <View>
             <Text style={styles.earningsLabel}>TOTAL EARNINGS</Text>
-            <Text style={styles.earningsTotal}>$24,850.00</Text>
+            <Text style={styles.earningsTotal}>${totalEarnings.toFixed(2)}</Text>
           </View>
           <View style={styles.trendWrap}>
             <MaterialIcons name="trending-up" size={16} color="#775a19" />
-            <Text style={styles.trendText}>+12.4% from last month</Text>
+            <Text style={styles.trendText}>Across {totalTickets} tickets sold</Text>
           </View>
         </View>
 
@@ -55,12 +73,12 @@ export default function RevenueDashboardScreen() {
         <View style={styles.graphCard}>
           <View style={styles.graphContainer}>
             {[ 
-              { month: 'JAN', height: 60, color: 'rgba(119, 90, 25, 0.4)' },
-              { month: 'FEB', height: 45, color: 'rgba(119, 90, 25, 0.4)' },
-              { month: 'MAR', height: 75, color: 'rgba(119, 90, 25, 0.6)' },
-              { month: 'APR', height: 90, color: '#000' },
-              { month: 'MAY', height: 55, color: 'rgba(119, 90, 25, 0.4)' },
-              { month: 'JUN', height: 70, color: 'rgba(119, 90, 25, 0.5)' }
+              { month: 'JAN', height: totalEarnings > 0 ? 40 : 10, color: 'rgba(119, 90, 25, 0.4)' },
+              { month: 'FEB', height: totalEarnings > 0 ? 55 : 10, color: 'rgba(119, 90, 25, 0.4)' },
+              { month: 'MAR', height: totalEarnings > 0 ? 65 : 10, color: 'rgba(119, 90, 25, 0.6)' },
+              { month: 'APR', height: totalEarnings > 0 ? 90 : 10, color: '#000' },
+              { month: 'MAY', height: totalEarnings > 0 ? 70 : 10, color: 'rgba(119, 90, 25, 0.4)' },
+              { month: 'JUN', height: totalEarnings > 0 ? 80 : 10, color: 'rgba(119, 90, 25, 0.5)' }
             ].map((item, idx) => (
               <View key={idx} style={styles.graphBarCol}>
                 <View style={styles.graphBarBg}>
@@ -80,18 +98,18 @@ export default function RevenueDashboardScreen() {
               <MaterialIcons name="confirmation-number" size={20} color="#775a19" />
               <Text style={styles.breakdownLabel}>TICKET SALES</Text>
             </View>
-            <Text style={styles.breakdownValue}>$18,420</Text>
-            <Text style={styles.breakdownDesc}>74% of total revenue</Text>
+            <Text style={styles.breakdownValue}>${totalEarnings.toFixed(2)}</Text>
+            <Text style={styles.breakdownDesc}>{totalTickets} verified guest tickets</Text>
           </View>
 
           {/* Add-ons */}
           <View style={styles.breakdownCard}>
             <View style={styles.breakdownHeader}>
               <MaterialIcons name="stars" size={20} color="#775a19" />
-              <Text style={styles.breakdownLabel}>ADD-ONS</Text>
+              <Text style={styles.breakdownLabel}>NET PAYOUT</Text>
             </View>
-            <Text style={styles.breakdownValue}>$4,120</Text>
-            <Text style={styles.breakdownDesc}>VIP & Concierge services</Text>
+            <Text style={styles.breakdownValue}>${(totalEarnings * 0.85).toFixed(2)}</Text>
+            <Text style={styles.breakdownDesc}>Available for bank transfer</Text>
           </View>
 
           {/* Tips */}

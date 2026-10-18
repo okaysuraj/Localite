@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { 
+  ChartBar, 
+  Clock, 
+  ArrowLeft, 
+  Users, 
+  CheckCircle, 
+  Megaphone,
+  Sparkle,
+  Archive
+} from '@phosphor-icons/react';
 
 export default function LiveEventPollPage() {
   const navigate = useNavigate();
-  const [selectedOption, setSelectedOption] = useState(null);
+  const { eventId } = useParams();
+  const [selectedOption, setSelectedOption] = useState('a');
   const [time, setTime] = useState(252); // 4:12
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTime(prev => (prev > 0 ? prev - 1 : 0));
+      setTime((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -17,163 +28,142 @@ export default function LiveEventPollPage() {
   const seconds = time % 60;
   const timeString = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
+  const options = [
+    { id: 'a', title: 'The Floating Glass Atrium & Herbarium', votes: 524, pct: 42 },
+    { id: 'b', title: 'Heritage Timber & Brass Salon', votes: 349, pct: 28 },
+    { id: 'c', title: 'Open Courtyard with Acoustic Pergola', votes: 375, pct: 30 },
+  ];
+
   return (
-    <div className="bg-background min-h-screen text-on-surface font-body-md flex flex-col overflow-x-hidden">
-      {/* TopNavBar */}
-      <header className="flex justify-between items-center w-full px-6 py-4 sticky top-0 z-50 bg-background border-b border-outline-variant shadow-sm">
-        <div className="flex items-center gap-8">
-          <span className="font-headline-md text-2xl font-bold text-primary tracking-tight">ELITE CIRCLE</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="bg-primary text-on-primary font-label-caps px-6 py-2 rounded-lg hover:opacity-80 transition-all uppercase tracking-widest text-xs">Create Event</button>
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant">
-            <img src="https://via.placeholder.com/100" alt="Host" className="w-full h-full object-cover" />
-          </div>
-        </div>
-      </header>
-
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="hidden xl:flex flex-col h-[calc(100vh-73px)] w-64 bg-surface-container-low border-r border-outline-variant shadow-md z-40 p-4 gap-4 sticky top-[73px]">
-          <div className="mb-4 px-2">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="material-symbols-outlined text-secondary">stars</span>
-              <h2 className="font-headline-sm text-xl text-secondary">Host Admin</h2>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-8 px-4 sm:px-6">
+      <main className="max-w-5xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <button 
+              type="button" 
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-1"
+            >
+              <ArrowLeft size={16} />
+              Return
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+              <h1 className="text-2xl sm:text-3xl font-serif text-[var(--fg)]">Live Assembly Poll</h1>
             </div>
-            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Managing Gala 2024</p>
+            <p className="text-xs text-[var(--fg-muted)]">Real-time attendee voting during the gathering.</p>
           </div>
-          <nav className="flex flex-col gap-1">
-            <a className="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
-              <span className="material-symbols-outlined">dashboard</span>
-              <span className="font-label-caps uppercase tracking-widest text-xs">Overview</span>
-            </a>
-            <a className="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
-              <span className="material-symbols-outlined">group</span>
-              <span className="font-label-caps uppercase tracking-widest text-xs">Guest List</span>
-            </a>
-            <a className="flex items-center gap-3 p-3 bg-primary text-on-primary rounded-lg font-bold shadow-md transition-transform" href="#">
-              <span className="material-symbols-outlined">poll</span>
-              <span className="font-label-caps uppercase tracking-widest text-xs">Live Polling</span>
-            </a>
-          </nav>
-        </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 p-6 md:p-8 max-w-[1400px] mx-auto w-full">
-          <section className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex items-center gap-4 bg-white px-5 py-2.5 rounded-card border border-[var(--border)]">
+            <div className="text-center">
+              <span className="block font-mono text-base font-medium text-[var(--fg)]">1,248</span>
+              <span className="block font-mono text-[10px] text-[var(--fg-muted)] uppercase">Votes Cast</span>
+            </div>
+            <div className="w-px h-8 bg-[var(--border)]" />
+            <div className="text-center">
+              <span className="block font-mono text-base font-bold text-[var(--accent)]">{timeString}</span>
+              <span className="block font-mono text-[10px] text-[var(--fg-muted)] uppercase">Remaining</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Poll Card */}
+          <div className="lg:col-span-8 bg-white rounded-card border border-[var(--border)] p-6 sm:p-8 space-y-6">
             <div>
-              <span className="font-label-caps text-secondary uppercase tracking-[0.2em] mb-2 block text-xs">Live Interaction</span>
-              <h1 className="font-headline-md text-4xl text-primary">Active Assembly Poll</h1>
-              <p className="font-body-lg text-on-surface-variant mt-2 max-w-2xl">Collecting real-time sentiment from the Gala 2024 VVIP circle regarding the upcoming architectural vision.</p>
-            </div>
-            <div className="flex items-center gap-6 bg-white p-6 rounded-xl shadow-sm border border-outline-variant/30">
-              <div className="text-center">
-                <span className="block font-headline-sm text-2xl text-primary">1,248</span>
-                <span className="block font-label-caps text-[10px] text-on-surface-variant uppercase">Votes Cast</span>
-              </div>
-              <div className="w-[1px] h-12 bg-outline-variant"></div>
-              <div className="text-center">
-                <span className="block font-headline-sm text-2xl text-secondary">{timeString}</span>
-                <span className="block font-label-caps text-[10px] text-on-surface-variant uppercase">Time Left</span>
-              </div>
-            </div>
-          </section>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Poll Options */}
-            <div className="lg:col-span-8 space-y-6">
-              <div className="bg-white rounded-xl shadow-sm p-8 border border-outline-variant/20 relative overflow-hidden">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-error animate-pulse"></span>
-                    <span className="font-label-caps text-error text-xs uppercase tracking-widest">Live Now</span>
-                  </div>
-                </div>
-                <h2 className="font-headline-md text-3xl text-primary mb-10 leading-tight">Which signature pavilion design best captures the essence of "Modern Nobility" for the 2025 Summer Soirée?</h2>
-                
-                <div className="space-y-6">
-                  {/* Option A */}
-                  <div className="group cursor-pointer" onClick={() => setSelectedOption('a')}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className={`font-body-md font-semibold ${selectedOption === 'a' ? 'text-secondary' : 'text-primary'}`}>A. The Floating Glass Atrium</span>
-                      <span className="font-label-caps text-secondary text-xs">42%</span>
-                    </div>
-                    <div className={`h-12 w-full rounded-full overflow-hidden relative border ${selectedOption === 'a' ? 'border-secondary' : 'border-outline-variant/30 bg-surface-container-low'}`}>
-                      <div className={`h-full ${selectedOption === 'a' ? 'bg-secondary/20' : 'bg-primary-container'} w-[42%] transition-all duration-1000`}></div>
-                    </div>
-                  </div>
-                  {/* Option B */}
-                  <div className="group cursor-pointer" onClick={() => setSelectedOption('b')}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className={`font-body-md font-semibold ${selectedOption === 'b' ? 'text-secondary' : 'text-primary'}`}>B. Heritage Oak & Brass Pavilion</span>
-                      <span className="font-label-caps text-secondary text-xs">28%</span>
-                    </div>
-                    <div className={`h-12 w-full rounded-full overflow-hidden relative border ${selectedOption === 'b' ? 'border-secondary' : 'border-outline-variant/30 bg-surface-container-low'}`}>
-                      <div className={`h-full ${selectedOption === 'b' ? 'bg-secondary/20' : 'bg-primary/40'} w-[28%] transition-all duration-1000`}></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-12 flex items-center justify-between pt-8 border-t border-outline-variant/20">
-                  <div className="flex -space-x-3">
-                    <img src="https://via.placeholder.com/32" className="w-8 h-8 rounded-full border-2 border-white" alt="voter" />
-                    <img src="https://via.placeholder.com/32" className="w-8 h-8 rounded-full border-2 border-white" alt="voter" />
-                    <img src="https://via.placeholder.com/32" className="w-8 h-8 rounded-full border-2 border-white" alt="voter" />
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-secondary-container flex items-center justify-center text-[10px] font-bold text-on-secondary-container">+45</div>
-                  </div>
-                  <span className="font-body-md text-on-surface-variant text-sm italic">Recently voted: Julian V., Elena G., and 45 others</span>
-                </div>
-              </div>
-
-              {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-primary p-6 rounded-xl shadow-lg flex flex-col justify-between text-on-primary">
-                  <div>
-                    <span className="font-label-caps text-[10px] text-on-primary/60 uppercase tracking-widest">Engagement Rate</span>
-                    <h3 className="font-headline-md text-4xl mt-2">94.2%</h3>
-                    <p className="font-body-md text-sm text-on-primary/70 mt-2">Highest participation recorded this season.</p>
-                  </div>
-                </div>
-              </div>
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block mb-1">Interactive Topic</span>
+              <h2 className="text-xl sm:text-2xl font-serif text-[var(--fg)] leading-snug">
+                Which architectural pavilion design best reflects our community vision for the 2027 Summer Gathering?
+              </h2>
             </div>
 
-            {/* Sidebar */}
-            <aside className="lg:col-span-4 space-y-6">
-              <div className="bg-white p-6 rounded-xl border border-outline-variant/20 shadow-sm">
-                <h3 className="font-headline-sm text-2xl text-primary mb-6 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-secondary">history</span>
-                  Past Assemblies
-                </h3>
-                <div className="space-y-6">
-                  <div className="flex flex-col gap-2 cursor-pointer">
-                    <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">Nov 12, 2024</span>
-                    <p className="font-body-md text-primary hover:text-secondary transition-colors">Preferred Champagne House</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-semibold text-on-surface-variant">Winner: Dom Pérignon</span>
-                      <span class="text-xs text-secondary">88% Match</span>
+            {/* Options */}
+            <div className="space-y-4 pt-2">
+              {options.map((opt) => {
+                const isSelected = selectedOption === opt.id;
+                return (
+                  <div
+                    key={opt.id}
+                    onClick={() => setSelectedOption(opt.id)}
+                    className={`p-4 rounded-card border transition-all cursor-pointer space-y-2 ${
+                      isSelected 
+                        ? 'border-[var(--accent)] bg-[var(--accent)]/[0.03]' 
+                        : 'border-[var(--border)] hover:border-[var(--fg-muted)] bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                          isSelected ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
+                        }`}>
+                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+                        <span className={`font-medium ${isSelected ? 'text-[var(--fg)]' : 'text-[var(--fg-muted)]'}`}>
+                          {opt.title}
+                        </span>
+                      </div>
+                      <span className="font-mono font-medium text-[var(--fg)]">{opt.pct}%</span>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="h-2 w-full bg-[var(--bg-subtle)] rounded-full overflow-hidden border border-[var(--border)]/50">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-700 ${isSelected ? 'bg-[var(--accent)]' : 'bg-stone-400'}`}
+                        style={{ width: `${opt.pct}%` }}
+                      />
                     </div>
                   </div>
-                </div>
-                <button className="w-full mt-8 py-3 font-label-caps border border-outline text-primary rounded-lg hover:bg-surface-container-low transition-all uppercase tracking-widest text-xs">View Full Archive</button>
-              </div>
+                );
+              })}
+            </div>
 
-              <div className="p-6 rounded-xl border-2 border-dashed border-outline-variant/50 flex flex-col items-center text-center gap-4">
-                <div className="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary">admin_panel_settings</span>
-                </div>
-                <div>
-                  <p className="font-label-caps text-primary uppercase tracking-widest text-xs">Host Admin Controls</p>
-                  <p className="text-xs text-on-surface-variant mt-1">Authorized access only for Gala managers.</p>
-                </div>
-                <div className="flex gap-2 w-full">
-                  <button className="flex-1 py-2 font-label-caps text-[10px] uppercase tracking-widest bg-white border border-outline rounded-md hover:bg-surface-container-low">End Poll</button>
-                  <button className="flex-1 py-2 font-label-caps text-[10px] uppercase tracking-widest bg-white border border-outline rounded-md hover:bg-surface-container-low">Push Alert</button>
-                </div>
-              </div>
-            </aside>
+            {/* Bottom Meta */}
+            <div className="pt-4 border-t border-[var(--border)] flex items-center justify-between text-xs text-[var(--fg-muted)]">
+              <span>94.2% community participation rate</span>
+              <span className="font-mono">Real-time STOMP feed active</span>
+            </div>
           </div>
-        </main>
-      </div>
+
+          {/* Sidebar Admin Controls */}
+          <aside className="lg:col-span-4 space-y-4">
+            <div className="bg-white rounded-card border border-[var(--border)] p-6 space-y-4">
+              <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Host Admin Controls</h3>
+              <p className="text-xs text-[var(--fg-muted)]">Manage poll duration or publish results directly to the stage screen.</p>
+              
+              <div className="space-y-2 pt-2">
+                <button 
+                  type="button" 
+                  onClick={() => alert('Results pushed to attendee screens!')}
+                  className="w-full py-2.5 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"
+                >
+                  Push Results to Feed
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => alert('Poll concluded.')}
+                  className="w-full py-2.5 rounded-card border border-[var(--border)] text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
+                >
+                  Conclude Poll
+                </button>
+              </div>
+            </div>
+
+            {/* Past Assemblies Card */}
+            <div className="bg-white rounded-card border border-[var(--border)] p-5 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-[var(--fg-muted)] uppercase tracking-wider">
+                <Archive size={16} />
+                <span>Previous Assembly Decisions</span>
+              </div>
+              <div className="text-xs space-y-1">
+                <p className="font-medium text-[var(--fg)]">Preferred Acoustic Venue</p>
+                <p className="text-[11px] text-[var(--fg-muted)]">Selected: Chelsea Conservatory (78% consensus)</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
     </div>
   );
 }

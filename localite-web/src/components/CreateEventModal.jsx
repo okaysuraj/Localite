@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { X, Calendar, MapPin, Image as ImageIcon, Users, Repeat } from 'lucide-react';
+import {
+  X,
+  CalendarBlank,
+  MapPin,
+  Image as ImageIcon,
+  Users,
+  ArrowsClockwise,
+} from '@phosphor-icons/react';
+import { createEvent } from '../services/api';
 
 const CreateEventModal = ({ onClose, onEventCreated }) => {
   const [formData, setFormData] = useState({
@@ -13,15 +21,16 @@ const CreateEventModal = ({ onClose, onEventCreated }) => {
     date: '',
     location: '',
     maxAttendees: 50,
-    imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000',
+    imageUrl:
+      'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000',
     recurrence: 'NONE',
-    recurrenceEndDate: ''
+    recurrenceEndDate: '',
   });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -32,24 +41,11 @@ const CreateEventModal = ({ onClose, onEventCreated }) => {
         ...formData,
         cost: parseFloat(formData.cost) || 0,
         maxAttendees: parseInt(formData.maxAttendees, 10) || 50,
-        attendees: 0
+        attendees: 0,
       };
 
-      const token = localStorage.getItem('token');
-      const res = await fetch(import.meta.env.VITE_API_URL + '/events', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      if (res.ok) {
-        onEventCreated();
-      } else {
-        console.error("Failed to create event");
-      }
+      await createEvent(payload);
+      onEventCreated();
     } catch (err) {
       console.error(err);
     } finally {
@@ -58,55 +54,67 @@ const CreateEventModal = ({ onClose, onEventCreated }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-      <div className="w-full max-w-lg bg-surface-container-low border border-surface-variant/20 rounded-2xl p-6 shadow-2xl relative animate-slide-up">
-        
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-xs">
+      <div className="w-full max-w-lg bg-white border border-border rounded-card p-6 sm:p-8 shadow-xl relative animate-fade-in max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 border-b border-surface-variant/10 pb-4">
+        <div className="flex justify-between items-start mb-6 border-b border-border pb-4">
           <div>
-            <h3 className="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">Initialize Event</h3>
-            <p className="font-label-mono text-xs uppercase tracking-widest text-text-muted mt-1">Deploy a new protocol</p>
+            <h3 className="font-display font-semibold text-lg text-fg tracking-tight">
+              Create Event
+            </h3>
+            <p className="text-xs text-fg-muted mt-0.5">
+              Publish an activity for your community.
+            </p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-on-surface transition-colors p-2 bg-surface-dark rounded-full">
-            <X size={20} />
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-btn hover:bg-bg-subtle text-fg-muted hover:text-fg transition-colors"
+          >
+            <X size={18} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs font-mono">
           <div>
-            <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Operation Title</label>
-            <input 
-              type="text" 
-              name="title" 
-              required 
-              value={formData.title} 
-              onChange={handleChange} 
-              className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors" 
-              placeholder="e.g. Midnight Run Club"
+            <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+              Event Title
+            </label>
+            <input
+              type="text"
+              name="title"
+              required
+              value={formData.title}
+              onChange={handleChange}
+              className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-sm focus:outline-none focus:border-accent transition-colors"
+              placeholder="e.g. Saturday Morning Football"
             />
           </div>
 
           <div>
-            <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Description</label>
-            <textarea 
-              name="description" 
-              value={formData.description} 
-              onChange={handleChange} 
+            <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
               rows="2"
-              className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors resize-none" 
-              placeholder="What are we doing?"
+              className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-sm focus:outline-none focus:border-accent transition-colors resize-none"
+              placeholder="Provide details about the gathering..."
             />
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Category</label>
-              <select 
-                name="category" 
-                value={formData.category} 
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+                Category
+              </label>
+              <select
+                name="category"
+                value={formData.category}
                 onChange={handleChange}
-                className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors appearance-none"
+                className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
               >
                 <option value="Sports">Sports</option>
                 <option value="Social">Social</option>
@@ -115,27 +123,31 @@ const CreateEventModal = ({ onClose, onEventCreated }) => {
               </select>
             </div>
             <div>
-              <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Event Type</label>
-              <select 
-                name="eventType" 
-                value={formData.eventType} 
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+                Visibility
+              </label>
+              <select
+                name="eventType"
+                value={formData.eventType}
                 onChange={handleChange}
-                className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors appearance-none"
+                className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
               >
                 <option value="Public">Public</option>
                 <option value="Private">Private</option>
               </select>
             </div>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Skill Level</label>
-              <select 
-                name="skillLevel" 
-                value={formData.skillLevel} 
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+                Skill Level
+              </label>
+              <select
+                name="skillLevel"
+                value={formData.skillLevel}
                 onChange={handleChange}
-                className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors appearance-none"
+                className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
               >
                 <option value="All">All Levels</option>
                 <option value="Beginner">Beginner</option>
@@ -144,65 +156,75 @@ const CreateEventModal = ({ onClose, onEventCreated }) => {
               </select>
             </div>
             <div>
-              <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Cost ($)</label>
-              <input 
-                type="number" 
-                name="cost" 
-                value={formData.cost} 
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+                Price ($)
+              </label>
+              <input
+                type="number"
+                name="cost"
+                value={formData.cost}
                 onChange={handleChange}
                 min="0"
                 step="0.01"
-                className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors" 
+                className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
               />
             </div>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2">Rules</label>
-              <input 
-                type="text" 
-                name="rules" 
-                value={formData.rules} 
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+                Rules / Notes
+              </label>
+              <input
+                type="text"
+                name="rules"
+                value={formData.rules}
                 onChange={handleChange}
-                className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors" 
-                placeholder="Any rules?"
+                className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
+                placeholder="Optional rules"
               />
             </div>
             <div>
-              <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2 flex items-center gap-1"><Users size={14}/> Max Capacity</label>
-              <input 
-                type="number" 
-                name="maxAttendees" 
-                required 
-                value={formData.maxAttendees} 
-                onChange={handleChange} 
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5 flex items-center gap-1">
+                <Users size={13} /> Max Capacity
+              </label>
+              <input
+                type="number"
+                name="maxAttendees"
+                required
+                value={formData.maxAttendees}
+                onChange={handleChange}
                 min="1"
-                className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors" 
+                className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2 flex items-center gap-1"><Calendar size={14}/> Date & Time</label>
-            <input 
-              type="datetime-local" 
-              name="date" 
-              required 
-              value={formData.date} 
+            <label className="block uppercase tracking-wider text-fg-muted mb-1.5 flex items-center gap-1">
+              <CalendarBlank size={13} /> Date & Time
+            </label>
+            <input
+              type="datetime-local"
+              name="date"
+              required
+              value={formData.date}
               onChange={handleChange}
-              className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors" 
+              className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2 flex items-center gap-1"><Repeat size={14}/> Recurrence</label>
-              <select 
-                name="recurrence" 
-                value={formData.recurrence} 
+              <label className="block uppercase tracking-wider text-fg-muted mb-1.5 flex items-center gap-1">
+                <ArrowsClockwise size={13} /> Recurrence
+              </label>
+              <select
+                name="recurrence"
+                value={formData.recurrence}
                 onChange={handleChange}
-                className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors appearance-none"
+                className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
               >
                 <option value="NONE">None</option>
                 <option value="DAILY">Daily</option>
@@ -210,61 +232,67 @@ const CreateEventModal = ({ onClose, onEventCreated }) => {
                 <option value="MONTHLY">Monthly</option>
               </select>
             </div>
-            
+
             {formData.recurrence !== 'NONE' && (
               <div>
-                <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2 flex items-center gap-1"><Calendar size={14}/> End Date</label>
-                <input 
-                  type="datetime-local" 
-                  name="recurrenceEndDate" 
+                <label className="block uppercase tracking-wider text-fg-muted mb-1.5">
+                  End Date
+                </label>
+                <input
+                  type="datetime-local"
+                  name="recurrenceEndDate"
                   required={formData.recurrence !== 'NONE'}
-                  value={formData.recurrenceEndDate} 
+                  value={formData.recurrenceEndDate}
                   onChange={handleChange}
-                  className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors" 
+                  className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
             )}
           </div>
 
           <div>
-            <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2 flex items-center gap-1"><MapPin size={14}/> Coordinates / Location</label>
-            <input 
-              type="text" 
-              name="location" 
-              required 
-              value={formData.location} 
+            <label className="block uppercase tracking-wider text-fg-muted mb-1.5 flex items-center gap-1">
+              <MapPin size={13} /> Location / Address
+            </label>
+            <input
+              type="text"
+              name="location"
+              required
+              value={formData.location}
               onChange={handleChange}
-              className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors" 
-              placeholder="e.g. Central Park Turf 3"
-            />
-          </div>
-          
-          <div>
-            <label className="block font-label-mono text-xs uppercase tracking-widest text-text-muted mb-2 flex items-center gap-1"><ImageIcon size={14}/> Intel Image URL</label>
-            <input 
-              type="url" 
-              name="imageUrl" 
-              required 
-              value={formData.imageUrl} 
-              onChange={handleChange}
-              className="w-full bg-surface-dark border border-surface-variant/30 text-on-surface rounded-lg p-3 font-body-md focus:outline-none focus:border-lime-vibe transition-colors text-sm opacity-80" 
+              className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
+              placeholder="e.g. Indiranagar Club Ground"
             />
           </div>
 
-          <div className="pt-4 flex justify-end gap-3 border-t border-surface-variant/10">
-            <button 
-              type="button" 
-              onClick={onClose} 
-              className="px-6 py-3 border border-surface-variant/50 text-on-surface font-label-mono text-xs uppercase tracking-widest hover:border-surface-variant hover:bg-surface-variant/10 transition-all rounded-DEFAULT"
+          <div>
+            <label className="block uppercase tracking-wider text-fg-muted mb-1.5 flex items-center gap-1">
+              <ImageIcon size={13} /> Cover Image URL
+            </label>
+            <input
+              type="url"
+              name="imageUrl"
+              required
+              value={formData.imageUrl}
+              onChange={handleChange}
+              className="w-full bg-bg-subtle border border-border text-fg rounded-btn p-2.5 font-sans text-xs focus:outline-none focus:border-accent transition-colors"
+            />
+          </div>
+
+          <div className="pt-4 flex justify-end gap-2.5 border-t border-border mt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-border text-fg-muted hover:text-fg hover:bg-bg-subtle rounded-btn tracking-wide transition-colors"
             >
-              Abort
+              Cancel
             </button>
-            <button 
-              type="submit" 
-              disabled={loading} 
-              className="px-6 py-3 bg-lime-vibe text-primary-container font-label-mono text-xs uppercase tracking-widest hover:bg-white transition-all glow-neon rounded-DEFAULT"
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-5 py-2 bg-accent text-white rounded-btn tracking-wide hover:opacity-90 disabled:opacity-50 transition-opacity"
             >
-              {loading ? 'Transmitting...' : 'Execute Protocol'}
+              {loading ? 'Creating...' : 'Create Event'}
             </button>
           </div>
         </form>

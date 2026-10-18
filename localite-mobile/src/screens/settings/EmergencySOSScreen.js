@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Animated, Easing, Vibration, Image
+  StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Animated, Easing, Vibration, Image, Alert
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Marker } from 'react-native-maps';
 import Svg, { Circle } from 'react-native-svg';
+import * as Location from 'expo-location';
+import { triggerPanic } from '../../services/api';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const CIRCLE_RADIUS = 104;
@@ -67,11 +69,29 @@ export default function EmergencySOSScreen({ navigation }) {
     }).start();
   };
 
-  const triggerSOS = () => {
+  const triggerSOS = async () => {
     setIsTriggered(true);
     setIsHolding(false);
     Vibration.vibrate([100, 50, 100, 50, 300]);
-    // Actual API call would go here
+    try {
+      let lat = 37.7749;
+      let lng = -122.4194;
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === 'granted') {
+          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+          if (loc?.coords) {
+            lat = loc.coords.latitude;
+            lng = loc.coords.longitude;
+          }
+        }
+      } catch (locErr) {
+        console.log('Location acquisition fallback:', locErr.message);
+      }
+      await triggerPanic(lat, lng);
+    } catch (err) {
+      console.error('Error sending SOS panic alert:', err);
+    }
   };
 
   const strokeDashoffset = progressAnimation.interpolate({

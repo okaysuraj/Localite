@@ -1,248 +1,204 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import SettingsLayout from '../../components/SettingsLayout';
+import { 
+  Bell, 
+  Envelope, 
+  CalendarCheck, 
+  Clock, 
+  MapPin, 
+  CheckCircle,
+  FloppyDisk
+} from '@phosphor-icons/react';
 
 export default function NotificationPreferencesPage() {
-  const navigate = useNavigate();
   const [hubPush, setHubPush] = useState(true);
   const [hubEmail, setHubEmail] = useState(false);
-  
   const [eventActivity, setEventActivity] = useState(true);
   const [eventLocation, setEventLocation] = useState(true);
   const [remind24h, setRemind24h] = useState(false);
   const [remind1h, setRemind1h] = useState(true);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
 
   return (
-    <div className="bg-[#fbf9f8] text-[#1b1c1c] font-body-md min-h-screen flex flex-col">
-      {/* Top Navigation Bar */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 h-16 bg-[#fbf9f8] shadow-sm">
-        <div className="flex items-center gap-6">
-          <span className="font-headline-sm text-2xl font-bold text-primary tracking-tight cursor-pointer" onClick={() => navigate('/')}>Localite</span>
-          <nav className="hidden md:flex gap-8 ml-12">
-            <a className="text-[#44474d] font-medium hover:text-primary transition-colors duration-200 font-label-caps text-[12px] font-bold uppercase cursor-pointer">Marketplace</a>
-            <a className="text-[#44474d] font-medium hover:text-primary transition-colors duration-200 font-label-caps text-[12px] font-bold uppercase cursor-pointer" onClick={() => navigate('/events')}>Experiences</a>
-            <a className="text-[#44474d] font-medium hover:text-primary transition-colors duration-200 font-label-caps text-[12px] font-bold uppercase cursor-pointer">Clubs</a>
-          </nav>
+    <SettingsLayout>
+      <div className="space-y-8 animate-fade-in pb-12">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
+          <div>
+            <span className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wider mb-2 block">
+              Event & Channel Etiquette
+            </span>
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[var(--fg)]">
+              Notification Preferences
+            </h1>
+            <p className="text-sm text-[var(--fg-muted)] mt-1 max-w-xl">
+              Fine-tune automated reminders, club invites, and event activity dispatches.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            {saved && (
+              <span className="text-xs font-medium text-emerald-600 flex items-center gap-1.5 animate-fade-in">
+                <CheckCircle size={16} weight="fill" /> Saved
+              </span>
+            )}
+            <button 
+              onClick={handleSave}
+              className="px-5 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white text-xs font-semibold uppercase tracking-wider rounded-card shadow-sm active:scale-95 transition-all flex items-center gap-2"
+            >
+              <FloppyDisk size={16} weight="bold" />
+              Save Changes
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-6">
-          <div className="relative group">
-            <span className="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform">notifications</span>
-            <span className="absolute top-0 right-0 w-2 h-2 bg-[#775a19] rounded-full border-2 border-[#fbf9f8]"></span>
-          </div>
-          <span className="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform">settings</span>
-          <div className="w-8 h-8 rounded-full overflow-hidden border border-[#c5c6cd] cursor-pointer" onClick={() => navigate('/profile/setup/final')}>
-            <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxpgE3U9GZ5jVKFhj3GrPm2eete9uMWZPl0AfgjjZuiV_3hWgZ6AsiGcY2jsWaK2Q2mqaUB_7_EtnRLEK-6vBm62aArYfVdtFbXYEn0BY6HEVXHmxApk6IkmAwO7qM2Dtz5as3fYSESqHtpNLZHT3yYkCvZBmsgAA8gRVxr7dLkTlilXw3ihMZm9FMR8NKXOSUPuv4nJK1OyUAlN0atrmHST8FQ63K2DGCn8TgnRgBUxDBiUYg_e8C_A" alt="Profile" />
-          </div>
-        </div>
-      </header>
 
-      <div className="flex pt-16 h-screen overflow-hidden">
-        {/* Side Navigation Bar */}
-        <aside className="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 py-8 px-4 flex flex-col z-40 bg-[#f5f3f3]">
-          <div className="mb-10 px-4">
-            <h2 className="font-headline-sm text-2xl font-bold text-primary">Localite Elite</h2>
-            <p className="font-body-md text-[#44474d] opacity-70 text-sm">Premium Concierge</p>
-          </div>
-          <nav className="flex-1 space-y-2">
-            <a className="flex items-center gap-4 px-4 py-3 text-[#44474d] hover:bg-[#eae8e7] rounded-lg transition-all group cursor-pointer" onClick={() => navigate('/events')}>
-              <span className="material-symbols-outlined group-hover:text-primary">event</span>
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Gatherings</span>
-            </a>
-            <a className="flex items-center gap-4 px-4 py-3 text-[#44474d] hover:bg-[#eae8e7] rounded-lg transition-all group cursor-pointer">
-              <span className="material-symbols-outlined group-hover:text-primary">sports_tennis</span>
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Sports Hub</span>
-            </a>
-            <a className="flex items-center gap-4 px-4 py-3 text-[#44474d] hover:bg-[#eae8e7] rounded-lg transition-all group cursor-pointer">
-              <span className="material-symbols-outlined group-hover:text-primary">group</span>
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Members</span>
-            </a>
-            <a className="flex items-center gap-4 px-4 py-3 text-[#44474d] hover:bg-[#eae8e7] rounded-lg transition-all group cursor-pointer" onClick={() => navigate('/dashboard/insights')}>
-              <span className="material-symbols-outlined group-hover:text-primary">insights</span>
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Analytics</span>
-            </a>
-            <a className="flex items-center gap-4 px-4 py-3 text-primary bg-[#fbf9f8] rounded-lg shadow-sm font-bold border-l-4 border-primary cursor-pointer">
-              <span className="material-symbols-outlined">admin_panel_settings</span>
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Settings</span>
-            </a>
-          </nav>
-          <div className="mt-auto space-y-2 border-t border-[#c5c6cd] pt-6">
-            <a className="flex items-center gap-4 px-4 py-3 text-[#44474d] hover:bg-[#eae8e7] rounded-lg transition-all group cursor-pointer">
-              <span className="material-symbols-outlined">help_outline</span>
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Help Center</span>
-            </a>
-            <a className="flex items-center gap-4 px-4 py-3 text-[#ba1a1a] hover:bg-[#ffdad6] rounded-lg transition-all group cursor-pointer">
-              <span className="material-symbols-outlined">logout</span>
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Log Out</span>
-            </a>
-          </div>
-        </aside>
-
-        {/* Main Workspace */}
-        <main className="ml-64 flex-1 p-8 overflow-y-auto">
-          <div className="max-w-4xl mx-auto space-y-12 pb-12">
-            
-            {/* Header Section */}
-            <header className="space-y-2">
-              <h1 className="font-display-lg text-5xl font-bold text-primary">Notification Preferences</h1>
-              <p className="font-body-lg text-[#44474d] max-w-2xl text-lg">Curate your digital experience. Choose how and when you want to receive updates from your local community and elite circles.</p>
-            </header>
-
-            {/* Configuration Workspace */}
-            <div className="space-y-8">
-              
-              {/* Hub Invites Category */}
-              <section className="bg-white rounded-xl shadow-[0_16px_32px_rgba(10,25,47,0.05)] p-8 border border-[#efeded]">
-                <div className="flex items-start justify-between mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#efeded] rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[#775a19]">mail</span>
-                    </div>
-                    <div>
-                      <h3 className="font-headline-sm text-2xl font-bold text-primary">Hub Invites</h3>
-                      <p className="font-body-md text-[#44474d] opacity-70">Direct invitations to join new private communities and elite local hubs.</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between py-2">
-                    <div>
-                      <p className="font-body-md font-semibold text-primary">Push Notifications</p>
-                      <p className="text-sm text-[#44474d]">Instant alerts for time-sensitive invitations.</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only" 
-                        checked={hubPush} 
-                        onChange={() => setHubPush(!hubPush)} 
-                      />
-                      <div className={`w-11 h-5 rounded-full transition-colors duration-200 ${hubPush ? 'bg-primary' : 'bg-[#e4e2e2]'}`}>
-                        <div className={`absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-transform duration-200 shadow-sm ${hubPush ? 'translate-x-[24px]' : ''}`}></div>
-                      </div>
-                    </label>
-                  </div>
-                  <div className="flex items-center justify-between py-2 border-t border-[#c5c6cd]/30">
-                    <div>
-                      <p className="font-body-md font-semibold text-primary">Email Summaries</p>
-                      <p className="text-sm text-[#44474d]">Weekly digests of all pending hub memberships.</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only" 
-                        checked={hubEmail} 
-                        onChange={() => setHubEmail(!hubEmail)} 
-                      />
-                      <div className={`w-11 h-5 rounded-full transition-colors duration-200 ${hubEmail ? 'bg-primary' : 'bg-[#e4e2e2]'}`}>
-                        <div className={`absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-transform duration-200 shadow-sm ${hubEmail ? 'translate-x-[24px]' : ''}`}></div>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              </section>
-
-              {/* Event Updates Category */}
-              <section className="bg-white rounded-xl shadow-[0_16px_32px_rgba(10,25,47,0.05)] p-8 border border-[#efeded]">
-                <div className="flex items-start justify-between mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#efeded] rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[#775a19]">event_note</span>
-                    </div>
-                    <div>
-                      <h3 className="font-headline-sm text-2xl font-bold text-primary">Event Updates</h3>
-                      <p className="font-body-md text-[#44474d] opacity-70">Status changes, location reveals, and attendee confirmations.</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <p className="font-label-caps text-[12px] font-bold text-[#775a19] tracking-widest uppercase">REAL-TIME</p>
-                    <div 
-                      className="p-4 bg-[#fbf9f8] rounded-lg border border-[#c5c6cd]/50 flex items-center justify-between cursor-pointer hover:bg-[#efeded] transition-colors"
-                      onClick={() => setEventActivity(!eventActivity)}
-                    >
-                      <span className="text-sm font-medium">New RSVP Activity</span>
-                      <span className={`material-symbols-outlined scale-90 ${eventActivity ? 'text-primary' : 'text-[#75777e]'}`} style={eventActivity ? {fontVariationSettings: "'FILL' 1"} : {}}>{eventActivity ? 'check_circle' : 'radio_button_unchecked'}</span>
-                    </div>
-                    <div 
-                      className="p-4 bg-[#fbf9f8] rounded-lg border border-[#c5c6cd]/50 flex items-center justify-between cursor-pointer hover:bg-[#efeded] transition-colors"
-                      onClick={() => setEventLocation(!eventLocation)}
-                    >
-                      <span className="text-sm font-medium">Location Revealed</span>
-                      <span className={`material-symbols-outlined scale-90 ${eventLocation ? 'text-primary' : 'text-[#75777e]'}`} style={eventLocation ? {fontVariationSettings: "'FILL' 1"} : {}}>{eventLocation ? 'check_circle' : 'radio_button_unchecked'}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <p className="font-label-caps text-[12px] font-bold text-[#775a19] tracking-widest uppercase">REMINDERS</p>
-                    <div 
-                      className="p-4 bg-[#fbf9f8] rounded-lg border border-[#c5c6cd]/50 flex items-center justify-between cursor-pointer hover:bg-[#efeded] transition-colors"
-                      onClick={() => setRemind24h(!remind24h)}
-                    >
-                      <span className="text-sm font-medium">24h Before Start</span>
-                      <span className={`material-symbols-outlined scale-90 ${remind24h ? 'text-primary' : 'text-[#75777e]'}`} style={remind24h ? {fontVariationSettings: "'FILL' 1"} : {}}>{remind24h ? 'check_circle' : 'radio_button_unchecked'}</span>
-                    </div>
-                    <div 
-                      className="p-4 bg-[#fbf9f8] rounded-lg border border-[#c5c6cd]/50 flex items-center justify-between cursor-pointer hover:bg-[#efeded] transition-colors"
-                      onClick={() => setRemind1h(!remind1h)}
-                    >
-                      <span className="text-sm font-medium">1h Before Start</span>
-                      <span className={`material-symbols-outlined scale-90 ${remind1h ? 'text-primary' : 'text-[#75777e]'}`} style={remind1h ? {fontVariationSettings: "'FILL' 1"} : {}}>{remind1h ? 'check_circle' : 'radio_button_unchecked'}</span>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Direct Messages Category */}
-              <section className="bg-white rounded-xl shadow-[0_16px_32px_rgba(10,25,47,0.05)] p-8 border border-[#efeded]">
-                <div className="flex items-start justify-between mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#efeded] rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[#775a19]">chat_bubble</span>
-                    </div>
-                    <div>
-                      <h3 className="font-headline-sm text-2xl font-bold text-primary">Direct Messages</h3>
-                      <p className="font-body-md text-[#44474d] opacity-70">Conversations with members and concierge support.</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6">
-                  <button className="px-6 py-3 bg-primary text-white font-label-caps text-[12px] font-bold tracking-widest uppercase rounded-sm hover:opacity-90 active:scale-95 transition-all">Enable Desktop Audio</button>
-                  <button className="px-6 py-3 border border-[#775a19] text-[#775a19] font-label-caps text-[12px] font-bold tracking-widest uppercase rounded-sm hover:bg-[#775a19]/5 transition-all">Manage Chat Rules</button>
-                </div>
-              </section>
-
-              {/* Community Announcements */}
-              <section className="bg-white rounded-xl shadow-[0_16px_32px_rgba(10,25,47,0.05)] p-8 border border-[#efeded]">
-                <div className="flex items-start justify-between mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#efeded] rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[#775a19]">campaign</span>
-                    </div>
-                    <div>
-                      <h3 className="font-headline-sm text-2xl font-bold text-primary">Community Announcements</h3>
-                      <p className="font-body-md text-[#44474d] opacity-70">Stay informed about elite circle news and neighborhood events.</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="p-6 bg-[#fbf9f8] border-l-4 border-[#775a19] rounded-r-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="font-body-md font-bold">Important Broadcasts</span>
-                      <span className="text-[10px] font-label-caps font-bold text-[#775a19] tracking-widest uppercase bg-[#fed488] px-2 py-1 rounded">Always On</span>
-                    </div>
-                    <p className="text-sm text-[#44474d] mt-2">Critical updates regarding club status or urgent security alerts.</p>
-                  </div>
-                </div>
-              </section>
+        {/* Categories Stack */}
+        <div className="space-y-6">
+          
+          {/* Hub & Club Invites */}
+          <section className="bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)]">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--border)]">
+              <span className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                <Envelope size={18} weight="fill" />
+              </span>
+              <div>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Hub & Salon Invites</h3>
+                <p className="text-xs text-[var(--fg-muted)]">Control how host invitations reach you.</p>
+              </div>
             </div>
 
-            {/* Footer Actions */}
-            <div className="flex items-center justify-between pt-8 border-t border-[#c5c6cd]">
-              <button className="text-[#44474d] font-label-caps text-[12px] font-bold tracking-widest uppercase hover:text-primary transition-colors">Discard Changes</button>
-              <button className="px-12 py-4 bg-primary text-white font-label-caps text-[12px] font-bold tracking-widest uppercase rounded-sm shadow-md hover:shadow-xl active:scale-95 transition-all">Save Changes</button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div>
+                  <h4 className="text-sm font-semibold text-[var(--fg)]">Push Dispatch</h4>
+                  <p className="text-xs text-[var(--fg-muted)]">Immediate banner alert upon host invite.</p>
+                </div>
+                <button 
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${hubPush ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
+                  onClick={() => setHubPush(!hubPush)}
+                  aria-label="Toggle hub push"
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${hubPush ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div>
+                  <h4 className="text-sm font-semibold text-[var(--fg)]">Email Notification</h4>
+                  <p className="text-xs text-[var(--fg-muted)]">Send formal RSVP card to registered email.</p>
+                </div>
+                <button 
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${hubEmail ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
+                  onClick={() => setHubEmail(!hubEmail)}
+                  aria-label="Toggle hub email"
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${hubEmail ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                </button>
+              </div>
             </div>
-          </div>
-        </main>
+          </section>
+
+          {/* Event Reminders */}
+          <section className="bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)]">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--border)]">
+              <span className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                <CalendarCheck size={18} weight="fill" />
+              </span>
+              <div>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Attendance Reminders</h3>
+                <p className="text-xs text-[var(--fg-muted)]">Automated alerts before confirmed sessions begin.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div className="flex items-center gap-3">
+                  <Clock size={18} className="text-[var(--fg-muted)]" />
+                  <div>
+                    <h4 className="text-sm font-semibold text-[var(--fg)]">24 Hours Prior</h4>
+                    <p className="text-xs text-[var(--fg-muted)]">Day-before briefing with dress code and attendee preview.</p>
+                  </div>
+                </div>
+                <button 
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${remind24h ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
+                  onClick={() => setRemind24h(!remind24h)}
+                  aria-label="Toggle 24h reminder"
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${remind24h ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div className="flex items-center gap-3">
+                  <Clock size={18} className="text-[var(--fg-muted)]" />
+                  <div>
+                    <h4 className="text-sm font-semibold text-[var(--fg)]">1 Hour Prior</h4>
+                    <p className="text-xs text-[var(--fg-muted)]">Navigation alert with entry QR code access.</p>
+                  </div>
+                </div>
+                <button 
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${remind1h ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
+                  onClick={() => setRemind1h(!remind1h)}
+                  aria-label="Toggle 1h reminder"
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${remind1h ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Real-Time Event Updates */}
+          <section className="bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)]">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--border)]">
+              <span className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                <Bell size={18} weight="fill" />
+              </span>
+              <div>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Live Event Activity</h3>
+                <p className="text-xs text-[var(--fg-muted)]">Updates during an active match or gathering.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div>
+                  <h4 className="text-sm font-semibold text-[var(--fg)]">Host Broadcasts & Timeline</h4>
+                  <p className="text-xs text-[var(--fg-muted)]">Live schedule shifts, room adjustments, and announcements.</p>
+                </div>
+                <button 
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${eventActivity ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
+                  onClick={() => setEventActivity(!eventActivity)}
+                  aria-label="Toggle host announcements"
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${eventActivity ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div className="flex items-center gap-3">
+                  <MapPin size={18} className="text-[var(--fg-muted)]" />
+                  <div>
+                    <h4 className="text-sm font-semibold text-[var(--fg)]">Venue Arrival Triggers</h4>
+                    <p className="text-xs text-[var(--fg-muted)]">Auto-open entry badge when walking into venue geofence.</p>
+                  </div>
+                </div>
+                <button 
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${eventLocation ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
+                  onClick={() => setEventLocation(!eventLocation)}
+                  aria-label="Toggle venue arrival triggers"
+                >
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${eventLocation ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                </button>
+              </div>
+            </div>
+          </section>
+
+        </div>
       </div>
-    </div>
+    </SettingsLayout>
   );
 }

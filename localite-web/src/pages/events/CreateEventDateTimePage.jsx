@@ -1,131 +1,149 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, CaretLeft, CaretRight, Clock, CalendarBlank, Info } from '@phosphor-icons/react';
 
 export default function CreateEventDateTimePage() {
   const navigate = useNavigate();
   const [selectedDay, setSelectedDay] = useState(11);
+  const [duration, setDuration] = useState('3 Hours');
 
-  // Mock days
-  const days = [];
-  for (let i = 1; i <= 22; i++) {
-    days.push(i);
-  }
+  const days = Array.from({ length: 22 }, (_, i) => i + 1);
 
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-[calc(100vh-73px)] flex">
-      {/* SideNavBar is omitted or wrapped by layout in the app */}
-      <main className="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full">
-        <header className="mb-12">
-          <div className="flex items-center gap-2 text-secondary mb-2">
-            <span className="font-label-caps text-label-caps uppercase tracking-widest">Step 02 / 06</span>
-            <div className="h-[1px] w-12 bg-secondary-container"></div>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
+      <main className="max-w-5xl mx-auto space-y-8">
+        <header className="space-y-2">
+          <div className="flex items-center gap-2 text-[var(--fg-muted)] mb-1">
+            <span className="font-mono text-xs uppercase tracking-wider">Step 02 / 06</span>
+            <div className="h-[1px] w-10 bg-[var(--border)]"></div>
           </div>
-          <h1 className="font-display-lg text-display-lg text-primary mb-2">Schedule Your Occasion</h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Refine the temporal details of your gathering. Excellence resides in the timing of every interaction.</p>
+          <h1 className="text-3xl font-serif text-[var(--fg)]">Schedule Date & Time</h1>
+          <p className="text-sm text-[var(--fg-muted)] max-w-2xl">
+            Select the date and time window for your gathering. Clear scheduling helps attendees plan their attendance.
+          </p>
         </header>
 
-        {/* Bento Layout Container */}
+        {/* Bento Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left: Calendar Section */}
-          <section className="lg:col-span-8 bg-white rounded-xl shadow-sm border border-outline-variant/10 p-6 md:p-8">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="font-headline-sm text-headline-sm">Select Date</h2>
-              <div className="flex items-center gap-4">
-                <button className="p-2 border border-outline-variant rounded-full hover:border-secondary transition-colors"><span className="material-symbols-outlined">chevron_left</span></button>
-                <span className="font-label-caps text-label-caps">September 2024</span>
-                <button className="p-2 border border-outline-variant rounded-full hover:border-secondary transition-colors"><span className="material-symbols-outlined">chevron_right</span></button>
+          {/* Calendar Section */}
+          <section className="lg:col-span-7 bg-white rounded-card border border-[var(--border)] p-6 sm:p-8 space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-serif text-[var(--fg)]">Select Date</h2>
+              <div className="flex items-center gap-3">
+                <button type="button" className="p-1.5 border border-[var(--border)] rounded-card hover:border-[var(--fg)] text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
+                  <CaretLeft size={16} />
+                </button>
+                <span className="font-mono text-xs uppercase tracking-wider text-[var(--fg)]">September 2026</span>
+                <button type="button" className="p-1.5 border border-[var(--border)] rounded-card hover:border-[var(--fg)] text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
+                  <CaretRight size={16} />
+                </button>
               </div>
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-px bg-outline-variant rounded-lg overflow-hidden border border-outline-variant/20">
-              {/* Days Header */}
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="bg-surface-container-low p-4 text-center font-label-caps text-label-caps text-outline uppercase">{day}</div>
-              ))}
-              
-              {/* Mock disabled days */}
-              {[25,26,27,28,29,30].map(day => (
-                <div key={`d-${day}`} className="bg-white p-4 md:p-8 text-center text-outline-variant/50 cursor-not-allowed">{day}</div>
-              ))}
-
-              {/* Active days */}
-              {days.map(day => (
-                <div 
-                  key={day} 
-                  onClick={() => setSelectedDay(day)}
-                  className={`bg-white p-4 md:p-8 text-center cursor-pointer transition-colors ${selectedDay === day ? 'bg-primary text-white font-bold' : 'hover:bg-surface-container-low text-primary'}`}
-                >
+            <div className="grid grid-cols-7 gap-1 text-center">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                <div key={day} className="py-2 text-[11px] font-mono uppercase text-[var(--fg-muted)]">
                   {day}
                 </div>
+              ))}
+              
+              {[25, 26, 27, 28, 29, 30].map((day) => (
+                <div key={`d-${day}`} className="py-3 text-xs text-[var(--fg-muted)]/30 cursor-not-allowed">
+                  {day}
+                </div>
+              ))}
+
+              {days.map((day) => (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => setSelectedDay(day)}
+                  className={`py-3 text-xs font-mono rounded-card transition-colors ${
+                    selectedDay === day
+                      ? 'bg-[var(--accent)] text-white font-medium'
+                      : 'hover:bg-[var(--bg-subtle)] text-[var(--fg)]'
+                  }`}
+                >
+                  {day}
+                </button>
               ))}
             </div>
           </section>
 
-          {/* Right: Time & Duration Section */}
-          <aside className="lg:col-span-4 flex flex-col gap-6">
-            {/* Start Time Card */}
-            <section className="bg-white rounded-xl shadow-sm border border-outline-variant/10 p-6 md:p-8">
-              <h3 className="font-label-caps text-label-caps text-outline mb-4 uppercase">Start Time</h3>
-              <div className="flex flex-col gap-4">
-                <div className="relative">
-                  <select className="w-full bg-surface-container-low p-4 rounded-lg border-none focus:ring-1 focus:ring-secondary font-headline-sm appearance-none cursor-pointer outline-none">
-                    <option>19:00 (7:00 PM)</option>
-                    <option>20:00 (8:00 PM)</option>
-                    <option>21:00 (9:00 PM)</option>
-                    <option>22:00 (10:00 PM)</option>
-                  </select>
-                  <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">schedule</span>
-                </div>
-                <p className="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">info</span>
-                  Recommended for gala evenings
-                </p>
+          {/* Time & Duration Section */}
+          <aside className="lg:col-span-5 flex flex-col gap-6">
+            <div className="bg-white rounded-card border border-[var(--border)] p-6 space-y-4">
+              <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Start Time</h3>
+              <div className="relative">
+                <select className="w-full bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card p-3 text-sm text-[var(--fg)] focus:outline-none focus:border-[var(--fg)] transition-colors appearance-none cursor-pointer">
+                  <option>19:00 (7:00 PM)</option>
+                  <option>20:00 (8:00 PM)</option>
+                  <option>21:00 (9:00 PM)</option>
+                  <option>22:00 (10:00 PM)</option>
+                </select>
+                <Clock size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--fg-muted)]" />
               </div>
-            </section>
+              <p className="text-xs text-[var(--fg-muted)] flex items-center gap-1.5">
+                <Info size={14} className="text-[var(--accent)] shrink-0" />
+                Evening windows usually generate peak community attendance.
+              </p>
+            </div>
 
-            {/* Duration Card */}
-            <section className="bg-white rounded-xl shadow-sm border border-outline-variant/10 p-6 md:p-8">
-              <h3 className="font-label-caps text-label-caps text-outline mb-4 uppercase">Duration</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <button className="p-4 border border-secondary text-secondary font-label-caps text-label-caps rounded-lg bg-secondary-container/10">3 Hours</button>
-                <button className="p-4 border border-outline-variant text-on-surface font-label-caps text-label-caps rounded-lg hover:border-secondary transition-colors">4 Hours</button>
-                <button className="p-4 border border-outline-variant text-on-surface font-label-caps text-label-caps rounded-lg hover:border-secondary transition-colors">Custom</button>
-                <button className="p-4 border border-outline-variant text-on-surface font-label-caps text-label-caps rounded-lg hover:border-secondary transition-colors">Open End</button>
+            <div className="bg-white rounded-card border border-[var(--border)] p-6 space-y-4">
+              <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Expected Duration</h3>
+              <div className="grid grid-cols-2 gap-2.5">
+                {['2 Hours', '3 Hours', '4 Hours', 'Open End'].map((opt) => (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setDuration(opt)}
+                    className={`py-2.5 px-3 rounded-card text-xs font-mono transition-colors border ${
+                      duration === opt 
+                        ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] font-medium' 
+                        : 'border-[var(--border)] text-[var(--fg)] hover:border-[var(--fg-muted)]'
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
               </div>
-            </section>
+            </div>
 
-            {/* Summary / CTA Card */}
-            <section className="bg-primary text-white rounded-xl shadow-lg p-6 md:p-8 flex-1 flex flex-col justify-between">
+            {/* Summary & Continue Card */}
+            <div className="bg-[var(--fg)] text-white rounded-card p-6 flex flex-col justify-between space-y-6">
               <div>
-                <p className="font-label-caps text-label-caps opacity-70 mb-2 uppercase">EVENT SUMMARY</p>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-secondary">calendar_today</span>
-                    <span className="font-headline-sm text-headline-sm">Wed, Sept {selectedDay}</span>
+                <p className="text-xs font-mono uppercase tracking-wider text-white/60 mb-2">Timing Summary</p>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-sm">
+                    <CalendarBlank size={16} className="text-[var(--accent)] shrink-0" />
+                    <span>Wed, Sept {selectedDay}, 2026</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-secondary">schedule</span>
-                    <span className="font-headline-sm text-headline-sm">19:00 — 22:00</span>
+                  <div className="flex items-center gap-2 text-sm text-white/80">
+                    <Clock size={16} className="text-[var(--accent)] shrink-0" />
+                    <span>19:00 — ({duration})</span>
                   </div>
                 </div>
               </div>
-              <div className="flex gap-4 mt-8">
-                <button 
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
                   onClick={() => navigate('/events/create')}
-                  className="px-6 py-4 border border-white/30 text-white font-label-caps text-label-caps rounded-lg hover:bg-white/10 transition-colors flex items-center justify-center"
+                  className="p-3 rounded-card border border-white/20 text-white hover:bg-white/10 transition-colors"
                 >
-                  <span className="material-symbols-outlined">arrow_back</span>
+                  <ArrowLeft size={16} />
                 </button>
-                <button 
-                  onClick={() => navigate('/events/create/location')}
-                  className="flex-1 py-4 bg-white text-primary font-label-caps text-label-caps rounded-lg hover:bg-secondary-fixed transition-colors flex items-center justify-center gap-2 group"
+                <button
+                  type="button"
+                  onClick={() => navigate('/events/create')}
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-3 rounded-card bg-white text-[var(--fg)] text-xs font-mono uppercase tracking-wider hover:bg-white/90 transition-colors"
                 >
-                  Finalize Date
-                  <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  Confirm Date & Time
+                  <ArrowRight size={16} />
                 </button>
               </div>
-            </section>
+            </div>
           </aside>
         </div>
       </main>

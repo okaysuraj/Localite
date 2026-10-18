@@ -1,14 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import {
+  Clock,
+  Users,
+  Sun,
+  ChatCircle,
+  PaperPlaneRight,
+  Check,
+  MapPin,
+} from '@phosphor-icons/react';
 
 export default function MatchLobbyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({ minutes: 14, seconds: 59 });
+  const [chatMessage, setChatMessage] = useState('');
+  const [chatList, setChatList] = useState([
+    {
+      id: 1,
+      sender: 'Marcus Chen',
+      time: '14:42',
+      isMe: false,
+      text: 'Are we playing 3 sets or best of 5 for badminton doubles?',
+    },
+    {
+      id: 2,
+      sender: 'You',
+      time: '14:45',
+      isMe: true,
+      text: 'Best of 3 sets to 21 points. Shuttlecocks are ready on Court 2.',
+    },
+  ]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev.seconds === 0) {
           if (prev.minutes === 0) {
             clearInterval(timer);
@@ -23,193 +49,252 @@ export default function MatchLobbyPage() {
     return () => clearInterval(timer);
   }, []);
 
+  const handleSendChat = (e) => {
+    e.preventDefault();
+    if (!chatMessage.trim()) return;
+    setChatList((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        sender: 'You',
+        time: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        isMe: true,
+        text: chatMessage.trim(),
+      },
+    ]);
+    setChatMessage('');
+  };
+
   return (
-    <div className="flex h-[calc(100vh-80px)] bg-surface">
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col lg:flex-row h-full">
-        <section className="flex-1 p-6 lg:p-12 overflow-y-auto">
-          {/* Briefing Header */}
-          <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex justify-between items-end mb-4">
-              <div>
-                <span className="font-label-caps text-[12px] text-secondary block mb-2 uppercase tracking-widest">PRE-MATCH BRIEFING</span>
-                <h1 className="font-display-lg text-[32px] md:text-[48px] text-primary font-bold">Championship Finals</h1>
-              </div>
-              <div className="text-right hidden md:block">
-                <span className="font-label-caps text-[12px] text-on-surface-variant uppercase tracking-widest">COMMENCING IN</span>
-                <div className="font-headline-md text-[32px] text-primary tracking-widest">
-                  {String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
-                </div>
-              </div>
+    <div className="bg-bg min-h-[calc(100vh-65px)] flex flex-col lg:flex-row">
+      {/* Main Area */}
+      <main className="flex-1 p-6 lg:p-10 space-y-8 overflow-y-auto">
+        {/* Match Header */}
+        <div className="bg-white border border-border rounded-card p-6 sm:p-8 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-xs font-mono text-accent uppercase tracking-wider block">
+                Pre-Match Lobby
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-display font-semibold text-fg tracking-tight">
+                Badminton Doubles League Match
+              </h1>
+              <p className="text-xs font-mono text-fg-muted flex items-center gap-1.5">
+                <MapPin size={13} className="text-accent" />
+                Indiranagar Sports Club — Court 2
+              </p>
             </div>
-            <div className="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
-              <div className="h-full bg-secondary transition-all duration-1000" style={{ width: '75%' }}></div>
+
+            <div className="text-left sm:text-right bg-bg-subtle p-3.5 rounded-card border border-border/60">
+              <span className="text-[10px] font-mono text-fg-muted uppercase tracking-wider block">
+                Match Starts In
+              </span>
+              <div className="text-2xl font-display font-semibold text-fg mt-0.5 font-mono">
+                {String(timeLeft.minutes).padStart(2, '0')}:
+                {String(timeLeft.seconds).padStart(2, '0')}
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Teams Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-12">
-            {/* Team Alpha */}
-            <div className="bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] p-6 border border-outline-variant/20">
-              <div className="flex justify-between items-center mb-6">
+        {/* Teams 2-Col Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Team Alpha */}
+          <div className="bg-white border border-border rounded-card p-6 space-y-4">
+            <div className="flex justify-between items-center pb-3 border-b border-border">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-accent" />
+                <h3 className="font-display font-semibold text-base text-fg">
+                  Team Alpha
+                </h3>
+              </div>
+              <span className="text-[11px] font-mono text-accent bg-accent-subtle px-2 py-0.5 rounded-full">
+                2/2 Checked In
+              </span>
+            </div>
+
+            <div className="space-y-3 divide-y divide-border/60">
+              <div className="pt-2 first:pt-0 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  <h3 className="font-headline-sm text-[24px] uppercase tracking-wider font-bold">Team Alpha</h3>
-                </div>
-                <span className="font-label-caps text-[12px] text-on-surface-variant uppercase">2/2 READY</span>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors">
-                  <div className="flex items-center gap-4">
-                    <img src="https://via.placeholder.com/50" alt="player" className="w-12 h-12 rounded-full object-cover" />
-                    <div>
-                      <p className="font-bold text-primary">Marcus Vane</p>
-                      <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Elite Striker</p>
-                    </div>
+                  <div className="w-9 h-9 rounded-full bg-bg-subtle border border-border flex items-center justify-center font-display font-medium text-xs text-fg">
+                    MC
                   </div>
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-label-caps text-[10px] uppercase">Arrived</span>
-                </div>
-                <div className="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors">
-                  <div className="flex items-center gap-4">
-                    <img src="https://via.placeholder.com/50" alt="player" className="w-12 h-12 rounded-full object-cover" />
-                    <div>
-                      <p className="font-bold text-primary">Elena Rossi</p>
-                      <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Defensive Lead</p>
-                    </div>
+                  <div>
+                    <p className="text-xs font-display font-medium text-fg">
+                      Marcus Chen
+                    </p>
+                    <p className="text-[10px] font-mono text-fg-muted">
+                      Rating 1,420
+                    </p>
                   </div>
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-label-caps text-[10px] uppercase">Arrived</span>
                 </div>
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-accent">
+                  <Check size={12} weight="bold" /> At Court
+                </span>
               </div>
-            </div>
 
-            {/* Team Bravo */}
-            <div className="bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] p-6 border border-outline-variant/20">
-              <div className="flex justify-between items-center mb-6">
+              <div className="pt-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-secondary rounded-full"></div>
-                  <h3 className="font-headline-sm text-[24px] uppercase tracking-wider font-bold">Team Bravo</h3>
-                </div>
-                <span className="font-label-caps text-[12px] text-on-surface-variant uppercase">1/2 READY</span>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors">
-                  <div className="flex items-center gap-4">
-                    <img src="https://via.placeholder.com/50" alt="player" className="w-12 h-12 rounded-full object-cover" />
-                    <div>
-                      <p className="font-bold text-primary">Sasha Kim</p>
-                      <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Team Captain</p>
-                    </div>
+                  <div className="w-9 h-9 rounded-full bg-bg-subtle border border-border flex items-center justify-center font-display font-medium text-xs text-fg">
+                    ER
                   </div>
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-label-caps text-[10px] uppercase">Arrived</span>
-                </div>
-                <div className="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors">
-                  <div className="flex items-center gap-4 opacity-50">
-                    <img src="https://via.placeholder.com/50" alt="player" className="w-12 h-12 rounded-full object-cover grayscale" />
-                    <div>
-                      <p className="font-bold text-primary">Liam O'Connell</p>
-                      <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Wingman</p>
-                    </div>
-                  </div>
-                  <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-label-caps text-[10px] uppercase">In Transit</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] p-6 border border-outline-variant/20">
-              <h4 className="font-label-caps text-[12px] text-primary mb-4 uppercase tracking-widest">LOBBY STATUS & INTEL</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-3 bg-background rounded-lg text-center border border-outline-variant/10">
-                  <p className="text-[10px] font-label-caps text-on-surface-variant mb-1 uppercase tracking-widest">WEATHER</p>
-                  <div className="flex items-center justify-center gap-1">
-                    <span className="material-symbols-outlined text-secondary text-lg">wb_sunny</span>
-                    <span className="font-bold">18°C</span>
+                  <div>
+                    <p className="text-xs font-display font-medium text-fg">
+                      Elena Rao
+                    </p>
+                    <p className="text-[10px] font-mono text-fg-muted">
+                      Rating 1,390
+                    </p>
                   </div>
                 </div>
-                <div className="p-3 bg-background rounded-lg text-center border border-outline-variant/10">
-                  <p className="text-[10px] font-label-caps text-on-surface-variant mb-1 uppercase tracking-widest">SURFACE</p>
-                  <p className="font-bold text-primary">PRISTINE</p>
-                </div>
-                <div className="p-3 bg-background rounded-lg text-center border border-outline-variant/10">
-                  <p className="text-[10px] font-label-caps text-on-surface-variant mb-1 uppercase tracking-widest">SPECTATORS</p>
-                  <p className="font-bold text-primary">124</p>
-                </div>
-                <div className="p-3 bg-background rounded-lg text-center border border-outline-variant/10">
-                  <p className="text-[10px] font-label-caps text-on-surface-variant mb-1 uppercase tracking-widest">ELO SPREAD</p>
-                  <p className="font-bold text-primary">+/- 15</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-primary-container rounded-xl p-6 flex flex-col justify-between text-white shadow-xl">
-              <div>
-                <p className="font-label-caps text-[10px] text-white/70 mb-2 uppercase tracking-widest">URGENT ACTION</p>
-                <h4 className="font-headline-sm text-[24px] font-bold">Attendance Check</h4>
-              </div>
-              <button 
-                className="w-full mt-6 bg-white text-primary py-3 rounded-xl font-label-caps text-[12px] uppercase tracking-widest hover:bg-secondary-container transition-colors active:scale-95"
-                onClick={() => alert('Attendance Confirmed')}
-              >
-                Confirm Attendance
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Lobby Chat Panel */}
-        <aside className="w-full lg:w-96 bg-white border-l border-outline-variant/30 flex flex-col h-full z-10">
-          <div className="p-6 border-b border-outline-variant/30 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary">forum</span>
-              <h3 className="font-label-caps text-[12px] text-primary uppercase tracking-widest">LOBBY CHAT</h3>
-            </div>
-            <span className="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">LIVE</span>
-          </div>
-
-          <div className="flex-1 p-6 overflow-y-auto space-y-6">
-            <div className="flex gap-3">
-              <img src="https://via.placeholder.com/40" className="w-8 h-8 rounded-full object-cover" />
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-bold text-xs">Marcus Vane</span>
-                  <span className="text-[10px] text-on-surface-variant">14:42</span>
-                </div>
-                <div className="bg-surface-container-low p-3 rounded-xl rounded-tl-none shadow-sm text-sm">
-                  Is everyone bringing the official team kit for the finals?
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-3 flex-row-reverse">
-              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-[10px] font-bold">ME</div>
-              <div className="text-right">
-                <div className="flex items-center justify-end gap-2 mb-1">
-                  <span className="text-[10px] text-on-surface-variant">14:45</span>
-                  <span className="font-bold text-xs">You</span>
-                </div>
-                <div className="bg-secondary text-white p-3 rounded-xl rounded-tr-none shadow-sm text-sm">
-                  Yes, Alpha in Navy, Bravo in Gold. See you on court 1.
-                </div>
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-accent">
+                  <Check size={12} weight="bold" /> At Court
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="p-6 border-t border-outline-variant/30 bg-surface-container-lowest">
-            <div className="relative">
-              <input 
-                type="text" 
-                placeholder="Type a message..." 
-                className="w-full bg-surface border-none focus:ring-1 focus:ring-secondary rounded-xl py-3 pl-4 pr-12 text-sm"
-              />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined">send</span>
-              </button>
+          {/* Team Bravo */}
+          <div className="bg-white border border-border rounded-card p-6 space-y-4">
+            <div className="flex justify-between items-center pb-3 border-b border-border">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-fg-muted" />
+                <h3 className="font-display font-semibold text-base text-fg">
+                  Team Bravo
+                </h3>
+              </div>
+              <span className="text-[11px] font-mono text-fg-muted bg-bg-subtle px-2 py-0.5 rounded-full">
+                1/2 Checked In
+              </span>
+            </div>
+
+            <div className="space-y-3 divide-y divide-border/60">
+              <div className="pt-2 first:pt-0 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-bg-subtle border border-border flex items-center justify-center font-display font-medium text-xs text-fg">
+                    SK
+                  </div>
+                  <div>
+                    <p className="text-xs font-display font-medium text-fg">
+                      Sasha Kumar
+                    </p>
+                    <p className="text-[10px] font-mono text-fg-muted">
+                      Rating 1,410
+                    </p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-accent">
+                  <Check size={12} weight="bold" /> At Court
+                </span>
+              </div>
+
+              <div className="pt-3 flex items-center justify-between opacity-60">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-bg-subtle border border-border flex items-center justify-center font-display font-medium text-xs text-fg">
+                    LO
+                  </div>
+                  <div>
+                    <p className="text-xs font-display font-medium text-fg">
+                      Liam O'Neill
+                    </p>
+                    <p className="text-[10px] font-mono text-fg-muted">
+                      Rating 1,385
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-mono text-fg-muted">
+                  In Transit
+                </span>
+              </div>
             </div>
           </div>
-        </aside>
+        </div>
+
+        {/* Match Intel Card */}
+        <div className="bg-white border border-border rounded-card p-6 space-y-3">
+          <h4 className="font-mono text-xs text-fg-muted uppercase tracking-wider">
+            Match Conditions
+          </h4>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs font-mono">
+            <div className="p-3 bg-bg-subtle rounded-card border border-border/60">
+              <span className="text-[10px] text-fg-muted block uppercase">Indoor</span>
+              <span className="font-display font-semibold text-fg mt-0.5 block">Air Conditioned</span>
+            </div>
+            <div className="p-3 bg-bg-subtle rounded-card border border-border/60">
+              <span className="text-[10px] text-fg-muted block uppercase">Surface</span>
+              <span className="font-display font-semibold text-fg mt-0.5 block">Synthetic Mat</span>
+            </div>
+            <div className="p-3 bg-bg-subtle rounded-card border border-border/60">
+              <span className="text-[10px] text-fg-muted block uppercase">Sets</span>
+              <span className="font-display font-semibold text-fg mt-0.5 block">Best of 3 (21 pts)</span>
+            </div>
+            <div className="p-3 bg-bg-subtle rounded-card border border-border/60">
+              <span className="text-[10px] text-fg-muted block uppercase">Rating Diff</span>
+              <span className="font-display font-semibold text-accent mt-0.5 block">+/- 15 ELO</span>
+            </div>
+          </div>
+        </div>
       </main>
+
+      {/* Lobby Chat Sidebar */}
+      <aside className="w-full lg:w-96 bg-white border-t lg:border-t-0 lg:border-l border-border flex flex-col shrink-0">
+        <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-white">
+          <div className="flex items-center gap-2">
+            <ChatCircle size={16} className="text-accent" />
+            <h3 className="font-display font-semibold text-sm text-fg">
+              Lobby Discussion
+            </h3>
+          </div>
+          <span className="text-[10px] font-mono text-accent bg-accent-subtle px-2 py-0.5 rounded-full">
+            Live
+          </span>
+        </div>
+
+        <div className="flex-1 p-5 overflow-y-auto space-y-3 bg-bg max-h-[380px] lg:max-h-none">
+          {chatList.map((chat) => (
+            <div
+              key={chat.id}
+              className={`flex flex-col ${chat.isMe ? 'items-end' : 'items-start'}`}
+            >
+              <span className="text-[10px] font-mono text-fg-muted mb-1 px-1">
+                {chat.sender} • {chat.time}
+              </span>
+              <div
+                className={`p-3 rounded-card text-xs max-w-[85%] leading-relaxed ${
+                  chat.isMe
+                    ? 'bg-accent text-white'
+                    : 'bg-white text-fg border border-border'
+                }`}
+              >
+                {chat.text}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <form
+          onSubmit={handleSendChat}
+          className="p-3 bg-white border-t border-border flex items-center gap-2"
+        >
+          <input
+            type="text"
+            value={chatMessage}
+            onChange={(e) => setChatMessage(e.target.value)}
+            placeholder="Message players..."
+            className="flex-1 bg-bg-subtle border border-border rounded-btn py-2 px-3 text-xs font-mono text-fg placeholder:text-fg-faint focus:outline-none focus:border-accent"
+          />
+          <button
+            type="submit"
+            disabled={!chatMessage.trim()}
+            className="h-8 px-3 bg-accent text-white rounded-btn flex items-center justify-center hover:opacity-90 disabled:opacity-40 transition-opacity"
+          >
+            <PaperPlaneRight size={14} weight="bold" />
+          </button>
+        </form>
+      </aside>
     </div>
   );
 }

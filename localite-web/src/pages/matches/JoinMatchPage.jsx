@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
+import { 
+  Trophy, 
+  MapPin, 
+  CalendarBlank, 
+  Users, 
+  ArrowLeft, 
+  Plus, 
+  ArrowRight 
+} from '@phosphor-icons/react';
 
 export default function JoinMatchPage() {
   const navigate = useNavigate();
@@ -16,14 +25,17 @@ export default function JoinMatchPage() {
     try {
       setLoading(true);
       const token = await auth.currentUser?.getIdToken();
-      if (!token) return;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
       const res = await fetch(`${API_URL}/matches/events`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
         const data = await res.json();
-        setMatches(data);
+        setMatches(data || []);
       }
     } catch (error) {
       console.error(error);
@@ -33,102 +45,103 @@ export default function JoinMatchPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-12">
-      <div className="flex justify-between items-end mb-8">
-        <div>
-          <span className="font-label-caps text-[12px] text-secondary mb-2 block uppercase tracking-widest">CURATED OPPORTUNITIES</span>
-          <h2 className="font-display-lg text-[32px] md:text-[48px] text-primary font-bold">Discover Matches</h2>
-        </div>
-      </div>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
+      <main className="max-w-6xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[var(--border)]">
+          <div className="space-y-1">
+            <button 
+              type="button" 
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-2"
+            >
+              <ArrowLeft size={16} />
+              Return
+            </button>
+            <span className="font-mono text-xs uppercase tracking-wider text-[var(--accent)] block mb-1">
+              Athletic Roster
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-serif text-[var(--fg)]">Find Competitive Matches</h1>
+            <p className="text-xs sm:text-sm text-[var(--fg-muted)] max-w-xl mt-1">
+              Join open court sessions, soccer fixtures, and tennis leagues organized by verified local players.
+            </p>
+          </div>
 
-      {loading ? (
-        <div className="flex justify-center py-24">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
+          <button 
+            type="button" 
+            onClick={() => navigate('/matches/create')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors self-start sm:self-auto"
+          >
+            <Plus size={16} />
+            Create Match
+          </button>
         </div>
-      ) : matches.length === 0 ? (
-        <div className="text-center py-24 bg-surface-container-low rounded-xl">
-          <p className="text-on-surface-variant text-lg">No matches available right now.</p>
-        </div>
-      ) : (
-        <>
-          {/* Featured Match */}
-          {matches.length > 0 && (
-            <section className="mb-12">
-              <div 
-                className="relative w-full h-[400px] md:h-[520px] bg-white rounded-xl overflow-hidden shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] group cursor-pointer"
-                onClick={() => navigate(`/events/${matches[0].id}`)}
-              >
-                <div className="absolute inset-0 w-full h-full">
-                  <img 
-                    src={matches[0].imageUrl || 'https://via.placeholder.com/1200x600'} 
-                    alt={matches[0].title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                </div>
-                <div className="absolute bottom-0 left-0 p-8 md:p-10 w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                  <div className="max-w-2xl">
-                    <div className="flex gap-3 mb-4">
-                      <span className="px-3 py-1 bg-primary text-white font-label-caps text-[10px] tracking-[0.2em] rounded-full">ELITE</span>
-                    </div>
-                    <h3 className="font-headline-md text-[32px] md:text-[42px] text-white leading-tight mb-2">{matches[0].title}</h3>
-                    <p className="text-white/80 font-body-lg mb-6">{matches[0].description}</p>
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-white text-sm">location_on</span>
-                      <span className="text-white">{matches[0].location}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-4 w-full md:w-auto">
-                    <button className="w-full md:w-auto px-10 py-4 bg-white text-primary font-label-caps text-[12px] uppercase tracking-widest rounded-xl hover:bg-surface-container transition-colors shadow-lg active:scale-95">
-                      Request Entry
-                    </button>
-                    <span className="text-white/80 font-label-caps text-[10px]">{new Date(matches[0].date).toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
 
-          {/* Other Matches Grid */}
+        {/* Content */}
+        {loading ? (
+          <div className="bg-white rounded-card border border-[var(--border)] p-12 text-center text-xs font-mono text-[var(--fg-muted)]">
+            Scanning active matchups...
+          </div>
+        ) : matches.length === 0 ? (
+          <div className="bg-white rounded-card border border-[var(--border)] p-12 text-center space-y-4">
+            <Trophy size={36} className="mx-auto text-[var(--fg-muted)]" />
+            <h3 className="text-base font-serif text-[var(--fg)]">No active matches found</h3>
+            <p className="text-xs text-[var(--fg-muted)] max-w-sm mx-auto">
+              Be the first to host a match on your local courts or grounds.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/matches/create')}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"
+            >
+              Schedule Match
+            </button>
+          </div>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {matches.slice(1).map(match => (
+            {matches.map((match) => (
               <div 
-                key={match.id} 
-                className="bg-white rounded-xl shadow-[0_4px_20px_rgba(10,25,47,0.05)] group overflow-hidden flex flex-col hover:-translate-y-1 transition-transform cursor-pointer"
+                key={match.id}
                 onClick={() => navigate(`/events/${match.id}`)}
+                className="bg-white rounded-card border border-[var(--border)] overflow-hidden hover:border-[var(--fg-muted)] transition-all cursor-pointer group flex flex-col"
               >
-                <div className="relative h-48 overflow-hidden">
+                <div className="h-44 w-full relative bg-[var(--bg-subtle)] overflow-hidden">
                   <img 
-                    src={match.imageUrl || 'https://via.placeholder.com/400x300'} 
+                    src={match.imageUrl || 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=600'} 
                     alt={match.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                   />
-                  <div className="absolute bottom-4 left-4">
-                    <span className="px-2 py-1 bg-secondary text-white font-label-caps text-[9px] rounded uppercase tracking-wider">Moderate</span>
+                  <div className="absolute top-3 right-3 bg-[var(--accent)] text-white px-2.5 py-0.5 rounded-card text-[10px] font-mono">
+                    {match.category || 'Athletics'}
                   </div>
                 </div>
-                <div className="p-6 flex flex-col flex-1">
-                  <h4 className="font-headline-sm text-lg text-primary mb-2 font-bold">{match.title}</h4>
-                  <p className="text-on-surface-variant text-sm line-clamp-2 mb-6">{match.description}</p>
-                  <div className="mt-auto pt-4 border-t border-outline-variant/20 flex justify-between items-center">
-                    <div className="flex flex-col">
-                      <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">Time</span>
-                      <span className="text-sm font-bold text-primary">{new Date(match.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-[var(--accent)] block">
+                      {match.eventType || 'Open Match'}
+                    </span>
+                    <h3 className="text-base font-serif text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors line-clamp-1">
+                      {match.title}
+                    </h3>
+                  </div>
+
+                  <div className="pt-3 border-t border-[var(--border)] space-y-1.5 text-xs text-[var(--fg-muted)] font-mono">
+                    <div className="flex items-center gap-2">
+                      <CalendarBlank size={14} className="text-[var(--fg)] shrink-0" />
+                      <span>{match.date ? new Date(match.date).toLocaleString() : 'TBD'}</span>
                     </div>
-                    <div className="flex flex-col text-right">
-                      <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">Date</span>
-                      <span className="text-sm font-bold text-primary">{new Date(match.date).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-2">
+                      <MapPin size={14} className="text-[var(--fg)] shrink-0" />
+                      <span className="truncate">{match.location || 'Local Grounds'}</span>
                     </div>
                   </div>
-                  <button className="w-full mt-4 py-3 border border-secondary text-secondary font-label-caps text-[11px] uppercase tracking-widest rounded-xl hover:bg-secondary hover:text-white transition-all active:scale-95">
-                    View Details
-                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </>
-      )}
-    </main>
+        )}
+      </main>
+    </div>
   );
 }

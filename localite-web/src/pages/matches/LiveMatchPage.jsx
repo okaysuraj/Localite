@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  Trophy, 
+  ArrowLeft, 
+  ShieldCheck, 
+  Clock, 
+  ChartBar, 
+  SoccerBall, 
+  Sparkle 
+} from '@phosphor-icons/react';
 
 export default function LiveMatchPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [matchData, setMatchData] = useState({
     time: "74:22",
     homeTeam: "Kensington United",
@@ -14,16 +24,13 @@ export default function LiveMatchPage() {
       shots: { home: 12, away: 8 },
       shotsOnTarget: { home: 7, away: 3 },
       passAccuracy: { home: 89, away: 81 },
-      xg: { home: 2.14, away: 1.02 },
       corners: { home: 6, away: 3 },
-      fouls: { home: 5, away: 9 }
     }
   });
 
   useEffect(() => {
-    // Simulate live updates
     const timer = setInterval(() => {
-      setMatchData(prev => {
+      setMatchData((prev) => {
         let [mins, secs] = prev.time.split(':').map(Number);
         secs++;
         if (secs >= 60) {
@@ -41,200 +48,110 @@ export default function LiveMatchPage() {
   }, []);
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-12">
-      {/* Scoreboard Header */}
-      <section className="relative w-full rounded-[2rem] overflow-hidden bg-primary-container text-white mb-12 shadow-2xl p-8 lg:p-16 min-h-[400px] flex flex-col justify-center">
-        <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
-          <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full border-[60px] border-secondary-fixed/30"></div>
-          <div className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full border-[60px] border-secondary-fixed/30"></div>
-        </div>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-8 px-4 sm:px-6">
+      <main className="max-w-6xl mx-auto space-y-6">
+        {/* Navigation */}
+        <button 
+          type="button" 
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
+        >
+          <ArrowLeft size={16} />
+          Back to Match Lobby
+        </button>
 
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 items-center gap-12">
-          {/* Home Team */}
-          <div className="flex flex-col items-center md:items-end text-center md:text-right">
-            <div className="w-24 h-24 mb-6 rounded-2xl bg-white/5 p-4 backdrop-blur-sm border border-white/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-4xl text-secondary-fixed">shield</span>
-            </div>
-            <h2 className="font-headline-md text-[32px] text-secondary-fixed mb-2 font-bold">{matchData.homeTeam}</h2>
-            <span className="font-label-caps text-[12px] text-white/50 uppercase tracking-widest">Elite League • Home</span>
+        {/* Minimalist Editorial Scoreboard */}
+        <div className="bg-[var(--fg)] text-white rounded-card p-6 sm:p-10 relative overflow-hidden">
+          <div className="flex items-center justify-between pb-6 border-b border-white/10 text-xs font-mono">
+            <span className="inline-flex items-center gap-1.5 text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Live Division Play
+            </span>
+            <span className="text-white/60">Match #{id || '104'}</span>
           </div>
 
-          {/* Score */}
-          <div className="flex flex-col items-center justify-center px-8 md:border-x border-white/10 h-full">
-            <div className="bg-secondary text-white px-4 py-1 rounded-full font-label-caps text-[10px] mb-4 animate-pulse uppercase tracking-widest">
-              LIVE • {matchData.time}
-            </div>
-            <div className="flex items-center gap-6 mb-6">
-              <span className="font-display-lg text-[64px] md:text-[84px] leading-none font-bold">{matchData.homeScore}</span>
-              <span className="text-secondary-fixed font-display-lg text-[48px] opacity-50">:</span>
-              <span className="font-display-lg text-[64px] md:text-[84px] leading-none font-bold">{matchData.awayScore}</span>
-            </div>
-            <div className="text-white/60 font-body-md italic">Dominating Possession</div>
-          </div>
-
-          {/* Away Team */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <div className="w-24 h-24 mb-6 rounded-2xl bg-white/5 p-4 backdrop-blur-sm border border-white/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-4xl text-white">sports_motorsports</span>
-            </div>
-            <h2 className="font-headline-md text-[32px] text-white mb-2 font-bold">{matchData.awayTeam}</h2>
-            <span className="font-label-caps text-[12px] text-white/50 uppercase tracking-widest">Elite League • Away</span>
-          </div>
-        </div>
-      </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Timeline */}
-        <div className="lg:col-span-4 bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] p-6 border border-outline-variant/20 h-full flex flex-col">
-          <h3 className="font-headline-sm text-[24px] text-primary mb-6 flex items-center gap-2 font-bold">
-            <span className="material-symbols-outlined text-secondary">analytics</span>
-            Match Timeline
-          </h3>
-          <div className="space-y-0 relative flex-1">
-            <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-outline-variant/30"></div>
-            
-            <div className="relative pl-12 pb-8 group">
-              <div className="absolute left-0 top-1 w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center z-10 border-4 border-white group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-secondary text-sm">sports_soccer</span>
-              </div>
-              <div className="flex justify-between items-start mb-1">
-                <span className="font-label-caps text-secondary text-[11px] uppercase tracking-widest">68' GOAL</span>
-                <span className="font-label-caps text-on-surface-variant text-[11px] uppercase">Kensington</span>
-              </div>
-              <p className="font-body-md text-primary font-bold">Julian Sterling</p>
-              <p className="font-body-md text-on-surface-variant text-sm">Assisted by Marcus Vane</p>
+          <div className="py-8 grid grid-cols-3 items-center text-center gap-4">
+            {/* Home */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-white/60 block">Home Club</span>
+              <h2 className="text-xl sm:text-2xl font-serif text-white">{matchData.homeTeam}</h2>
+              <span className="text-xs font-mono text-[var(--accent)]">Premier Flight</span>
             </div>
 
-            <div className="relative pl-12 pb-8 group">
-              <div className="absolute left-0 top-1 w-10 h-10 bg-surface-container-highest rounded-full flex items-center justify-center z-10 border-4 border-white group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-on-surface-variant text-sm">cached</span>
+            {/* Score & Time */}
+            <div className="space-y-2">
+              <div className="text-4xl sm:text-6xl font-mono font-bold tracking-tight text-white">
+                {matchData.homeScore} : {matchData.awayScore}
               </div>
-              <div className="flex justify-between items-start mb-1">
-                <span className="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-widest">54' SUB</span>
-                <span className="font-label-caps text-on-surface-variant text-[11px] uppercase">Belgravia</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-error text-xs">arrow_downward</span>
-                <p className="font-body-md text-on-surface-variant text-sm line-through">D. Sinclair</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-secondary text-xs">arrow_upward</span>
-                <p className="font-body-md text-primary text-sm font-bold">O. Thorne</p>
-              </div>
+              <span className="inline-block px-3 py-1 rounded-card bg-white/10 text-xs font-mono text-white/90">
+                {matchData.time}
+              </span>
             </div>
 
-            <div className="relative pl-12 pb-8 group">
-              <div className="absolute left-0 top-1 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center z-10 border-4 border-white group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-primary text-sm">style</span>
-              </div>
-              <div className="flex justify-between items-start mb-1">
-                <span className="font-label-caps text-yellow-700 text-[11px] uppercase tracking-widest">41' BOOKING</span>
-                <span className="font-label-caps text-on-surface-variant text-[11px] uppercase">Belgravia</span>
-              </div>
-              <p className="font-body-md text-primary font-bold">Xavier Knight</p>
-              <p className="font-body-md text-on-surface-variant text-sm">Tactical Foul</p>
-            </div>
-
-            <div className="relative pl-12 pb-8">
-              <div className="absolute left-0 top-1 w-10 h-10 bg-primary rounded-full flex items-center justify-center z-10 border-4 border-white">
-                <span className="material-symbols-outlined text-white text-sm">timer</span>
-              </div>
-              <div className="flex justify-between items-start mb-1">
-                <span className="font-label-caps text-primary text-[11px] uppercase tracking-widest">45' BREAK</span>
-              </div>
-              <p className="font-body-md text-primary font-bold">Half Time</p>
-              <p className="font-body-md text-on-surface-variant text-sm">Score: 1 - 1</p>
+            {/* Away */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-white/60 block">Away Club</span>
+              <h2 className="text-xl sm:text-2xl font-serif text-white">{matchData.awayTeam}</h2>
+              <span className="text-xs font-mono text-white/60">Premier Flight</span>
             </div>
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="lg:col-span-8 flex flex-col gap-8">
-          <div className="bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] p-6 border border-outline-variant/20">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="font-headline-sm text-[24px] text-primary font-bold">Performance Breakdown</h3>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">Kensington</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-secondary rounded-full"></div>
-                  <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">Belgravia</span>
-                </div>
-              </div>
-            </div>
+        {/* Match Statistics & Timeline Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Live Timeline */}
+          <div className="lg:col-span-5 bg-white rounded-card border border-[var(--border)] p-6 space-y-6">
+            <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Key Match Events</h3>
 
-            <div className="space-y-6">
-              <div>
-                <div className="flex justify-between font-label-caps text-[11px] mb-2 uppercase tracking-widest">
-                  <span>Possession</span>
-                  <span>{matchData.stats.possession.home}% — {matchData.stats.possession.away}%</span>
-                </div>
-                <div className="h-2 w-full bg-surface-container rounded-full overflow-hidden flex">
-                  <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${matchData.stats.possession.home}%` }}></div>
-                  <div className="h-full bg-secondary transition-all duration-1000" style={{ width: `${matchData.stats.possession.away}%` }}></div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-outline-variant/20">
-                <div className="text-center">
-                  <p className="font-label-caps text-on-surface-variant text-[10px] mb-1 uppercase tracking-widest">Shots (Target)</p>
-                  <p className="font-headline-sm text-[24px] text-primary font-bold">
-                    {matchData.stats.shots.home} ({matchData.stats.shotsOnTarget.home}) <span className="text-on-surface-variant font-normal text-sm">— {matchData.stats.shots.away} ({matchData.stats.shotsOnTarget.away})</span>
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="font-label-caps text-on-surface-variant text-[10px] mb-1 uppercase tracking-widest">Pass Accuracy</p>
-                  <p className="font-headline-sm text-[24px] text-primary font-bold">
-                    {matchData.stats.passAccuracy.home}% <span className="text-on-surface-variant font-normal text-sm">— {matchData.stats.passAccuracy.away}%</span>
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="font-label-caps text-on-surface-variant text-[10px] mb-1 uppercase tracking-widest">Expected Goals</p>
-                  <p className="font-headline-sm text-[24px] text-primary font-bold">
-                    {matchData.stats.xg.home} <span className="text-on-surface-variant font-normal text-sm">— {matchData.stats.xg.away}</span>
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-4 text-xs font-mono">
+              {[
+                { time: "68'", team: 'Kensington', text: 'Goal! Header by L. Vance from cross.', icon: SoccerBall },
+                { time: "54'", team: 'Belgravia', text: 'Yellow Card for tackle outside the box.', icon: ShieldCheck },
+                { time: "22'", team: 'Belgravia', text: 'Goal! Penalty scored into bottom right.', icon: SoccerBall },
+                { time: "11'", team: 'Kensington', text: 'Goal! Low strike from distance.', icon: SoccerBall },
+              ].map((ev, i) => {
+                const Icon = ev.icon;
+                return (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-card bg-[var(--bg-subtle)] border border-[var(--border)]">
+                    <span className="text-sm font-bold text-[var(--accent)]">{ev.time}</span>
+                    <div className="flex-1">
+                      <p className="font-medium text-[var(--fg)]">{ev.team}</p>
+                      <p className="text-[11px] text-[var(--fg-muted)] mt-0.5">{ev.text}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] p-6 border-l-4 border-secondary border-y border-r border-outline-variant/20">
-              <h4 className="font-label-caps text-[11px] text-on-surface-variant mb-4 uppercase tracking-widest">Total Corners</h4>
-              <div className="flex items-end gap-2">
-                <span className="font-display-lg text-4xl text-primary font-bold">{matchData.stats.corners.home + matchData.stats.corners.away}</span>
-                <span className="font-body-md text-on-surface-variant pb-1">Ken ({matchData.stats.corners.home}) | Bel ({matchData.stats.corners.away})</span>
-              </div>
-              <div className="mt-4 flex gap-1">
-                {Array.from({length: matchData.stats.corners.home}).map((_, i) => (
-                  <div key={`h-${i}`} className="h-1 flex-1 bg-primary rounded-full"></div>
-                ))}
-                {Array.from({length: matchData.stats.corners.away}).map((_, i) => (
-                  <div key={`a-${i}`} className="h-1 flex-1 bg-secondary rounded-full"></div>
-                ))}
-              </div>
-            </div>
+          {/* Detailed Match Stats */}
+          <div className="lg:col-span-7 bg-white rounded-card border border-[var(--border)] p-6 space-y-5">
+            <h3 className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Statistical Overview</h3>
 
-            <div className="bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] p-6 border-l-4 border-error border-y border-r border-outline-variant/20">
-              <h4 className="font-label-caps text-[11px] text-on-surface-variant mb-4 uppercase tracking-widest">Total Fouls</h4>
-              <div className="flex items-end gap-2">
-                <span className="font-display-lg text-4xl text-primary font-bold">{matchData.stats.fouls.home + matchData.stats.fouls.away}</span>
-                <span className="font-body-md text-on-surface-variant pb-1">Bel ({matchData.stats.fouls.away}) | Ken ({matchData.stats.fouls.home})</span>
-              </div>
-              <div className="mt-4 flex gap-1">
-                {Array.from({length: matchData.stats.fouls.home}).map((_, i) => (
-                  <div key={`h-${i}`} className="h-1 flex-1 bg-primary/20 rounded-full"></div>
-                ))}
-                {Array.from({length: matchData.stats.fouls.away}).map((_, i) => (
-                  <div key={`a-${i}`} className="h-1 flex-1 bg-error rounded-full"></div>
-                ))}
-              </div>
+            <div className="space-y-4 text-xs font-mono">
+              {[
+                { label: 'Possession', home: `${matchData.stats.possession.home}%`, away: `${matchData.stats.possession.away}%`, homePct: matchData.stats.possession.home },
+                { label: 'Total Shots', home: matchData.stats.shots.home, away: matchData.stats.shots.away, homePct: 60 },
+                { label: 'Shots on Target', home: matchData.stats.shotsOnTarget.home, away: matchData.stats.shotsOnTarget.away, homePct: 70 },
+                { label: 'Passing Accuracy', home: `${matchData.stats.passAccuracy.home}%`, away: `${matchData.stats.passAccuracy.away}%`, homePct: 52 },
+                { label: 'Corner Kicks', home: matchData.stats.corners.home, away: matchData.stats.corners.away, homePct: 66 },
+              ].map((stat, i) => (
+                <div key={i} className="space-y-1.5">
+                  <div className="flex justify-between text-[var(--fg)]">
+                    <span className="font-medium">{stat.home}</span>
+                    <span className="text-[var(--fg-muted)] uppercase text-[10px]">{stat.label}</span>
+                    <span className="font-medium">{stat.away}</span>
+                  </div>
+                  <div className="h-2 w-full bg-[var(--bg-subtle)] rounded-full overflow-hidden flex">
+                    <div className="bg-[var(--accent)] h-full" style={{ width: `${stat.homePct}%` }} />
+                    <div className="bg-stone-300 h-full flex-1" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

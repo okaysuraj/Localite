@@ -8,5 +8,7 @@ import java.util.Optional;
 
 public interface SportProfileRepository extends JpaRepository<SportProfile, Long> {
     List<SportProfile> findBySportNameOrderByPointsDesc(String sportName);
+    List<SportProfile> findAllByOrderByPointsDesc();
     Optional<SportProfile> findByUserAndSportName(User user, String sportName);
 }
+

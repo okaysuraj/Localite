@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, X, Check } from 'lucide-react';
+import { Bell, X, Check } from '@phosphor-icons/react';
+import { API_BASE_URL, getAuthHeaders, getNotifications } from '../services/api';
 
 const NotificationPanel = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
@@ -12,12 +13,9 @@ const NotificationPanel = ({ isOpen, onClose }) => {
 
   const fetchNotifications = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(import.meta.env.VITE_API_URL + '/notifications', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        setNotifications(await res.json());
+      const data = await getNotifications();
+      if (Array.isArray(data)) {
+        setNotifications(data);
       }
     } catch (err) {
       console.error(err);
@@ -26,11 +24,14 @@ const NotificationPanel = ({ isOpen, onClose }) => {
 
   const markAsRead = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/notifications/${id}/read`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const headers = await getAuthHeaders();
+      const res = await fetch(
+        `${API_BASE_URL}/notifications/${id}/read`,
+        {
+          method: 'PUT',
+          headers,
+        }
+      );
       if (res.ok) {
         fetchNotifications();
       }
@@ -42,36 +43,60 @@ const NotificationPanel = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-16 right-0 w-80 bg-surface-dark border border-surface-variant/30 rounded-lg shadow-2xl z-50 overflow-hidden">
-      <div className="p-4 border-b border-surface-variant/20 flex justify-between items-center bg-surface-container">
-        <h3 className="font-headline-sm text-lime-vibe uppercase tracking-tight flex items-center gap-2">
-          <Bell size={16} /> Alerts
-        </h3>
-        <button onClick={onClose} className="text-text-muted hover:text-white transition-colors">
-          <X size={18} />
+    <div className="absolute top-16 right-0 w-80 sm:w-96 bg-white border border-border rounded-card shadow-lg z-50 overflow-hidden animate-fade-in">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-border flex justify-between items-center bg-white">
+        <div className="flex items-center gap-2">
+          <Bell size={16} className="text-accent" />
+          <h3 className="font-display font-semibold text-fg text-sm">
+            Notifications
+          </h3>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1 rounded-btn hover:bg-bg-subtle text-fg-muted hover:text-fg transition-colors"
+        >
+          <X size={16} />
         </button>
       </div>
 
-      <div className="max-h-96 overflow-y-auto p-2">
+      {/* List */}
+      <div className="max-h-96 overflow-y-auto p-2 divide-y divide-border/40">
         {notifications.length === 0 ? (
-          <div className="p-6 text-center text-text-muted font-label-mono text-xs uppercase tracking-widest">
-            No active alerts.
+          <div className="p-8 text-center text-fg-muted font-mono text-xs">
+            No active notifications.
           </div>
         ) : (
-          notifications.map(notif => (
-            <div key={notif.id} className={`p-4 mb-2 rounded-md border ${notif.read ? 'border-transparent bg-surface-container-low' : 'border-lime-vibe/30 bg-surface-container'}`}>
-              <div className="flex justify-between items-start gap-4">
-                <p className={`font-body-sm ${notif.read ? 'text-text-muted' : 'text-white'}`}>
+          notifications.map((notif) => (
+            <div
+              key={notif.id}
+              className={`p-3 rounded-btn my-1 transition-colors ${
+                notif.read
+                  ? 'bg-bg-subtle/50 text-fg-muted'
+                  : 'bg-accent-subtle/60 text-fg border border-accent/20'
+              }`}
+            >
+              <div className="flex justify-between items-start gap-3">
+                <p className="text-xs leading-relaxed flex-1 font-sans">
                   {notif.message}
                 </p>
                 {!notif.read && (
-                  <button onClick={() => markAsRead(notif.id)} className="text-lime-vibe hover:text-white mt-1">
-                    <Check size={16} />
+                  <button
+                    onClick={() => markAsRead(notif.id)}
+                    title="Mark as read"
+                    className="p-1 rounded text-accent hover:bg-accent/10 transition-colors shrink-0"
+                  >
+                    <Check size={14} weight="bold" />
                   </button>
                 )}
               </div>
-              <p className="font-label-mono text-[10px] text-text-muted mt-2 uppercase">
-                {new Date(notif.createdAt).toLocaleString()}
+              <p className="text-[10px] font-mono text-fg-muted mt-1.5">
+                {new Date(notif.createdAt).toLocaleString([], {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
               </p>
             </div>
           ))

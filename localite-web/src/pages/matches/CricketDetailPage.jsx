@@ -1,130 +1,160 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  Trophy, 
+  ArrowLeft, 
+  CalendarBlank, 
+  Users, 
+  Star, 
+  Clock, 
+  Broadcast, 
+  MapPin, 
+  Bell, 
+  Ticket 
+} from '@phosphor-icons/react';
 
 export default function CricketDetailPage() {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-surface min-h-screen text-on-surface">
-      <main className="pb-24">
-        {/* Hero Section */}
-        <section className="relative h-[500px] w-full overflow-hidden">
-          <div className="absolute inset-0">
-            <img src="https://via.placeholder.com/1600x900" alt="Cricket Grounds" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-          </div>
-          <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full max-w-7xl mx-auto">
-            <span className="font-label-caps text-[12px] text-secondary-fixed bg-primary/40 backdrop-blur-sm px-3 py-1 rounded mb-4 inline-block tracking-widest uppercase">Elite Cricket Grounds</span>
-            <h1 className="font-display-lg text-[48px] text-white mb-2 font-bold">Arena Alpha</h1>
-            <p className="font-body-lg text-white/80 max-w-2xl text-lg">The premier destination for local cricket excellence. Home to the Royal Elite Division, featuring world-class turf pitches and a community of high-prestige talent.</p>
-            <div className="flex gap-4 mt-8">
-              <button className="bg-primary text-white font-label-caps text-[12px] px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition-transform tracking-widest uppercase">Book a Session</button>
-              <button className="border border-white text-white font-label-caps text-[12px] px-8 py-4 rounded-xl hover:bg-white hover:text-primary transition-all tracking-widest uppercase">View Arena Rules</button>
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-8 px-4 sm:px-6">
+      <main className="max-w-6xl mx-auto space-y-8">
+        {/* Navigation & Header */}
+        <div className="space-y-3">
+          <button 
+            type="button" 
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
+          >
+            <ArrowLeft size={16} />
+            Back to Sports
+          </button>
+          
+          <div className="rounded-card border border-[var(--border)] overflow-hidden bg-white relative">
+            <div className="h-64 sm:h-80 w-full relative bg-[var(--bg-subtle)] overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=1200" 
+                alt="Cricket Pitch" 
+                className="w-full h-full object-cover" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end p-6 sm:p-10">
+                <div className="text-white space-y-2 max-w-2xl">
+                  <span className="text-[10px] font-mono uppercase tracking-wider bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-card inline-block">
+                    Premier Cricket Division
+                  </span>
+                  <h1 className="text-3xl sm:text-5xl font-serif text-white">Arena Alpha Cricket Grounds</h1>
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+                    Home to local amateur leagues and high-prestige seasonal tournaments featuring natural turf pitches.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Stats Grid */}
-        <section className="px-6 py-12 max-w-7xl mx-auto -mt-16 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] flex flex-col items-center justify-center text-center border border-outline-variant/10">
-              <span className="material-symbols-outlined text-secondary mb-2 text-4xl">sports_cricket</span>
-              <p className="font-label-caps text-[10px] text-outline uppercase tracking-widest">Active Players</p>
-              <h3 className="font-headline-sm text-[24px] text-primary font-bold">1,240</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-white p-5 rounded-card border border-[var(--border)] text-center space-y-1">
+            <Users size={20} className="mx-auto text-[var(--accent)]" />
+            <p className="text-2xl font-mono text-[var(--fg)] font-medium">1,240</p>
+            <p className="text-[11px] font-mono uppercase text-[var(--fg-muted)]">Active Players</p>
+          </div>
+          <div className="bg-white p-5 rounded-card border border-[var(--border)] text-center space-y-1">
+            <CalendarBlank size={20} className="mx-auto text-[var(--accent)]" />
+            <p className="text-2xl font-mono text-[var(--fg)] font-medium">12</p>
+            <p className="text-[11px] font-mono uppercase text-[var(--fg-muted)]">Matches Scheduled</p>
+          </div>
+          <div className="bg-white p-5 rounded-card border border-[var(--border)] text-center space-y-1">
+            <Star size={20} className="mx-auto text-[var(--accent)]" />
+            <p className="text-2xl font-mono text-[var(--accent)] font-medium">8.4</p>
+            <p className="text-[11px] font-mono uppercase text-[var(--fg-muted)]">Avg Prestige Tier</p>
+          </div>
+          <div className="bg-white p-5 rounded-card border border-[var(--border)] text-center space-y-1">
+            <Trophy size={20} className="mx-auto text-[var(--accent)]" />
+            <p className="text-2xl font-serif text-[var(--fg)] font-medium">Turf A</p>
+            <p className="text-[11px] font-mono uppercase text-[var(--fg-muted)]">Pitch Standard</p>
+          </div>
+        </div>
+
+        {/* Live Scorecard Card */}
+        <div className="bg-[var(--fg)] text-white rounded-card p-6 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-card bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-mono uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+              Live Tournament Final
+            </span>
+            <span className="text-xs font-mono text-white/70">Mayfair Knights vs. Westminster Lions</span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+              <span className="text-4xl sm:text-5xl font-mono font-bold text-white">184 / 4</span>
+              <p className="text-xs font-mono text-white/70 mt-1 uppercase">Knights • 18.2 Overs</p>
             </div>
-            <div className="bg-white p-6 rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] flex flex-col items-center justify-center text-center border border-outline-variant/10">
-              <span className="material-symbols-outlined text-secondary mb-2 text-4xl">event_available</span>
-              <p className="font-label-caps text-[10px] text-outline uppercase tracking-widest">Matches Today</p>
-              <h3 className="font-headline-sm text-[24px] text-primary font-bold">12</h3>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] flex flex-col items-center justify-center text-center border border-outline-variant/10">
-              <span className="material-symbols-outlined text-secondary mb-2 text-4xl">stars</span>
-              <p className="font-label-caps text-[10px] text-outline uppercase tracking-widest">Avg Prestige</p>
-              <h3 className="font-headline-sm text-[24px] text-primary font-bold">8.4</h3>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] flex flex-col items-center justify-center text-center border border-outline-variant/10">
-              <span className="material-symbols-outlined text-secondary mb-2 text-4xl">stadium</span>
-              <p className="font-label-caps text-[10px] text-outline uppercase tracking-widest">Pitch Quality</p>
-              <h3 className="font-headline-sm text-[24px] text-primary font-bold">Elite</h3>
+            <div className="sm:max-w-md w-full space-y-2">
+              <div className="flex justify-between text-xs text-white/80">
+                <span>Striker: J. Sterling (45* from 22)</span>
+                <span className="font-mono">Req. RR: 7.2</span>
+              </div>
+              <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
+                <div className="h-full bg-[var(--accent)] rounded-full w-[65%]" />
+              </div>
             </div>
           </div>
-        </section>
 
-        {/* Live Match (Bento) */}
-        <section className="px-6 py-6 max-w-7xl mx-auto">
-          <div className="bg-primary text-white p-8 rounded-xl shadow-2xl flex flex-col justify-between relative overflow-hidden">
-            <div className="relative z-10">
-              <div className="flex justify-between items-start">
-                <span className="bg-error px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span> LIVE
-                </span>
-                <div className="text-right">
-                  <p className="font-label-caps text-[10px] text-white/70 uppercase tracking-widest">Tournament Finals</p>
-                  <p className="text-white font-medium">Mayfair Knights vs. Westminster Lions</p>
-                </div>
-              </div>
-              <div className="mt-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                <div className="text-center md:text-left">
-                  <p className="text-5xl font-bold tracking-tighter">184/4</p>
-                  <p className="font-label-caps text-[12px] text-white/70 uppercase tracking-widest mt-2">KNIGHTS (18.2 OV)</p>
-                </div>
-                <div className="hidden md:block h-16 w-px bg-white/30"></div>
-                <div className="flex-grow">
-                  <p className="text-sm italic text-white/80 mb-3">Striker: James Sterling (45* from 22)</p>
-                  <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
-                    <div className="bg-secondary h-full w-[65%]"></div>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => navigate('/matches/1/live')}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors"
+            >
+              <Broadcast size={16} />
+              Spectate Live Match
+            </button>
+          </div>
+        </div>
+
+        {/* Premier Fixtures List */}
+        <div className="bg-white rounded-card border border-[var(--border)] p-6 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+            <h2 className="text-base font-serif text-[var(--fg)]">Premier Fixtures</h2>
+            <span className="text-xs font-mono uppercase text-[var(--fg-muted)]">Upcoming Matchups</span>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              { day: '24', month: 'OCT', teamA: 'Regent CC', teamB: 'Belgravia 11', venue: 'Oval Pitch A', time: '14:00' },
+              { day: '28', month: 'OCT', teamA: 'Chelsea Royals', teamB: 'Kensington Wanderers', venue: 'Pitch B', time: '15:30' }
+            ].map((fix, idx) => (
+              <div key={idx} className="p-4 rounded-card border border-[var(--border)] bg-[var(--bg-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-card bg-white border border-[var(--border)] text-center flex flex-col justify-center">
+                    <span className="font-mono text-sm font-bold text-[var(--fg)] leading-none">{fix.day}</span>
+                    <span className="font-mono text-[9px] text-[var(--fg-muted)] uppercase">{fix.month}</span>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-[var(--fg)]">{fix.teamA} vs {fix.teamB}</h4>
+                    <p className="text-xs text-[var(--fg-muted)]">{fix.venue} • {fix.time}</p>
                   </div>
                 </div>
-              </div>
-              <button className="mt-8 w-full md:w-auto px-8 py-3 bg-white text-primary font-label-caps text-[12px] uppercase tracking-widest rounded-lg hover:bg-surface-container transition-colors font-bold">
-                Spectate Live Broadcast
-              </button>
-            </div>
-          </div>
-        </section>
 
-        {/* Premier Fixtures */}
-        <section className="px-6 py-12 max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-8">
-            <div>
-              <h2 className="font-headline-md text-[32px] text-primary font-bold">Premier Fixtures</h2>
-              <p className="text-on-surface-variant font-body-md">The upcoming elite encounters at Arena Alpha.</p>
-            </div>
-            <a className="text-secondary font-label-caps text-[12px] border-b border-secondary tracking-widest uppercase hover:text-primary transition-colors cursor-pointer">Full Schedule</a>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div className="bg-white p-6 rounded-xl shadow-[0_8px_16px_-4px_rgba(10,25,47,0.05)] flex flex-col md:flex-row items-center gap-6 border-l-4 border-secondary hover:shadow-lg transition-shadow">
-              <div className="text-center min-w-[80px]">
-                <p className="font-display-lg text-[32px] text-primary font-bold leading-none">24</p>
-                <p className="font-label-caps text-[10px] text-outline uppercase tracking-widest mt-1">OCT</p>
-              </div>
-              
-              <div className="flex-grow flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-                <div className="flex flex-col items-center md:items-end text-center md:text-right">
-                  <h4 className="font-bold text-lg">Regent CC</h4>
-                  <span className="text-xs text-outline">Prestige: 8.9</span>
-                </div>
-                <div className="bg-surface-container text-outline px-3 py-1 rounded-full text-xs font-bold italic">VS</div>
-                <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                  <h4 className="font-bold text-lg">Belgravia 11</h4>
-                  <span className="text-xs text-outline">Prestige: 9.1</span>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button type="button" className="p-2 rounded-card border border-[var(--border)] bg-white text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
+                    <Bell size={16} />
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => navigate('/matches/join')}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"
+                  >
+                    <Ticket size={14} />
+                    Reserve Seat
+                  </button>
                 </div>
               </div>
-              
-              <div className="hidden lg:flex flex-col items-center border-x border-outline-variant/30 px-12">
-                <span className="font-label-caps text-[10px] text-outline uppercase tracking-widest mb-1">Ground</span>
-                <span className="font-body-md font-medium">Lord's Estate Oval</span>
-              </div>
-              
-              <div className="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-                <button className="p-3 rounded-xl border border-outline-variant hover:bg-secondary-container hover:border-secondary hover:text-secondary transition-all flex items-center justify-center">
-                  <span className="material-symbols-outlined">notifications_active</span>
-                </button>
-                <button className="flex-1 md:flex-none px-6 py-3 bg-primary text-white font-label-caps text-[12px] uppercase tracking-widest rounded-xl hover:opacity-90 transition-opacity font-bold">
-                  Tickets
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
-        </section>
+        </div>
       </main>
     </div>
   );

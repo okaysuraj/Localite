@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { BASE_URL } from '../services/api';
+import { WS_URL, API_URL } from '../config';
 
 const WebSocketContext = createContext(null);
 
@@ -14,34 +15,52 @@ export const WebSocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // For React Native we sometimes need to handle text encoding for STOMP, 
-    // but @stomp/stompjs ^7.3.0 with fast-text-encoding usually works.
-    const client = new Client({
-      webSocketFactory: () => new SockJS(`${BASE_URL}/ws`),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      forceBinaryWSFrames: true, // Recommended for React Native
-      appendMissingNULLonIncoming: true, // Recommended for React Native STOMP issues
-      onConnect: () => {
-        console.log('Connected to WebSocket');
-        setIsConnected(true);
-      },
-      onStompError: (frame) => {
-        console.error('Broker reported error: ' + frame.headers['message']);
-        console.error('Additional details: ' + frame.body);
-      },
-      onDisconnect: () => {
-        console.log('Disconnected from WebSocket');
-        setIsConnected(false);
-      }
-    });
+    let client = null;
+    try {
+      const rawUrl = WS_URL || (API_URL ? API_URL.replace(/\/api\/?$/, '/ws') : null);
+      if (!rawUrl) return;
+      const wsUrl = rawUrl.replace(/^http/, 'ws');
 
-    client.activate();
-    setStompClient(client);
+      client = new Client({
+        webSocketFactory: () => {
+          if (Platform.OS !== 'web' && typeof WebSocket !== 'undefined') {
+            return new WebSocket(wsUrl);
+          }
+          return new SockJS(rawUrl);
+        },
+        reconnectDelay: 10000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        forceBinaryWSFrames: true,
+        appendMissingNULLonIncoming: true,
+        onConnect: () => {
+          console.log('Connected to WebSocket');
+          setIsConnected(true);
+        },
+        onStompError: (frame) => {
+          console.warn('STOMP broker error:', frame?.headers?.['message']);
+        },
+        onWebSocketError: () => {
+          console.log('WebSocket connection error (backend offline)');
+        },
+        onDisconnect: () => {
+          console.log('Disconnected from WebSocket');
+          setIsConnected(false);
+        }
+      });
+
+      client.activate();
+      setStompClient(client);
+    } catch (err) {
+      console.warn('Failed to start WebSocket client:', err);
+    }
 
     return () => {
-      client.deactivate();
+      try {
+        if (client) client.deactivate();
+      } catch (err) {
+        // ignore
+      }
     };
   }, []);
 

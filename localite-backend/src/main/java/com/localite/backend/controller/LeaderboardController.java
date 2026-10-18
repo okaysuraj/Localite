@@ -34,9 +34,14 @@ public class LeaderboardController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/{sport}")
-    public ResponseEntity<?> getLeaderboard(@PathVariable String sport) {
-        List<SportProfile> profiles = sportProfileRepository.findBySportNameOrderByPointsDesc(sport);
+    @GetMapping({"", "/{sport}"})
+    public ResponseEntity<?> getLeaderboard(@PathVariable(required = false) String sport) {
+        List<SportProfile> profiles;
+        if (sport == null || sport.equalsIgnoreCase("all") || sport.trim().isEmpty()) {
+            profiles = sportProfileRepository.findAllByOrderByPointsDesc();
+        } else {
+            profiles = sportProfileRepository.findBySportNameOrderByPointsDesc(sport);
+        }
         
         // Map to a cleaner response
         List<Map<String, Object>> response = profiles.stream().map(p -> {

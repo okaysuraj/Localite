@@ -53,7 +53,7 @@ export default function CreateEventScreen({ navigation }) {
         title: '', category: 'Epicurean', eventType: 'Public', description: '', date: '', location: '', maxAttendees: '', cost: '', rules: '', imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000'
       });
       setStep(1);
-      navigation.navigate('Discover');
+      navigation.navigate('MainApp', { screen: 'Events' });
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to publish event');

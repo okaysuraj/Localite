@@ -48,18 +48,18 @@ export default function PrestigeProgressDashboardScreen() {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
-            <MaterialIcons name="menu" size={24} color="#000" />
+            <MaterialIcons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
           <View style={styles.avatarWrap}>
             <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuALU9r1nL-VPl_Ty7VdALhkL3zg2fe_6d9JmA3k7AnQdkU0Reuvm0dn0YtLHAdniRzIusYBM-vu9XgLYCI1G5EndgF77Vq0Xp1ChwPRzWZt5iTjg4xEM_n0kT2-bI4DpFk02emPWK27xZiKPZtYIZlfaqIJK_mZUbC4d0FxocyeOhT8rnZJBupAwQW4f3oA38Q5wiMjHd_Ha-ruZVOB3digA_UoZO15pGs3ySYIb360BsXM2kt7F27ctw' }} 
+              source={{ uri: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }} 
               style={styles.avatarImg} 
             />
           </View>
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
         <View style={styles.levelBadge}>
-          <Text style={styles.levelBadgeText}>LVL 24</Text>
+          <Text style={styles.levelBadgeText}>LVL {Math.floor(xp / 250) + 1}</Text>
         </View>
       </View>
 
@@ -67,7 +67,7 @@ export default function PrestigeProgressDashboardScreen() {
         
         {/* Hero Section */}
         <View style={styles.heroSection}>
-          <Text style={styles.heroPreTitle}>YOUR EMINENCE</Text>
+          <Text style={styles.heroPreTitle}>COMMUNITY STANDING</Text>
           <Text style={styles.heroTitle}>Prestige Progress</Text>
           
           <View style={styles.progressRingContainer}>
@@ -84,7 +84,7 @@ export default function PrestigeProgressDashboardScreen() {
                 cx="120"
                 cy="120"
                 r={radius}
-                stroke="#775a19"
+                stroke="#1A6B4A"
                 strokeWidth={strokeWidth}
                 fill="transparent"
                 strokeDasharray={`${circumference} ${circumference}`}
@@ -95,7 +95,7 @@ export default function PrestigeProgressDashboardScreen() {
             </Svg>
             <View style={styles.progressCenter}>
               <Text style={styles.progressCenterTitle}>CURRENT STATUS</Text>
-              <Text style={styles.progressCenterStatus}>Gold Tier</Text>
+              <Text style={styles.progressCenterStatus}>Emerald Tier</Text>
               <View style={styles.progressCenterXpRow}>
                 <Text style={styles.progressCenterXpValue}>{xp.toLocaleString()}</Text>
                 <Text style={styles.progressCenterXpTotal}>/ {maxXp.toLocaleString()} XP</Text>

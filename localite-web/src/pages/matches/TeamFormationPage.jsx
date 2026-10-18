@@ -1,193 +1,149 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  Users, 
+  ArrowLeft, 
+  ShieldCheck, 
+  Sparkle, 
+  Plus, 
+  CheckCircle,
+  ArrowsLeftRight 
+} from '@phosphor-icons/react';
 
 export default function TeamFormationPage() {
+  const navigate = useNavigate();
+
+  const [reserves, setReserves] = useState([
+    { id: 1, name: 'Alexander Thorne', power: 88, role: 'Midfield' },
+    { id: 2, name: 'Elena Vance', power: 92, role: 'Forward' },
+    { id: 3, name: 'Julian Saint', power: 79, role: 'Defender' },
+    { id: 4, name: 'Marcus Aurelius', power: 85, role: 'Keeper' },
+  ]);
+
+  const [teamA, setTeamA] = useState([
+    { id: 10, name: 'Dominic King', power: 94, role: 'Captain' },
+    { id: 11, name: 'Sophia Laurent', power: 88, role: 'Forward' },
+  ]);
+
+  const [teamB, setTeamB] = useState([
+    { id: 20, name: 'Cassius Reed', power: 91, role: 'Captain' },
+    { id: 21, name: 'Chloe Dubois', power: 86, role: 'Midfield' },
+  ]);
+
   return (
-    <div className="bg-surface min-h-screen text-on-surface">
-      <main className="max-w-7xl mx-auto px-6 py-12 pb-32">
-        {/* Header Section */}
-        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
+      <main className="max-w-6xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[var(--border)]">
           <div>
-            <p className="font-label-caps text-[12px] text-secondary mb-2 uppercase tracking-widest">Match Week 12 • Arena Alpha</p>
-            <h1 className="font-display-lg text-[48px] text-primary font-bold">Tactical Command</h1>
-            <p className="text-on-surface-variant max-w-xl mt-2 font-body-md">Curate the field. Drag participants into their respective sovereign units to balance the competitive landscape.</p>
-          </div>
-          <div className="flex gap-4">
-            <button className="px-6 py-3 border border-secondary text-secondary font-label-caps text-[12px] rounded-xl hover:bg-secondary hover:text-white transition-all shadow-sm">
-              RESET BOARD
+            <button 
+              type="button" 
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-2"
+            >
+              <ArrowLeft size={16} />
+              Return
             </button>
-            <button className="px-8 py-3 bg-primary text-white font-label-caps text-[12px] rounded-xl hover:opacity-90 transition-all shadow-[0_8px_16px_rgba(10,25,47,0.15)]">
-              FINALIZE TEAMS
+            <span className="font-mono text-xs uppercase tracking-wider text-[var(--accent)] block mb-1">
+              Match Setup
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-serif text-[var(--fg)]">Team Balancing & Formation</h1>
+            <p className="text-xs sm:text-sm text-[var(--fg-muted)] max-w-xl mt-1">
+              Distribute confirmed players across squads to ensure competitive equilibrium.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => alert('Teams finalized.')}
+              className="px-5 py-2.5 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors"
+            >
+              Finalize Roster
             </button>
-          </div>
-        </header>
-
-        {/* Workspace */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 flex-1">
-          {/* Reserve Roster */}
-          <div className="md:col-span-4 flex flex-col gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] border border-outline-variant/10 flex flex-col h-full">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-headline-sm text-[24px] text-primary font-bold">Reserve Roster</h3>
-                <span className="bg-surface-container-high px-3 py-1 rounded-full font-label-caps text-[10px]">12 Available</span>
-              </div>
-              
-              <div className="flex-1 overflow-y-auto space-y-3 pr-2">
-                {[
-                  { name: 'Alexander Thorne', power: 88, class: 'Legend', img: 'https://via.placeholder.com/100' },
-                  { name: 'Elena Vance', power: 92, class: 'Elite', img: 'https://via.placeholder.com/100' },
-                  { name: 'Julian Saint', power: 79, class: 'Pro', img: 'https://via.placeholder.com/100' },
-                  { name: 'Marcus Aurelius', power: 85, class: 'Master', img: 'https://via.placeholder.com/100' },
-                ].map((player, idx) => (
-                  <div key={idx} className="p-3 bg-white border border-outline-variant/20 rounded-xl flex items-center gap-4 hover:border-secondary/50 transition-all cursor-grab active:cursor-grabbing shadow-sm group">
-                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-surface-container">
-                      <img src={player.img} alt={player.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-label-caps text-[12px] text-primary">{player.name}</h4>
-                      <div className="flex gap-2 mt-1">
-                        <span className="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant/60">Power: {player.power}</span>
-                        <span className="text-[10px] uppercase tracking-wider font-bold text-secondary">{player.class}</span>
-                      </div>
-                    </div>
-                    <span className="material-symbols-outlined text-outline group-hover:text-secondary">drag_indicator</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Active Teams */}
-          <div className="col-span-8 grid grid-cols-2 gap-6">
-            {/* Team Crest */}
-            <div className="bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] border border-outline-variant/10 overflow-hidden flex flex-col border-t-4 border-t-primary">
-              <div className="p-6 border-b border-outline-variant/10 bg-primary/5">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="material-symbols-outlined text-primary" style={{fontVariationSettings: "'FILL' 1"}}>shield</span>
-                  <h3 className="font-headline-sm text-[24px] text-primary font-bold">Team Crest</h3>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-label-caps text-[12px] text-on-surface-variant">Strategic Core</span>
-                  <span className="font-bold text-primary">Rating: 462</span>
-                </div>
-              </div>
-              
-              <div className="p-6 flex-1 bg-surface/50 space-y-4 min-h-[400px]">
-                <div className="border-2 border-dashed border-outline-variant/40 rounded-xl h-24 flex items-center justify-center bg-surface-container-low/30 hover:border-secondary transition-colors cursor-pointer">
-                  <span className="font-label-caps text-[12px] text-on-surface-variant/60 tracking-widest">DROP MEMBER HERE</span>
-                </div>
-                
-                <div className="p-4 bg-white border border-secondary/30 rounded-xl flex items-center justify-between shadow-sm">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary">
-                      <img src="https://via.placeholder.com/100" alt="Captain" className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <h4 className="font-label-caps text-[12px] text-primary">Dominic King</h4>
-                      <span className="text-[10px] text-secondary font-bold tracking-widest uppercase">Captain</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-bold text-primary block text-xl">94</span>
-                    <span className="text-[10px] text-on-surface-variant uppercase tracking-widest">Power</span>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-white border border-outline-variant/20 rounded-xl flex items-center justify-between shadow-sm">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border border-outline-variant">
-                      <img src="https://via.placeholder.com/100" alt="Player" className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <h4 className="font-label-caps text-[12px] text-primary">Sophia Laurent</h4>
-                      <span className="text-[10px] text-on-surface-variant font-medium tracking-widest uppercase">Forward</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-bold text-primary block text-xl">88</span>
-                    <span className="text-[10px] text-on-surface-variant uppercase tracking-widest">Power</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Team Sovereign */}
-            <div className="bg-white rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] border border-outline-variant/10 overflow-hidden flex flex-col border-t-4 border-t-secondary">
-              <div className="p-6 border-b border-outline-variant/10 bg-secondary/5">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="material-symbols-outlined text-secondary" style={{fontVariationSettings: "'FILL' 1"}}>crown</span>
-                  <h3 className="font-headline-sm text-[24px] text-secondary font-bold">Team Sovereign</h3>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-label-caps text-[12px] text-on-surface-variant">Defense Legion</span>
-                  <span className="font-bold text-secondary">Rating: 448</span>
-                </div>
-              </div>
-              
-              <div className="p-6 flex-1 bg-surface/50 space-y-4 min-h-[400px]">
-                <div className="p-4 bg-white border border-secondary/30 rounded-xl flex items-center justify-between shadow-sm">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary">
-                      <img src="https://via.placeholder.com/100" alt="Captain" className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <h4 className="font-label-caps text-[12px] text-primary">Cassius Reed</h4>
-                      <span className="text-[10px] text-secondary font-bold tracking-widest uppercase">Captain</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-bold text-primary block text-xl">91</span>
-                    <span className="text-[10px] text-on-surface-variant uppercase tracking-widest">Power</span>
-                  </div>
-                </div>
-
-                <div className="border-2 border-dashed border-outline-variant/40 rounded-xl h-24 flex items-center justify-center bg-surface-container-low/30 hover:border-secondary transition-colors cursor-pointer">
-                  <span className="font-label-caps text-[12px] text-on-surface-variant/60 tracking-widest">DROP MEMBER HERE</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Analysis Bar */}
-        <div className="bg-primary text-white rounded-2xl p-8 mt-12 flex flex-col md:flex-row md:items-center justify-between shadow-2xl relative overflow-hidden">
-          <div className="absolute right-0 top-0 opacity-10 pointer-events-none translate-x-20 -translate-y-10">
-            <span className="material-symbols-outlined text-[240px]">architecture</span>
-          </div>
-          
-          <div className="flex flex-col md:flex-row md:items-center gap-12 z-10">
-            <div>
-              <span className="font-label-caps text-[12px] text-white/70 block mb-2 tracking-widest uppercase">Reputation Variance</span>
-              <div className="flex items-center gap-3">
-                <span className="text-[32px] font-bold font-display-lg leading-none">± 3.2%</span>
-                <span className="bg-secondary px-2 py-0.5 text-[10px] font-bold rounded-full text-primary tracking-widest">OPTIMAL</span>
-              </div>
+        {/* Workspace Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Reserve Roster (Col 4) */}
+          <div className="lg:col-span-4 bg-white rounded-card border border-[var(--border)] p-5 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Available Reserves</span>
+              <span className="text-xs font-mono text-[var(--accent)]">{reserves.length} Players</span>
             </div>
-            
-            <div className="hidden md:block h-12 w-px bg-white/20"></div>
-            
-            <div>
-              <span className="font-label-caps text-[12px] text-white/70 block mb-2 tracking-widest uppercase">Team Score Prediction</span>
-              <div className="flex flex-col sm:flex-row gap-8">
-                <div className="flex flex-col">
-                  <span className="text-body-md font-bold mb-1">Crest: 82% Win</span>
-                  <div className="w-32 h-1.5 bg-white/20 rounded-full">
-                    <div className="bg-secondary h-full rounded-full" style={{width: '82%'}}></div>
+
+            <div className="space-y-2">
+              {reserves.map((p) => (
+                <div 
+                  key={p.id}
+                  className="p-3 rounded-card border border-[var(--border)] bg-[var(--bg-subtle)] flex items-center justify-between text-xs"
+                >
+                  <div>
+                    <p className="font-medium text-[var(--fg)]">{p.name}</p>
+                    <p className="text-[10px] font-mono text-[var(--fg-muted)]">{p.role} • Skill: {p.power}</p>
                   </div>
+                  <span className="font-mono text-[10px] uppercase text-[var(--accent)] font-medium">Ready</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-body-md font-bold mb-1">Sovereign: 78% Win</span>
-                  <div className="w-32 h-1.5 bg-white/20 rounded-full">
-                    <div className="bg-white h-full rounded-full" style={{width: '78%'}}></div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-          
-          <div className="z-10 mt-8 md:mt-0">
-            <button className="bg-secondary text-primary px-10 py-4 rounded-full font-label-caps text-[12px] tracking-widest uppercase shadow-xl hover:scale-105 transition-all font-bold">
-              Finalize Teams
-            </button>
+
+          {/* Teams Columns (Col 8) */}
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Squad Alpha */}
+            <div className="bg-white rounded-card border border-[var(--border)] p-5 space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+                <div>
+                  <h3 className="text-sm font-medium text-[var(--fg)]">Squad Alpha</h3>
+                  <span className="text-[10px] font-mono text-[var(--fg-muted)]">Home Colors</span>
+                </div>
+                <span className="text-xs font-mono font-medium text-[var(--fg)]">Rating: 182</span>
+              </div>
+
+              <div className="space-y-2">
+                {teamA.map((p) => (
+                  <div key={p.id} className="p-3 rounded-card border border-[var(--border)] bg-white flex items-center justify-between text-xs">
+                    <div>
+                      <p className="font-medium text-[var(--fg)]">{p.name}</p>
+                      <p className="text-[10px] font-mono text-[var(--fg-muted)]">{p.role}</p>
+                    </div>
+                    <span className="font-mono text-xs font-medium text-[var(--accent)]">{p.power}</span>
+                  </div>
+                ))}
+
+                <div className="border border-dashed border-[var(--border)] rounded-card p-3 text-center text-xs font-mono text-[var(--fg-muted)]">
+                  + Open Roster Slot
+                </div>
+              </div>
+            </div>
+
+            {/* Squad Bravo */}
+            <div className="bg-white rounded-card border border-[var(--border)] p-5 space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+                <div>
+                  <h3 className="text-sm font-medium text-[var(--fg)]">Squad Bravo</h3>
+                  <span className="text-[10px] font-mono text-[var(--fg-muted)]">Away Colors</span>
+                </div>
+                <span className="text-xs font-mono font-medium text-[var(--fg)]">Rating: 177</span>
+              </div>
+
+              <div className="space-y-2">
+                {teamB.map((p) => (
+                  <div key={p.id} className="p-3 rounded-card border border-[var(--border)] bg-white flex items-center justify-between text-xs">
+                    <div>
+                      <p className="font-medium text-[var(--fg)]">{p.name}</p>
+                      <p className="text-[10px] font-mono text-[var(--fg-muted)]">{p.role}</p>
+                    </div>
+                    <span className="font-mono text-xs font-medium text-[var(--accent)]">{p.power}</span>
+                  </div>
+                ))}
+
+                <div className="border border-dashed border-[var(--border)] rounded-card p-3 text-center text-xs font-mono text-[var(--fg-muted)]">
+                  + Open Roster Slot
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>

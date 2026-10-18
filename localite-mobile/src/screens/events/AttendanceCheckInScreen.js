@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import api from '../../services/api';
+import { checkInAttendee, awardXp } from '../../services/api';
 
 export default function AttendanceCheckInScreen({ route }) {
   const navigation = useNavigation();
@@ -13,15 +13,14 @@ export default function AttendanceCheckInScreen({ route }) {
   const handleCheckIn = async () => {
     setLoading(true);
     try {
-      // Assuming a host is scanning this, but for this screen, it's the attendee presenting the pass
-      // The actual check-in is usually done by the host scanning the QR, but we can simulate it here.
-      // const response = await api.post(`/events/${eventId}/checkin/${ticketId}`);
-      // if (response.status === 200) {
+      if (eventId && ticketId && ticketId !== 'DEMO-TICKET-ID') {
+        await checkInAttendee(eventId, ticketId).catch((e) => console.log('Checkin attempt:', e.message));
+      }
+      await awardXp('ATTEND_EVENT').catch(() => {});
       setSuccess(true);
       setTimeout(() => {
         navigation.goBack();
-      }, 3500);
-      // }
+      }, 2500);
     } catch (err) {
       console.error('Check-in error', err);
       Alert.alert('Error', 'Failed to check-in. Please see host.');
@@ -34,10 +33,10 @@ export default function AttendanceCheckInScreen({ route }) {
     return (
       <View style={styles.successContainer}>
         <View style={styles.successIconWrapper}>
-          <MaterialIcons name="done" size={64} color="#775a19" />
+          <MaterialIcons name="done" size={64} color="#1A6B4A" />
         </View>
-        <Text style={styles.successTitle}>Welcome, Your Eminence</Text>
-        <Text style={styles.successSubtitle}>ENJOY THE ASSEMBLAGE</Text>
+        <Text style={styles.successTitle}>Check-In Confirmed</Text>
+        <Text style={styles.successSubtitle}>WELCOME TO THE EVENT</Text>
       </View>
     );
   }

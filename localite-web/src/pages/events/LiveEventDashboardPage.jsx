@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { 
+  Broadcast, 
+  Clock, 
+  MapPin, 
+  Users, 
+  ArrowLeft, 
+  CheckCircle, 
+  MagnifyingGlass, 
+  Sparkle, 
+  Megaphone,
+  NavigationArrow
+} from '@phosphor-icons/react';
 
 export default function LiveEventDashboardPage() {
   const navigate = useNavigate();
+  const { eventId } = useParams();
   const [countdown, setCountdown] = useState({ min: 14, sec: 52 });
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCountdown(prev => {
+      setCountdown((prev) => {
         if (prev.sec === 0) {
           if (prev.min === 0) return prev;
           return { min: prev.min - 1, sec: 59 };
@@ -19,176 +32,168 @@ export default function LiveEventDashboardPage() {
   }, []);
 
   return (
-    <div className="bg-background min-h-screen text-on-surface font-body-md flex flex-col overflow-x-hidden">
-      {/* TopNavBar */}
-      <header className="flex justify-between items-center w-full px-6 py-4 sticky top-0 z-50 bg-background border-b border-outline-variant shadow-sm">
-        <div className="flex items-center gap-6">
-          <span className="font-headline-md text-headline-md font-bold text-primary tracking-tight">ELITE CIRCLE</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-caps uppercase tracking-widest text-xs hover:bg-opacity-90 transition-all">
-            Create Event
-          </button>
-          <div className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
-            <img src="https://via.placeholder.com/100" alt="Host" className="w-full h-full object-cover" />
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-8 px-4 sm:px-6">
+      <main className="max-w-6xl mx-auto space-y-6">
+        {/* Top Control Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <button 
+              type="button" 
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-1"
+            >
+              <ArrowLeft size={16} />
+              Return
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <h1 className="text-2xl sm:text-3xl font-serif text-[var(--fg)]">Vintage Garden Soirée — Live Console</h1>
+            </div>
+            <p className="text-xs text-[var(--fg-muted)] flex items-center gap-1.5">
+              <MapPin size={14} className="text-[var(--fg)]" />
+              The Glasshouse Pavilion, Chelsea • Live Coordination Mode
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button 
+              type="button"
+              onClick={() => navigate(`/events/${eventId || '1'}/checkin`)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-card border border-[var(--border)] bg-white text-xs font-mono uppercase tracking-wider text-[var(--fg)] hover:bg-[var(--bg-subtle)] transition-colors"
+            >
+              Arrival Scanner
+            </button>
+            <button 
+              type="button"
+              onClick={() => alert('Announcement broadcast to all checked-in attendees!')}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors"
+            >
+              <Megaphone size={16} />
+              Broadcast Alert
+            </button>
           </div>
         </div>
-      </header>
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="hidden xl:flex flex-col h-[calc(100vh-73px)] w-64 bg-surface-container-low border-r border-outline-variant shadow-md z-40 p-4 gap-4 sticky top-[73px]">
-          <div className="px-2 mb-4">
-            <p className="font-label-caps text-secondary text-xs uppercase tracking-widest">Host Admin</p>
-            <h3 className="font-headline-sm text-primary text-xl mt-1">Managing Gala 2024</h3>
-            <p className="text-[10px] text-on-surface-variant mt-1">Vintage Garden Soiree</p>
-          </div>
-          <nav className="flex flex-col gap-1">
-            <a className="flex items-center gap-3 px-4 py-3 bg-primary text-on-primary rounded-lg font-bold shadow-md transition-transform" href="#">
-              <span className="material-symbols-outlined">dashboard</span>
-              <span className="font-label-caps uppercase tracking-widest text-xs">Overview</span>
-            </a>
-            <a className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
-              <span className="material-symbols-outlined">group</span>
-              <span className="font-label-caps uppercase tracking-widest text-xs">Guest List</span>
-            </a>
-            <a className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
-              <span className="material-symbols-outlined">explore</span>
-              <span className="font-label-caps uppercase tracking-widest text-xs">Map Tracking</span>
-            </a>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-6 md:p-8">
-          <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-            <div>
-              <h1 className="font-headline-md text-4xl text-primary mb-2">Vintage Garden Soiree</h1>
-              <p className="font-body-md text-on-surface-variant flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px]">location_on</span> The Glasshouse Pavilion, London
-              </p>
-            </div>
-            <div className="text-left md:text-right">
-              <p className="font-label-caps text-secondary uppercase tracking-widest text-[10px]">Live Status</p>
-              <p className="font-body-lg text-lg font-bold text-primary flex items-center md:justify-end gap-2 mt-1">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> 142 Active Guests
-              </p>
-            </div>
-          </header>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[500px]">
-            {/* Left: Venue Map */}
-            <div className="lg:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden relative border border-outline-variant h-[500px]">
-              <div className="absolute top-6 left-6 z-10 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-sm border border-outline-variant">
-                <h4 className="font-label-caps text-primary mb-2 uppercase tracking-widest text-[10px]">Interactive Floorplan</h4>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-secondary"></span>
-                    <span className="text-xs font-medium">VVIP Lounges</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-primary"></span>
-                    <span className="text-xs font-medium">Dining Area</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="w-full h-full relative">
-                <img src="https://via.placeholder.com/800x600" className="w-full h-full object-cover opacity-60" alt="Map" />
-                {/* Simulated Markers */}
-                <div className="absolute w-4 h-4 bg-secondary rounded-full border-2 border-white shadow-lg top-[30%] left-[45%] animate-pulse"></div>
-                <div className="absolute w-4 h-4 bg-secondary rounded-full border-2 border-white shadow-lg top-[55%] left-[20%] animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                <div className="absolute w-4 h-4 bg-secondary rounded-full border-2 border-white shadow-lg top-[42%] left-[68%] animate-pulse" style={{animationDelay: '0.5s'}}></div>
-              </div>
-
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex bg-white/90 backdrop-blur-md p-2 rounded-full shadow-lg border border-outline-variant gap-2">
-                <button className="p-2 hover:bg-surface-container rounded-full transition-colors"><span className="material-symbols-outlined">zoom_in</span></button>
-                <button className="p-2 hover:bg-surface-container rounded-full transition-colors"><span className="material-symbols-outlined">zoom_out</span></button>
-                <div className="w-[1px] bg-outline-variant mx-1"></div>
-                <button className="p-2 hover:bg-surface-container rounded-full transition-colors"><span class="material-symbols-outlined">my_location</span></button>
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left: Venue & Floorplan Area */}
+          <div className="lg:col-span-8 bg-white rounded-card border border-[var(--border)] overflow-hidden flex flex-col h-[460px] relative">
+            <div className="p-4 border-b border-[var(--border)] flex items-center justify-between bg-white z-10">
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Interactive Spatial Layout</span>
+              <div className="flex items-center gap-3 text-xs font-mono text-[var(--fg-muted)]">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[var(--accent)]" /> VIP Pavilion
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-stone-700" /> Dining
+                </span>
               </div>
             </div>
 
-            {/* Right: Milestone & Guests */}
-            <div className="lg:col-span-4 flex flex-col gap-6">
-              {/* Milestone */}
-              <div className="bg-primary-container text-on-primary-container p-6 rounded-xl shadow-md relative overflow-hidden">
-                <p className="font-label-caps opacity-70 mb-2 uppercase tracking-widest text-[10px]">Next Milestone</p>
-                <h3 className="font-headline-sm text-2xl mb-4 text-white">Champagne Toast</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold tracking-tight text-secondary-container">
-                    {countdown.min}:{countdown.sec.toString().padStart(2, '0')}
-                  </span>
-                  <span className="font-label-caps opacity-70 uppercase tracking-widest text-[10px]">min remaining</span>
-                </div>
-                <button className="mt-6 w-full py-3 bg-secondary text-white font-label-caps rounded-lg hover:opacity-90 transition-all uppercase tracking-widest text-xs">
-                  Broadcast Announcement
-                </button>
+            <div className="flex-1 relative bg-[var(--bg-subtle)] flex items-center justify-center overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200" 
+                alt="Venue Layout" 
+                className="w-full h-full object-cover opacity-20 filter grayscale" 
+              />
+              
+              {/* Floorplan Markers */}
+              <div className="absolute top-[35%] left-[40%] flex flex-col items-center">
+                <div className="w-4 h-4 rounded-full bg-[var(--accent)] border-2 border-white shadow-md animate-ping" />
+                <span className="text-[10px] font-mono bg-white/90 border border-[var(--border)] px-1.5 py-0.5 rounded-card mt-1">Main Stage</span>
               </div>
 
-              {/* Guest List Preview */}
-              <div className="flex-1 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant flex flex-col overflow-hidden min-h-[250px]">
-                <div className="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-bright">
-                  <h3 className="font-label-caps text-primary uppercase tracking-widest text-xs">Live Guest List</h3>
-                  <div className="flex gap-2">
-                    <span className="material-symbols-outlined text-on-surface-variant cursor-pointer text-[18px]">search</span>
-                  </div>
-                </div>
-                <div className="flex-1 overflow-y-auto p-2">
-                  <div className="flex items-center justify-between p-3 hover:bg-surface-container-low rounded-lg transition-colors">
-                    <div className="flex items-center gap-3">
-                      <img src="https://via.placeholder.com/40" className="w-10 h-10 rounded-full" alt="avatar" />
-                      <div>
-                        <p className="font-body-md font-bold text-primary">Julian Thorne</p>
-                        <p className="font-label-caps text-[10px] text-secondary uppercase tracking-widest">VVIP • TABLE 04</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 rounded text-[10px] font-bold">ARRIVED</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 hover:bg-surface-container-low rounded-lg transition-colors">
-                    <div className="flex items-center gap-3">
-                      <img src="https://via.placeholder.com/40" className="w-10 h-10 rounded-full" alt="avatar" />
-                      <div>
-                        <p className="font-body-md font-bold text-primary">Elena Rossi</p>
-                        <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">GENERAL</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded text-[10px] font-bold">EN ROUTE</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4 bg-surface-container-high border-t border-outline-variant">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-label-caps text-[10px] text-on-surface-variant uppercase">Arrival Progress</span>
-                    <span className="font-label-caps text-[10px] text-primary">82%</span>
-                  </div>
-                  <div className="w-full h-1 bg-outline-variant rounded-full overflow-hidden">
-                    <div className="h-full bg-secondary" style={{ width: '82%' }}></div>
-                  </div>
-                </div>
+              <div className="absolute top-[60%] left-[25%] flex flex-col items-center">
+                <div className="w-3.5 h-3.5 rounded-full bg-emerald-600 border-2 border-white shadow-md" />
+                <span className="text-[10px] font-mono bg-white/90 border border-[var(--border)] px-1.5 py-0.5 rounded-card mt-1">Reception</span>
+              </div>
+
+              <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm border border-[var(--border)] px-3 py-1.5 rounded-card text-xs font-mono text-[var(--fg)]">
+                Active Zone: Courtyard Garden
               </div>
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant">
-              <p className="font-label-caps text-on-surface-variant mb-1 uppercase tracking-widest text-[10px]">Total Attendance</p>
-              <h3 className="font-headline-sm text-2xl text-primary">156 / 180</h3>
+          {/* Right: Milestone & Live Guests */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            {/* Milestone Card */}
+            <div className="bg-[var(--fg)] text-white rounded-card p-6 flex flex-col justify-between space-y-4">
+              <div>
+                <p className="text-xs font-mono uppercase tracking-wider text-white/60 mb-1">Current Milestone</p>
+                <h3 className="text-xl font-serif text-white">Curated Champagne Toast</h3>
+              </div>
+
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-mono font-bold text-[var(--accent)]">
+                  {countdown.min}:{countdown.sec.toString().padStart(2, '0')}
+                </span>
+                <span className="text-xs font-mono text-white/60 uppercase">min remaining</span>
+              </div>
+
+              <button 
+                type="button"
+                onClick={() => alert('Announcement sent!')}
+                className="w-full py-2.5 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors"
+              >
+                Send Milestone Cue
+              </button>
             </div>
-            <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant">
-              <p className="font-label-caps text-on-surface-variant mb-1 uppercase tracking-widest text-[10px]">Service Level</p>
-              <h3 className="font-headline-sm text-2xl text-green-700">Excellent</h3>
-            </div>
-            <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant">
-              <p className="font-label-caps text-on-surface-variant mb-1 uppercase tracking-widest text-[10px]">Concierge</p>
-              <h3 className="font-headline-sm text-2xl text-secondary">3 Pending</h3>
+
+            {/* Live Guest List Mini */}
+            <div className="bg-white rounded-card border border-[var(--border)] p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+                <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Live Attendees</span>
+                <span className="text-xs font-mono text-[var(--accent)] font-medium">142 Checked In</span>
+              </div>
+
+              <div className="space-y-2 overflow-y-auto max-h-48 pr-1">
+                {[
+                  { name: 'Julian Thorne', table: 'VVIP • Table 04', status: 'Arrived' },
+                  { name: 'Elena Rossi', table: 'Terrace • General', status: 'En Route' },
+                  { name: 'Marcus Finch', table: 'Lounge • Table 01', status: 'Arrived' }
+                ].map((guest, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-card hover:bg-[var(--bg-subtle)] text-xs transition-colors">
+                    <div>
+                      <p className="font-medium text-[var(--fg)]">{guest.name}</p>
+                      <p className="text-[10px] font-mono text-[var(--fg-muted)]">{guest.table}</p>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded-card text-[10px] font-mono uppercase ${
+                      guest.status === 'Arrived' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'
+                    }`}>
+                      {guest.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-2 border-t border-[var(--border)] flex justify-between items-center text-xs font-mono text-[var(--fg-muted)]">
+                <span>Arrival Ratio</span>
+                <span className="text-[var(--fg)] font-medium">78%</span>
+              </div>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+
+        {/* Bottom Metrics Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-white p-4 rounded-card border border-[var(--border)]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--fg-muted)] block">Capacity Status</span>
+            <span className="text-lg font-serif text-[var(--fg)] mt-1 block">142 / 180</span>
+          </div>
+          <div className="bg-white p-4 rounded-card border border-[var(--border)]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--fg-muted)] block">Concierge Alerts</span>
+            <span className="text-lg font-serif text-[var(--accent)] mt-1 block">02 Open</span>
+          </div>
+          <div className="bg-white p-4 rounded-card border border-[var(--border)]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--fg-muted)] block">Active Staff</span>
+            <span className="text-lg font-serif text-[var(--fg)] mt-1 block">08 Leads</span>
+          </div>
+          <div className="bg-white p-4 rounded-card border border-[var(--border)]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--fg-muted)] block">Event Duration</span>
+            <span className="text-lg font-serif text-[var(--fg)] mt-1 block">02h 45m</span>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

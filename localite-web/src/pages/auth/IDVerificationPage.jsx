@@ -1,10 +1,21 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  UploadSimple,
+  FileText,
+  Sun,
+  Eye,
+  ShieldCheck,
+  Check,
+  ArrowLeft,
+  ArrowRight,
+} from '@phosphor-icons/react';
 
 const IDVerificationPage = () => {
   const navigate = useNavigate();
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleDrop = (e) => {
@@ -32,121 +43,147 @@ const IDVerificationPage = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    if (!selectedFile) return;
+    setSubmitting(true);
+    setTimeout(() => {
+      setSubmitting(false);
+      alert('Document submitted for review.');
+      navigate('/settings/verification');
+    }, 1200);
+  };
+
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
-      {/* Main Content */}
-      <main className="flex-grow flex items-center justify-center py-stack-lg px-container-margin">
-        <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 bg-surface-container-lowest rounded-xl overflow-hidden ethereal-shadow min-h-[600px]">
-          {/* Left Side: Instructions */}
-          <div className="p-stack-lg bg-surface flex flex-col justify-center border-r border-outline-variant">
-            <div className="mb-stack-md">
-              <span className="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Step 02/03</span>
-              <h1 className="font-display-lg text-display-lg text-primary mt-2">Identity Verification</h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant mt-stack-sm leading-relaxed">
-                To maintain the integrity of our community, please provide a high-fidelity image of your government-issued ID.
+    <div className="bg-bg min-h-screen py-12 px-6 flex items-center justify-center">
+      <div className="max-w-4xl w-full bg-white border border-border rounded-card overflow-hidden shadow-sm grid grid-cols-1 md:grid-cols-2">
+        {/* Left Side: Guidelines */}
+        <div className="p-8 sm:p-10 border-b md:border-b-0 md:border-r border-border flex flex-col justify-between space-y-6">
+          <div className="space-y-4">
+            <div>
+              <span className="text-xs font-mono text-accent uppercase tracking-wider block mb-1">
+                Step 01 of 02
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-display font-semibold text-fg tracking-tight">
+                Government ID
+              </h1>
+              <p className="text-xs text-fg-muted mt-2 leading-relaxed">
+                Upload a clear scan or photo of your government-issued identification document.
               </p>
             </div>
 
-            <div className="space-y-stack-md">
-              <div className="flex gap-gutter">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-secondary">light_mode</span>
+            <div className="space-y-4 pt-4 text-xs">
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-bg-subtle text-accent flex items-center justify-center shrink-0">
+                  <Sun size={15} />
                 </div>
                 <div>
-                  <h3 className="font-label-caps text-label-caps text-primary">Pristine Lighting</h3>
-                  <p className="text-body-md text-on-surface-variant">Ensure you are in a brightly lit environment. Avoid direct glare or harsh shadows across the document.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-gutter">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-secondary">center_focus_strong</span>
-                </div>
-                <div>
-                  <h3 className="font-label-caps text-label-caps text-primary">Clarity & Focus</h3>
-                  <p className="text-body-md text-on-surface-variant">All text and your portrait must be perfectly legible. Position the ID within the frame without cutting off edges.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-gutter">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-secondary">verified_user</span>
-                </div>
-                <div>
-                  <h3 className="font-label-caps text-label-caps text-primary">Secure Processing</h3>
-                  <p className="text-body-md text-on-surface-variant">Your data is encrypted and handled with the highest level of privacy as per our Modern Nobility standards.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-stack-lg pt-stack-md border-t border-outline-variant">
-              <p className="text-label-caps font-label-caps text-on-surface-variant">Accepted Documents: Passport, Driver's License, National ID Card.</p>
-            </div>
-          </div>
-
-          {/* Right Side: Upload Area */}
-          <div className="p-stack-lg bg-surface-container-low flex flex-col items-center justify-center">
-            <div
-              className={`w-full aspect-[4/3] max-w-md border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-stack-lg transition-all duration-300 cursor-pointer group relative overflow-hidden bg-white shadow-sm ${
-                dragOver ? 'border-secondary bg-secondary/5' : 'border-outline-variant hover:border-secondary hover:bg-surface-container-highest'
-              }`}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <div className="text-center group-hover:scale-105 transition-transform duration-300">
-                <span className="material-symbols-outlined text-secondary text-5xl mb-stack-sm">cloud_upload</span>
-                <h2 className="font-headline-sm text-headline-sm text-primary">Secure Upload</h2>
-                {selectedFile ? (
-                  <p className="text-body-md text-secondary mt-2 font-bold">{selectedFile.name}</p>
-                ) : (
-                  <p className="text-body-md text-on-surface-variant mt-2">
-                    Drag and drop your file or <span className="text-secondary font-bold underline cursor-pointer">browse</span>
+                  <h3 className="font-display font-medium text-fg">Good Lighting</h3>
+                  <p className="text-fg-muted mt-0.5 leading-relaxed">
+                    Ensure the document is well-lit without glare, reflections, or harsh shadows.
                   </p>
-                )}
-                <p className="text-label-caps font-label-caps text-outline mt-4">JPG, PNG or PDF (Max 10MB)</p>
+                </div>
               </div>
-              <input
-                ref={fileInputRef}
-                accept="image/*,.pdf"
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                type="file"
-                onChange={handleFileSelect}
-              />
-            </div>
 
-            <div className="w-full max-w-md mt-stack-md space-y-gutter">
-              <button className="w-full bg-primary text-on-primary py-4 rounded-lg font-label-caps text-label-caps uppercase tracking-widest hover:bg-primary/90 transition-all active:scale-95 shadow-md">
-                Proceed to Scan
-              </button>
-              <button className="w-full border border-secondary text-secondary py-4 rounded-lg font-label-caps text-label-caps uppercase tracking-widest hover:bg-secondary/5 transition-all flex items-center justify-center gap-2">
-                <span className="material-symbols-outlined text-sm">photo_camera</span>
-                Use Camera
-              </button>
-            </div>
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-bg-subtle text-accent flex items-center justify-center shrink-0">
+                  <Eye size={15} />
+                </div>
+                <div>
+                  <h3 className="font-display font-medium text-fg">Sharp & Legible</h3>
+                  <p className="text-fg-muted mt-0.5 leading-relaxed">
+                    All text fields, birth date, and portrait must be clearly readable.
+                  </p>
+                </div>
+              </div>
 
-            <div className="mt-stack-lg flex items-center gap-2 text-outline">
-              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
-              <span className="text-label-caps font-label-caps">End-to-End Encrypted</span>
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-bg-subtle text-accent flex items-center justify-center shrink-0">
+                  <ShieldCheck size={15} />
+                </div>
+                <div>
+                  <h3 className="font-display font-medium text-fg">Encrypted Storage</h3>
+                  <p className="text-fg-muted mt-0.5 leading-relaxed">
+                    Identity files are encrypted at rest and never shared with other users.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="w-full mt-stack-lg bg-surface-container border-t border-outline-variant flex flex-col md:flex-row justify-between items-center px-container-margin py-stack-lg gap-gutter">
-        <div className="flex flex-col items-center md:items-start gap-unit">
-          <span className="font-display-lg-mobile text-display-lg-mobile text-primary">Localite</span>
-          <p className="text-label-caps font-label-caps text-on-surface-variant">© 2024 Localite. Modern Nobility.</p>
+          <div className="pt-4 border-t border-border text-[11px] font-mono text-fg-muted">
+            Accepted: Passport, Driver's License, National ID Card.
+          </div>
         </div>
-        <div className="flex gap-stack-md">
-          <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-secondary transition-all duration-300" href="/privacy">Privacy Policy</a>
-          <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-secondary transition-all duration-300" href="/terms">Terms of Service</a>
-          <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-secondary transition-all duration-300" href="#">Press Kit</a>
-          <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary underline decoration-secondary transition-all duration-300" href="/contact">Contact Us</a>
+
+        {/* Right Side: Upload Zone */}
+        <div className="p-8 sm:p-10 flex flex-col justify-between space-y-6 bg-bg-subtle/40">
+          <div
+            className={`w-full border border-dashed rounded-card flex flex-col items-center justify-center p-8 transition-colors cursor-pointer bg-white ${
+              dragOver
+                ? 'border-accent bg-accent-subtle/30'
+                : 'border-border hover:border-accent/50'
+            }`}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,.pdf"
+              className="hidden"
+              onChange={handleFileSelect}
+            />
+
+            {selectedFile ? (
+              <div className="text-center space-y-2">
+                <div className="w-12 h-12 rounded-full bg-accent-subtle text-accent flex items-center justify-center mx-auto">
+                  <Check size={24} weight="bold" />
+                </div>
+                <p className="text-xs font-mono font-medium text-fg truncate max-w-[200px]">
+                  {selectedFile.name}
+                </p>
+                <p className="text-[10px] font-mono text-fg-muted">
+                  Click to replace document
+                </p>
+              </div>
+            ) : (
+              <div className="text-center space-y-2">
+                <div className="w-12 h-12 rounded-full bg-bg-subtle text-fg-muted flex items-center justify-center mx-auto">
+                  <UploadSimple size={24} />
+                </div>
+                <h3 className="text-sm font-display font-medium text-fg">
+                  Upload Document
+                </h3>
+                <p className="text-xs text-fg-muted">
+                  Drag and drop your file here, or click to browse.
+                </p>
+                <span className="inline-block text-[10px] font-mono text-fg-faint">
+                  JPG, PNG, PDF up to 10MB
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between gap-3 pt-4 border-t border-border">
+            <button
+              onClick={() => navigate('/settings/verification')}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn border border-border text-xs font-mono text-fg-muted hover:text-fg hover:bg-white transition-colors"
+            >
+              <ArrowLeft size={13} /> Back
+            </button>
+
+            <button
+              onClick={handleSubmit}
+              disabled={!selectedFile || submitting}
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-btn bg-accent text-white text-xs font-mono tracking-wide hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+            >
+              {submitting ? 'Verifying...' : 'Submit ID'} <ArrowRight size={13} />
+            </button>
+          </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
 };

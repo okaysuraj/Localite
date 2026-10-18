@@ -1,26 +1,30 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 
 const SLIDES = [
   {
-    category: 'CURATED EXPERIENCES',
-    title: 'Find Your<br/>Third Place',
-    description: 'Discover a collection of sanctuary spaces designed for connection, focus, and refined leisure. From morning roasts to evening toasts.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-09GeNrZdYUchL3mEf9ZwJ3V0FS3dkUdcpvtC9cqViPatMsWovIQC5VUaq-LRxixrgloKawYuFYpNULaSgMqXgyFVKYH75pHAGbgAnLJM27M3u0i6nW0TwMZWZBLPjKIDlRomPLbexhwiNL_uemnyGR904bkLI7j3Sc640V33tEsMdl038mTthf0qtn_TiEq9f-4eLYknq2_O48jtvBB4i2r53MInxgMXoyzTudawQM1rrvGSYgNI5Q'
+    title: 'Discover events\nnear you',
+    description:
+      'Find sports matches, community gatherings, and local events happening in your area.',
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuD-09GeNrZdYUchL3mEf9ZwJ3V0FS3dkUdcpvtC9cqViPatMsWovIQC5VUaq-LRxixrgloKawYuFYpNULaSgMqXgyFVKYH75pHAGbgAnLJM27M3u0i6nW0TwMZWZBLPjKIDlRomPLbexhwiNL_uemnyGR904bkLI7j3Sc640V33tEsMdl038mTthf0qtn_TiEq9f-4eLYknq2_O48jtvBB4i2r53MInxgMXoyzTudawQM1rrvGSYgNI5Q',
   },
   {
-    category: 'ELITE GATHERINGS',
-    title: 'Refined Social<br/>Exchanges',
-    description: 'Engage with a community of like-minded individuals in settings that honor the art of conversation and architectural beauty.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDSpy0enHxhnTN0tvDLtTwjvcGG-AZUld9qROvoAX0arEy_QnZKFuTtxsx5A4JvvrbkSCu2GQE-FeNug8EnbM6U1SnqIEBUE2oDcSufZyb2plz7Q8pkXRix-vrAbFS0J0TEBcuN9AEKKQ7CM_cDAAkcwFc_ZW-b1ZV6zEKZkd7jzaSvkoEaCWydoPUTvIbV3yjEZYnsuzc5MrVjq85U1MNGwFFMrampgARSIvcWolbxUAhZg9kavuveuQ'
+    title: 'Connect with\nyour community',
+    description:
+      'Meet people who share your interests. Join pickup games, group runs, and social meetups.',
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDSpy0enHxhnTN0tvDLtTwjvcGG-AZUld9qROvoAX0arEy_QnZKFuTtxsx5A4JvvrbkSCu2GQE-FeNug8EnbM6U1SnqIEBUE2oDcSufZyb2plz7Q8pkXRix-vrAbFS0J0TEBcuN9AEKKQ7CM_cDAAkcwFc_ZW-b1ZV6zEKZkd7jzaSvkoEaCWydoPUTvIbV3yjEZYnsuzc5MrVjq85U1MNGwFFMrampgARSIvcWolbxUAhZg9kavuveuQ',
   },
   {
-    category: 'MODERN SANCTUARY',
-    title: 'The New Home<br/>Of Belonging',
-    description: 'Elevating the local experience through deliberate design and exceptional service. Your sanctuary awaits in the heart of the city.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuATvVMrZ5hN_NeZoGDw4tvAxDz5fkH3A-hVs17NzcSrfKrzAWxOy4ACLQ-NE-TF8DwaFwzqzqu6q1VB0nuCAyRpaWbPTxWjXmcLJcI6Xakjzru7HSMt6BykxkafMEwj0rMOUybqXgf0X6IYSldTCDz-dN7aDB9GKz_z7rzZz3IGfJTMsX17XSKvswk25b4zib1DRHVVBLNAf2fglsd0FHUQM_fUxnU3IeLob1BugHmzCMiYLh7BF7qzfw'
-  }
+    title: 'Make it\nhappen today',
+    description:
+      'Create your own events, organize matches, and build your local network effortlessly.',
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuATvVMrZ5hN_NeZoGDw4tvAxDz5fkH3A-hVs17NzcSrfKrzAWxOy4ACLQ-NE-TF8DwaFwzqzqu6q1VB0nuCAyRpaWbPTxWjXmcLJcI6Xakjzru7HSMt6BykxkafMEwj0rMOUybqXgf0X6IYSldTCDz-dN7aDB9GKz_z7rzZz3IGfJTMsX17XSKvswk25b4zib1DRHVVBLNAf2fglsd0FHUQM_fUxnU3IeLob1BugHmzCMiYLh7BF7qzfw',
+  },
 ];
 
 const WelcomeCarouselPage = () => {
@@ -31,114 +35,133 @@ const WelcomeCarouselPage = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-    }, 8000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
   const moveCarousel = (direction) => {
-    setCurrentSlide((prev) => (prev + direction + SLIDES.length) % SLIDES.length);
+    setCurrentSlide(
+      (prev) => (prev + direction + SLIDES.length) % SLIDES.length
+    );
   };
 
   return (
-    <div className="bg-surface text-on-surface font-body-md selection:bg-secondary-container min-h-screen flex flex-col">
-      {/* TopNavBar */}
-      <header className="w-full top-0 sticky z-50 bg-surface shadow-[0_16px_32px_-8px_rgba(10,25,47,0.05)]">
-        <nav className="flex justify-between items-center h-20 px-container-margin max-w-7xl mx-auto">
-          <div className="font-display-lg text-display-lg text-primary tracking-tighter">Localite</div>
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/dashboard" className="text-primary border-b border-primary pb-1 font-label-caps text-label-caps transition-colors duration-300">Places</Link>
-            <Link to="/events" className="text-on-surface-variant pb-1 font-label-caps text-label-caps hover:text-primary transition-colors duration-300">Events</Link>
-            <Link to="/sports" className="text-on-surface-variant pb-1 font-label-caps text-label-caps hover:text-primary transition-colors duration-300">Sports</Link>
-            <Link to="/network" className="text-on-surface-variant pb-1 font-label-caps text-label-caps hover:text-primary transition-colors duration-300">Community</Link>
-          </div>
-          <div className="flex items-center gap-6">
+    <div className="min-h-[100dvh] flex flex-col bg-white">
+      {/* Nav */}
+      <header className="w-full h-16 border-b border-border bg-white sticky top-0 z-50">
+        <nav className="flex justify-between items-center h-full px-6 max-w-content mx-auto">
+          <span className="text-xl font-semibold text-fg tracking-tight">
+            localite
+          </span>
+          <div className="flex items-center gap-4">
             {user ? (
-              <Link to="/dashboard" className="bg-primary text-on-primary px-6 py-3 rounded-xl font-label-caps text-label-caps hover:opacity-80 transition-opacity">Go to Dashboard</Link>
+              <Link to="/explore" className="btn-primary text-sm py-2 px-5">
+                Go to app
+              </Link>
             ) : (
               <>
-                <Link to="/login" className="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-all duration-200">Sign In</Link>
-                <Link to="/signup" className="bg-primary text-on-primary px-6 py-3 rounded-xl font-label-caps text-label-caps hover:opacity-80 transition-opacity">Join Now</Link>
+                <Link
+                  to="/login"
+                  className="text-body-sm font-medium text-fg-muted hover:text-fg transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link to="/signup" className="btn-primary text-sm py-2 px-5">
+                  Sign up
+                </Link>
               </>
             )}
           </div>
         </nav>
       </header>
 
-      <main className="flex-grow relative overflow-hidden flex items-center">
-        {/* Hero Carousel Container */}
-        <div className="max-w-7xl mx-auto px-container-margin py-stack-lg w-full">
-          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            {/* Left: Editorial Image */}
-            <div className="relative overflow-hidden rounded-xl shadow-[0_16px_32px_-8px_rgba(10,25,47,0.08)] aspect-[4/5] lg:aspect-square group">
-              <div 
-                className="absolute inset-0 flex w-[300%] h-full transition-transform duration-700 cubic-bezier(0.19, 1, 0.22, 1)"
-                style={{ transform: `translateX(-${(currentSlide * 100) / SLIDES.length}%)` }}
-              >
-                {SLIDES.map((slide, index) => (
-                  <div 
-                    key={index}
-                    className="w-1/3 h-full bg-cover bg-center" 
-                    style={{ backgroundImage: `url('${slide.image}')` }}
-                  ></div>
-                ))}
-              </div>
-              {/* Aesthetic Overlay */}
-              <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-xl"></div>
+      {/* Hero */}
+      <main className="flex-1 flex items-center">
+        <div className="max-w-content mx-auto px-6 py-16 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Image carousel */}
+            <div className="relative overflow-hidden rounded-md aspect-[4/5] lg:aspect-square bg-bg-subtle">
+              {SLIDES.map((slide, index) => (
+                <div
+                  key={index}
+                  className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
+                  style={{
+                    backgroundImage: `url('${slide.image}')`,
+                    opacity: index === currentSlide ? 1 : 0,
+                  }}
+                />
+              ))}
             </div>
 
-            {/* Right: Content Column */}
-            <div className="flex flex-col justify-center space-y-stack-md pr-0 lg:pr-12">
-              <div className="relative h-64 overflow-hidden">
+            {/* Right: Content */}
+            <div className="flex flex-col justify-center">
+              <div className="relative h-52 md:h-48 overflow-hidden mb-8">
                 {SLIDES.map((slide, index) => (
-                  <div 
+                  <div
                     key={index}
-                    className={`absolute inset-0 transition-all duration-700 ${index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'}`}
+                    className={`absolute inset-0 transition-all duration-600 ${
+                      index === currentSlide
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-8 pointer-events-none'
+                    }`}
+                    style={{
+                      transitionTimingFunction:
+                        'cubic-bezier(0.23, 1, 0.32, 1)',
+                    }}
                   >
-                    <span className="font-label-caps text-label-caps text-secondary mb-2 block">{slide.category}</span>
-                    <h1 
-                      className="font-display-lg text-display-lg text-primary leading-tight mb-4"
-                      dangerouslySetInnerHTML={{ __html: slide.title }}
-                    />
-                    <p className="font-body-lg text-body-lg text-on-surface-variant max-w-md">
+                    <h1 className="text-display text-fg whitespace-pre-line mb-4">
+                      {slide.title}
+                    </h1>
+                    <p className="text-body-lg text-fg-muted max-w-md">
                       {slide.description}
                     </p>
                   </div>
                 ))}
               </div>
 
-              {/* Navigation Controls */}
-              <div className="flex items-center space-x-8 pt-stack-sm">
-                <div className="flex space-x-3 items-center">
-                  <button 
+              {/* Controls */}
+              <div className="flex items-center gap-6 mb-8">
+                <div className="flex gap-2">
+                  <button
                     onClick={() => moveCarousel(-1)}
-                    className="group w-12 h-12 flex items-center justify-center rounded-full border border-outline-variant hover:border-primary transition-all duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-fg-muted hover:text-fg hover:border-fg-faint transition-all duration-200"
                   >
-                    <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_back</span>
+                    <ArrowLeft size={18} weight="bold" />
                   </button>
-                  <button 
+                  <button
                     onClick={() => moveCarousel(1)}
-                    className="group w-12 h-12 flex items-center justify-center rounded-full border border-outline-variant hover:border-primary transition-all duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-sm border border-border text-fg-muted hover:text-fg hover:border-fg-faint transition-all duration-200"
                   >
-                    <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">arrow_forward</span>
+                    <ArrowRight size={18} weight="bold" />
                   </button>
                 </div>
-                
-                {/* Pagination Dots */}
-                <div className="flex space-x-2">
+
+                {/* Dots */}
+                <div className="flex gap-1.5">
                   {SLIDES.map((_, index) => (
-                    <div 
+                    <button
                       key={index}
-                      className={`h-1 transition-all duration-500 rounded-full ${index === currentSlide ? 'w-8 bg-black' : 'w-4 bg-surface-container-highest'}`}
-                    ></div>
+                      onClick={() => setCurrentSlide(index)}
+                      className={`h-1.5 rounded-full transition-all duration-400 ${
+                        index === currentSlide
+                          ? 'w-6 bg-accent'
+                          : 'w-3 bg-border'
+                      }`}
+                    />
                   ))}
                 </div>
               </div>
 
-              <div className="pt-stack-md">
-                <Link to="/dashboard" className="inline-flex bg-primary text-on-primary px-10 py-5 rounded-none font-label-caps text-label-caps hover:bg-secondary-container hover:text-on-secondary-container transition-all duration-500 shadow-xl items-center gap-3">
-                  EXPLORE VENUES
-                  <span className="material-symbols-outlined text-[18px]">north_east</span>
+              {/* CTA */}
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  to={user ? '/explore' : '/signup'}
+                  className="btn-primary py-3 px-8"
+                >
+                  Get started
+                </Link>
+                <Link to="/events" className="btn-ghost py-3 px-8">
+                  Browse events
                 </Link>
               </div>
             </div>
@@ -147,17 +170,30 @@ const WelcomeCarouselPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-surface-container-low w-full mt-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center py-stack-lg px-container-margin max-w-7xl mx-auto">
-          <div className="mb-8 md:mb-0">
-            <div className="font-headline-sm text-headline-sm text-primary mb-2">Localite</div>
-            <p className="font-body-md text-body-md text-on-surface-variant">© 2024 Localite. Modern Nobility in Local Gathering.</p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            <Link to="/privacy" className="text-on-surface-variant font-label-caps text-label-caps hover:text-secondary transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="text-on-surface-variant font-label-caps text-label-caps hover:text-secondary transition-colors">Terms of Service</Link>
-            <Link to="/partners" className="text-on-surface-variant font-label-caps text-label-caps hover:text-secondary transition-colors">Venue Partners</Link>
-            <Link to="/contact" className="text-on-surface-variant font-label-caps text-label-caps hover:text-secondary transition-colors">Contact</Link>
+      <footer className="border-t border-border py-6 px-6">
+        <div className="max-w-content mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-caption text-fg-faint">
+            &copy; {new Date().getFullYear()} Localite
+          </p>
+          <div className="flex gap-6">
+            <Link
+              to="/privacy"
+              className="text-caption text-fg-faint hover:text-fg-muted transition-colors"
+            >
+              Privacy
+            </Link>
+            <Link
+              to="/terms"
+              className="text-caption text-fg-faint hover:text-fg-muted transition-colors"
+            >
+              Terms
+            </Link>
+            <Link
+              to="/contact"
+              className="text-caption text-fg-faint hover:text-fg-muted transition-colors"
+            >
+              Contact
+            </Link>
           </div>
         </div>
       </footer>

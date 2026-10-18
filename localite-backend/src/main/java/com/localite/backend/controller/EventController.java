@@ -87,6 +87,17 @@ public class EventController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/my-events")
+    public ResponseEntity<?> getMyEvents(Principal principal) {
+        if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (userOpt.isPresent()) {
+            List<Event> myEvents = eventRepository.findByHostId(userOpt.get().getId());
+            return ResponseEntity.ok(myEvents);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{eventId}/rsvps")
     public ResponseEntity<?> getEventRsvps(@PathVariable Long eventId, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");

@@ -75,7 +75,7 @@ export default function ReportUserScreen({ route, navigation }) {
           <View style={styles.headerSection}>
             <Text style={styles.headerTitle}>Maintain the Standard</Text>
             <Text style={styles.headerDesc}>
-              The Royal Assemblage thrives on mutual respect. Please provide objective details regarding the incident to help us preserve our community integrity.
+              The Localite community thrives on mutual respect. Please provide objective details regarding the incident to help us preserve our community integrity.
             </Text>
           </View>
 

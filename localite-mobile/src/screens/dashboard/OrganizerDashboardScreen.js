@@ -1,10 +1,38 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image, Platform, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext';
+import { getMyEvents, getUserAnalytics } from '../../services/api';
 
 export default function OrganizerDashboardScreen() {
   const navigation = useNavigation();
+  const { user } = useContext(AuthContext);
+  const [events, setEvents] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [myEvents, stats] = await Promise.all([
+          getMyEvents().catch(() => []),
+          getUserAnalytics().catch(() => null)
+        ]);
+        setEvents(Array.isArray(myEvents) ? myEvents : []);
+        setAnalytics(stats);
+      } catch (err) {
+        console.error('Failed to load organizer dashboard data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  const activeEventsCount = events.length;
+  const totalAttendees = events.reduce((acc, ev) => acc + (ev.attendeeCount || 0), 0);
+  const totalRevenue = events.reduce((acc, ev) => acc + ((ev.price || 0) * (ev.attendeeCount || 0)), 0);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -16,9 +44,9 @@ export default function OrganizerDashboardScreen() {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Localite</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('ProfileSetupFinalSteps')} style={styles.avatarWrap}>
+        <TouchableOpacity onPress={() => navigation.navigate('EditProfile')} style={styles.avatarWrap}>
           <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBw4OwSAInhKbSwUq0NWC-ucVyvod4lsSoMJMwkxPc0GdS9CD-51Q6t0lnarpJsQtBeq0mcYSllPR395oSm8QwX6pCPOeUiH6rq5qILDOXV3fzmOaRohIHnRtgAhHfTsJsBPUmo-RKO7yyeUQllxofMyu3qH6orTiYLHIuCOsP7QiatIFAeE5XZnQ2MeRy0WGp0Q9B9uOgmT2FIj1EDmKipj86EhU9vjNGgXAwvXafnVEjI_6TbnXfkVA' }}
+            source={{ uri: user?.profilePhotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' }}
             style={styles.avatarImg}
           />
         </TouchableOpacity>
@@ -28,8 +56,12 @@ export default function OrganizerDashboardScreen() {
         {/* Welcome Section */}
         <View style={styles.welcomeSection}>
           <Text style={styles.preTitle}>HOST DASHBOARD</Text>
-          <Text style={styles.pageTitle}>Good Morning, Alexander</Text>
-          <Text style={styles.welcomeDesc}>Your upcoming Polo match event has 12 new applicants today. Here is the overview of your curated community.</Text>
+          <Text style={styles.pageTitle}>Welcome, {user?.username || 'Host'}</Text>
+          <Text style={styles.welcomeDesc}>
+            {events.length > 0
+              ? `You currently manage ${events.length} active gathering${events.length === 1 ? '' : 's'} across the community.`
+              : 'You have no active events scheduled. Create a new gathering to start hosting!'}
+          </Text>
         </View>
 
         {/* Metrics Grid */}
@@ -38,13 +70,13 @@ export default function OrganizerDashboardScreen() {
             <View style={styles.metricHeaderRow}>
               <MaterialIcons name="dashboard" size={20} color="#775a19" />
               <View style={styles.metricBadge}>
-                <Text style={styles.metricBadgeText}>+2 Today</Text>
+                <Text style={styles.metricBadgeText}>Live</Text>
               </View>
             </View>
             <Text style={styles.metricLabel}>ACTIVE EVENTS</Text>
-            <Text style={styles.metricValue}>08</Text>
+            <Text style={styles.metricValue}>{activeEventsCount}</Text>
             <View style={styles.metricFooter}>
-              <Text style={styles.metricFooterText}>3 private matches, 5 socials</Text>
+              <Text style={styles.metricFooterText}>Scheduled gatherings</Text>
             </View>
           </View>
 
@@ -52,13 +84,13 @@ export default function OrganizerDashboardScreen() {
             <View style={styles.metricHeaderRow}>
               <MaterialIcons name="groups" size={20} color="#775a19" />
               <View style={styles.metricBadge}>
-                <Text style={styles.metricBadgeText}>+14%</Text>
+                <Text style={styles.metricBadgeText}>RSVPs</Text>
               </View>
             </View>
             <Text style={styles.metricLabel}>TOTAL ATTENDEES</Text>
-            <Text style={styles.metricValue}>1,248</Text>
+            <Text style={styles.metricValue}>{totalAttendees}</Text>
             <View style={styles.metricFooter}>
-              <Text style={styles.metricFooterText}>Verified elite network</Text>
+              <Text style={styles.metricFooterText}>Registered members</Text>
             </View>
           </View>
 
@@ -67,9 +99,9 @@ export default function OrganizerDashboardScreen() {
               <MaterialIcons name="payments" size={20} color="#fed488" />
             </View>
             <Text style={[styles.metricLabel, { color: '#b9c7e4' }]}>RECENT REVENUE</Text>
-            <Text style={[styles.metricValue, { color: '#ffdea5' }]}>€14,820</Text>
+            <Text style={[styles.metricValue, { color: '#ffdea5' }]}>${totalRevenue.toFixed(2)}</Text>
             <View style={[styles.metricFooter, { borderTopColor: '#39475f' }]}>
-              <Text style={[styles.metricFooterText, { color: '#b9c7e4' }]}>Month-to-date settlements</Text>
+              <Text style={[styles.metricFooterText, { color: '#b9c7e4' }]}>Gross ticket sales</Text>
             </View>
           </View>
         </View>

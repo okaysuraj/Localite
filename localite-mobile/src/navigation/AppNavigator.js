@@ -96,6 +96,7 @@ import MediaViewerScreen from '../screens/shared/MediaViewerScreen';
 import SocialLinkingScreen from '../screens/profile/SocialLinkingScreen';
 import ExtendInvitationScreen from '../screens/network/ExtendInvitationScreen';
 import MyActivityStatsScreen from '../screens/dashboard/MyActivityStatsScreen';
+import AdminDashboardScreen from '../screens/dashboard/AdminDashboardScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -113,25 +114,25 @@ function MainTabNavigator() {
           
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#775a19', // Secondary gold
-        tabBarInactiveTintColor: '#c5c6cd', // Outline variant
+        tabBarActiveTintColor: '#1A6B4A', // Forest Emerald matching Web
+        tabBarInactiveTintColor: '#6b7280', // Neutral gray
         tabBarStyle: {
-          backgroundColor: '#f5f3f3', // Surface container low
-          borderTopColor: 'rgba(10,25,47,0.05)',
+          backgroundColor: '#ffffff', // Clean white matching Web design
+          borderTopColor: '#e5e7eb',
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           paddingBottom: 8,
           paddingTop: 8,
           height: 65,
-          position: 'absolute', // Floating effect
+          position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          shadowColor: '#0a192f',
-          shadowOffset: { width: 0, height: -8 },
-          shadowOpacity: 0.05,
-          shadowRadius: 24,
-          elevation: 10,
+          shadowColor: '#1f2937',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.06,
+          shadowRadius: 12,
+          elevation: 8,
         },
         tabBarLabelStyle: {
           fontFamily: 'PlusJakartaSans_700Bold',
@@ -160,6 +161,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} />
         <Stack.Screen name="MainApp" component={MainTabNavigator} />
+        <Stack.Screen name="Discover" component={DiscoverScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
@@ -240,6 +242,7 @@ export default function AppNavigator() {
         <Stack.Screen name="SocialLinking" component={SocialLinkingScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ExtendInvitation" component={ExtendInvitationScreen} options={{ headerShown: false }} />
         <Stack.Screen name="MyActivityStats" component={MyActivityStatsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

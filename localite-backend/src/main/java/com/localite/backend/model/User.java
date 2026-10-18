@@ -48,6 +48,7 @@ public class User {
     private boolean isPhoneVerified = false;
     private String instagramHandle;
     private String twitterHandle;
+    private String linkedinHandle;
     
     // Streaks
     private int currentStreak = 0;
@@ -163,6 +164,9 @@ public class User {
 
     public String getTwitterHandle() { return twitterHandle; }
     public void setTwitterHandle(String twitterHandle) { this.twitterHandle = twitterHandle; }
+
+    public String getLinkedinHandle() { return linkedinHandle; }
+    public void setLinkedinHandle(String linkedinHandle) { this.linkedinHandle = linkedinHandle; }
 
     public int getCurrentStreak() { return currentStreak; }
     public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }

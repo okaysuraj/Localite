@@ -12,7 +12,7 @@ export default function SportsCategoriesScreen({ navigation }) {
             <Image source={{ uri: 'https://via.placeholder.com/100x100' }} style={styles.avatarImage} />
           </View>
         </View>
-        <Text style={styles.headerTitle}>Royal Sports</Text>
+        <Text style={styles.headerTitle}>Community Sports</Text>
         <TouchableOpacity style={styles.headerRight}>
           <MaterialIcons name="notifications" size={24} color="#000000" />
         </TouchableOpacity>
@@ -130,9 +130,9 @@ export default function SportsCategoriesScreen({ navigation }) {
 
         {/* Quote Section */}
         <View style={styles.quoteSection}>
-          <MaterialIcons name="format-quote" size={48} color="#775a19" style={{marginBottom: 16}} />
+          <MaterialIcons name="format-quote" size={48} color="#1A6B4A" style={{marginBottom: 16}} />
           <Text style={styles.quoteText}>"Sport is the poetry of the body, a refined conversation between discipline and grace."</Text>
-          <Text style={styles.quoteAuthor}>— THE ROYAL ARCHIVE</Text>
+          <Text style={styles.quoteAuthor}>— LOCALITE SPORTS</Text>
         </View>
 
       </ScrollView>

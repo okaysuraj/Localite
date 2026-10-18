@@ -1,199 +1,193 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  ChartLineUp, 
+  CurrencyDollar, 
+  MapPin, 
+  ArrowRight, 
+  ArrowLeft, 
+  Sparkle, 
+  Users, 
+  DownloadSimple 
+} from '@phosphor-icons/react';
 
 export default function EventPlanningAnalyticsPage() {
-  return (
-    <div className="bg-surface text-on-surface font-body-md min-h-[calc(100vh-73px)]">
-      <main className="max-w-7xl mx-auto py-12 px-6 lg:px-12">
-        
-        {/* Header Section */}
-        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <nav className="flex items-center gap-2 text-on-surface-variant mb-2">
-              <span className="font-label-caps text-label-caps uppercase">Events</span>
-              <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-              <span className="font-label-caps text-label-caps uppercase text-secondary">Analytics</span>
-            </nav>
-            <h1 className="font-display-lg text-4xl font-bold text-primary">Pre-Event Strategy</h1>
-            <p className="text-body-lg font-body-lg text-on-surface-variant mt-2 max-w-2xl">Leverage predictive modeling and community sentiment to optimize your next elite gathering.</p>
-          </div>
-          <div className="flex gap-4">
-            <button className="border border-secondary-container text-secondary px-6 py-3 rounded-xl font-label-caps text-label-caps uppercase hover:bg-secondary-container/10 transition-colors">Export Report</button>
-            <button className="bg-primary text-white px-6 py-3 rounded-xl font-label-caps text-label-caps uppercase shadow-md hover:opacity-90 transition-all">Launch Event</button>
-          </div>
-        </header>
+  const navigate = useNavigate();
 
-        {/* Bento Grid Dashboard */}
+  return (
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
+      <main className="max-w-6xl mx-auto space-y-8">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[var(--border)]">
+          <div>
+            <button 
+              type="button" 
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-2"
+            >
+              <ArrowLeft size={16} />
+              Return
+            </button>
+            <span className="font-mono text-xs uppercase tracking-wider text-[var(--accent)] block mb-1">
+              Event Intelligence
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-serif text-[var(--fg)]">Pre-Event Strategy Console</h1>
+            <p className="text-xs sm:text-sm text-[var(--fg-muted)] max-w-xl mt-1">
+              Predictive demand modeling and community sentiment analysis for upcoming gatherings.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button 
+              type="button" 
+              onClick={() => alert('Report generated.')}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-card border border-[var(--border)] bg-white text-xs font-mono uppercase tracking-wider text-[var(--fg)] hover:bg-[var(--bg-subtle)] transition-colors"
+            >
+              <DownloadSimple size={16} />
+              Export
+            </button>
+            <button 
+              type="button" 
+              onClick={() => navigate('/events/create')}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-card bg-[var(--accent)] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#145339] transition-colors"
+            >
+              Host Event
+            </button>
+          </div>
+        </div>
+
+        {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          
-          {/* Projected Attendance Chart */}
-          <section className="col-span-12 lg:col-span-8 bg-white rounded-xl p-6 shadow-sm border border-outline-variant/10">
-            <div className="flex justify-between items-center mb-6">
+          {/* Projected Attendance Bar Chart */}
+          <section className="col-span-12 lg:col-span-8 bg-white rounded-card p-6 border border-[var(--border)] space-y-6">
+            <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-headline-sm text-2xl font-bold text-primary">Projected Attendance</h3>
-                <p className="font-label-caps text-label-caps uppercase text-on-surface-variant mt-1">Forecasted Engagement by Day</p>
+                <h3 className="text-lg font-serif text-[var(--fg)]">Projected Attendance Dynamics</h3>
+                <p className="text-xs font-mono text-[var(--fg-muted)] mt-0.5">Forecasted demand distribution across weekday segments</p>
               </div>
-              <div className="flex bg-surface-container-low p-1 rounded-lg">
-                <button className="px-4 py-1 bg-white rounded-md text-label-caps font-bold shadow-sm">Daily</button>
-                <button className="px-4 py-1 text-label-caps text-on-surface-variant opacity-60">Weekly</button>
-              </div>
+              <span className="text-xs font-mono bg-[var(--bg-subtle)] border border-[var(--border)] px-2.5 py-1 rounded-card text-[var(--fg)]">
+                Confidence 91%
+              </span>
             </div>
 
-            {/* Simple Mock Bar Chart */}
-            <div className="h-64 flex items-end justify-between gap-4 px-4">
+            {/* Visual Bars */}
+            <div className="h-56 flex items-end justify-between gap-3 pt-6 px-2">
               {[
-                { day: 'Mon', val: 142, h: '32%' },
-                { day: 'Tue', val: 210, h: '48%' },
-                { day: 'Wed', val: 285, h: '64%', active: true },
-                { day: 'Thu', val: 180, h: '40%' },
-                { day: 'Fri', val: 245, h: '56%' },
-                { day: 'Sat', val: 268, h: '60%', highlight: true },
-                { day: 'Sun', val: 155, h: '36%' }
+                { day: 'Mon', val: 142, h: '35%' },
+                { day: 'Tue', val: 210, h: '52%' },
+                { day: 'Wed', val: 285, h: '70%', highlight: true },
+                { day: 'Thu', val: 180, h: '44%' },
+                { day: 'Fri', val: 320, h: '88%', top: true },
+                { day: 'Sat', val: 350, h: '95%', top: true },
+                { day: 'Sun', val: 200, h: '50%' }
               ].map((item, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                  <div 
-                    className={`w-full rounded-t-lg relative cursor-pointer transition-colors ${item.highlight ? 'bg-secondary hover:bg-secondary/80' : item.active ? 'bg-primary hover:bg-primary/80' : 'bg-surface-container-high hover:bg-secondary-container'}`} 
-                    style={{ height: item.h }}
-                  >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      {item.val}
-                    </div>
+                <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                  <div className="w-full bg-[var(--bg-subtle)] rounded-t-card h-44 flex items-end p-1">
+                    <div 
+                      className={`w-full rounded-t-card transition-all duration-500 ${
+                        item.top 
+                          ? 'bg-[var(--accent)]' 
+                          : item.highlight 
+                          ? 'bg-[var(--fg)]' 
+                          : 'bg-stone-300'
+                      }`}
+                      style={{ height: item.h }}
+                      title={`${item.val} guests`}
+                    />
                   </div>
-                  <span className={`font-label-caps text-[10px] uppercase ${item.active ? 'font-bold text-primary' : 'opacity-60'}`}>{item.day}</span>
+                  <span className="font-mono text-[11px] text-[var(--fg-muted)] uppercase">{item.day}</span>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Ideal Ticket Price */}
-          <section className="col-span-12 lg:col-span-4 bg-primary text-white rounded-xl p-6 shadow-md flex flex-col relative overflow-hidden">
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="material-symbols-outlined text-secondary-fixed">diamond</span>
-                <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary-fixed">Optimization Tool</span>
+          {/* Price Optimization */}
+          <section className="col-span-12 lg:col-span-4 bg-white rounded-card p-6 border border-[var(--border)] flex flex-col justify-between space-y-6">
+            <div className="space-y-3">
+              <span className="text-xs font-mono uppercase tracking-wider text-[var(--accent)] block">Optimization Engine</span>
+              <h3 className="text-lg font-serif text-[var(--fg)]">Optimal Ticket Pricing</h3>
+              <p className="text-xs text-[var(--fg-muted)]">Calculated against local member willingness-to-pay and venue capacity.</p>
+
+              <div className="p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] text-center space-y-1 my-4">
+                <span className="text-[10px] font-mono uppercase text-[var(--fg-muted)] block">Recommended Window</span>
+                <span className="text-3xl font-mono font-bold text-[var(--fg)]">$125 — $175</span>
+                <span className="text-[11px] font-mono text-[var(--accent)] block mt-1">Expected Fill Rate: 94%</span>
               </div>
-              <h3 className="font-headline-sm text-2xl font-bold mb-2">Ideal Ticket Price</h3>
-              <p className="font-body-md text-primary-fixed-dim mb-6 opacity-80">Based on membership tier and historical venue performance.</p>
-              
-              <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 border border-white/20 mb-6">
-                <span className="font-label-caps text-[10px] uppercase opacity-60">Suggested Range</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-4xl font-headline-md text-secondary-fixed font-bold">$125</span>
-                  <span className="text-xl font-body-lg opacity-40">—</span>
-                  <span className="text-4xl font-headline-md font-bold">$185</span>
+
+              <div className="space-y-2 text-xs font-mono">
+                <div className="flex justify-between py-1 border-b border-[var(--border)] text-[var(--fg-muted)]">
+                  <span>Marginal Demand Lift</span>
+                  <span className="text-[var(--fg)]">+14.2%</span>
                 </div>
-                <p className="text-[12px] mt-4 text-secondary-fixed font-medium">Confidence Interval: 94%</p>
+                <div className="flex justify-between py-1 text-[var(--fg-muted)]">
+                  <span>Revenue Peak Target</span>
+                  <span className="text-[var(--fg)] font-medium">$155.00</span>
+                </div>
               </div>
-              
-              <ul className="space-y-4">
-                <li className="flex justify-between items-center border-b border-white/10 pb-2">
-                  <span className="font-label-caps text-[10px] uppercase opacity-60">Demand Lift</span>
-                  <span className="font-body-md">+12.4%</span>
-                </li>
-                <li className="flex justify-between items-center border-b border-white/10 pb-2">
-                  <span className="font-label-caps text-[10px] uppercase opacity-60">Revenue Peak</span>
-                  <span className="font-body-md">$155.00</span>
-                </li>
-              </ul>
-              
-              <button className="mt-8 w-full bg-secondary-fixed text-primary font-label-caps text-label-caps uppercase py-3 rounded-lg font-bold hover:bg-secondary-fixed-dim transition-all">Apply to Draft</button>
             </div>
-            
-            {/* Decorative background element */}
-            <div className="absolute -right-8 -bottom-8 opacity-5">
-              <span className="material-symbols-outlined text-[200px]">payments</span>
-            </div>
+
+            <button 
+              type="button" 
+              onClick={() => navigate('/events/create')}
+              className="w-full py-2.5 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors"
+            >
+              Apply to Event
+            </button>
           </section>
 
           {/* Geographical Interest */}
-          <section className="col-span-12 lg:col-span-7 bg-white rounded-xl p-6 shadow-sm border border-outline-variant/10">
-            <div className="flex justify-between items-start mb-6">
+          <section className="col-span-12 lg:col-span-7 bg-white rounded-card p-6 border border-[var(--border)] space-y-4">
+            <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-headline-sm text-2xl font-bold text-primary">Geographical Interest</h3>
-                <p className="font-label-caps text-label-caps uppercase text-on-surface-variant mt-1">District-Based Demand Analysis</p>
+                <h3 className="text-lg font-serif text-[var(--fg)]">Regional Heatmap</h3>
+                <p className="text-xs font-mono text-[var(--fg-muted)] mt-0.5">Neighborhood concentration of RSVP interest</p>
               </div>
             </div>
-            
-            <div className="flex flex-col md:flex-row gap-6">
-              {/* Map Placeholder */}
-              <div className="flex-1 h-64 rounded-xl overflow-hidden relative border border-outline-variant/20 bg-surface-container-low flex items-center justify-center">
-                <span className="material-symbols-outlined text-outline-variant text-4xl">map</span>
-                <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-3 py-2 rounded-lg shadow-sm">
-                  <p className="text-[10px] font-label-caps text-label-caps uppercase font-bold text-primary">Top District</p>
-                  <p className="text-lg font-bold">Kensington High</p>
-                </div>
-              </div>
-              
-              {/* District List */}
-              <div className="flex-1 space-y-3">
-                <div className="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-secondary"></span>
-                    <span className="font-body-md font-medium">Mayfair Central</span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {[
+                { neighborhood: 'SoHo & NoHo', match: '92% Demand', count: '412 members' },
+                { neighborhood: 'West Village', match: '84% Demand', count: '320 members' },
+                { neighborhood: 'Chelsea Arts District', match: '78% Demand', count: '290 members' },
+                { neighborhood: 'DUMBO Waterfront', match: '65% Demand', count: '185 members' }
+              ].map((loc, idx) => (
+                <div key={idx} className="p-3.5 rounded-card border border-[var(--border)] bg-[var(--bg-subtle)] flex items-center justify-between text-xs">
+                  <div>
+                    <p className="font-medium text-[var(--fg)]">{loc.neighborhood}</p>
+                    <p className="font-mono text-[10px] text-[var(--fg-muted)] mt-0.5">{loc.count}</p>
                   </div>
-                  <span className="font-label-caps text-[10px] uppercase text-on-surface-variant">88% Match</span>
+                  <span className="font-mono text-[11px] text-[var(--accent)] font-medium">{loc.match}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 border border-outline-variant/30 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-secondary opacity-60"></span>
-                    <span className="font-body-md">Chelsea Waterfront</span>
-                  </div>
-                  <span className="font-label-caps text-[10px] uppercase text-on-surface-variant">74% Match</span>
-                </div>
-                <div className="flex items-center justify-between p-3 border border-outline-variant/30 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-secondary opacity-40"></span>
-                    <span className="font-body-md">Belgravia South</span>
-                  </div>
-                  <span className="font-label-caps text-[10px] uppercase text-on-surface-variant">61% Match</span>
-                </div>
-                <div className="flex items-center justify-between p-3 border border-outline-variant/30 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-secondary opacity-20"></span>
-                    <span className="font-body-md">Marylebone Village</span>
-                  </div>
-                  <span className="font-label-caps text-[10px] uppercase text-on-surface-variant">45% Match</span>
-                </div>
-              </div>
+              ))}
             </div>
           </section>
 
           {/* Strategic Recommendation */}
-          <section className="col-span-12 lg:col-span-5 bg-surface-container-high rounded-xl p-6 shadow-sm border border-outline-variant/10 relative overflow-hidden group">
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-                <h3 className="font-headline-sm text-2xl font-bold text-primary">Strategic Recommendation</h3>
+          <section className="col-span-12 lg:col-span-5 bg-white rounded-card p-6 border border-[var(--border)] flex flex-col justify-between space-y-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-[var(--accent)]">
+                <Sparkle size={18} weight="fill" />
+                <h3 className="text-base font-serif text-[var(--fg)]">Curator Insight</h3>
               </div>
-              <div className="space-y-4">
-                <div className="p-4 bg-white rounded-xl shadow-sm border border-outline-variant/20">
-                  <p className="text-body-md italic text-on-surface">"Community data suggests a 22% increase in engagement for events focused on 'Sustainable Polo' in the Kensington area this quarter."</p>
-                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-outline-variant/10">
-                    <span className="material-symbols-outlined text-[18px] text-secondary">groups</span>
-                    <span className="font-label-caps text-[10px] uppercase text-on-surface-variant">Voted by 124 Ambassadors</span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-white/50 rounded-xl border border-outline-variant/10">
-                    <span className="font-label-caps text-[10px] uppercase text-on-surface-variant opacity-60">Key Theme</span>
-                    <p className="font-headline-sm text-lg font-bold text-primary mt-1">Equestrian Ethics</p>
-                  </div>
-                  <div className="p-4 bg-white/50 rounded-xl border border-outline-variant/10">
-                    <span className="font-label-caps text-[10px] uppercase text-on-surface-variant opacity-60">Viral Factor</span>
-                    <p className="font-headline-sm text-lg font-bold text-primary mt-1">High (8.4/10)</p>
-                  </div>
-                </div>
-              </div>
-              <button className="mt-6 flex items-center gap-2 text-primary font-bold font-label-caps text-[10px] uppercase group-hover:text-secondary transition-colors">
-                Unlock Advanced Insights 
-                <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
-              </button>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                Localite community preferences indicate an 18% surge in affinity for acoustic salons and intimate dining over standard cocktail mixers this season.
+              </p>
             </div>
-            {/* Background Icon */}
-            <div className="absolute top-0 right-0 p-8 opacity-5">
-              <span className="material-symbols-outlined text-[120px]">psychology</span>
-            </div>
-          </section>
 
+            <div className="p-3.5 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] text-xs font-mono space-y-1">
+              <span className="text-[10px] uppercase text-[var(--fg-muted)] block">Recommended Concept</span>
+              <span className="text-[var(--fg)] font-medium block">Seasonal Table + Chamber Duo</span>
+            </div>
+
+            <button 
+              type="button" 
+              onClick={() => navigate('/events/create')}
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--accent)] hover:underline"
+            >
+              Draft Intimate Gathering
+              <ArrowRight size={14} />
+            </button>
+          </section>
         </div>
       </main>
     </div>

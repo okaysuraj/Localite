@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import SettingsLayout from '../../components/SettingsLayout';
 import { auth } from '../../firebase';
 import { API_URL } from '../../config';
+import { 
+  Bell, 
+  ChatCircle, 
+  MapPin, 
+  ShieldCheck, 
+  Envelope, 
+  CheckCircle,
+  FloppyDisk
+} from '@phosphor-icons/react';
 
 export default function NotificationSettingsPage() {
   const [pushInvitations, setPushInvitations] = useState(true);
@@ -10,6 +19,8 @@ export default function NotificationSettingsPage() {
   const [safetyAlerts, setSafetyAlerts] = useState(true);
   const [emailDigest, setEmailDigest] = useState('weekly');
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -38,6 +49,8 @@ export default function NotificationSettingsPage() {
   };
 
   const handleSave = async () => {
+    setSaving(true);
+    setSavedSuccess(false);
     try {
       const token = await auth.currentUser?.getIdToken();
       if (!token) return;
@@ -59,161 +72,203 @@ export default function NotificationSettingsPage() {
       });
       
       if (res.ok) {
-        alert("Notification preferences saved successfully!");
+        setSavedSuccess(true);
+        setTimeout(() => setSavedSuccess(false), 3000);
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
     <SettingsLayout>
-      <div className="space-y-stack-lg animate-fade-in pb-12">
+      <div className="space-y-8 animate-fade-in pb-12">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border)] pb-8">
           <div>
-            <span className="font-label-caps text-label-caps text-secondary uppercase tracking-[0.2em] mb-2 block">Personalization</span>
-            <h2 className="font-display-lg text-[32px] md:text-display-lg text-primary">Notification Settings</h2>
-            <p className="font-body-lg text-on-surface-variant mt-2 max-w-xl">Curate your communication preferences to maintain an undisturbed and premium social experience.</p>
+            <span className="text-[11px] font-semibold text-[var(--accent)] uppercase tracking-wider mb-2 block">
+              Preferences & Delivery
+            </span>
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[var(--fg)]">
+              Notification Settings
+            </h1>
+            <p className="text-sm text-[var(--fg-muted)] mt-1 max-w-xl">
+              Curate notifications across invitations, direct messaging, and periodic community digests.
+            </p>
           </div>
-          <div className="flex gap-3 shrink-0">
-            <button className="px-6 py-3 border border-secondary text-secondary font-label-caps text-label-caps rounded-xl hover:bg-secondary hover:text-white transition-all">DISCARD</button>
-            <button className="px-6 py-3 bg-primary text-white font-label-caps text-label-caps rounded-xl shadow-md active:scale-95 transition-all" onClick={handleSave}>SAVE PREFERENCES</button>
+          <div className="flex items-center gap-3 shrink-0">
+            {savedSuccess && (
+              <span className="text-xs font-medium text-emerald-600 flex items-center gap-1.5 animate-fade-in">
+                <CheckCircle size={16} weight="fill" /> Saved
+              </span>
+            )}
+            <button 
+              onClick={fetchSettings}
+              className="px-4 py-2.5 border border-[var(--border)] text-[var(--fg)] text-xs font-semibold uppercase tracking-wider rounded-card hover:bg-[var(--bg-subtle)] transition-colors"
+            >
+              Reset
+            </button>
+            <button 
+              onClick={handleSave}
+              disabled={saving}
+              className="px-5 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white text-xs font-semibold uppercase tracking-wider rounded-card shadow-sm active:scale-95 transition-all flex items-center gap-2"
+            >
+              <FloppyDisk size={16} weight="bold" />
+              {saving ? 'Saving...' : 'Save Preferences'}
+            </button>
           </div>
         </div>
 
-        {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* Category: Push Notifications */}
-          <section className="col-span-1 lg:col-span-8 bg-surface-container-lowest rounded-xl p-8 border border-surface-variant/50 shadow-sm flex flex-col gap-6">
-            <div className="flex items-center gap-3 border-b border-surface-variant/50 pb-4">
-              <span className="material-symbols-outlined text-secondary">notifications_active</span>
-              <h3 className="font-headline-sm text-headline-sm text-primary">Push Notifications</h3>
+          {/* Push Notifications Section */}
+          <section className="col-span-1 lg:col-span-8 bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)] flex flex-col gap-6">
+            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
+              <span className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                <Bell size={18} weight="fill" />
+              </span>
+              <div>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Push Notifications</h3>
+                <p className="text-xs text-[var(--fg-muted)]">Delivered in real-time to your mobile and desktop devices.</p>
+              </div>
             </div>
+
             <div className="space-y-4">
-              
-              {/* Setting Item */}
-              <div className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-transparent hover:border-secondary-fixed-dim transition-all group">
-                <div className="flex gap-4 items-center">
-                  <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-sm">
-                    <span className="material-symbols-outlined">celebration</span>
+              {/* Invitations */}
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div className="flex gap-3.5 items-center">
+                  <div className="w-9 h-9 rounded-card bg-[var(--bg)] border border-[var(--border)] flex items-center justify-center text-[var(--fg)]">
+                    <Envelope size={18} />
                   </div>
                   <div>
-                    <h4 className="font-body-md font-bold text-primary">New Invitations</h4>
-                    <p className="text-sm text-on-surface-variant">Instant alerts for exclusive events and private gatherings.</p>
+                    <h4 className="text-sm font-semibold text-[var(--fg)]">Invitations & RSVPs</h4>
+                    <p className="text-xs text-[var(--fg-muted)]">Instant alerts for gathering invites and status changes.</p>
                   </div>
                 </div>
                 <button 
-                  className={`w-12 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${pushInvitations ? 'bg-primary' : 'bg-surface-variant'}`}
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${pushInvitations ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setPushInvitations(!pushInvitations)}
+                  aria-label="Toggle invitations notification"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${pushInvitations ? 'translate-x-6 bg-secondary-fixed-dim' : 'translate-x-0'}`}></div>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${pushInvitations ? 'translate-x-5' : 'translate-x-0'}`}></div>
                 </button>
               </div>
 
-              {/* Setting Item */}
-              <div className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-transparent hover:border-secondary-fixed-dim transition-all group">
-                <div className="flex gap-4 items-center">
-                  <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-sm">
-                    <span className="material-symbols-outlined">forum</span>
+              {/* Messages */}
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div className="flex gap-3.5 items-center">
+                  <div className="w-9 h-9 rounded-card bg-[var(--bg)] border border-[var(--border)] flex items-center justify-center text-[var(--fg)]">
+                    <ChatCircle size={18} />
                   </div>
                   <div>
-                    <h4 className="font-body-md font-bold text-primary">Messages</h4>
-                    <p className="text-sm text-on-surface-variant">Real-time chat updates from your local connections.</p>
+                    <h4 className="text-sm font-semibold text-[var(--fg)]">Direct Messages & Groups</h4>
+                    <p className="text-xs text-[var(--fg-muted)]">Activity updates from private chats and event rooms.</p>
                   </div>
                 </div>
                 <button 
-                  className={`w-12 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${pushMessages ? 'bg-primary' : 'bg-surface-variant'}`}
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${pushMessages ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setPushMessages(!pushMessages)}
+                  aria-label="Toggle messages notification"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${pushMessages ? 'translate-x-6 bg-secondary-fixed-dim' : 'translate-x-0'}`}></div>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${pushMessages ? 'translate-x-5' : 'translate-x-0'}`}></div>
                 </button>
               </div>
 
-              {/* Setting Item */}
-              <div className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-transparent hover:border-secondary-fixed-dim transition-all group">
-                <div className="flex gap-4 items-center">
-                  <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-sm">
-                    <span className="material-symbols-outlined">near_me</span>
+              {/* Location Proximity */}
+              <div className="flex items-center justify-between p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)]">
+                <div className="flex gap-3.5 items-center">
+                  <div className="w-9 h-9 rounded-card bg-[var(--bg)] border border-[var(--border)] flex items-center justify-center text-[var(--fg)]">
+                    <MapPin size={18} />
                   </div>
                   <div>
-                    <h4 className="font-body-md font-bold text-primary">Location Proximity</h4>
-                    <p className="text-sm text-on-surface-variant">Discover hidden gems and elite events nearby as you move.</p>
+                    <h4 className="text-sm font-semibold text-[var(--fg)]">Location Proximity</h4>
+                    <p className="text-xs text-[var(--fg-muted)]">Nearby sports sessions, matches, and salons as you explore.</p>
                   </div>
                 </div>
                 <button 
-                  className={`w-12 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${pushLocation ? 'bg-primary' : 'bg-surface-variant'}`}
+                  className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${pushLocation ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                   onClick={() => setPushLocation(!pushLocation)}
+                  aria-label="Toggle location notification"
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${pushLocation ? 'translate-x-6 bg-secondary-fixed-dim' : 'translate-x-0'}`}></div>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${pushLocation ? 'translate-x-5' : 'translate-x-0'}`}></div>
                 </button>
               </div>
             </div>
           </section>
 
-          {/* Category: Privacy Settings */}
-          <section className="col-span-1 lg:col-span-4 bg-primary text-white rounded-xl p-8 shadow-lg flex flex-col gap-6 relative overflow-hidden">
-             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary opacity-10 rounded-bl-full"></div>
-            <div className="relative z-10 flex items-center gap-3 border-b border-white/20 pb-4">
-              <span className="material-symbols-outlined text-secondary-fixed-dim">shield</span>
-              <h3 className="font-headline-sm text-headline-sm text-white">Privacy</h3>
-            </div>
-            
-            <div className="relative z-10 space-y-8 mt-2">
-              <div className="space-y-6">
-                <div className="flex justify-between items-start">
-                  <div className="pr-4">
-                    <h4 className="font-label-caps text-label-caps text-secondary-fixed-dim uppercase tracking-wider mb-1">Safety Alerts</h4>
-                    <p className="text-sm text-primary-fixed-dim opacity-80">Critical updates regarding account security and local safety protocols.</p>
+          {/* Privacy & Safety Alerts Section */}
+          <section className="col-span-1 lg:col-span-4 bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4 mb-5">
+                <span className="w-8 h-8 rounded-card bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center">
+                  <ShieldCheck size={18} weight="fill" />
+                </span>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Safety Critical</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-start gap-3">
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--fg)] mb-1">Safety Advisories</h4>
+                    <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                      Critical notices regarding local emergency alerts and account integrity.
+                    </p>
                   </div>
                   <button 
-                    className={`w-10 h-5 mt-1 rounded-full p-[2px] transition-colors duration-200 shrink-0 ${safetyAlerts ? 'bg-secondary-fixed-dim' : 'bg-on-primary-container'}`}
+                    className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 shrink-0 ${safetyAlerts ? 'bg-[var(--accent)]' : 'bg-neutral-300'}`}
                     onClick={() => setSafetyAlerts(!safetyAlerts)}
+                    aria-label="Toggle safety alerts"
                   >
-                    <div className={`w-4 h-4 bg-primary rounded-full shadow-sm transform transition-transform duration-200 ${safetyAlerts ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow-sm transform transition-transform duration-200 ${safetyAlerts ? 'translate-x-5' : 'translate-x-0'}`}></div>
                   </button>
                 </div>
               </div>
-              
-              <div className="p-4 bg-primary-container rounded-xl border border-white/10">
-                <div className="flex gap-3 mb-3">
-                  <span className="material-symbols-outlined text-secondary-fixed-dim">verified_user</span>
-                  <span className="font-label-caps text-label-caps text-white uppercase">Vault Status</span>
-                </div>
-                <p className="text-xs text-on-primary-container leading-relaxed">
-                  Your data is encrypted using military-grade standards. We never share your location history with third-party partners.
-                </p>
-              </div>
+            </div>
+
+            <div className="p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] mt-6">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--accent)] block mb-1">
+                Zero Marketing Noise
+              </span>
+              <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                Localite operates under strict notification etiquette. We do not transmit promotional push notifications.
+              </p>
             </div>
           </section>
 
-          {/* Category: Email Digests */}
-          <section className="col-span-1 lg:col-span-12 bg-surface-container-low rounded-xl p-8 border border-surface-variant/30 flex flex-col md:flex-row gap-8 items-center shadow-sm">
-            <div className="md:w-1/3">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="material-symbols-outlined text-secondary">mail_outline</span>
-                <h3 className="font-headline-sm text-headline-sm text-primary">Email Digests</h3>
+          {/* Email Digest Section */}
+          <section className="col-span-1 lg:col-span-12 bg-[var(--bg)] rounded-card p-6 md:p-8 border border-[var(--border)]">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+              <div>
+                <h3 className="text-base font-semibold text-[var(--fg)]">Email Digest Cadence</h3>
+                <p className="text-xs text-[var(--fg-muted)]">Periodic editorial summaries of matches, gatherings, and community leaders.</p>
               </div>
-              <p className="text-on-surface-variant font-body-md">Refined summaries of your weekly social calendar and neighborhood highlights.</p>
             </div>
-            
-            <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-              {['weekly', 'monthly', 'off'].map((freq) => (
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { id: 'weekly', title: 'Weekly Brief', desc: 'Weekend outlook and newly scheduled events in your city.' },
+                { id: 'monthly', title: 'Monthly Summary', desc: 'Executive recap of your attendance, prestige progress, and network.' },
+                { id: 'off', title: 'Completely Off', desc: 'Receive only transaction receipts and critical account security notices.' }
+              ].map((item) => (
                 <div 
-                  key={freq}
-                  onClick={() => setEmailDigest(freq)}
-                  className={`p-6 rounded-xl border-2 cursor-pointer transition-all text-center ${
-                    emailDigest === freq 
-                      ? 'border-secondary bg-surface-container-lowest' 
-                      : 'border-transparent bg-surface-container-lowest hover:border-secondary/30'
+                  key={item.id}
+                  onClick={() => setEmailDigest(item.id)}
+                  className={`p-5 rounded-card border cursor-pointer transition-all ${
+                    emailDigest === item.id 
+                      ? 'border-[var(--accent)] bg-[var(--accent)]/5' 
+                      : 'border-[var(--border)] bg-[var(--bg-subtle)] hover:border-[var(--fg-muted)]'
                   }`}
                 >
-                  <span className="font-label-caps text-label-caps uppercase block mb-1 opacity-60 text-on-surface-variant">Frequency</span>
-                  <span className="font-headline-sm text-headline-sm block text-primary capitalize">{freq}</span>
-                  <p className="text-xs text-on-surface-variant mt-2">
-                    {freq === 'weekly' ? 'The weekend outlook' : freq === 'monthly' ? 'Executive summary' : 'Minimalist approach'}
-                  </p>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-xs font-semibold text-[var(--fg)]">{item.title}</span>
+                    <span className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${emailDigest === item.id ? 'border-[var(--accent)]' : 'border-[var(--border)]'}`}>
+                      {emailDigest === item.id && <span className="w-2 h-2 rounded-full bg-[var(--accent)]"></span>}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[var(--fg-muted)] leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>

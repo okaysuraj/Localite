@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart, Users, AlertTriangle, ShieldBan, Trash2 } from 'lucide-react';
-import { auth } from '../../firebase';
-import { getAuthHeaders } from '../../services/api';
+import {
+  Users,
+  CalendarBlank,
+  Warning,
+  ShieldSlash,
+  Prohibit,
+} from '@phosphor-icons/react';
+import { getAdminAnalytics, getAdminReports, banUser } from '../../services/api';
 
 export default function AdminDashboard() {
-  const [analytics, setAnalytics] = useState({ totalUsers: 0, totalEvents: 0, pendingReports: 0 });
+  const [analytics, setAnalytics] = useState({
+    totalUsers: 0,
+    totalEvents: 0,
+    pendingReports: 0,
+  });
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,15 +23,13 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      const headers = await getAuthHeaders();
-
-      const [analyticsRes, reportsRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_URL}/admin/analytics`, { headers }),
-        fetch(`${import.meta.env.VITE_API_URL}/admin/reports`, { headers })
+      const [stats, reportList] = await Promise.all([
+        getAdminAnalytics(),
+        getAdminReports(),
       ]);
 
-      if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
-      if (reportsRes.ok) setReports(await reportsRes.json());
+      if (stats) setAnalytics(stats);
+      if (Array.isArray(reportList)) setReports(reportList);
     } catch (err) {
       console.error(err);
     } finally {
@@ -31,17 +38,11 @@ export default function AdminDashboard() {
   };
 
   const handleBanUser = async (userId) => {
-    if (window.confirm("Are you sure you want to ban this user?")) {
+    if (window.confirm('Are you sure you want to suspend this user?')) {
       try {
-        const headers = await getAuthHeaders();
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/users/${userId}/ban`, {
-          method: 'POST',
-          headers
-        });
-        if (res.ok) {
-          alert("User banned successfully.");
-          fetchData(); // Refresh data
-        }
+        await banUser(userId);
+        alert('User account has been suspended.');
+        fetchData();
       } catch (err) {
         console.error(err);
       }
@@ -49,81 +50,109 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background text-white p-8 pt-24 text-center">Loading Admin Dashboard...</div>;
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2 text-xs font-mono text-fg-muted uppercase tracking-wider">
+          <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          Loading admin console...
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-background text-white p-8 pt-24">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="font-headline-lg text-4xl uppercase tracking-tighter mb-8 glow-neon inline-block">Command Center</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-surface-dark border border-lime-vibe/30 p-6 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="font-label-mono text-text-muted text-xs uppercase tracking-widest mb-1">Total Users</p>
-              <h2 className="font-headline-lg text-4xl text-lime-vibe">{analytics.totalUsers}</h2>
+    <div className="min-h-screen bg-bg py-10 px-6">
+      <div className="max-w-content mx-auto space-y-8">
+        {/* Header */}
+        <div className="pb-6 border-b border-border">
+          <h1 className="text-3xl font-display font-semibold text-fg tracking-tight">
+            Platform Administration
+          </h1>
+          <p className="text-sm text-fg-muted mt-1">
+            System overview, community statistics, and trust & safety moderation.
+          </p>
+        </div>
+
+        {/* Top Metric Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white border border-border rounded-card p-5 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono text-fg-muted">
+              <span>Total Members</span>
+              <Users size={16} className="text-accent" />
             </div>
-            <Users size={48} className="text-lime-vibe/50" />
-          </div>
-          
-          <div className="bg-surface-dark border border-lime-vibe/30 p-6 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="font-label-mono text-text-muted text-xs uppercase tracking-widest mb-1">Total Events</p>
-              <h2 className="font-headline-lg text-4xl text-lime-vibe">{analytics.totalEvents}</h2>
-            </div>
-            <BarChart size={48} className="text-lime-vibe/50" />
+            <p className="text-3xl font-display font-semibold text-fg">
+              {analytics.totalUsers}
+            </p>
           </div>
 
-          <div className="bg-surface-dark border border-red-500/50 p-6 rounded-2xl flex items-center justify-between">
-            <div>
-              <p className="font-label-mono text-text-muted text-xs uppercase tracking-widest mb-1">Pending Reports</p>
-              <h2 className="font-headline-lg text-4xl text-red-500">{analytics.pendingReports}</h2>
+          <div className="bg-white border border-border rounded-card p-5 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono text-fg-muted">
+              <span>Total Gatherings</span>
+              <CalendarBlank size={16} className="text-accent" />
             </div>
-            <AlertTriangle size={48} className="text-red-500/50" />
+            <p className="text-3xl font-display font-semibold text-fg">
+              {analytics.totalEvents}
+            </p>
+          </div>
+
+          <div className="bg-white border border-border rounded-card p-5 space-y-2">
+            <div className="flex justify-between items-center text-xs font-mono text-fg-muted">
+              <span>Pending Reports</span>
+              <Warning size={16} className="text-error" />
+            </div>
+            <p className="text-3xl font-display font-semibold text-error">
+              {analytics.pendingReports}
+            </p>
           </div>
         </div>
 
-        <h2 className="font-headline-md text-2xl uppercase tracking-tighter mb-6 flex items-center gap-3">
-          <ShieldBan size={24} className="text-lime-vibe" /> Moderation Queue
-        </h2>
+        {/* Moderation Queue */}
+        <div className="bg-white border border-border rounded-card p-6 sm:p-8 space-y-5">
+          <div className="flex items-center gap-2">
+            <ShieldSlash size={18} className="text-fg-muted" />
+            <h2 className="text-lg font-display font-semibold text-fg tracking-tight">
+              Moderation & Safety Queue
+            </h2>
+          </div>
 
-        <div className="bg-surface-dark border border-surface-variant/50 rounded-2xl overflow-hidden">
           {reports.length === 0 ? (
-            <div className="p-8 text-center text-text-muted font-label-mono uppercase tracking-widest">
-              Queue is clean. No pending reports.
+            <div className="p-12 text-center text-fg-muted font-mono text-xs">
+              Queue is clear. No active member reports.
             </div>
           ) : (
-            <table className="w-full text-left text-sm text-text-muted font-body-sm">
-              <thead className="text-xs uppercase bg-surface-container font-label-mono tracking-widest">
-                <tr>
-                  <th className="px-6 py-4">Report ID</th>
-                  <th className="px-6 py-4">Type</th>
-                  <th className="px-6 py-4">Target ID</th>
-                  <th className="px-6 py-4">Reason</th>
-                  <th className="px-6 py-4">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reports.map((r) => (
-                  <tr key={r.id} className="border-b border-surface-variant/30 hover:bg-surface-container/50">
-                    <td className="px-6 py-4 font-mono">{r.id}</td>
-                    <td className="px-6 py-4 font-bold text-white">{r.targetType}</td>
-                    <td className="px-6 py-4 font-mono">{r.targetId}</td>
-                    <td className="px-6 py-4">{r.reason}</td>
-                    <td className="px-6 py-4">
-                      {r.targetType === 'USER' && (
-                        <button 
-                          onClick={() => handleBanUser(r.targetId)}
-                          className="px-4 py-2 bg-red-500/10 text-red-500 border border-red-500 hover:bg-red-500 hover:text-white transition-colors rounded-DEFAULT font-label-mono uppercase text-[10px] tracking-widest flex items-center gap-2"
-                        >
-                          <Trash2 size={12} /> Ban User
-                        </button>
-                      )}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs font-mono">
+                <thead>
+                  <tr className="border-b border-border text-fg-muted uppercase tracking-wider pb-2">
+                    <th className="pb-3 font-normal">Report ID</th>
+                    <th className="pb-3 font-normal">Entity Type</th>
+                    <th className="pb-3 font-normal">Target Reference</th>
+                    <th className="pb-3 font-normal">Report Reason</th>
+                    <th className="pb-3 font-normal text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {reports.map((r) => (
+                    <tr key={r.id} className="hover:bg-bg-subtle/50 transition-colors">
+                      <td className="py-3.5 text-fg-muted">{r.id}</td>
+                      <td className="py-3.5 text-fg font-medium">{r.targetType}</td>
+                      <td className="py-3.5 text-fg-muted">{r.targetId}</td>
+                      <td className="py-3.5 text-fg font-sans">{r.reason}</td>
+                      <td className="py-3.5 text-right">
+                        {r.targetType === 'USER' && (
+                          <button
+                            onClick={() => handleBanUser(r.targetId)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-error-subtle text-error border border-error/20 rounded-btn text-[11px] font-mono hover:bg-error hover:text-white transition-colors"
+                          >
+                            <Prohibit size={13} /> Suspend Member
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

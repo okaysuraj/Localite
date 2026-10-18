@@ -1,53 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { colors } from '../../theme';
 
 export default function LiveMatchScreen({ navigation }) {
   const [matchData, setMatchData] = useState({
     time: "74:22",
-    homeTeam: "Oxford United",
-    awayTeam: "Cambridge Blues",
+    homeTeam: "Kensington United",
+    awayTeam: "Belgravia Rovers",
     homeScore: 2,
     awayScore: 1,
     stats: {
-      possession: { home: 54, away: 46 },
-      shots: { home: 8, away: 3 },
-      corners: { home: 5, away: 2 },
-      fouls: { home: 12, away: 14 }
+      possession: { home: 58, away: 42 },
+      shots: { home: 12, away: 8 },
+      shotsOnTarget: { home: 7, away: 3 },
+      passAccuracy: { home: 89, away: 81 },
+      corners: { home: 6, away: 3 },
     },
     timeline: [
-      { id: 1, minute: 62, type: 'GOAL', team: 'HOME', player: 'Sebastian Sterling', extra: 'ASSIST: MARCUS VANCE' },
-      { id: 2, minute: 54, type: 'YELLOW_CARD', team: 'AWAY', player: 'Arthur Pendragon', extra: 'UNSPORTSMANLIKE CONDUCT' },
-      { id: 3, minute: 45, type: 'SUBSTITUTION', team: 'HOME', playerIn: 'Julian Knight', playerOut: 'Henry Thorne' },
-      { id: 4, minute: 45, type: 'HALF_TIME', team: null, player: 'End of First Half' }
+      { id: 1, minute: 68, type: 'GOAL', team: 'HOME', player: 'Sebastian Sterling', extra: 'ASSIST: MARCUS CHEN' },
+      { id: 2, minute: 54, type: 'YELLOW_CARD', team: 'AWAY', player: 'Julian Knight', extra: 'TACTICAL FOUL' },
+      { id: 3, minute: 45, type: 'SUBSTITUTION', team: 'HOME', playerIn: 'David Park', playerOut: 'Alex Wong' },
+      { id: 4, minute: 32, type: 'GOAL', team: 'AWAY', player: 'Sophia Valente', extra: 'HEADER FROM CORNER' },
+      { id: 5, minute: 18, type: 'GOAL', team: 'HOME', player: 'Sebastian Sterling', extra: 'PENALTY' }
     ]
   });
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setMatchData((prev) => {
+        let [mins, secs] = prev.time.split(':').map(Number);
+        secs++;
+        if (secs >= 60) {
+          mins++;
+          secs = 0;
+        }
+        return {
+          ...prev,
+          time: `${mins}:${String(secs).padStart(2, '0')}`
+        };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <MaterialIcons name="arrow-back" size={24} color="#000000" />
+          <MaterialIcons name="arrow-back" size={24} color="#1A1A1A" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Royal Sports</Text>
-        <TouchableOpacity style={styles.backButton}>
-          <MaterialIcons name="notifications" size={24} color="#000000" />
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Live Match Tracker</Text>
+        <View style={{ width: 24 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Scoreboard */}
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Scoreboard Card */}
         <View style={styles.scoreboard}>
           <View style={styles.liveBadge}>
             <View style={styles.liveDot} />
             <Text style={styles.liveText}>LIVE • 2ND HALF</Text>
           </View>
-          <Text style={styles.leagueText}>The Championship Finals</Text>
+          <Text style={styles.leagueText}>Community Football Championship</Text>
 
           <View style={styles.teamsRow}>
             <View style={styles.teamInfo}>
               <View style={styles.teamLogo}>
-                <MaterialIcons name="shield" size={32} color="#000000" />
+                <MaterialIcons name="shield" size={28} color={colors.accent} />
               </View>
               <Text style={styles.teamName}>{matchData.homeTeam}</Text>
               <Text style={styles.teamRole}>HOME</Text>
@@ -62,7 +83,7 @@ export default function LiveMatchScreen({ navigation }) {
 
             <View style={styles.teamInfo}>
               <View style={styles.teamLogo}>
-                <MaterialIcons name="adjust" size={32} color="#000000" />
+                <MaterialIcons name="shield" size={28} color="#4B5563" />
               </View>
               <Text style={styles.teamName}>{matchData.awayTeam}</Text>
               <Text style={styles.teamRole}>AWAY</Text>
@@ -70,82 +91,80 @@ export default function LiveMatchScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Stats */}
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>POSSESSION</Text>
-            <Text style={styles.statValue}>{matchData.stats.possession.home}% - {matchData.stats.possession.away}%</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>SHOTS</Text>
-            <Text style={styles.statValue}>{matchData.stats.shots.home} - {matchData.stats.shots.away}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>CORNERS</Text>
-            <Text style={styles.statValue}>{matchData.stats.corners.home} - {matchData.stats.corners.away}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>FOULS</Text>
-            <Text style={styles.statValue}>{matchData.stats.fouls.home} - {matchData.stats.fouls.away}</Text>
-          </View>
-        </View>
-
-        {/* Timeline */}
-        <View style={styles.timelineSection}>
-          <Text style={styles.sectionTitle}>Live Timeline</Text>
+        {/* Match Statistics */}
+        <View style={styles.statsCard}>
+          <Text style={styles.sectionTitle}>MATCH STATISTICS</Text>
           
-          <View style={styles.timeline}>
-            <View style={styles.timelineLine} />
-            
-            {matchData.timeline.map((event, index) => (
-              <View key={event.id} style={styles.timelineEvent}>
-                <View style={[
-                  styles.eventIconContainer, 
-                  event.type === 'GOAL' ? {backgroundColor: '#000000'} : 
-                  event.type === 'YELLOW_CARD' ? {backgroundColor: '#FFD700'} : 
-                  event.type === 'SUBSTITUTION' ? {backgroundColor: '#efeded'} :
-                  {backgroundColor: '#e4e2e2'}
-                ]}>
-                  <MaterialIcons 
-                    name={
-                      event.type === 'GOAL' ? 'sports-soccer' : 
-                      event.type === 'YELLOW_CARD' ? 'style' : 
-                      event.type === 'SUBSTITUTION' ? 'sync' : 'timer'
-                    } 
-                    size={16} 
-                    color={event.type === 'GOAL' || event.type === 'HALF_TIME' ? '#ffffff' : '#000000'} 
-                  />
-                </View>
+          {/* Possession Bar */}
+          <View style={styles.statRow}>
+            <View style={styles.statHeader}>
+              <Text style={styles.statValLeft}>{matchData.stats.possession.home}%</Text>
+              <Text style={styles.statLabel}>Ball Possession</Text>
+              <Text style={styles.statValRight}>{matchData.stats.possession.away}%</Text>
+            </View>
+            <View style={styles.statBarTrack}>
+              <View style={[styles.statBarFill, { width: `${matchData.stats.possession.home}%`, backgroundColor: colors.accent }]} />
+              <View style={[styles.statBarFill, { width: `${matchData.stats.possession.away}%`, backgroundColor: '#9CA3AF' }]} />
+            </View>
+          </View>
 
-                <View style={styles.eventCard}>
-                  <View style={styles.eventHeader}>
-                    <Text style={styles.eventMinute}>{event.minute}' {event.type.replace('_', ' ')}</Text>
-                    {event.team && <Text style={styles.eventTeam}>{event.team}</Text>}
-                  </View>
-                  
-                  {event.type === 'SUBSTITUTION' ? (
-                    <View>
-                      <View style={{flexDirection: 'row', alignItems: 'center', gap: 4}}>
-                        <MaterialIcons name="arrow-downward" size={12} color="#ba1a1a" />
-                        <Text style={styles.eventPlayerSub}>{event.playerOut}</Text>
-                      </View>
-                      <View style={{flexDirection: 'row', alignItems: 'center', gap: 4}}>
-                        <MaterialIcons name="arrow-upward" size={12} color="#775a19" />
-                        <Text style={styles.eventPlayer}>{event.playerIn}</Text>
-                      </View>
-                    </View>
-                  ) : (
-                    <View>
-                      <Text style={styles.eventPlayer}>{event.player}</Text>
-                      {event.extra && <Text style={styles.eventExtra}>{event.extra}</Text>}
-                    </View>
-                  )}
-                </View>
-              </View>
-            ))}
+          {/* Shots */}
+          <View style={styles.statRow}>
+            <View style={styles.statHeader}>
+              <Text style={styles.statValLeft}>{matchData.stats.shots.home}</Text>
+              <Text style={styles.statLabel}>Total Shots</Text>
+              <Text style={styles.statValRight}>{matchData.stats.shots.away}</Text>
+            </View>
+            <View style={styles.statBarTrack}>
+              <View style={[styles.statBarFill, { width: `${(matchData.stats.shots.home / 20) * 100}%`, backgroundColor: colors.accent }]} />
+            </View>
+          </View>
+
+          {/* Pass Accuracy */}
+          <View style={styles.statRow}>
+            <View style={styles.statHeader}>
+              <Text style={styles.statValLeft}>{matchData.stats.passAccuracy.home}%</Text>
+              <Text style={styles.statLabel}>Pass Accuracy</Text>
+              <Text style={styles.statValRight}>{matchData.stats.passAccuracy.away}%</Text>
+            </View>
+            <View style={styles.statBarTrack}>
+              <View style={[styles.statBarFill, { width: `${matchData.stats.passAccuracy.home}%`, backgroundColor: colors.accent }]} />
+              <View style={[styles.statBarFill, { width: `${matchData.stats.passAccuracy.away}%`, backgroundColor: '#9CA3AF' }]} />
+            </View>
+          </View>
+
+          {/* Corners */}
+          <View style={styles.statRow}>
+            <View style={styles.statHeader}>
+              <Text style={styles.statValLeft}>{matchData.stats.corners.home}</Text>
+              <Text style={styles.statLabel}>Corners</Text>
+              <Text style={styles.statValRight}>{matchData.stats.corners.away}</Text>
+            </View>
           </View>
         </View>
 
+        {/* Live Timeline */}
+        <View style={styles.timelineCard}>
+          <Text style={styles.sectionTitle}>EVENT TIMELINE</Text>
+          {matchData.timeline.map((event) => (
+            <View key={event.id} style={styles.timelineItem}>
+              <View style={styles.minuteBadge}>
+                <Text style={styles.minuteText}>{event.minute}'</Text>
+              </View>
+              <View style={styles.timelineDetail}>
+                <View style={styles.timelineHeader}>
+                  <Text style={styles.timelinePlayer}>{event.player}</Text>
+                  <Text style={[styles.timelineType, event.type === 'GOAL' ? { color: colors.accent } : { color: '#E67E22' }]}>
+                    {event.type}
+                  </Text>
+                </View>
+                {event.extra ? (
+                  <Text style={styles.timelineExtra}>{event.extra}</Text>
+                ) : null}
+              </View>
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -154,72 +173,66 @@ export default function LiveMatchScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fbf9f8',
+    backgroundColor: '#F7F6F3',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 16,
-    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'ios' ? 56 : 36,
+    paddingBottom: 14,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(197, 198, 205, 0.3)',
+    borderBottomColor: '#E8E8E8',
   },
   backButton: {
-    padding: 4,
+    padding: 6,
   },
   headerTitle: {
-    fontFamily: 'PlayfairDisplay-Bold',
-    fontSize: 20,
-    color: '#000000',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
   content: {
-    padding: 24,
-    paddingBottom: 100,
+    padding: 18,
+    paddingBottom: 36,
   },
   scoreboard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#0a192f',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.05,
-    shadowRadius: 16,
-    elevation: 2,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(197, 198, 205, 0.3)',
-    marginBottom: 24,
+    borderColor: '#E8E8E8',
+    padding: 20,
     alignItems: 'center',
+    marginBottom: 16,
   },
   liveBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(254, 212, 136, 0.3)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    gap: 6,
+    backgroundColor: '#EDF5F0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
     marginBottom: 8,
   },
   liveDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#ba1a1a',
-    marginRight: 8,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.accent,
   },
   liveText: {
-    fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 10,
-    color: '#775a19',
-    letterSpacing: 1.2,
+    fontWeight: '700',
+    color: colors.accent,
+    letterSpacing: 0.5,
   },
   leagueText: {
-    fontFamily: 'PlusJakartaSans-Regular',
-    fontSize: 14,
-    color: '#44474d',
-    marginBottom: 24,
+    fontSize: 11,
+    color: '#6B6B6B',
+    marginBottom: 18,
   },
   teamsRow: {
     flexDirection: 'row',
@@ -232,160 +245,140 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   teamLogo: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#f5f3f3',
-    justifyContent: 'center',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F7F6F3',
     alignItems: 'center',
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#c5c6cd',
+    justifyContent: 'center',
+    marginBottom: 8,
   },
   teamName: {
-    fontFamily: 'PlayfairDisplay-Bold',
-    fontSize: 16,
-    color: '#000000',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1A1A1A',
     textAlign: 'center',
-    marginBottom: 4,
   },
   teamRole: {
-    fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 10,
-    color: '#44474d',
+    color: '#6B6B6B',
+    marginTop: 2,
   },
   scoreInfo: {
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
   scoreText: {
-    fontFamily: 'PlayfairDisplay-Bold',
     fontSize: 32,
-    color: '#000000',
-    marginBottom: 8,
+    fontWeight: '800',
+    color: '#1A1A1A',
   },
   timerBadge: {
-    backgroundColor: 'rgba(255, 222, 165, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 8,
+    backgroundColor: '#F7F6F3',
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 6,
+    marginTop: 6,
   },
   timerText: {
-    fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 12,
-    color: '#775a19',
-    letterSpacing: 1.2,
+    fontWeight: '700',
+    color: colors.accent,
+    fontVariant: ['tabular-nums'],
   },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    marginBottom: 32,
-  },
-  statCard: {
-    width: '47%',
-    backgroundColor: '#ffffff',
+  statsCard: {
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    shadowColor: '#0a192f',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 1,
     borderWidth: 1,
-    borderColor: 'rgba(197, 198, 205, 0.3)',
-  },
-  statLabel: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 10,
-    color: '#44474d',
-    marginBottom: 4,
-  },
-  statValue: {
-    fontFamily: 'PlayfairDisplay-Bold',
-    fontSize: 18,
-    color: '#000000',
-  },
-  timelineSection: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontFamily: 'PlayfairDisplay-Bold',
-    fontSize: 20,
-    color: '#000000',
+    borderColor: '#E8E8E8',
+    padding: 16,
     marginBottom: 16,
   },
-  timeline: {
-    paddingLeft: 16,
+  sectionTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#6B6B6B',
+    letterSpacing: 0.8,
+    marginBottom: 16,
   },
-  timelineLine: {
-    position: 'absolute',
-    left: 31,
-    top: 0,
-    bottom: 0,
-    width: 2,
-    backgroundColor: '#c5c6cd',
+  statRow: {
+    marginBottom: 14,
   },
-  timelineEvent: {
-    flexDirection: 'row',
-    marginBottom: 24,
-    position: 'relative',
-  },
-  eventIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-    borderWidth: 4,
-    borderColor: '#fbf9f8',
-    zIndex: 1,
-  },
-  eventCard: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#0a192f',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 1,
-    borderWidth: 1,
-    borderColor: 'rgba(197, 198, 205, 0.3)',
-  },
-  eventHeader: {
+  statHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 4,
+    marginBottom: 6,
   },
-  eventMinute: {
-    fontFamily: 'PlusJakartaSans-Bold',
+  statValLeft: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  statLabel: {
+    fontSize: 11,
+    color: '#6B6B6B',
+  },
+  statValRight: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  statBarTrack: {
+    height: 6,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 3,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  statBarFill: {
+    height: '100%',
+  },
+  timelineCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    padding: 16,
+  },
+  timelineItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F7F6F3',
+  },
+  minuteBadge: {
+    backgroundColor: '#F7F6F3',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  minuteText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  timelineDetail: {
+    flex: 1,
+  },
+  timelineHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  timelinePlayer: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  timelineType: {
     fontSize: 10,
-    color: '#775a19',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
-  eventTeam: {
-    fontFamily: 'PlusJakartaSans-Bold',
+  timelineExtra: {
     fontSize: 10,
-    color: '#44474d',
+    color: '#6B6B6B',
+    marginTop: 2,
   },
-  eventPlayer: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 14,
-    color: '#000000',
-  },
-  eventPlayerSub: {
-    fontFamily: 'PlusJakartaSans-Regular',
-    fontSize: 14,
-    color: '#44474d',
-    textDecorationLine: 'line-through',
-  },
-  eventExtra: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 10,
-    color: '#75777e',
-    marginTop: 4,
-  }
 });

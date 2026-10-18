@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,6 +8,12 @@ export default function PanicButton() {
   const [showModal, setShowModal] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [timer, setTimer] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [timer]);
 
   const handlePanicPress = () => {
     setShowModal(true);

@@ -20,11 +20,13 @@ public class MonetizationController {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final StripePaymentService stripePaymentService;
+    private final com.localite.backend.repository.RsvpRepository rsvpRepository;
 
-    public MonetizationController(UserRepository userRepository, EventRepository eventRepository, StripePaymentService stripePaymentService) {
+    public MonetizationController(UserRepository userRepository, EventRepository eventRepository, StripePaymentService stripePaymentService, com.localite.backend.repository.RsvpRepository rsvpRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.stripePaymentService = stripePaymentService;
+        this.rsvpRepository = rsvpRepository;
     }
 
     @PostMapping("/boost-profile")
@@ -62,9 +64,14 @@ public class MonetizationController {
     public ResponseEntity<?> buyTicket(@PathVariable Long eventId, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).body("Unauthorized");
         
+        Optional<User> userOpt = userRepository.findByFirebaseUid(principal.getName());
+        if (!userOpt.isPresent()) return ResponseEntity.status(401).body("User not found");
+
         Optional<Event> eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
+            User user = userOpt.get();
+
             double amount = event.getCost() != null ? event.getCost() : 0.0;
             if (amount > 0) {
                 boolean success = stripePaymentService.processPayment(amount, "USD", "tok_visa");
@@ -72,9 +79,25 @@ public class MonetizationController {
                     return ResponseEntity.badRequest().body("Payment failed");
                 }
             }
-            // Mock ticket purchase logic. Usually we'd create a ticket record here.
-            // But ticket logic is mostly handled in EventController via RSVP. We can just return success.
-            return ResponseEntity.ok("Ticket purchased successfully!");
+
+            Optional<com.localite.backend.model.Rsvp> existingRsvp = rsvpRepository.findByEventIdAndUserId(eventId, user.getId());
+            com.localite.backend.model.Rsvp rsvp;
+            if (existingRsvp.isPresent()) {
+                rsvp = existingRsvp.get();
+                rsvp.setStatus(com.localite.backend.model.RsvpStatus.GOING);
+            } else {
+                rsvp = new com.localite.backend.model.Rsvp(event, user, com.localite.backend.model.RsvpStatus.GOING);
+                event.setAttendees(event.getAttendees() + 1);
+                eventRepository.save(event);
+            }
+
+            rsvpRepository.save(rsvp);
+
+            return ResponseEntity.ok(java.util.Map.of(
+                "message", "Ticket purchased successfully!",
+                "ticketId", rsvp.getTicketId(),
+                "status", rsvp.getStatus().toString()
+            ));
         }
         return ResponseEntity.notFound().build();
     }

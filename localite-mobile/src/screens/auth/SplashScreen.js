@@ -9,6 +9,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../firebase';
+import { useAuth } from '../../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
@@ -16,6 +17,7 @@ export default function SplashScreen({ navigation }) {
   const fadeAnim = new Animated.Value(0);
   const scaleAnim = new Animated.Value(0.98);
   const progressAnim = new Animated.Value(0);
+  const { user } = useAuth();
 
   useEffect(() => {
     // Start animations
@@ -32,25 +34,22 @@ export default function SplashScreen({ navigation }) {
       }),
       Animated.timing(progressAnim, {
         toValue: width * 0.4, // progress bar width
-        duration: 2500,
+        duration: 2000,
         useNativeDriver: false,
       })
     ]).start();
 
     // Check auth and navigate
     const checkAuth = async () => {
-      // Simulate splash delay
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      
-      const userToken = await AsyncStorage.getItem('userToken');
-      // If Firebase auth is active and token exists, go to MainApp, else WelcomeCarousel or Login
-      // For now, let's route to WelcomeCarousel to show the flow, or Login if they skip.
-      // Usually, if there's no token, we go to Login or Welcome. Let's assume Welcome if first time, but we don't have that flag yet.
-      // Let's route to 'Login' for now. We will add WelcomeCarousel later if needed.
-      if (userToken && auth.currentUser) {
-        navigation.replace('MainApp');
-      } else {
-        // Let's route to WelcomeCarousel since it's part of the flow. We will build it next.
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2200));
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken || user || auth.currentUser) {
+          navigation.replace('MainApp');
+        } else {
+          navigation.replace('WelcomeCarousel');
+        }
+      } catch (err) {
         navigation.replace('WelcomeCarousel');
       }
     };

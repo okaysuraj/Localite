@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  ShieldCheck, 
+  Warning, 
+  ArrowLeft, 
+  CheckCircle, 
+  CalendarBlank, 
+  User 
+} from '@phosphor-icons/react';
 
 export default function ReportEventPage() {
   const navigate = useNavigate();
@@ -11,210 +19,143 @@ export default function ReportEventPage() {
     e.preventDefault();
     setSubmitted(true);
     setTimeout(() => {
-      navigate('/dashboard'); // Go back to where it makes sense
-    }, 2000);
+      navigate('/events');
+    }, 1800);
   };
 
+  const reportReasons = [
+    { id: 'misleading', title: 'Misleading Information', desc: 'Inaccurate date, venue, or false host claims.' },
+    { id: 'safety', title: 'Safety Concerns', desc: 'Hazardous venue conditions or violation of physical safety.' },
+    { id: 'inappropriate', title: 'Code of Conduct Violation', desc: 'Discriminatory language or prohibited activity.' },
+    { id: 'spam', title: 'Spam or Commercial Solicitation', desc: 'Unauthorized promotional spam or scam activity.' },
+  ];
+
   return (
-    <div className="bg-[#fbf9f8] text-[#1b1c1c] font-body-md min-h-screen flex flex-col selection:bg-[#fed488]">
-      
-      {/* TopAppBar */}
-      <header className="flex justify-between items-center px-6 w-full sticky top-0 z-50 h-20 bg-[#fbf9f8] shadow-sm">
-        <div className="flex items-center gap-8">
-          <span className="font-display-lg text-4xl font-bold text-primary tracking-tighter cursor-pointer" onClick={() => navigate('/')}>Localite</span>
-          <nav className="hidden md:flex gap-6">
-            <a className="text-[#44474d] font-bold hover:text-primary transition-colors duration-300 font-label-caps text-[12px] uppercase tracking-widest cursor-pointer">Explore</a>
-            <a className="text-[#44474d] font-bold hover:text-primary transition-colors duration-300 font-label-caps text-[12px] uppercase tracking-widest cursor-pointer" onClick={() => navigate('/events')}>My Events</a>
-            <a className="text-[#44474d] font-bold hover:text-primary transition-colors duration-300 font-label-caps text-[12px] uppercase tracking-widest cursor-pointer">Concierge</a>
-          </nav>
-        </div>
-        <div className="flex items-center gap-4 text-primary">
-          <span className="material-symbols-outlined cursor-pointer hover:text-[#775a19] transition-colors">notifications</span>
-          <span className="material-symbols-outlined cursor-pointer hover:text-[#775a19] transition-colors">mail</span>
-          <div className="w-10 h-10 rounded-full bg-[#eae8e7] flex items-center justify-center overflow-hidden border border-[#c5c6cd] cursor-pointer" onClick={() => navigate('/profile/setup/final')}>
-            <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3VjGUcPLkttUmj7TWBK3YEK_vBn-B-gfc3Pw6ILCDGsYfHVget8n_m9tqZ5yIDZxUyfWfdSDbiDbaHcawlKG2zuY8O5F8mFb5yMBNYw9UsRDbelciOvikZIAHnarYzrmh7BtOUzC92qfW__XPBDVoEIJ6XIX685hDKasOagiIU0_exOmBRHl4JEEALHiOR3QiEaWzwymOulP1PStQ9YBykSvfp6mb_L_4XCWHx46RmaEAt-7EVmeaBw" alt="Profile" />
+    <div className="bg-[var(--bg-subtle)] text-[var(--fg)] min-h-screen py-10 px-4 sm:px-6">
+      <main className="max-w-4xl mx-auto space-y-8">
+        {/* Navigation & Header */}
+        <div>
+          <button 
+            type="button" 
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors mb-3"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
+          <div className="flex items-center gap-2 text-[var(--accent)] mb-1">
+            <ShieldCheck size={18} weight="fill" />
+            <span className="font-mono text-xs uppercase tracking-wider">Community Standards</span>
           </div>
-        </div>
-      </header>
-
-      <main className="flex-grow flex flex-col md:flex-row max-w-7xl mx-auto w-full px-6 py-12 gap-6">
-        
-        {/* Left Column: Context & Branding */}
-        <div className="w-full md:w-1/3 flex flex-col gap-6">
-          <div className="flex items-center gap-2 text-[#775a19] mb-2">
-            <span className="material-symbols-outlined">shield</span>
-            <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest">Trust & Safety</span>
-          </div>
-          <h1 className="font-display-lg text-5xl font-bold leading-tight mb-4 text-primary">Integrity of the Gathering.</h1>
-          <p className="text-[#44474d] font-body-lg text-lg leading-relaxed">
-            Localite is built on the foundation of curated excellence. If an event deviates from our standards of safety and authenticity, our community depends on your voice.
+          <h1 className="text-3xl font-serif text-[var(--fg)]">Report a Gathering</h1>
+          <p className="text-xs sm:text-sm text-[var(--fg-muted)] max-w-xl mt-1">
+            We review every report against our community etiquette to maintain trust and neighborhood safety.
           </p>
-
-          {/* Reassurance Card */}
-          <div className="mt-6 p-6 rounded-xl bg-[#f5f3f3] border border-[#c5c6cd] shadow-[0_16px_32px_-12px_rgba(10,25,47,0.08)]">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white">
-                <span className="material-symbols-outlined">gavel</span>
-              </div>
-              <div>
-                <h4 className="font-label-caps text-[12px] font-bold text-primary uppercase tracking-widest">Protocol Committee</h4>
-                <p className="text-xs text-[#44474d]">Reviewal Authority</p>
-              </div>
-            </div>
-            <p className="text-[#44474d] text-sm italic leading-snug">
-              "Every report is meticulously examined by our Protocol Committee to ensure the highest standards of our community are upheld. We maintain a zero-tolerance policy for misleading or unsafe environments."
-            </p>
-          </div>
         </div>
 
-        {/* Right Column: The Form */}
-        <div className="w-full md:w-2/3 flex flex-col gap-6">
-          
-          {/* Event Summary Card */}
-          <section className="bg-white rounded-xl p-6 shadow-[0_16px_32px_-12px_rgba(10,25,47,0.08)] flex flex-col md:flex-row gap-6 border border-[#e4e2e2]">
-            <div className="w-32 h-32 md:w-40 md:h-28 rounded-lg overflow-hidden flex-shrink-0">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8vP_J90NK5W50Xtx52Fm84j9rbHcIc2tXf0NSoyCoiySUyW1N9MLjmqxx8RrwqDqCxJYZgLL5CQJBbNZhBLJv5nZmvcWFaYSjkLf686Q3yG2AfKzR3P9nL3SG7Dik_GwOe391H8CEnTP1qXHQzsteGQv0gV_Jm6X0jErYDYjWM3PXPg-VwPxAH5WPPgSNdP23LbEakzaSnUoCe8TB_NcOyJwgi87hVdZeUHKyAwj_0QMsEjySud4Bow" alt="Event" />
+        {/* Form Container */}
+        <div className="bg-white rounded-card border border-[var(--border)] p-6 sm:p-8 space-y-8">
+          {/* Target Event Mini Card */}
+          <div className="p-4 bg-[var(--bg-subtle)] rounded-card border border-[var(--border)] flex items-start gap-4">
+            <div className="w-16 h-16 rounded-card overflow-hidden bg-white shrink-0 border border-[var(--border)]">
+              <img 
+                src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=300" 
+                alt="Event" 
+                className="w-full h-full object-cover" 
+              />
             </div>
-            <div className="flex flex-col justify-center gap-1">
-              <span className="font-label-caps text-[12px] font-bold uppercase tracking-widest text-[#775a19]">Reporting Event</span>
-              <h2 className="font-headline-sm text-2xl font-bold text-primary">The Midnight Gala: Vernissage & Cocktails</h2>
-              <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#44474d] scale-75">person</span>
-                  <span className="text-[#44474d] font-medium text-sm">Host: Julian Thorne</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#44474d] scale-75">calendar_today</span>
-                  <span className="text-[#44474d] font-medium text-sm">Oct 24, 2023 • 9:00 PM</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Report Reason Selection */}
-          <form className="bg-white rounded-xl p-8 shadow-[0_16px_32px_-12px_rgba(10,25,47,0.08)] border border-[#e4e2e2] flex flex-col gap-6" onSubmit={handleSubmit}>
             <div>
-              <h3 className="font-label-caps text-[12px] font-bold text-[#84847b] mb-6 uppercase tracking-widest">Select Reason</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
-                {/* Reason Option 1 */}
-                <label className="group relative flex items-center p-4 rounded-xl border border-[#c5c6cd] cursor-pointer hover:bg-[#f5f3f3] transition-all duration-300">
-                  <input className="hidden peer" name="reason" type="radio" value="misleading" checked={reason === 'misleading'} onChange={() => setReason('misleading')} />
-                  <div className={`w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center ${reason === 'misleading' ? 'border-primary' : 'border-[#c5c6cd]'}`}>
-                    {reason === 'misleading' && <div className="w-2.5 h-2.5 bg-primary rounded-full"></div>}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-bold text-primary">Misleading Information</span>
-                    <span className="text-xs text-[#44474d]">Incorrect location, time, or false promises.</span>
-                  </div>
-                </label>
-                
-                {/* Reason Option 2 */}
-                <label className="group relative flex items-center p-4 rounded-xl border border-[#c5c6cd] cursor-pointer hover:bg-[#f5f3f3] transition-all duration-300">
-                  <input className="hidden peer" name="reason" type="radio" value="safety" checked={reason === 'safety'} onChange={() => setReason('safety')} />
-                  <div className={`w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center ${reason === 'safety' ? 'border-primary' : 'border-[#c5c6cd]'}`}>
-                    {reason === 'safety' && <div className="w-2.5 h-2.5 bg-primary rounded-full"></div>}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-bold text-primary">Safety Concerns</span>
-                    <span className="text-xs text-[#44474d]">Potential for harm or dangerous environment.</span>
-                  </div>
-                </label>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--fg-muted)] block">Event In Question</span>
+              <h3 className="text-sm font-medium text-[var(--fg)] mt-0.5">The Midnight Gala: Vernissage & Cocktails</h3>
+              <p className="text-xs text-[var(--fg-muted)] mt-0.5">Hosted by Julian Thorne • Oct 24, 2026</p>
+            </div>
+          </div>
 
-                {/* Reason Option 3 */}
-                <label className="group relative flex items-center p-4 rounded-xl border border-[#c5c6cd] cursor-pointer hover:bg-[#f5f3f3] transition-all duration-300">
-                  <input className="hidden peer" name="reason" type="radio" value="inappropriate" checked={reason === 'inappropriate'} onChange={() => setReason('inappropriate')} />
-                  <div className={`w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center ${reason === 'inappropriate' ? 'border-primary' : 'border-[#c5c6cd]'}`}>
-                    {reason === 'inappropriate' && <div className="w-2.5 h-2.5 bg-primary rounded-full"></div>}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-bold text-primary">Inappropriate Content</span>
-                    <span className="text-xs text-[#44474d]">Explicit imagery or discriminatory themes.</span>
-                  </div>
-                </label>
-
-                {/* Reason Option 4 */}
-                <label className="group relative flex items-center p-4 rounded-xl border border-[#c5c6cd] cursor-pointer hover:bg-[#f5f3f3] transition-all duration-300">
-                  <input className="hidden peer" name="reason" type="radio" value="spam" checked={reason === 'spam'} onChange={() => setReason('spam')} />
-                  <div className={`w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center ${reason === 'spam' ? 'border-primary' : 'border-[#c5c6cd]'}`}>
-                    {reason === 'spam' && <div className="w-2.5 h-2.5 bg-primary rounded-full"></div>}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-bold text-primary">Spam or Scam</span>
-                    <span className="text-xs text-[#44474d]">Phishing attempts or commercial solicitation.</span>
-                  </div>
-                </label>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Reason Radio Group */}
+            <div className="space-y-3">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Select Reason</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {reportReasons.map((item) => {
+                  const isChecked = reason === item.id;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => setReason(item.id)}
+                      className={`p-4 rounded-card border transition-all cursor-pointer ${
+                        isChecked 
+                          ? 'border-[var(--accent)] bg-[var(--accent)]/[0.03]' 
+                          : 'border-[var(--border)] hover:border-[var(--fg-muted)] bg-white'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${
+                          isChecked ? 'border-[var(--accent)] bg-[var(--accent)]' : 'border-[var(--border)]'
+                        }`}>
+                          {isChecked && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+                        <div>
+                          <p className={`text-xs font-medium ${isChecked ? 'text-[var(--fg)]' : 'text-[var(--fg-muted)]'}`}>
+                            {item.title}
+                          </p>
+                          <p className="text-[11px] text-[var(--fg-muted)] mt-0.5">{item.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Detailed Description */}
-            <div>
-              <h3 className="font-label-caps text-[12px] font-bold text-[#84847b] mb-4 uppercase tracking-widest">Incident Details</h3>
-              <textarea 
-                className="w-full bg-[#efeded] border-[1.5px] border-transparent focus:border-[#775a19] focus:bg-white rounded-xl p-4 font-body-md text-primary placeholder:text-[#75777e] outline-none transition-all resize-none" 
-                placeholder="Please describe the issue with as much detail as possible. This information is confidential and will only be seen by the Protocol Committee." 
-                rows="5"
+            {/* Details Field */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-end">
+                <label className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">Incident Details</label>
+                <span className="text-xs font-mono text-[var(--fg-muted)]">{details.length} / 500</span>
+              </div>
+              <textarea
+                rows="4"
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
                 maxLength={500}
-              ></textarea>
-              <p className={`mt-2 text-xs text-right ${details.length > 450 ? 'text-[#ba1a1a]' : 'text-[#44474d]'}`}>{details.length} / 500 characters</p>
+                placeholder="Describe what occurred. This information remains strictly confidential between you and the Localite trust team."
+                className="w-full bg-[var(--bg-subtle)] border border-[var(--border)] rounded-card p-4 text-xs sm:text-sm text-[var(--fg)] placeholder:text-[var(--fg-muted)]/50 focus:outline-none focus:border-[var(--fg)] transition-colors resize-none"
+              />
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-between gap-4 pt-4 border-t border-[#e4e2e2]">
-              <button 
-                className="px-8 py-3 rounded-full border border-[#775a19] text-[#775a19] font-label-caps text-[12px] font-bold uppercase tracking-widest hover:bg-[#fed488]/20 transition-all active:scale-95" 
+            <div className="pt-4 border-t border-[var(--border)] flex items-center justify-between gap-4">
+              <button
                 type="button"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate(-1)}
+                className="px-5 py-2.5 rounded-card border border-[var(--border)] text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
               >
-                CANCEL
+                Cancel
               </button>
-              <button 
-                className="px-10 py-3 rounded-full bg-primary text-white font-label-caps text-[12px] font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all active:scale-95" 
+              <button
                 type="submit"
                 disabled={submitted}
+                className="px-6 py-2.5 rounded-card bg-[var(--fg)] text-white text-xs font-mono uppercase tracking-wider hover:bg-black transition-colors disabled:opacity-50"
               >
-                {submitted ? (
-                  <span className="flex items-center gap-2">
-                    <span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span> 
-                    PROCESSING...
-                  </span>
-                ) : (
-                  'SUBMIT REPORT'
-                )}
+                {submitted ? 'Submitting Report...' : 'Submit Report'}
               </button>
             </div>
           </form>
         </div>
       </main>
 
-      {/* Footer Credit */}
-      <footer className="mt-auto py-8 text-center border-t border-[#c5c6cd] bg-[#f5f3f3]">
-        <p className="font-label-caps text-[12px] font-bold text-[#84847b] uppercase tracking-widest">© 2023 Localite Concierge. Modern Nobility in Community.</p>
-      </footer>
-
       {/* Success Modal */}
       {submitted && (
-        <div className="fixed inset-0 bg-[#fbf9f8]/90 backdrop-blur-sm flex items-center justify-center p-6 z-[60]">
-          <div className="max-w-md w-full bg-white p-10 rounded-xl shadow-[0_16px_32px_-12px_rgba(10,25,47,0.08)] text-center animate-[fade-in_0.5s_ease-out]">
-            <div className="w-20 h-20 bg-[#fed488] text-[#775a19] rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="material-symbols-outlined text-[40px]">verified_user</span>
-            </div>
-            <h2 className="font-headline-sm text-3xl font-bold mb-4 text-primary">Report Logged</h2>
-            <p className="font-body-md text-[#44474d] mb-8 leading-relaxed">
-              Your concerns have been transmitted securely to the Protocol Committee. We value your commitment to the community's integrity.
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-card border border-[var(--border)] p-8 max-w-sm w-full text-center space-y-4 shadow-xl">
+            <CheckCircle size={40} className="mx-auto text-[var(--accent)]" weight="fill" />
+            <h3 className="text-xl font-serif text-[var(--fg)]">Report Received</h3>
+            <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+              Thank you for helping keep Localite safe. Our safety team will review this gathering within 4 hours.
             </p>
-            <button 
-              className="w-full py-4 bg-primary text-white font-label-caps text-[12px] font-bold rounded-full tracking-widest uppercase hover:opacity-90 transition-all"
-              onClick={() => navigate('/dashboard')}
-            >
-              RETURN TO EXPLORE
-            </button>
           </div>
         </div>
       )}
-
     </div>
   );
 }
